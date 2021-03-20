@@ -1,4 +1,6 @@
-### Hi there 👋
+##挣扎着苟活着课内的DarkSharpness
+##Struggling with my studying
+
 
 <!--
 **DarkSharpness/DarkSharpness** is a ✨ _special_ ✨ repository because its `README.md` (this file) appears on your GitHub profile.
