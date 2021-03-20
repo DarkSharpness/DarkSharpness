@@ -1,5 +1,5 @@
 ## 挣扎着挽救文化课的Dark
-## DarkSharpness Struggling with my studying
+## DarkSharpness Struggling with his studying
 
 
 <!--
