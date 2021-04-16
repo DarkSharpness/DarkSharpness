@@ -278,6 +278,7 @@ class number
 
 }
 using namespace std;
+//const double c=1ull<<63;
 
 int main()
 {
