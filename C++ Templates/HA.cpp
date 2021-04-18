@@ -13,6 +13,7 @@
  * It is based on std::vector and it offers a number printing (base 10) method.
  * So it includes vector , stdlib.h and stdio.h.
  */
+#include <bits/stdc++.h>
 #include <vector>
 #include <stdio.h>
 #include <stdlib.h>
@@ -21,6 +22,11 @@ namespace std
 {
 #define uint unsigned int 
 
+uint Log2(uint x){
+    uint ret;
+    __asm__ __volatile__ ("bsrl %1, %%eax":"=a"(ret):"m"(x));
+    return ret;
+}
 
 const uint _mod=-1;
 
@@ -47,6 +53,7 @@ vector <uint> _check_num(const vector <uint> &v)
  */
 class number 
 { 
+    #define Maxsize(_tx) (1<<(Log2(_tx)+1)) //需要空间
     /**
      * The first element v[0] is the sign of the number.
      * If v[0] = 2,this number >=0 
@@ -125,7 +132,6 @@ class number
         if(v.size()==2&&v[1]==0) return true; 
         else return false;
     }
-    
     inline bool operator==(const number &_m)const{
         if(v!=_m.v) return true;
         return false;
@@ -160,7 +166,8 @@ class number
     //左移
     inline number operator <<(const long long &m)const{
         vector <uint> c;
-        c.resize((m>>5)+v.size()+(uint)((*--v.cend())>>(32-(m&31u))),0);
+        c.reserve(Maxsize((m>>5)+v.size()+(uint)((*--v.cend())>>(32-(m&31u)))));
+        c.resize((m>>5)+v.size()+(uint)((*--v.cend())>>(32-(m&31u))));
         c[0]=v[0];                      //0符号位   1~m>>5为 0
         if(!(m&31u))                    // 没有余数
         {
@@ -174,12 +181,14 @@ class number
             x=((long long)v[i]<<r)|(x>>32);
             c[i+(m>>5)]=x&_mod;
         }
-       // cout<< (x>>32)  <<endl;
         if(x>>32) c[v.size()+(m>>5)]=x>>32;
-        return number(c);
+        return number(c,true);//会有多余的0
     } 
     //右移
     inline number operator >>(const long long &m)const{
+        
+        
+        
         return *this;
     }
 
@@ -192,7 +201,6 @@ class number
     //加法
     inline number operator + (const number &y)const{ 
         const number &x=*this;
-
         if(x.v[0]==y.v[0])                       //同号加法
         {
             vector <uint> c;
@@ -209,7 +217,7 @@ class number
                 t>>=32;
             }
             if(t) c.push_back(t);               //最后一位看是否要进
-            return number(c);
+            return number(c,1); //不需要检查
         }
 
         else                                 //一正一负加法当减法
@@ -228,7 +236,7 @@ class number
                 if(t<=0) t=0;
                 else t=1;
             }
-            return number(_check_num(c));          //减法必须检查
+            return number(c);          //减法必须检查
         }
     
     }
@@ -282,9 +290,8 @@ using namespace std;
 
 int main()
 {
-    number x={0,vector <uint>{0,-1u,1u<<30}},y={1,vector <uint>{0,-1u}};
-    (x+y).print();
-    x.print();
+    number x={0,vector <uint>{0,123,-1u,1u<<30}},y={1,vector <uint>{0,-1u}};
+    (x<<130).print();
     return 0;
 }
 
