@@ -33,7 +33,8 @@ const uint _mod=-1;
 // Check if it is a number
 vector <uint> _check_num(const vector <uint> &v)
 {
-    if(v.empty()||(*v.cbegin()!=2&&*v.cbegin()!=3))//空或不是2,3
+    if(v.empty()) return v;
+    if((*v.cbegin()!=2&&*v.cbegin()!=3))//空或不是2,3
     {
         printf("%u",*v.cbegin());
         puts("Error!False Number!");
@@ -51,9 +52,12 @@ vector <uint> _check_num(const vector <uint> &v)
  * @brief A infinite number system based on vector,which involves all operators as the integer.
  * @author DarkSharpness  
  */
+const char _zero_='0';
+const char _nan_='@';
 class number 
 { 
-    #define Maxsize(_tx) (1<<(Log2(_tx)+1)) //需要空间
+    #define Maxsize(_tx) (1<<(Log2(_tx)+1)) //计算需要空间
+
     /**
      * The first element v[0] is the sign of the number.
      * If v[0] = 2,this number >=0 
@@ -61,8 +65,23 @@ class number
      * If else there must be sth. wrong so the program will end
      * v[i] (i>0) is every 4 byte of the number 
      * If the number = 0,the sign can be either 2 or 3,but v[1] should be 0;
+     * If the vector is empty,it means that something divided by 0 happened.
      */
     vector <uint> v;
+    number (const char &c)
+    {
+        v.clear();
+        switch(c)
+        {
+            case _zero_: 
+                v.resize(2,0);
+                v[0]=2;
+                return;
+            case _nan_:
+                return;
+        }
+    }
+
     public:
 
     //Type changing
@@ -94,13 +113,13 @@ class number
     
     /**
      * @brief       Change a vector to a number with a certain sign.
-     * @param _flag If flag mod 2 = 0,this number >= 0.Else it <=0.
+     * @param _sign If sign mod 2 = 0,this number >= 0.Else it <=0.
      * @param _x    The vector to change to number.(The first element of which is useless.)
      */
-    number (int _flag,const vector <uint> &_x)    
+    number (int _sign,const vector <uint> &_x)    
     {
         v=_x;
-        v[0]=2+(_flag&1);
+        v[0]=2+(_sign&1);
         //number(v).print();
     }
     
@@ -124,83 +143,125 @@ class number
      */
     number (const vector <uint> &_x,bool _flag)   
     {_flag ?v=_x : v=_check_num(_x);}
+   
+    /**
+     * @brief 
+     * 
+     * @return true 
+     * @return false 
+     */
     
-    //Reloading judging operators
-
+    
+    //判断运算符 ok 一旦出现nan,bool类永远返回false;
 
     inline bool operator!(void) const{
+        if(isnan()) return false;
         if(v.size()==2&&v[1]==0) return true; 
         else return false;
     }
     inline bool operator==(const number &_m)const{
-        if(v!=_m.v) return true;
+        if(isnan()||_m.isnan()) return false;
+        if(v==_m.v) return true;
         return false;
     }
-    inline bool operator< (const number &m)const{
-        if(v[0]!=m.v[0]) return v[0]>m.v[0];
-        if(v.size()!=m.v.size()) return v.size()<m.v.size();//size越大,越会出问题
+    inline bool operator< (const number &_m)const{
+        if(isnan()||_m.isnan()) return false;
+        if(v[0]!=_m.v[0]) return v[0]>_m.v[0];
+        if(v.size()!=_m.v.size()) return v.size()<_m.v.size();//size越大,越会出问题
         for(int i=v.size()-1;i!=-1;--i)
-            if(v[i]!=m.v[i]) return v[i]<m.v[i];
+            if(v[i]!=_m.v[i]) return v[i]<_m.v[i];
         return false;//相等
     }
-    inline bool operator<=(const number &m)const{
-        if(v[0]!=m.v[0]) return v[0]>m.v[0];
-        if(v.size()!=m.v.size()) return v.size()<m.v.size();
+    inline bool operator<=(const number &_m)const{
+        if(isnan()||_m.isnan()) return false;
+        if(v[0]!=_m.v[0]) return v[0]>_m.v[0];
+        if(v.size()!=_m.v.size()) return v.size()<_m.v.size();
         for(int i=v.size()-1;i!=-1;--i)
-            if(v[i]!=m.v[i]) return v[i]<m.v[i];
+            if(v[i]!=_m.v[i]) return v[i]<_m.v[i];
         return true;//相等
     }
-    inline bool operator> (const number &m)const{
-        return !(*this<=m);
+    inline bool operator> (const number &_m)const{
+        return !(*this<=_m);
     }
-    inline bool operator>=(const number &m)const{
-        return !(*this<m);
+    inline bool operator>=(const number &_m)const{
+        return !(*this<_m);
     }
-    inline number & operator=(const number &m){
-        v=m.v;
+    inline number & operator=(const number &_m){
+        v=_m.v;
         return *this;
     }
     
     //位运算
 
-    //左移
+    //与 
+
+    //左移 ok
     inline number operator <<(const long long &m)const{
+        if(isnan()||!m||!*this) return *this;
         vector <uint> c;
-        c.reserve(Maxsize((m>>5)+v.size()+(uint)((*--v.cend())>>(32-(m&31u)))));
-        c.resize((m>>5)+v.size()+(uint)((*--v.cend())>>(32-(m&31u))));
-        c[0]=v[0];                      //0符号位   1~m>>5为 0
-        if(!(m&31u))                    // 没有余数
+        uint r=m&31,d=m>>5 ;// m=d*32+r; ( r=[0,32) )
         {
-            for(int i=v.size()-1;i;--i) c[i+(m>>5)]=v[i];//不用走v[0]
-            return number(c);
+            uint _size=d+v.size()+(uint)((*--v.cend()>=(1<<(32-r))));
+            c.reserve(Maxsize(_size));
+            c.resize(_size);
+            c[0]=v[0];                      //0符号位   1~m>>5为 0
+        }
+        if(!r)                    // 没有余数
+        {
+            for(int i=v.size()-1;i;--i) c[i+d]=v[i];//不用走v[0]
+            return number(c,true);
         } 
-        int r=m&31;
-        long long x=0; 
+        unsigned long long x=0; 
         for(int i=1 ; i<v.size() ; ++i)//循环不用v[0]
         {
             x=((long long)v[i]<<r)|(x>>32);
-            c[i+(m>>5)]=x&_mod;
+            c[i+d]=x&_mod;
         }
-        if(x>>32) c[v.size()+(m>>5)]=x>>32;
+        if(x>>32) c[v.size()+d]=x>>32;
         return number(c,true);//会有多余的0
     } 
     //右移
     inline number operator >>(const long long &m)const{
+        if(isnan()||!m||!*this) return *this;   
+        vector <uint> c;   
+        const uint r=m&31,d=m>>5 ;// m=d*32+r; ( r=[0,32) )
+        {   
+            const uint _space=d+((*--v.cend())<(1<<r));
+            if(v.size()<=_space+1) return number(_zero_);
+            c.reserve(Maxsize(v.size()-_space));    //所需空间
+            c.resize(v.size()-_space);
         
-        
-        
-        return *this;
+        }
+        c[0]=v[0];//符号不变
+        if(!r) 
+        {   
+            for(int i=v.size()-1 ; i>=1+d ; --i) c[i-d]=v[i];
+            return number(c,true);
+        }
+        unsigned long long x=v[1+d];x<<=(32-r);
+        for(uint i=1 ; i+d+1<v.size() ; ++i)
+        {
+            x=(x>>32)|((unsigned long long)v[i+d+1]<<(32-r));
+            c[i]=x;
+        }
+        if(x>>32) *--c.end()=x>>32;
+        return number(c,true);
     }
+
+
 
     //加减乘除
 
-    //取负
-    inline number operator - (void)const{           
-        return number(v[0]^1,v);
+    //取负 ok
+    inline number operator - (void)const{  
+        if(isnan()) return *this;        
+        else return number(v[0]^1,v);
     }
-    //加法
+    //加法 ok
     inline number operator + (const number &y)const{ 
         const number &x=*this;
+        if(v.empty()) return x;if(y.v.empty())return y; //非数
+        if(!x) return y;if(!y) return x;                //0
         if(x.v[0]==y.v[0])                       //同号加法
         {
             vector <uint> c;
@@ -240,15 +301,21 @@ class number
         }
     
     }
-    //减法
+    //inline 减法 ok
     inline number operator - (const number &y)const{
         return (*this)+number(y.v[0]^1,y.v);}
     //乘法
     inline number operator * (const number &y)const{
         const number &x=*this;
+        if(isnan()) return x;if(y.isnan()) return y;
+        if(!x||!y) return _zero_;
+        
         return *this;
     }
-    //复杂符号
+    
+    
+    //复杂符号 
+    /*
     inline number & operator +=(const number &y){
         (*this)=(*this)+y;
         return *this;
@@ -257,14 +324,22 @@ class number
         (*this)=(*this)-y;
         return *this;
     }
-    //其他功能
+    */ 
 
 
-    //输出
-    inline void print()//输出
-    {
-        if(v.size()==1) 
-        {puts("0");return;}
+   //其他功能
+
+    //判断是否是一个非数
+    inline bool isnan()const{
+        if(v.empty()) return true;
+        else return false;
+    }
+
+    //输出 仅用于调试,以后删
+    inline void print()const{
+        if(v.empty()) {puts("Not a Number!");return;}
+        if(v.size()==1) {puts("0");return;}
+        if((*v.cbegin()-2u)>1u){puts("Wrong format!");return;}
         if(*v.cbegin()==3) putchar('-');
         for(auto i=++v.cbegin() ; i!=v.cend() ; ++i)
             printf("%u ",*i);
@@ -281,7 +356,9 @@ class number
         v.push_back(2);
         v.push_back(0);
     }
+    //#undef Maxsize(_tx)
 };
+const number NaN={vector <uint>{},true};
 
 
 }
@@ -290,8 +367,14 @@ using namespace std;
 
 int main()
 {
-    number x={0,vector <uint>{0,123,-1u,1u<<30}},y={1,vector <uint>{0,-1u}};
-    (x<<130).print();
+    number x={0,vector <uint>{0,0,0,1u<<30}},y=number{1,vector <uint>{0,123,1u<<30,323}};
+    number z={0,vector <uint>{0,0,1u<<30}};
+    //(x<<130).print();
+    //y.print();
+    x.print();
+    (x>>62).print();
+    (y>>62).print();
+    (z>>62).print();
     return 0;
 }
 

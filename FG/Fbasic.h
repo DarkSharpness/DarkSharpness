@@ -31,14 +31,17 @@ struct statue{
     bool nxt(const ul &x)const{
         for(ui i=x ; ; ++i) if(b.test(i)) return i;
     }
-    //第x位
-    inline bool operator [](const ui &x)
-    {
-        return b[x];
-    }
-    //第x位
+   //第x位 
     inline const bool operator [](const ui &x)const{
         return b[x];
+    }
+    //打开
+    inline void on(const ui &x) {
+        b.set(x);
+    }
+    //关闭
+    inline void off(const ui &x){
+        b[x]=0;
     }
 };
 
