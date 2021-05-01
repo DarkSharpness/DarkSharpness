@@ -143,14 +143,15 @@ class number
      */
     number (const vector <uint> &_x,bool _flag)   
     {_flag ?v=_x : v=_check_num(_x);}
-   
     /**
-     * @brief 
+     * @brief Convert string into
      * 
-     * @return true 
-     * @return false 
+     * @param _str 
      */
-    
+    number (const char * &_str)
+    {
+
+    }
     
     //判断运算符 ok 一旦出现nan,bool类永远返回false;
 
