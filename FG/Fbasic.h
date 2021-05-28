@@ -1,7 +1,7 @@
 #ifndef __FG_BASIC_
 #define __FG_BASIC_
 #include <DarkSharpness/FG/Fmath.h>
-
+#include <DarkSharpness/C++_Templates/statue.h>
 
 /**
  * @brief FingerGlory 命名空间
@@ -16,34 +16,7 @@ const ll A=101 ;//武器总数
 
 
 //状态记录
-struct statue{
-    bitset <96> b;
-    //这一位是否存在
-    inline bool find(const ul &x)const {
-        return b.test(x);
-    }
-    //找到最低位
-    inline ui lowbit(ul x)const {
-        for(int i=0 ; i<96 ; ++i)
-            if(b.test(i)) return i;
-    }
-    //找到第x位后下一个1的位置
-    bool nxt(const ul &x)const{
-        for(ui i=x ; ; ++i) if(b.test(i)) return i;
-    }
-   //第x位 
-    inline const bool operator [](const ui &x)const{
-        return b[x];
-    }
-    //打开
-    inline void on(const ui &x) {
-        b.set(x);
-    }
-    //关闭
-    inline void off(const ui &x){
-        b[x]=0;
-    }
-};
+
 
 
 
@@ -70,7 +43,7 @@ struct weapon{
      */
     ch type;
     //记录对应的是哪几位
-    statue st;
+    statue <96> st;
     /*
         --伤害计数器--
         下标0的是记录数据用:
@@ -109,7 +82,7 @@ struct weapon{
     }
 
 }w[A];
-const ll _size_weapon=sizeof(statue); //检测用,实际运用会删除
+//const ll _size_weapon=sizeof(statue); //检测用,实际运用会删除
 
 }
 

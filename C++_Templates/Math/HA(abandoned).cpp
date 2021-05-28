@@ -17,7 +17,6 @@
 #include <vector>
 #include <stdio.h>
 #include <stdlib.h>
-
 namespace std
 {
 #define uint unsigned int 
