@@ -6,6 +6,8 @@
 #define _Data_Treap_H_
 #if __cplusplus >= 201103L
 #include <vector>
+#include <stdlib.h>
+#include <time.h>
 #include <Data/Tstack.h>
 
 
@@ -14,7 +16,9 @@ namespace std{
 #define nullnode 0  //空结点
 #define none k==nullnode //没有儿子
 
-typedef int value;
+//typedef int value;
+
+
 /**
  * @brief A balanced tree structure based on Treap algorithm.\n
  * You must offer the operator "==" and "<" for the value type.
@@ -22,7 +26,7 @@ typedef int value;
  * @tparam value Type you want to keep in the Treap
  * 
  */
-//template  <typename value>
+template  <typename value>
 class Treap
 {
     //辅助结构:结点
@@ -53,7 +57,9 @@ class Treap
             rc  = 0;
         }
     };
-    vector<node> t;  //节点数组.t[0]祭天
+    
+    
+    vector <node> t;  //节点数组.t[0]祭天
     size_t root;
     Tstack <size_t> q;//删除的数据可以重复利用
 
@@ -90,6 +96,7 @@ class Treap
             if(q.empty()){//队列里没有元素了 重新申请
                 k = t.size(); 
                 t.emplace_back(x, 1, 1, rand(), nullnode , nullnode );
+                return ;
             }
             else { //从队列中找出已经被释放的元素 节约内存
                 k = q.popfront();
@@ -97,8 +104,8 @@ class Treap
                 t[k].rep=t[k].siz=1;
                 t[k].rand=rand();
                 t[k].lc=t[k].rc=nullnode;
+                return;
             }
-            return;
         }
         ++t[k].siz;
         if (t[k].val == x) ++t[k].rep;
@@ -259,6 +266,7 @@ public:
     {
         Insert(root, _X);
     }
+    
     /**
      * @brief Erase element _X once from Treap.\n
      * If _X doesn't exist,nothing happens.
@@ -275,6 +283,7 @@ public:
             ;
         }
     }
+    
     /**
      * @brief Insert mutiple identical element to the Treap. 
      * @param _X The value to be added.
@@ -285,6 +294,7 @@ public:
         if(!_rep) return ;
         Multiinsert(root,_X,_rep);
     }
+    
     /**
      * @brief Erase multiple _X from Treap.
      * It will delete to a positive number or none.
@@ -302,6 +312,7 @@ public:
             return; //0次就是不删除
         Multierase(root, _X, _rep);
     }
+    
     /**
      * @brief Find out the rank of the element in Treap.
      * 
@@ -312,6 +323,7 @@ public:
     inline size_t rankval(const value &_X)const{
         return rank1(root,_X);
     }
+    
     /**
      * @brief Find out the element ranked _loc.
      * 
@@ -321,6 +333,7 @@ public:
     inline value  rankloc(const size_t &_loc)const{
         return rank2(root,_loc);
     }
+    
     /**
      * @brief Find the previous element.
      * 
@@ -332,6 +345,7 @@ public:
         Pre(root,_X,ans);
         return t[ans].val;
     }
+    
     /**
      * @brief Find the succeeding element.
      * 
@@ -343,6 +357,7 @@ public:
         Suc(root,_X,ans);
         return t[ans].val;
     }
+    
     /**
      * @brief Reserve enough space for vector to
      * reduce allocation time cost.
@@ -366,10 +381,46 @@ public:
         t.resize(1);
         t.front().rep=t.front().siz=0;
     }
+    
+    /**
+     * @brief Access the total number of the elements.
+     * Repetition are counted as well.
+     * 
+     * @return Size of the Treap 
+     */
+    inline size_t size()const{
+        return t[root].siz;
+    }
+    /**
+     * @brief Element number of the Treap.
+     * Each repetition is counted only once.
+     * 
+     * @return  The element number,equal to the
+     * least physical space required.
+     */
+    inline size_t number()const{
+        return t.size()-1-q.size();
+    }
+    //The capacity of the Treap.
+    inline size_t capacity()const{
+        return t.capacity()-1;
+    }
+    /**
+     * @brief Return the rest space required before
+     * the vector malloc again.
+     * 
+     * @return The remaining space in the Treap.  
+     */
+    inline size_t remainder()const{
+        return t.capacity()-t.size()+q.size();
+    }
+
     //Shrink to save space.
     inline void shrink(){
         t.shrink_to_fit();
     }
+    
+
     /**
      * @brief Construct an empty Treap.(with only nullnode)
      * 
@@ -377,10 +428,12 @@ public:
     Treap()
     {
         while(!q.empty()) q.pop();
-        root =0 ;
+        root = 0 ;
         t.clear();
         t.resize(1);
         t.front().rep=t.front().siz=0;
+        srand(time(NULL));
+        cout << "构造" <<endl;
     }
 
 };

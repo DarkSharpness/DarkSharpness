@@ -1,3 +1,7 @@
+//Stack for Treap Algorithm
+//Easy to use,and require less space than required
+//Do not use it unless necessary.
+
 #ifndef _Data_T_Stack_
 #define _Data_T_Stack_
 #include <bits/allocator.h>
@@ -11,8 +15,7 @@ namespace std
      * 
      */
     template <typename key>
-    class Tstack
-    {
+    class Tstack{
         struct node
         {
             key val;
@@ -20,24 +23,27 @@ namespace std
         };
         node *top; //顶部指针
         node *tmp; //临时指针
-        allocator<node> a;
+        size_t siz;
+        allocator <node> a;
     public:
-    //顶部添加元素
+    //Add element to the top of the stack.
     inline void push(const key &x)
     {
         tmp=top;
         top=a.allocate(1);
         top->c=tmp;
         top->val=x;
+        ++siz;
     }
-    //如果空了那么就不会清空
+    //Pop the top element.If the stack is empty,nothing happens.
     inline void pop(){
         if(top==NULL) return ;
+        --siz;
         tmp=top->c;
         a.deallocate(top,1);
         top=tmp;
     }
-    //返回顶部值(常数)
+    //Read only reference to the top element.
     inline key front()const{
         if(top==NULL) 
         {
@@ -45,7 +51,11 @@ namespace std
        }
         else return top->val;
     }
-    //返回顶部值(引用)
+    //The siz of the stack.
+    inline size_t size()const{
+        return siz;
+    }
+    //Read/Write reference to the top element.
     inline key& front(){
         if(top==NULL) 
         {
@@ -58,6 +68,7 @@ namespace std
         if(top==NULL) throw "Out of range";
         else 
         {
+            --siz;
             key v=top->val;
             tmp=top->c;
             a.deallocate(top,1);
@@ -73,9 +84,9 @@ namespace std
     inline Tstack()
     {
         top=NULL;
+        siz=0;
     }
-};
-
+    };
 
 }
 #endif
