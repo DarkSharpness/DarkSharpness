@@ -1,4 +1,4 @@
-#pragma GCC optimize(3)
+//#pragma GCC optimize(3)
 #include <vector>
 #include <iostream>
 #include <string.h>
@@ -45,8 +45,10 @@ namespace std
     class number
     {
     private:
-        bool sign;
-        vector <uint> v;
+        vector <uint> v;//数字数组
+
+        bool sign;      //符号
+        
         //指令处理
         number(const char &c, const uint &x)
         {
@@ -237,7 +239,7 @@ namespace std
         {
             if (checknan())
                 return false;
-            if (sign == _N.sign && v == _N.v)
+            if (sign != _N.sign || v != _N.v)
                 return false;
             else
                 return true;
@@ -259,6 +261,14 @@ namespace std
         }
 
         //位运算符 
+
+        inline number operator~(void)const{
+            number c('#',size());
+            for(auto i:v)
+            {
+                
+            }
+        }
         inline number operator<<(const ll &x) const
         {
             if (isnan()||!y||!x)return y;
@@ -349,14 +359,16 @@ namespace std
         }
         inline number operator+(const number &x)
         {
-            if (x.isnan())
+            //鉴定0 非数
+            {if (x.isnan())
                 return x;
             if (y.isnan())
                 return y;
             if (!x)
                 return y;
             if (!y)
-                return x;
+                return x;}
+            
             if (x.sign == y.sign) //加法
             {
                 const number *a = &x, *b = &y;
@@ -427,8 +439,10 @@ namespace std
         }
         inline number operator*(const number &x) const
         {
-            if (x.isnan())return x;if (y.isnan())return y;
-            if (!x)return x; if (!y)return y;
+            //鉴定0和非数
+            {if (x.isnan())return x;if (y.isnan())return y;
+            if (!x)return x; if (!y)return y;}
+            
             const number *a, *b; // b 比 a 长
             x.size() > y.size() ? a = &y, b = &x : a = &x, b = &y;
             number c('#', b->size() + a->size()), g=number('#', b->size() + 1);
@@ -447,9 +461,11 @@ namespace std
                     g.push_back(t>>32);
                 c = c + g;
                 g.v.assign(++it, 0);
-                // g.print();
             }
             return c;
+        }
+        inline number operator/(const uint &x)const{
+
         }
         inline number operator/(const number &x) const
         {
@@ -512,9 +528,7 @@ namespace std
         //判断是否存在
         inline bool isnan() const
         {
-            if (v.empty())
-                return true;
-            return false;
+            return v.empty() ? true : false;
         }
         //等价于shrink to fit,用于节约空间
         inline void shrink()
