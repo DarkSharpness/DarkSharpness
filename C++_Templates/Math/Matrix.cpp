@@ -4,6 +4,7 @@ typedef long long ll;
 
 int main()
 {
-    
+    vector <unsigned int>vec;
+
     return 0;
 }

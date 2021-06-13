@@ -1,3 +1,4 @@
+#pragma GCC optimize(3)
 #include <cstring>
 #include <string>
 #include <iostream>
@@ -7,7 +8,6 @@ namespace std{
 
 class strnum
 {  
-    #define number strnum
     #define _Y (*this)
     string str;//Number array.
     bool sign;//Sign of the number. 0/1:positive/negative
@@ -17,7 +17,7 @@ class strnum
      * @param _C Command input.
      * @param _X Param of certain command.
      */
-    inline number(const char &_C,const size_t &_X)
+    inline strnum(const char &_C,const size_t &_X)
     {
         switch(_C)
         {
@@ -50,7 +50,7 @@ class strnum
         if(str.size()==1&&str.front()=='0') return true;
         else return false; 
     }
-    inline bool operator <(const number &_X)const
+    inline bool operator < (const strnum &_X)const
     {
         if(isnan()||_X.isnan()) return false;
         if(_X.sign!=sign) return sign>_X.sign;
@@ -63,7 +63,7 @@ class strnum
                 str[i] > _X.str[i] : str[i] <_X.str[i] ;
         return false;   //equal
     }
-    inline bool operator <=(const number &_X)const
+    inline bool operator <=(const strnum &_X)const
     {
         if(isnan()||_X.isnan()) return false;
         if(_X.sign!=sign) return sign>_X.sign;
@@ -76,7 +76,7 @@ class strnum
                 str[i] > _X.str[i] : str[i] <_X.str[i] ;
         return true;   //equal
     }
-    inline bool operator >(const number &_X)const
+    inline bool operator > (const strnum &_X)const
     {
         if(isnan()||_X.isnan()) return false;
         if(_X.sign!=sign) return sign<_X.sign;
@@ -89,7 +89,7 @@ class strnum
                 str[i] < _X.str[i] : str[i] > _X.str[i] ;
         return false;   //equal
     }
-    inline bool operator >=(const number &_X)const
+    inline bool operator >=(const strnum &_X)const
     {
         if(isnan()||_X.isnan()) return false;
         if(_X.sign!=sign) return sign<_X.sign;
@@ -102,17 +102,35 @@ class strnum
                 str[i] < _X.str[i] : str[i] > _X.str[i] ;
         return true;   //equal
     }
-    inline bool operator ==(const number &_X)const{
+    inline bool operator ==(const strnum &_X)const{
         if(isnan()||_X.isnan()) return false;
         return sign==_X.sign && str==_X.str ?
             true : false;
     }
-    inline bool operator !=(const number &_X)const{
+    inline bool operator !=(const strnum &_X)const{
         if(isnan()||_X.isnan()) return false;
         return sign!=_X.sign || str!=_X.str ?
             true : false;
     }
     
+    //Calculating operators
+    inline strnum operator -(void)const{
+        strnum c=*this;
+        c.sign=!this->sign;
+        return c;
+    }
+
+    inline strnum operator+(const strnum &_X)const{
+        if(sign==_X.sign) 
+        {
+            
+        }
+    }
+    inline strnum operator-(const strnum &_X)const{
+        return _Y+(-_X);
+    }
+
+
 
     //Special functions.
 #ifdef _GLIBCXX_IOSTREAM
@@ -125,8 +143,18 @@ class strnum
             putchar(*it);
     }
 
-    inline void print(const size_t &x)const{
-
+    //Print out the first _X bits of the number
+    inline void print(size_t _X)const{
+        if(!_X) return;
+        if(isnan()) {puts("Not A Number!");return;}
+        if(sign) putchar('-');
+        if(_X==1) {putchar(str.back());return;}
+        putchar(str.back());putchar('.');
+        for(auto it=++str.rbegin();it!=str.rend() && --_X; ++it)
+            putchar(*it);
+        putchar('e');
+        printf("%llu",(unsigned long long)(str.size()-1));
+        
     }
 #endif
     //Judge if the number is a NAN.
@@ -147,7 +175,7 @@ class strnum
     //Initializing functions.
 
     //Initialize with a const char *.
-    inline number(const char * const & c)
+    inline strnum(const char * const & c)
     {
         str.clear();
         size_t len=strlen(c);
@@ -156,7 +184,7 @@ class strnum
             str.push_back(c[len]);
     }
     
-    inline number(int x)
+    inline strnum(int x)
     {
         if(!x) {sign=false;str.push_back('0');return;}
         else if(x<0) x=-x,sign=true;
@@ -168,7 +196,7 @@ class strnum
         }
     }
     
-    inline number(long long x)
+    inline strnum(long long x)
     {
         if(!x) {sign=false;str.push_back('0');return;}
         else if(x<0) x=-x,sign=true;
@@ -185,11 +213,11 @@ class strnum
 
 }
 using namespace std;
-strnum x(1);
+strnum gg("13123231321312");
 
 
 int main()
 {
-
+    //x.print(10);
     return 0;
 }

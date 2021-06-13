@@ -1,16 +1,15 @@
-//#pragma GCC optimize(3)
+#pragma GCC optimize(3)
 #include <vector>
 #include <iostream>
 #include <string.h>
-typedef unsigned int uint;
-typedef unsigned long long ull;
-typedef long long ll;
-//const uint maxn=2147483647;
 
+//const uint maxn=2147483647;
 namespace std
 {
     //快速Log2函数
     #ifndef _Dark_Math_H_
+
+    #define uint unsigned int 
     inline uint Log2(const uint &x)
     {
         uint ret;
@@ -19,12 +18,13 @@ namespace std
                              : "m"(x));
         return ret;
     }
+   
+    
     #endif
     #define maxsize(_tx_) (1 << (Log2(_tx_) + 1))
     #define bk break;
     #define y (*this)
     #define checknan() (isnan() || _N.isnan())
-        
     //检查数组 --已经通过测试
     inline const vector<uint> checkv(const vector<uint> &c)
     {
@@ -34,29 +34,43 @@ namespace std
         auto siz = c.size();
         while ((--it) != c.cbegin() && (*it) == 0)
             --siz; //如果最后一个是begin也不处理了
-        vector<uint> t;
+        vector<unsigned int> t;
         t.reserve(maxsize(siz));
         for (auto i = c.cbegin(); i != it; ++i)
             t.push_back(*i);
         t.push_back(*it);
         return t;
     }
-
+    #undef uint
     class number
     {
     private:
+        typedef unsigned int uint;
+        typedef unsigned long long ull;
+        typedef long long ll;
+        
         vector <uint> v;//数字数组
 
         bool sign;      //符号
         
-        //指令处理
-        number(const char &c, const uint &x)
+        /**
+         * @brief Construct a new number object with Command
+         * 
+         * @param _C The input command.
+         * If '#',reserve _X space .
+         * If '\@',resize to _X .
+         * Else exit as error.
+         * @param _X Assistiing param.
+         */
+        number(const char &_C, const uint &_X)
         {
-            switch (c)
+            switch (_C)
             {
                 case '#':
-                    v.clear();
-                    v.reserve(x);
+                    v.reserve(_X);
+                    bk;
+                case '@':
+                    v.resize(_X);
                     bk;
                 default:
                     puts("Error!");
@@ -64,11 +78,15 @@ namespace std
             }
         }
         //等同v.size()
-        inline uint size() const{
+        inline size_t size() const{
             return v.size();
         }
-        //等同v[x]
-        inline uint operator[](const uint &x) const{
+        //等同v[x] 不可修改
+        inline uint  operator[](const uint &x) const{
+            return v[x];
+        }
+        //等同v[x] 可修改
+        inline uint& operator[](const uint &x){
             return v[x];
         }
         //等同v.pushback(x)
@@ -95,33 +113,46 @@ namespace std
             v.shrink_to_fit();
             v.push_back(0);
         }
+        
+        
         explicit number(int x)
+        {
+            x < 0 ? sign = true, x = -x : sign = false;
+            v.reserve(2);
+            v.push_back(x);
+        }
+        explicit number(const uint &x)
+        {
+            sign=false;
+            v.reserve(2);
+            v.push_back(x);
+        }
+        explicit number(ll x)
         {
             v.clear();
             v.swap(v);
             x < 0 ? sign = true, x = -x : sign = false;
             v.reserve(2);
-            v.push_back(x);
-        }
-        explicit number(long long x)
-        {
-            v.clear();
-            v.swap(v);
-            x < 0 ? sign = true, x = -x : sign = false;
-            v.reserve(x>>32? 4 : 2);
             v.push_back(uint(x));
             if (x >> 32)
                 v.push_back(x >> 32);
         }
+        explicit number(const ull &x)
+        {
+            sign=false;
+            v.reserve(2);
+            v.push_back(uint(x));
+            if (x >> 32)
+                v.push_back(x >> 32);
+        }
+       
+       
         explicit number(const bool &flag, const vector<uint> &c)
         {
             v.clear();
             v.swap(v);
             sign = flag;
-            //v.reserve(maxsize(c.size()));
-            //cout<< v.capacity()<<endl;
             v = checkv(c);
-            //cout<< v.capacity()<<endl;
         }
         explicit number(const char *&c) //最后一个是空格
         {
@@ -142,17 +173,19 @@ namespace std
                 y = y + b * number(c[i] - '0');
             }
         }
-        inline operator bool()const{
+        
+        
+        explicit inline operator bool()const{
             if(v.empty()) return false;                //NaN
             if(v.size()==1&&v.front()==0) return false;//0
             else return true;                          //非0
         }
-        inline operator int()const{
+        explicit inline operator int()const{
             if(v.empty()) return 0;
             int x=v.front()&2147483647;
             return sign ? -x : x;
         }
-        inline operator long long()const{
+        explicit inline operator long long()const{
             if(v.empty()) return 0;
             else if(v.size()==1) 
             {
@@ -164,6 +197,8 @@ namespace std
             x+=(((long long)(v[1]&2147483647))<<32);
             return sign ? -x: x;
         }
+        
+        
         //逻辑运算符,涉及nan永远false
 
         inline bool operator!(void) const
@@ -253,8 +288,6 @@ namespace std
          */
         inline number operator=(const number &_N)
         {
-            if (_N.isnan())
-                return _N;
             sign = _N.sign;
             v = _N.v;
             return y;
@@ -445,13 +478,14 @@ namespace std
             
             const number *a, *b; // b 比 a 长
             x.size() > y.size() ? a = &y, b = &x : a = &x, b = &y;
-            number c('#', b->size() + a->size()), g=number('#', b->size() + 1);
+            number c('#', b->size() + a->size()),  //c足够大
+            g=number('#', b->size() + a->size());          //g也足够大(临时)
             c.push_back(0);
-            c.sign = x.sign ^ y.sign;
-            g.sign = c.sign;
-            for (ull it = 0; it < a->size();)
+            c.sign = x.sign ^ y.sign;  //符号确定
+            g.sign = c.sign;           //符号等同
+            for (size_t it = 0; it < a->size();)
             {
-                ull t = 0;
+                size_t t = 0;
                 for (ull it2 : b->v)
                 {
                     t = (t >> 32) + it2 * a->v[it]; //取t前32位
@@ -464,15 +498,47 @@ namespace std
             }
             return c;
         }
-        inline number operator/(const uint &x)const{
-
+        inline number operator/(const int &x)const{
+            {if (y.isnan()) return y;
+            if (!x)        return number('#', 0);
+            if (!y)        return y;}
+            ull t=0;
+            number c('@',size()-(v.back()<x));
+            c.sign=x > 0 ? sign : !sign ; 
+            for(size_t it=size(); (it--); )
+            {
+                t=v[it]+(t<<32);
+                c[it]=t/x;
+                t=t%x;
+            }
+            return c;
         }
-        inline number operator/(const number &x) const
-        {
-            if (x.isnan()) return x;
+        inline number operator/(const uint &x)const{
+            {if (y.isnan()) return y;
+            if (!x)        return number('#', 0);
+            if (!y)        return y;}
+            ull t=0;
+            number c('@',size()-(v.back()<x));
+            c.sign=sign; 
+            for(size_t it=size(); (it--); )
+            {
+                t=v[it]+(t<<32);
+                c[it]=t/x;
+                t=t%x;
+            }
+            return c;
+        }
+        inline number operator/(const ll &x)const{
+            return y/number(x);
+        }
+        inline number operator/(const ull &x)const{
+            return y/number(x);
+        }
+        inline number operator/(const number &x) const{
+            {if (x.isnan()) return x;
             if (y.isnan()) return y;
             if (!x)        return number('#', 0);
-            if (!y)        return y;
+            if (!y)        return y;}
         }
         //奇怪的函数
 
@@ -566,11 +632,8 @@ using namespace std;
 
 int main()
 {
-
-    number c(0, vector<uint>{20,-1u,1}), z(0, vector<uint>{1,1});
-    //c.print();
-    //cout << c.c_str();
-    cout << (long long)c <<endl;
-    //cout << 'c' <<endl;
+    #define uint unsigned int
+    number c(0, vector<uint>{3,2}), z(0, vector<uint>{1,0,1});
+    (c/(1llu<<42)).print();
     return 0;
 }
