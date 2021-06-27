@@ -3,13 +3,14 @@
 #include <iostream>
 #include <string.h>
 
-//const uint maxn=2147483647;
 namespace std
 {
-    //快速Log2函数
+    //宏
+    
     #ifndef _Dark_Math_H_
 
     #define uint unsigned int 
+    //快速Log2函数
     inline uint Log2(const uint &x)
     {
         uint ret;
@@ -25,6 +26,8 @@ namespace std
     #define bk break;
     #define y (*this)
     #define checknan() (isnan() || _N.isnan())
+    
+    
     //检查数组 --已经通过测试
     inline const vector<uint> checkv(const vector<uint> &c)
     {
@@ -42,6 +45,12 @@ namespace std
         return t;
     }
     #undef uint
+    
+    
+    
+    
+    
+    
     class number
     {
     private:
@@ -114,20 +123,21 @@ namespace std
             v.push_back(0);
         }
         
-        
-        explicit number(int x)
+        //支持从(unsigned) int/longlong 转化
+
+        number(int x)
         {
             x < 0 ? sign = true, x = -x : sign = false;
             v.reserve(2);
             v.push_back(x);
         }
-        explicit number(const uint &x)
+        number(const uint &x)
         {
             sign=false;
             v.reserve(2);
             v.push_back(x);
         }
-        explicit number(ll x)
+        number(ll x)
         {
             v.clear();
             v.swap(v);
@@ -137,7 +147,7 @@ namespace std
             if (x >> 32)
                 v.push_back(x >> 32);
         }
-        explicit number(const ull &x)
+        number(const ull &x)
         {
             sign=false;
             v.reserve(2);
@@ -498,47 +508,13 @@ namespace std
             }
             return c;
         }
-        inline number operator/(const int &x)const{
-            {if (y.isnan()) return y;
-            if (!x)        return number('#', 0);
-            if (!y)        return y;}
-            ull t=0;
-            number c('@',size()-(v.back()<x));
-            c.sign=x > 0 ? sign : !sign ; 
-            for(size_t it=size(); (it--); )
-            {
-                t=v[it]+(t<<32);
-                c[it]=t/x;
-                t=t%x;
-            }
-            return c;
-        }
-        inline number operator/(const uint &x)const{
-            {if (y.isnan()) return y;
-            if (!x)        return number('#', 0);
-            if (!y)        return y;}
-            ull t=0;
-            number c('@',size()-(v.back()<x));
-            c.sign=sign; 
-            for(size_t it=size(); (it--); )
-            {
-                t=v[it]+(t<<32);
-                c[it]=t/x;
-                t=t%x;
-            }
-            return c;
-        }
-        inline number operator/(const ll &x)const{
-            return y/number(x);
-        }
-        inline number operator/(const ull &x)const{
-            return y/number(x);
-        }
         inline number operator/(const number &x) const{
             {if (x.isnan()) return x;
             if (y.isnan()) return y;
             if (!x)        return number('#', 0);
             if (!y)        return y;}
+            
+
         }
         //奇怪的函数
 
@@ -560,7 +536,7 @@ namespace std
 
             }
         }
-
+    
         //十进制输出
         inline const char *c_str()const{
             if (isnan())  return "Not a Number!";
@@ -621,8 +597,14 @@ namespace std
         }
         
     };
-    const number number_zero(0);
-    const number NaN(number_zero/number(0));
+    
+    
+    
+    //初始化...
+    constexpr int x=0;
+
+
+//宏
 #undef checknan
 #undef y
 #undef maxsize
@@ -634,6 +616,7 @@ int main()
 {
     #define uint unsigned int
     number c(0, vector<uint>{3,2}), z(0, vector<uint>{1,0,1});
+    c=c+1;
     (c/(1llu<<42)).print();
     return 0;
 }

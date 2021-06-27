@@ -1,7 +1,6 @@
 #ifndef __FG_BASIC_
 #define __FG_BASIC_
-#include <DarkSharpness/FG/Fmath.h>
-#include <DarkSharpness/C++_Templates/statue.h>
+#include <FG/Fmath.h>
 
 /**
  * @brief FingerGlory 命名空间
@@ -43,7 +42,7 @@ struct weapon{
      */
     ch type;
     //记录对应的是哪几位
-    statue <96> st;
+    //statue <96> st;
     /*
         --伤害计数器--
         下标0的是记录数据用:
