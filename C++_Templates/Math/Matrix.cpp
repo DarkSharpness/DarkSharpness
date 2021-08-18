@@ -3,11 +3,12 @@
 using namespace std;
 typedef long long ll;
 
-typedef size_t value;
+typedef double value;
 //template <typename value>
 class Matrix{
 
 private:
+    size_t row,col;//row column
     vector <value> v;
     bool trans;    //transpose of a matrix
     struct valueptr{
@@ -36,7 +37,6 @@ private:
         
     };
 public:
-    size_t row,col;//row column
     
     valueptr operator [](const size_t &_X) {
         return  trans ?   valueptr(&v[_X],row) : valueptr(&v[_X*row],1) ;
@@ -68,8 +68,24 @@ public:
         return _X;
 
     }
+    Matrix operator -(Matrix _X)const
+    {
+        if(_X.col!=col||_X.row!=row) return *this;
+        if(trans==_X.trans)
+            for(size_t i=0 ; i<col*row ; ++i)
+                    _X.v[i]=v[i]-_X.v[i];
+        else
+            for(size_t i=0 ; i<row; ++i)
+                for(size_t j=0 ; j<col; ++j)
+                    _X[i][j]=(*this)[i][j]-_X[i][j];
+        
+        return _X;
+
+    }
+   
     Matrix operator *(const Matrix &_X)
     {
+        cout << col << " " << _X.row << endl;
         if(col!=_X.row) return *this;
         if(col==0||row==0||_X.col==0) return *this;
         Matrix _T(row,_X.col);
@@ -104,25 +120,38 @@ public:
     {
         trans = _X;
     } 
-
+    size_t Row()const{return row;}
+    size_t Col()const{return col;}
+    void set(const size_t &_row,const size_t &_col)
+    {
+        row=_row;
+        col=_col;
+        v.resize(_row*_col);
+    }
 };
 
 inline void printM(const Matrix &_M)
 {
-    for(size_t i=0 ; i<_M.row ; ++i)
+    
+    for(size_t i=0 ; i<_M.Row() ; ++i)
     {
-        for(size_t j=0 ; j<_M.col ; ++j) 
+        for(size_t j=0 ; j<_M.Col() ; ++j) 
             cout << _M[i][j] << " ";
-        puts("");
+        puts("T");
     }
     puts("");
 }
 
 inline void readM(Matrix &_M)
 {
-    for(size_t i=0 ; i<_M.row ; ++i)
+    size_t x,y;
+    puts("输入行数列数");
+    cin >>x >> y;
+    _M.set(x,y);
+    puts("输入矩阵");
+    for(size_t i=0 ; i<_M.Row() ; ++i)
     {
-        for(size_t j=0 ; j<_M.col ; ++j) 
+        for(size_t j=0 ; j<_M.Col() ; ++j) 
             cin >>  _M[i][j] ;
     }
 }
@@ -132,9 +161,16 @@ Matrix M(3,3),T(3,3);
 
 
 int main()
-{
+{ 
+    puts("简单矩阵工具");
+    puts("输入0或非数字 退出");
+    puts("输入1/2 输入矩阵 A/B");
+    puts("输入3/4 转置矩阵 A/B");
+    puts("输入5/6 输出矩阵 A/B");
+    puts("输入7/8 输出A+B A-B");
+    puts("输入其他数字 输出A*B (无法乘会返回A)");
     int x;
-    while(cin >>x&&x)
+    while(cin >>x && x)
     {
         switch(x)
         {
@@ -146,8 +182,10 @@ int main()
             case 5: printM(M);bk;
             case 6: printM(T);bk;
             case 7: printM(M+T);bk;
-            default:printM(M*T);bk;
+            case 8: printM(M-T);bk;
+            default:printM(M*T);
         }
     }
+    system("pause");
     return 0;
 }
