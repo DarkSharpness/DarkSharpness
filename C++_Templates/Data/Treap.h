@@ -357,31 +357,7 @@ public:
         Suc(root,_X,ans);
         return t[ans].val;
     }
-    
-    /**
-     * @brief Reserve enough space for vector to
-     * reduce allocation time cost.
-     * 
-     * @param _size The size required.
-    */
-    inline void reserve(const size_t &_size)
-    {//注意 实际需求size要+1
-        if(!(_size+1)) return ;
-        while(!q.empty()) q.pop();// q占用清空 
-        root=0;
-        if(t.capacity()==_size+1)
-        {
-            t.empty();
-            t.resize(1);
-            t.front().rep=t.front().siz=0;
-            return ;
-        }
-        t.empty();
-        t.reserve(_size+1);
-        t.resize(1);
-        t.front().rep=t.front().siz=0;
-    }
-    
+      
     /**
      * @brief Access the total number of the elements.
      * Repetition are counted as well.

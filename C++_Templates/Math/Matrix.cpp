@@ -7,43 +7,58 @@ typedef double value;
 //template <typename value>
 class Matrix{
 
-private:
-    size_t row,col;//row column
+private:    
     vector <value> v;
+    size_t row,col;//row column
     bool trans;    //transpose of a matrix
+    //A specific value pointer
     struct valueptr{
         private: 
         value * ptr;
         size_t base;
         public:
+       
+        //Array-like reference.
         value& operator [](const size_t &_X){
             return *(ptr+_X*base);
         }
-        value  operator[](const size_t &_X)const{
+        //Array-like reference.
+        value  operator [](const size_t &_X)const{
             return *(ptr+_X*base);
         }
-        value    operator *(void){
+        //Pointer-like reference
+        value& operator *(void){
             return *ptr;
         }
+        //Pointer-like reference
+        value& operator *(void)const{
+            return *ptr;
+        }
+        //Pointer-like addition.
         valueptr operator +(const size_t &_X){
             return valueptr(ptr+_X*base,base);
         }
+        //Initialization
         valueptr (value *_X,size_t _B){
-            ptr=_X,base=_B;
+            ptr=_X,
+            base=_B;
         }
+        //Initialization
         valueptr (const value *_X,const size_t _B){
-            ptr=const_cast<value *>(_X),base=_B;
+            ptr=const_cast<value *>(_X);
+            base=_B;
         }
         
     };
 public:
-    
+
     valueptr operator [](const size_t &_X) {
-        return  trans ?   valueptr(&v[_X],row) : valueptr(&v[_X*row],1) ;
+        return  trans ?   valueptr(&v[_X],row) : valueptr(&v[_X*col],1) ;
     }
     const valueptr operator [](const size_t &_X) const{
-        return  trans ?   valueptr(&v[_X],row) : valueptr(&v[_X*row],1) ;
+        return  trans ?   valueptr(&v[_X],row) : valueptr(&v[_X*col],1) ;
     }
+    
     value at(const size_t &_loc)
     {
         return v[_loc];
@@ -132,12 +147,11 @@ public:
 
 inline void printM(const Matrix &_M)
 {
-    
+    cout <<"Row:"<<_M.Row()<<" Col:"<<_M.Col()<<endl;
     for(size_t i=0 ; i<_M.Row() ; ++i)
     {
         for(size_t j=0 ; j<_M.Col() ; ++j) 
             cout << _M[i][j] << " ";
-        puts("T");
     }
     puts("");
 }
@@ -158,7 +172,7 @@ inline void readM(Matrix &_M)
 
 
 Matrix M(3,3),T(3,3);
-
+vector <Matrix> m;
 
 int main()
 { 
@@ -186,6 +200,15 @@ int main()
             default:printM(M*T);
         }
     }
+    
+    
+    string command;
+    while(cin >> command )
+    {
+        
+    }
+
+
     system("pause");
     return 0;
 }

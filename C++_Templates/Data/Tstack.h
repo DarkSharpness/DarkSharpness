@@ -1,6 +1,8 @@
-//Stack for Treap Algorithm
+//Stack for Tree Algorithm
 //Easy to use,and require less space than required
 //Do not use it unless necessary.
+
+
 
 #ifndef _Data_T_Stack_
 #define _Data_T_Stack_
@@ -76,6 +78,7 @@ namespace std
             return v;
         }
     }
+
     //如果头指针为空就是空
     inline bool empty()const{
         return top==NULL ? true:false;
