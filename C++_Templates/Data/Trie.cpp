@@ -1,142 +1,122 @@
-// 这是字典树写在函数里面的
-// 匹配每个出现了几次
-// 复杂度O(每个字符串的最长长度 + 文本长度)
-#pragma GCC optimize(3)
+//A space costing Trie for small 
+//capitalized numbers.
+//Suitable for small amount of data.
 #include<bits/stdc++.h>
-#include<Data/Tstack.h>
 using namespace std;
 typedef long long ll;
-const ll N=2e5+10;
-const ll M=2e6+10;
+typedef size_t value;
+//Sizeof 232
+//template <typename value>
+class xTrie{
 
-
-
-
-class Trie{
     private:
-    //结点 node
-    struct node{
-        array <size_t,26> _A;
-        size_t id;
-        size_t &operator [](const size_t &_X){
-            return _A[_X];
-        }
-        size_t  operator [](const size_t &_X)const{
-            return _A[_X];
-        }
-        node()
-        {
-            _A.fill(0);
-            id=0;
-        }
 
-    };
-    //自动化数组 自动申请/删除
-    struct autovector{
-        vector <node> vec;//The actual vector.
-        Tstack  <size_t> q;//To recycle unused node
-        node& operator [](const size_t &_X){
-            return vec[_X];
+    class iter;
+    struct node {
+        node * head;//father
+        array <node*,26> _A;
+        value * vptr; //pointer to the value
+        inline node*&  operator[](const size_t &_loc){
+            return _A[_loc];
         }
-        node  operator [](const size_t &_X)const{
-            return vec[_X];
+        inline node*   operator[](const size_t &_loc)const{
+            return _A[_loc];
         }
-        size_t allocate()
-        {
-            if(q.empty())
-            {
-                if(vec.empty()) //Start to reserve 
-                    vec.resize(2);//Reserve at least 2
-                else vec.resize(vec.size()+1);//Just add 1
-                cout << vec.size()-1 << "Size" <<endl;
-                return vec.size()-1;//The last element.
-            }
-            else{ //Recycle the remaining element 
-                size_t x=q.front();
-                q.pop();
-                return x;//the recycled element.
-            }
+        inline node() {
+            vptr=NULL;
+            head=NULL;
+            _A.fill(NULL);
         }
-
-        //Behaviors like vector
-
-
-        void reserve(const size_t &_X)
-        {
-            if(vec.capacity()+q.size()<_X) 
-                vec.reserve(_X-q.size()); 
-        }
+    }_root;//root of the Trie.
     
-    
-    }v;
-    
+
+    allocator <node>  N;//node  allocator.
+    allocator <value> V;//value allocator.
+    //char c;
     public:
-    /**
-     * @brief 
-     * 
-     * @param _str The string inserted.
-     * @param num 
-     */
-    void insert(const char *_str,const int &num)
-    {
-        size_t j=0;//node number from the root 0
-        for(  ; *_str ; ++_str )//造Trie树
-        {
-            int x=*_str-'a';
-            if(x>25||x<0) return ;//错误!
-            if(!v[j][x]) {j=v.allocate();cout << (v[j][x]=j) << endl;}//开节点
-            j=v[j][x];//跳j
-        }
-        v[j].id=num;
-    }
-    size_t find(const char *_str)
-    {
-        size_t j=0;//node number from the root 0
-        for(  ; *_str ; ++_str )//造Trie树
-        {
-            int x=*_str-'a';
-            if(x>25||x<0) return 0;//错误!
-            if(!v[j][x])  return 0;
-            j=v[j][x];//跳j
-        }
-        return v[j].id;
-    }
-   
-    /**
-     * @brief Reserve a certain number of chars.
-     * 
-     * @param _X The char numbers.
-     */
-    void reserve(const size_t &_X)
-    {
-        v.reserve(_X+1);
-    }
     
     /**
-     * @brief Construct a new Trie object
-     * Initial with 2 node.
-     * The root node id is 0.
+     * @brief Insert a string into the %Trie. \n 
+     * Check if it is a standard string ,
+     * ending by '' before insert.
+     * 
+     * @param _str String inserted.
+     * @param _val Value  attached.
      */
-    Trie()
+    inline void insert(const char *_str,const value &_val)
     {
-       v.vec.resize(1); 
+        if(*_str == 0 ) return ;
+        node *tmp = &_root;
+        size_t _ch;
+        while(*_str!=0)
+        { 
+            if(*_str<'a'||*_str>'z') return;
+            _ch=*_str-'a';
+            if( (*tmp)[_ch]==NULL)
+            {
+                (*tmp)[_ch]=N.allocate(1);
+                (*tmp)[_ch]->head=tmp;
+                tmp=(*tmp)[_ch];
+            }
+            else tmp=(*tmp)[_ch];
+            ++_str;
+        }
+        tmp->vptr=V.allocate(1);//ptr to a new address.
+        *tmp->vptr=_val;        //copy the data
     }
 
-}v;
+    inline iter find(char* _str)const
+    {
+        const node *tmp = &_root;//from the root
+        if(*_str == 0 ) goto Nothing ; //empty string
+        int _ch;//char id
+        while(*_str != 0) //while not reaching the end
+        { 
+            if(*_str<'a'||*_str>'z') goto Nothing;//illegal
+            _ch=*_str-'a';          //'a~z' -> 0~25
+            if( (*tmp)[_ch]==NULL)   goto Nothing;//end in advance
+            tmp=(*tmp)[_ch];        //go on
+            ++_str;                 //go on
+        }
+        if(tmp->vptr==NULL) goto Nothing;//no value.
+        return const iter(tmp);//
+        Nothing://returns the root.
+        return const iter(&_root);
+        ;
+    }
 
 
+//Assistant iterator.
+    class iter{
+        node * ptr;
+        public:
+        //Initialize with a given ptr
+        
+        iter(){
 
+        }
+        inline iter operator ++(void){
+            
+        }
+        inline value& operator *(void){
+            return *(ptr->vptr);
+        }
+        inline value  operator *(void)const{
+            return *(ptr->vptr);
+        }
+    };
+        
+
+    xTrie()
+    {
+
+    }
+};
+//xTrie::iter x;
+const int X=sizeof(xTrie);
 
 int main()
 {
-    int n;
-    string str;
-    while(cin >> n >> str)
-    {            
-
-        if(n) v.insert(str.c_str(),n);
-        else cout << v.find(str.c_str()) <<endl;
-    }
-
+    
     return 0;
 }

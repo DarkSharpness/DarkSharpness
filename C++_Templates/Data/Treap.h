@@ -13,22 +13,24 @@
 
 namespace std{
 
-#define nullnode 0  //空结点
-#define none k==nullnode //没有儿子
 
 //typedef int value;
 
 
 /**
  * @brief A balanced tree structure based on Treap algorithm.\n
- * You must offer the operator "==" and "<" for the value type.
- * 
+ * You must offer the operator "==" and "<" for the value type.\n 
+ * Sizeof : 64.
  * @tparam value Type you want to keep in the Treap
  * 
  */
 template  <typename value>
 class Treap
 {
+#define nullnode 0  //空结点
+#define none k==nullnode //没有儿子
+
+private :
     //辅助结构:结点
     struct node
     {
@@ -63,6 +65,172 @@ class Treap
     size_t root;
     Tstack <size_t> q;//删除的数据可以重复利用
 
+public:
+    /**
+     * @brief Insert _X to Treap.
+     * 
+     * @param _X The element inserted.
+     */
+    inline void insert(const value &_X)
+    {
+        Insert(root, _X);
+    }
+    
+    /**
+     * @brief Erase element _X once from Treap.\n
+     * If _X doesn't exist,nothing happens.
+     * 
+     * @param _X The element to be deleted
+     */
+    inline void erase(const value &_X)
+    {
+        try{
+            Erase(root, _X);
+        }
+        catch(const char *)
+        {
+            ;
+        }
+    }
+    
+    /**
+     * @brief Insert mutiple identical element to the Treap. 
+     * @param _X The value to be added.
+     * @param _rep How many times it is repeated.
+     */
+    inline void multiinsert(const value &_X,const size_t &_rep)
+    {
+        if(!_rep) return ;
+        Multiinsert(root,_X,_rep);
+    }
+    
+    /**
+     * @brief Erase multiple _X from Treap.
+     * It will delete to a positive number or none.
+     * 
+     * @param _X   The element to be deleted.
+     * @param _rep The times it should be removed.
+     * 
+     *  --- 
+     * Note that even if _X doesn't exist in Treap,
+     * no error will occur.
+     */
+    inline void multierase(const value &_X, const size_t &_rep)
+    {
+        if (!_rep)
+            return; //0次就是不删除
+        Multierase(root, _X, _rep);
+    }
+    
+    /**
+     * @brief Find out the rank of the element in Treap.
+     * 
+     * @param _X The element to be ranked.
+     * @return The rank of the element in Treap.
+     * Element not existing,it will be rank as the previous element.
+     */
+    inline size_t rankval(const value &_X)const{
+        return rank1(root,_X);
+    }
+    
+    /**
+     * @brief Find out the element ranked _loc.
+     * 
+     * @param _loc The _loc of the element.
+     * @return Value of the certain ranked element.
+     */
+    inline value  rankloc(const size_t &_loc)const{
+        return rank2(root,_loc);
+    }
+    
+    /**
+     * @brief Find the previous element.
+     * 
+     * @param _X The element to find pre with.
+     * @return Value of the previous element.
+     */
+    inline value  pre(const value &_X)const{
+        size_t ans=0;
+        Pre(root,_X,ans);
+        return t[ans].val;
+    }
+    
+    /**
+     * @brief Find the succeeding element.
+     * 
+     * @param _X The element to find suc with.
+     * @return Value of the succeeding element.
+     */
+    inline value  suc(const value &_X)const{
+        size_t ans=0;//如果排名是最后一个就返回0
+        Suc(root,_X,ans);
+        return t[ans].val;
+    }
+      
+    /**
+     * @brief Access the total number of the elements.
+     * Repetition are counted as well.
+     * 
+     * @return Size of the Treap 
+     */
+    inline size_t size()const{
+        return t[root].siz;
+    }
+    /**
+     * @brief Element number of the Treap.
+     * Each repetition is counted only once.
+     * 
+     * @return  The element number,equal to the
+     * least physical space required.
+     */
+    inline size_t number()const{
+        return t.size()-1-q.size();
+    }
+    //The capacity of the Treap.
+    inline size_t capacity()const{
+        return t.capacity()-1;
+    }
+    /**
+     * @brief Return the rest space required before
+     * the vector malloc again.
+     * 
+     * @return The remaining space in the Treap.  
+     */
+    inline size_t remainder()const{
+        return t.capacity()-t.size()+q.size();
+    }
+
+    //Shrink to save space.
+    inline void shrink(){
+        t.shrink_to_fit();
+    }
+    
+
+    /**
+     * @brief Construct an empty Treap.(with only nullnode)
+     * 
+     */
+    Treap()
+    {
+        while(!q.empty()) q.pop();
+        root = 0 ;
+        t.clear();
+        t.resize(1);
+        t.front().rep=t.front().siz=0;
+        srand(time(NULL));
+        //cout << "构造" <<endl;
+    }
+    ~Treap()
+    {
+
+    }
+
+
+
+
+
+private :
+    
     //更新size
     inline void update(const size_t &k)
     {
@@ -256,163 +424,11 @@ class Treap
         else Suc(t[k].rc,x,ans);
     }
 
-public:
-    /**
-     * @brief Insert _X to Treap.
-     * 
-     * @param _X The element inserted.
-     */
-    inline void insert(const value &_X)
-    {
-        Insert(root, _X);
-    }
-    
-    /**
-     * @brief Erase element _X once from Treap.\n
-     * If _X doesn't exist,nothing happens.
-     * 
-     * @param _X The element to be deleted
-     */
-    inline void erase(const value &_X)
-    {
-        try{
-            Erase(root, _X);
-        }
-        catch(const char *)
-        {
-            ;
-        }
-    }
-    
-    /**
-     * @brief Insert mutiple identical element to the Treap. 
-     * @param _X The value to be added.
-     * @param _rep How many times it is repeated.
-     */
-    inline void multiinsert(const value &_X,const size_t &_rep)
-    {
-        if(!_rep) return ;
-        Multiinsert(root,_X,_rep);
-    }
-    
-    /**
-     * @brief Erase multiple _X from Treap.
-     * It will delete to a positive number or none.
-     * 
-     * @param _X   The element to be deleted.
-     * @param _rep The times it should be removed.
-     * 
-     *  --- 
-     * Note that even if _X doesn't exist in Treap,
-     * no error will occur.
-     */
-    inline void multierase(const value &_X, const size_t &_rep)
-    {
-        if (!_rep)
-            return; //0次就是不删除
-        Multierase(root, _X, _rep);
-    }
-    
-    /**
-     * @brief Find out the rank of the element in Treap.
-     * 
-     * @param _X The element to be ranked.
-     * @return The rank of the element in Treap.
-     * If element not existing,it will be rank as the previous element.
-     */
-    inline size_t rankval(const value &_X)const{
-        return rank1(root,_X);
-    }
-    
-    /**
-     * @brief Find out the element ranked _loc.
-     * 
-     * @param _loc The _loc of the element.
-     * @return Value of the certain ranked element.
-     */
-    inline value  rankloc(const size_t &_loc)const{
-        return rank2(root,_loc);
-    }
-    
-    /**
-     * @brief Find the previous element.
-     * 
-     * @param _X The element to find pre with.
-     * @return Value of the previous element.
-     */
-    inline value  pre(const value &_X)const{
-        size_t ans=0;
-        Pre(root,_X,ans);
-        return t[ans].val;
-    }
-    
-    /**
-     * @brief Find the succeeding element.
-     * 
-     * @param _X The element to find suc with.
-     * @return Value of the succeeding element.
-     */
-    inline value  suc(const value &_X)const{
-        size_t ans=0;//如果排名是最后一个就返回0
-        Suc(root,_X,ans);
-        return t[ans].val;
-    }
-      
-    /**
-     * @brief Access the total number of the elements.
-     * Repetition are counted as well.
-     * 
-     * @return Size of the Treap 
-     */
-    inline size_t size()const{
-        return t[root].siz;
-    }
-    /**
-     * @brief Element number of the Treap.
-     * Each repetition is counted only once.
-     * 
-     * @return  The element number,equal to the
-     * least physical space required.
-     */
-    inline size_t number()const{
-        return t.size()-1-q.size();
-    }
-    //The capacity of the Treap.
-    inline size_t capacity()const{
-        return t.capacity()-1;
-    }
-    /**
-     * @brief Return the rest space required before
-     * the vector malloc again.
-     * 
-     * @return The remaining space in the Treap.  
-     */
-    inline size_t remainder()const{
-        return t.capacity()-t.size()+q.size();
-    }
-
-    //Shrink to save space.
-    inline void shrink(){
-        t.shrink_to_fit();
-    }
-    
-
-    /**
-     * @brief Construct an empty Treap.(with only nullnode)
-     * 
-     */
-    Treap()
-    {
-        while(!q.empty()) q.pop();
-        root = 0 ;
-        t.clear();
-        t.resize(1);
-        t.front().rep=t.front().siz=0;
-        srand(time(NULL));
-        cout << "构造" <<endl;
-    }
-
 };
+
+//size : 64
+
+
 
 #undef none
 #undef null
