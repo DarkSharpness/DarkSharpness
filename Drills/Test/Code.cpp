@@ -1,12 +1,11 @@
 #include<bits/stdc++.h>
-#include<Data/Treap.h>
 using namespace std;
 typedef long long ll;
-Treap <int> t;
-
+allocator <int> a;
+vector <int> v;
 
 int main()
 {
-
+    v.reserve(0);
     return 0;
 }
