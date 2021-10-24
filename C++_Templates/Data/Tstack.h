@@ -10,38 +10,75 @@
 
 namespace std
 {
+
     /**
      * @brief A space-saving and simple stack.\n 
-     * Sizeof : 24 Byte.
+     * Sizeof : 8/16 Byte.
      */
     template <typename key>
 class Tstack{
-    struct node
-    {
+    struct node{
         key val;
         node *c;
-    };
-    node *top; //顶部指针
-    //node *tmp; //临时指针
-    size_t siz;
-    allocator <node> a;
+    } *top;//顶部指针
+    struct T_allocator : allocator <node>{
+        size_t siz;
+    }a;
 
 
     public:
+    //Iterator related.
+    class iterator{
+        private: 
+        node *ptr;
+        public:
+        void operator ++(){
+            ptr=ptr->c;
+        }
+        iterator(node *_ptr){
+            ptr=_ptr;
+        }
+    };
+    class const_iterator{
+        private: 
+        const node *ptr;
+        public:
+        void operator ++(){
+            ptr=ptr->c;
+        }
+        const_iterator(const node *_ptr){
+            ptr=_ptr;
+        }
+    };
+    inline iterator begin(){
+        return iterator(top);
+    }
+    inline iterator end(){
+        return iterator(NULL);
+    }
+    inline const_iterator cbegin()const{
+        return const_iterator(top);
+    }
+    inline const_iterator cend(){
+        return const_iterator(NULL);
+    }
+
+
+
+
     //Add element to the top of the stack.
-    inline void push(const key &x)
-    {
+    inline void push(const key &x){
         node * tmp=top;
         top=a.allocate(1);
         top->c=tmp;
         top->val=x;
-        ++siz;
+        ++a.siz;
     }
     
     //Pop the top element.If the stack is empty,nothing happens.
     inline void pop(){
         if(top==NULL) return ;
-        --siz;
+        --a.siz;
         node * tmp=top->c;
         a.deallocate(top,1);
         top=tmp;
@@ -58,7 +95,7 @@ class Tstack{
     
     //The size of the stack.
     inline size_t size()const{
-        return siz;
+        return a.siz;
     }
     
     //Read/Write reference to the top element.
@@ -75,9 +112,9 @@ class Tstack{
         if(top==NULL) throw "Out of range";
         else 
         {
-            --siz;
+            --a.siz;
             key v=top->val;
-            node tmp=top->c;
+            node * tmp=top->c;
             a.deallocate(top,1);
             top=tmp;
             return v;
@@ -95,23 +132,19 @@ class Tstack{
     }
     
     //Initialize.
-    Tstack()
-    {
+    Tstack(){
         top=NULL;
-        siz=0;
+        a.siz=0;
     }
     //Clear the data.
-    ~Tstack()
-    {
+    ~Tstack(){
         while(top!=NULL) pop();
         //cout << "fuck" <<endl;
     }
 };
 
-//const int x=sizeof(Tstack<int>);
-
-
-//size : 24
+//const size_t _X=sizeof(Tstack<int>);
+//size : 16
 
 }
 
