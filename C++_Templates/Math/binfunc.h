@@ -2,6 +2,9 @@
 #define _BINARY_FUNCTION_H_
 
 namespace std{
+
+
+
 /**
  * @brief Find the lowest bit value in O(1)
  * 
@@ -14,6 +17,9 @@ inline value lowbit(const value &_X)
 {
     return _X&(-_X);
 }
+
+
+
 /**
  * @brief A fast Log2 function for basic number type.
  * 
@@ -27,6 +33,9 @@ inline unsigned int Log2(const value &_X){
     __asm__ __volatile__ ("bsrl %1, %%eax":"=a"(ret):"m"(_X));
     return ret;
 }
+
+
+
 
 }
 
