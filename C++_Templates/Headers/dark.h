@@ -26,7 +26,7 @@
 //As it means.Equals to while not.
 #define until(__CONDITION__) while(!(__CONDITION__))
 
-
+//#define 
 
 
 

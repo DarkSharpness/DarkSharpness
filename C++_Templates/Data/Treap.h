@@ -4,7 +4,7 @@
 //">" "==" for the value type
 #ifndef _Data_Treap_H_
 #define _Data_Treap_H_
-#if __cplusplus >= 201103L
+//#if __cplusplus >= 201103L
 #include <vector>
 #include <stdlib.h>
 #include <time.h>
@@ -21,7 +21,7 @@ namespace std{
  * @brief A balanced tree structure based on Treap algorithm.\n
  * You must offer the operator "==" and "<" for the value type.\n 
  * Sizeof : 64.
- * @tparam value Type you want to keep in the Treap
+ * @tparam value Type you want to keep in the %Treap
  * 
  */
 template  <typename value>
@@ -434,5 +434,5 @@ private :
 #undef null
 
 }
-#endif
+//#endif
 #endif
