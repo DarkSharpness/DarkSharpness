@@ -1,3 +1,6 @@
+//Abadoned
+#if __cplusplus < 0L 
+
 //Stack for Tree Algorithm
 //Easy to use,and require less space than required
 //Do not use it unless necessary.
@@ -8,7 +11,7 @@
 //typedef int key;
 
 
-namespace std
+namespace dks
 {
 
     /**
@@ -147,6 +150,9 @@ class Tstack{
 //size : 16
 
 }
+
+
+#endif
 
 
 #endif

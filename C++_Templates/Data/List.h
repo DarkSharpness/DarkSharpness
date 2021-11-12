@@ -17,8 +17,12 @@ class List{
     struct  Tallocator;                  //Personalized allocator
     class   iterator;                    //Personalized iterator
     class   const_iterator;              //Personalized c_iterator
+    
+    
     typedef node* nodeptr;               //Nodepointers   definer
     typedef const node* const_nodeptr;   //C_nodepointers definer
+    
+    
     nodeptr head;                        //Head pointer
     nodeptr tail;                        //Tail pointer
     

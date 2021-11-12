@@ -1,31 +1,34 @@
-//This offers you a standard Treap,
+//This offers you a standard Treap_rot,
 //supporting various value type.
 //Remeber you should offer operator
 //">" "==" for the value type
-#ifndef _Data_Treap_H_
-#define _Data_Treap_H_
+#ifndef __Data_Treap_H__
+#define __Data_Treap_H__
 //#if __cplusplus >= 201103L
 #include <vector>
+#include <bits/stl_pair.h>
 #include <stdlib.h>
 #include <time.h>
-#include <Data/Tstack.h>
+// #include <Data/Tstack.h>  //this has been abandoned!
 
 
-namespace std{
+namespace dks{
 
 
 //typedef int value;
-
+#ifdef using_Treap_rot
 
 /**
- * @brief A balanced tree structure based on Treap algorithm.\n
+ * @brief A balanced tree structure based on rotating-Treap algorithm.\n
  * You must offer the operator "==" and "<" for the value type.\n 
  * Sizeof : 64.
- * @tparam value Type you want to keep in the %Treap
+ * Don't use it unless necessary!\n  
+ * NO WARRANTY!
+ * @tparam value Type you want to keep in the %Treap_rot
  * 
  */
 template  <typename value>
-class Treap
+class Treap_rot
 {
 #define nullnode 0  //空结点
 #define none k==nullnode //没有儿子
@@ -61,13 +64,13 @@ private :
     };
     
     
-    vector <node> t;  //节点数组.t[0]祭天
+    std::vector <node> t;  //节点数组.t[0]祭天
     size_t root;
-    Tstack <size_t> q;//删除的数据可以重复利用
+    std::vector <size_t> q;//删除的数据可以重复利用
 
 public:
     /**
-     * @brief Insert _X to Treap.
+     * @brief Insert _X to Treap_rot.
      * 
      * @param _X The element inserted.
      */
@@ -77,7 +80,7 @@ public:
     }
     
     /**
-     * @brief Erase element _X once from Treap.\n
+     * @brief Erase element _X once from Treap_rot.\n
      * If _X doesn't exist,nothing happens.
      * 
      * @param _X The element to be deleted
@@ -94,7 +97,7 @@ public:
     }
     
     /**
-     * @brief Insert mutiple identical element to the Treap. 
+     * @brief Insert mutiple identical element to the Treap_rot. 
      * @param _X The value to be added.
      * @param _rep How many times it is repeated.
      */
@@ -105,14 +108,14 @@ public:
     }
     
     /**
-     * @brief Erase multiple _X from Treap.
+     * @brief Erase multiple _X from Treap_rot.
      * It will delete to a positive number or none.
      * 
      * @param _X   The element to be deleted.
      * @param _rep The times it should be removed.
      * 
      *  --- 
-     * Note that even if _X doesn't exist in Treap,
+     * Note that even if _X doesn't exist in Treap_rot,
      * no error will occur.
      */
     inline void multierase(const value &_X, const size_t &_rep)
@@ -123,10 +126,10 @@ public:
     }
     
     /**
-     * @brief Find out the rank of the element in Treap.
+     * @brief Find out the rank of the element in Treap_rot.
      * 
      * @param _X The element to be ranked.
-     * @return The rank of the element in Treap.
+     * @return The rank of the element in Treap_rot.
      * Element not existing,it will be rank as the previous element.
      */
     inline size_t rankval(const value &_X)const{
@@ -171,13 +174,13 @@ public:
      * @brief Access the total number of the elements.
      * Repetition are counted as well.
      * 
-     * @return Size of the Treap 
+     * @return Size of the Treap_rot 
      */
     inline size_t size()const{
         return t[root].siz;
     }
     /**
-     * @brief Element number of the Treap.
+     * @brief Element number of the Treap_rot.
      * Each repetition is counted only once.
      * 
      * @return  The element number,equal to the
@@ -186,7 +189,7 @@ public:
     inline size_t number()const{
         return t.size()-1-q.size();
     }
-    //The capacity of the Treap.
+    //The capacity of the Treap_rot.
     inline size_t capacity()const{
         return t.capacity()-1;
     }
@@ -194,7 +197,7 @@ public:
      * @brief Return the rest space required before
      * the vector malloc again.
      * 
-     * @return The remaining space in the Treap.  
+     * @return The remaining space in the Treap_rot.  
      */
     inline size_t remainder()const{
         return t.capacity()-t.size()+q.size();
@@ -203,24 +206,23 @@ public:
     //Shrink to save space.
     inline void shrink(){
         t.shrink_to_fit();
+        q.shrink_to_fit();
     }
     
 
     /**
-     * @brief Construct an empty Treap.(with only nullnode)
+     * @brief Construct an empty Treap_rot.(with only nullnode)
      * 
      */
-    Treap()
+    Treap_rot()
     {
-        while(!q.empty()) q.pop();
         root = 0 ;
-        t.clear();
         t.resize(1);
         t.front().rep=t.front().siz=0;
         srand(time(NULL));
         //cout << "构造" <<endl;
     }
-    ~Treap()
+    ~Treap_rot()
     {
 
     }
@@ -267,7 +269,8 @@ private :
                 return ;
             }
             else { //从队列中找出已经被释放的元素 节约内存
-                k = q.popfront();
+                k=q.back();
+                q.pop_back();
                 t[k].val=x;
                 t[k].rep=t[k].siz=1;
                 t[k].rand=rand();
@@ -303,7 +306,7 @@ private :
             }
             //不能删除干净,分类讨论
             if(t[k].rc==nullnode||t[k].lc==nullnode){ //只有0/1个儿子,直接继承给父亲
-                q.push(k);                    //k被删除了,但内存不能浪费
+                q.push_back(k);                    //k被删除了,但内存不能浪费
                 k=t[k].lc+t[k].rc;         
             }
             else {//有两个儿子,把rand更小的交换,自己下去,直到底部或一边没儿子了
@@ -328,7 +331,8 @@ private :
                 t.emplace_back(x, multis , multis, rand(), nullnode , nullnode );
             }
             else { //从队列中找出已经被释放的元素 节约内存
-                k = q.popfront();
+                k=q.back();
+                q.pop_back();
                 t[k].val=x;
                 t[k].rep=t[k].siz=multis;
                 t[k].rand=rand();
@@ -368,7 +372,7 @@ private :
             //不能删除干净,分类讨论
 
             if(t[k].rc==nullnode||t[k].lc==nullnode){ //只有0/1个儿子,直接继承给父亲
-                q.push(k);                            //k被删除了,但内存不能浪费
+                q.push_back(k);                            //k被删除了,但内存不能浪费
                 k=t[k].lc+t[k].rc;
             }
             else {//有两个儿子,把rand更小的交换,自己下去,直到底部或一边没儿子了
@@ -426,9 +430,174 @@ private :
 
 };
 
-//size : 64
+#endif
+typedef allocator<int> value_type;
 
+//template <typename value_type>
+class Treap{
+    private:
+    struct node;                //node of values
+    struct Tallocator;          //personalized allocator
+    typedef node* nodeptr;      //nodepointer (node*)
+    typedef std::pair<nodeptr, nodeptr> pair;
+    #define _mp std::make_pair  //make_pair
+    
 
+    nodeptr root;//root node
+
+    
+    /**
+     * @brief Split a tree by value
+     * 
+     * @param _U The node to be split. 
+     * @param val Split by value
+     * @return std::pair<node *, node *> 
+     */
+    pair splitval (nodeptr _U,const value_type & val){
+        if (_U == nullptr) 
+            return _mp(nullptr, nullptr);
+        if (val < _U->val ) {
+            pair o = splitval(_U->lch,val);
+            _U->lch = o.second;
+            return _mp(o.first, _U);
+        } 
+        else {
+        pair _O = splitval(_U->rch,val);
+        _U->rch = _O.first;
+        return _mp(_U, _O.second);
+        }
+    }
+    /**
+     * @brief Split a tree by rank
+     * 
+     * @param _U The node to be split. 
+     * @param _rk Split by the _rk
+x     */
+    pair splitrank(nodeptr _U,const   size_t   &_rk ){
+        if (_U == nullptr) 
+            return _mp(nullptr, nullptr);
+        if (val < _U->val ) {
+            pair o = splitval(_U->lch,val);
+            _U->lch = o.second;
+            return _mp(o.first, _U);
+        } 
+        else {
+        pair _O = splitval(_U->rch,val);
+        _U->rch = _O.first;
+        return _mp(_U, _O.second);
+        }
+    }
+    
+    /**
+     * @brief Merge two trees into one.
+     * 
+     * @param _U Rootnode of Tree 1.
+     * @param _V Rootnode of Tree 2.
+     * @return The new tree's rootnode.
+     */
+    nodeptr merge(nodeptr _U, nodeptr _V) {
+        if (_U == nullptr) return _V;
+        if (_V == nullptr) return _U;
+        if (_U->pri > _V->pri) {
+            _U->rch = merge(_U->rch, _V);
+            return _U;
+        } 
+        else {
+            _V->lch = merge(_U, _V->lch);
+            return _V;
+        }
+    }
+    
+    
+    public:
+    /**
+     * @brief Return the rank of a value.
+     * That it doesn't exist does NOT matter.
+     * 
+     * @param _VAL The value inquired.
+     * @return [size_t] Its rank(first as 1,last as size)
+     */
+    size_t rank(const value_type &_VAL)
+    {
+        nodeptr tmp=root;
+        size_t ans=0;
+        while(tmp!=NULL)
+        {
+            if(_VAL>tmp->val) ans+=tmp->lch->siz+1,tmp=tmp->rch;
+            else tmp=tmp->lch;
+        }
+        return ++ans;
+    }
+    
+    void insert(const value_type &_VAL)
+    {
+        size_t rk=rank(_VAL);
+        pair t=split(root,rk-1);
+        nodeptr tmp=A.apply();
+        tmp->val=_VAL;
+        tmp->pri=size_t(rand())<<32|rand();
+        tmp->siz=1;        
+        root=merge(merge(t.first,tmp),t.second);
+    }
+    
+    void del(const value_type &_VAL)
+    {
+        size_t rk=rank(_VAL);
+        pair t1=splitrank(root,_VAL-1);
+        pair t2=splitrank(t1.second,1);
+        root=merge(t1.first,t2.second);
+    }
+    
+    
+    private:
+    struct node{
+        value_type val; //value recorded
+        nodeptr    lch; //left  branch
+        nodeptr    rch; //right branch
+        size_t     pri; //random priority
+        size_t     siz; //size 
+        node(){
+            pri=size_t(rand())<<32|rand();
+        }
+        node(const value_type &_VAL){
+            pri=size_t(rand())<<32|rand();
+            siz=1;
+            val=_VAL;            
+        }
+    };
+    struct Tallocator : std::allocator <node>{
+        size_t size;            //Record sizeof the elements
+        std::vector <nodeptr> v;//Recycling container.
+        //allocate one new element
+        nodeptr apply(){
+            ++size;
+            if(!v.empty()){
+                v.pop_back();
+                return *v.cend();
+            } 
+            return allocate(1);
+        }
+        //reuse an element
+        void recycle(nodeptr _ptr){
+            size--;
+            v.push_back(_ptr);
+        }
+        //Initializaton
+        Tallocator(){
+            size=0;
+        }
+        //Delete the data
+        ~Tallocator(){//clear the ptrs in vector
+            for(nodeptr _I:v) deallocate(_I,1);
+            v.clear();
+        }
+    }A;
+
+    public:
+    Treap(){
+        
+    }
+};
 
 #undef none
 #undef null

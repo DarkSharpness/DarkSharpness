@@ -2,7 +2,7 @@
 using namespace std;
 typedef long long ll;
 
-
+pair <int,int> shit;
 int main()
 {
     
