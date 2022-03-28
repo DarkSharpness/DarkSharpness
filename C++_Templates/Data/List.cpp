@@ -5,14 +5,15 @@
 
 namespace dark{
 
-//typedef unsigned long long value_type ; //Test use
+typedef unsigned long long value_type ; //Test use
 /**
  * @brief A %List of DarkSharpness.
- * Ez to use.
+ * Easy to use.
+ * Based on std::vector.
  * 
  * @tparam value_type The value in the list. 
  */
-template <typename value_type>
+//template <typename value_type>
 class List{
 
 /* 
@@ -108,6 +109,8 @@ Map of %List:
         head=head->nxt;
         head->prv=null;
     }
+    
+    
     //Return the size recorded in O(1).
     size_t size()const{
         return A.size;
@@ -115,6 +118,18 @@ Map of %List:
     //Actually,I don't find it any use. O(1) .
     size_t maxsize()const{
         return size_t(-1)/(sizeof(value_type)+(sizeof(nodeptr)<<1));
+    }
+    
+    /**
+     * @brief Clear the nodes in O(n).
+     * These nodes will be moved to the vector.
+     */
+    void clear(){
+        nodeptr tmp=head;
+        while(tmp!=tail){
+            vector.
+
+        }
     }
     /**
      * @brief Shrink the vector inside in O(n) or less to save the space.\n 
@@ -139,7 +154,7 @@ Map of %List:
     /**
      * @brief Return the last element poped.
      * Use it before any other operations,
-     * or it cannot give the right element.\n 
+     * or it cannot give you the right element.\n 
      * 
      * You may use it to retrieve the element
      * that has just been poped.
@@ -148,6 +163,23 @@ Map of %List:
      */
     value_type recent(){
         return A.v.back()->val;
+    }
+    
+    /**
+     * @brief 
+     * 
+     * @param _L The second %List to be attached to the back.
+     * Note that the data of the second %List will be merged,
+     * which means it will be emptied,with its unused nodes
+     * untouched as well.
+     * O(1) operation.
+     */
+    void merge_back (List& _L){
+        tail->nxt=_L.head;
+        (_L.head)->prv=tail;
+        tail=_L.tail;
+        tail->nxt=null;
+        _L.head=_L.tail=(nodeptr)_L.emptynode;//Clear
     }
 
 

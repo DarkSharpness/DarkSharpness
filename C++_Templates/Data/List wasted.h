@@ -3,53 +3,32 @@
 //#include <bits/allocator.h>
 #include <vector>
 
-namespace dark{
-
-//typedef unsigned long long value_type ; //Test use
+namespace dks{
+// typedef unsigned long long value_type ; //Test use
 /**
- * @brief A %List of DarkSharpness.
- * Ez to use.
+ * @brief A %List of DarkSharpness
  * 
  * @tparam value_type The value in the list. 
  */
 template <typename value_type>
 class List{
-
-/* 
-Map of %List: 
-    1.Declaration and Defines
-    2.Functions
-    3.Iterators
-    4.Realizations
-    5.Initailization and Delete
- */
-
-
-    //Structs and Classes
-    protected:
-
+    private:
     struct  node;                        //Element carrier
     struct  Tallocator;                  //Personalized allocator
     class   iterator;                    //Personalized iterator
     class   const_iterator;              //Personalized c_iterator
+    
+    
+    typedef node* nodeptr;               //Nodepointers   definer
+    typedef const node* const_nodeptr;   //C_nodepointers definer
+    
+    
+    nodeptr head;                        //Head pointer
+    nodeptr tail;                        //Tail pointer
+    
 
 
-
-
-
-    //Defines
-
-
-    typedef node* nodeptr;                      //Nodepointers   definer
-    typedef const node* const_nodeptr;          //C_nodepointers definer
-    typedef const value_type& const_reference;  //C_reference to value_t
-    #define null (nodeptr)emptynode
-    #define head emptynode[1]
-    #define tail emptynode[0]
-
-
-
-    //Functions
+    //functions
     public:
 
     /**
@@ -57,63 +36,75 @@ Map of %List:
      * 
      * @param _V Element's value.
      */
-    void push_front(const_reference _V){
+    void push_front(const value_type &_V){
+        if(head==NULL)//Empty : tail changes to head
+        {
+            head=tail=A.apply();
+            head->prv=head->nxt=NULL;
+            head->val=_V;
+            return;
+        }
         nodeptr oldhead=head;
         head=oldhead->prv=A.apply();
-        head->prv=null;
+        head->prv=NULL;
         head->nxt=oldhead;
         head->val=_V;
-        (null)->nxt=head;
-        //Also works when it is empty!
     }
     /**
      * @brief Push an element to the back in O(1).
      * 
      * @param _V Element's value.
      */
-    void push_back(const_reference _V){    
+    void push_back(const value_type &_V){
+        if(tail==NULL)
+        {
+            head=tail=A.apply();
+            head->prv=head->nxt=NULL;
+            head->val=_V;
+            return;
+        }
         nodeptr oldtail=tail;
         tail=oldtail->nxt=A.apply();
-        tail->nxt=null;
+        tail->nxt=NULL;
         tail->prv=oldtail;
         tail->val=_V;
-        (null)->prv=tail;
-        //Also works when it is empty!
     }
     /**
-     * @brief Pop out the element SAFELY in the back in O(1).
+     * @brief Pop out the element in the back in O(1).
      * Note that no element is returned.\n 
      * If you do need it , get it before it is poped
-     * OR access recent() before any other 
+     * OR access the end iterator before any other 
      * operation is done to the %List.
      * 
      */
     void pop_back(){
-        if(tail==null) return;
+        if(tail==NULL) return;
         A.recycle(tail);
-        tail=tail->prv;
-        tail->nxt=null;
+        //tail=tail->prv;
+        if(tail==head) tail=head=NULL; //Empty
+        else tail=tail->prv;           //Not empty
     }
     /**
-     * @brief Pop out the element SAFELY in the front in O(1).
+     * @brief Pop out the element in the front in O(1).
      * Note that no element is returned.\n 
      * If you do need it , get it before it is poped
-     * OR access recent() before any other 
+     * OR access the rend iterator before any other 
      * operation is done to the %List.
      * 
      */
     void pop_front(){
-        if(head==null) return;
+        if(head==NULL) return;
         A.recycle(head);
-        head=head->nxt;
-        head->prv=null;
+        //head=head->nxt;
+        if(tail==head) tail=head=NULL; //Empty
+        else tail=head->nxt;           //Not empty
     }
     //Return the size recorded in O(1).
-    size_t size()const{
+    size_t size(){
         return A.size;
     }
     //Actually,I don't find it any use. O(1) .
-    size_t maxsize()const{
+    size_t maxsize(){
         return size_t(-1)/(sizeof(value_type)+(sizeof(nodeptr)<<1));
     }
     /**
@@ -136,22 +127,7 @@ Map of %List:
         A.v.shrink_to_fit();
         
     }
-    /**
-     * @brief Return the last element poped.
-     * Use it before any other operations,
-     * or it cannot give the right element.\n 
-     * 
-     * You may use it to retrieve the element
-     * that has just been poped.
-     * 
-     * @return The last element poped in O(1).
-     */
-    value_type recent(){
-        return A.v.back()->val;
-    }
-
-
-
+   
     //Iterator related.
     public:
 
@@ -170,7 +146,7 @@ Map of %List:
      * @return Iterator to one past the last element. 
      */
     iterator end(){
-        return null;
+        return tail->nxt;
     }
 
     /**
@@ -189,12 +165,12 @@ Map of %List:
      */
     const_iterator cend(){
         //If tail==NULL,it should return NULL.
-        return null;
+        return tail==NULL? NULL : tail->nxt;
     }
 
 
-    //Classes 
-    protected:
+    //classes 
+    private:
 
     class  iterator{//personalized iterator
         nodeptr ptr;//ptr contained
@@ -226,7 +202,7 @@ Map of %List:
             ptr=__ptr;
         }
         iterator(){
-            //ptr==NULL;
+            ptr==NULL;
         }
     };
     
@@ -258,13 +234,13 @@ Map of %List:
             ptr=__ptr;
         }
         const_iterator(){
-            //ptr=NULL;
+            ptr=NULL;
         }
     };
 
    
-    //Structs
-    protected:
+    //structs
+    private:
     
     struct Tallocator : std::allocator <node>{//personalized allocator
         size_t size;            //Record sizeof the elements
@@ -293,41 +269,33 @@ Map of %List:
             v.clear();
         }
     }A;
+
     struct node    {//Element in the list
-        //protected:
         nodeptr prv;   //The previous element.
         nodeptr nxt;   //The   next   element.
-        public:
         value_type val;//Recorder  of  value .
         //do sth.
         node(){
             prv=nxt=NULL;
         }
-    }*emptynode[2]; 
-    //Work as ptr to emptynode.Also as head/tail ptr;
+    };
     
     
     //Ending
     public:
     List(){
-        head=tail=null;
+        head=tail=NULL;
     }
     ~List(){
         nodeptr ptr=head,tmp;
-        while(ptr!=null){
-            tmp=ptr->nxt;
-            A.deallocate(ptr,1);
-            ptr=tmp;
-        }
+        while(ptr!=NULL)
+        {tmp=ptr->nxt;A.deallocate(ptr,1);ptr=tmp;}
     }
+};
 
+//const size_t X=sizeof(List);
 
-    #undef null
-    #undef head
-    #undef tail
-};//Size=48
-//const int x=sizeof(List);
-   
 }
+
 
 #endif
