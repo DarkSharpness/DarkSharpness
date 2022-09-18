@@ -1,8 +1,9 @@
 #include<new>
 #include<string.h>
 
-#ifndef _DARK_BASIC_
-#define _DARK_BASIC_
+#ifndef _DARK_BASIC_H_
+#define _DARK_BASIC_H_
+
 namespace dark{
     typedef unsigned long long size_type;
     template <typename _VT> 
@@ -21,5 +22,9 @@ namespace dark{
     inline bool no_smaller(const _VT& _v1,const _VT& _v2){
         return _v1 >= _v2;
     }
+
+
+
+    
 }
 #endif
