@@ -16,7 +16,6 @@ constexpr int N = 2e6+4;
 unordered_map <int,int> mp(N);
 pair <int,int> p[N];
 int anc[N];
-
 int Get(int x) {
     if(anc[x] == x) return x;
     return anc[x] = Get(anc[x]);
