@@ -43,6 +43,7 @@ int main() {
     ios::sync_with_stdio(false);
     #define endl '\n'
     cin >> n >> m >> k;
+    //double ti = clock();
     for(int i = 1 ; i <= n ; ++i) anc[i] = i;
     for(int i = 1,x,y; i <= k ; ++i) {
         cin >> x >> y;
