@@ -45,20 +45,48 @@ struct FwTree {
 
 int tot = 0;
 
+inline void read(int &tmp) {
+    static char ch;
+    tmp = 0;
+    while(!isdigit(ch = getchar())) ;
+    while(isdigit(ch)) {
+        tmp = (tmp<<1) + (tmp<<3) + (ch^'0');
+        ch = getchar(); 
+    }
+}
+
+char ch[10];    
+int ttt = -1;  
+inline void write(int& tmp) {
+    if(!tmp) {
+        puts("0");
+        return ;
+    }
+    while(tmp) {
+        ch[++ttt] = (tmp%10) ^ '0';
+        tmp /= 10;
+    }
+    while(ttt != -1) {
+        putchar(ch[ttt]);
+        --ttt;
+    }
+    putchar('\n');
+}
 int main() {
     int n,Q;
-    ios::sync_with_stdio(false);
-    cin >> n >> Q;
-    unordered_map <int,int> mp(n) ;
-    mp.reserve(n);
+    read(n);
+    read(Q);
+    unordered_map <int,int> mp ;
+    mp.reserve(n+1);
     for(int i = 1; i <= n ; ++i) {
-        cin >> s[i];
+        read(s[i]);
         int &ref = mp[s[i]];
         if(!ref) ref = ++tot;//¿ªµã
         s[i] = ref;//ÀëÉ¢»¯
     }
     for(int i = 0 ; i < Q ; ++i) {
-        cin >> q[i].l >> q[i].r;
+        read(q[i].l);
+        read(q[i].r);
         q[i].x = i;
     }
     for(int i = 1 ; i <= tot ; ++i) 
@@ -83,7 +111,7 @@ int main() {
         }
     }
     for(int i = 0 ; i < Q ; ++i) {
-        cout << ans[i] <<endl;
+        write(ans[i]);
     }
     return 0;
 }

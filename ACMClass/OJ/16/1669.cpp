@@ -23,14 +23,39 @@ inline int dist(int x,int y) {
     return loc[y] - loc[x];
 }
 
+inline void read(int &tmp) {
+    static char ch;
+    tmp = 0;
+    while(!isdigit(ch = getchar())) ;
+    while(isdigit(ch)) {
+        tmp = (tmp<<1) + (tmp<<3) + (ch^'0');
+        ch = getchar(); 
+    }
+}
+
+inline void write(int tmp) {
+    char ch[10];    
+    int tot = -1;
+    while(tmp) {
+        ch[++tot] = (tmp%10) ^ '0';
+        tmp /= 10;
+    }
+    while(tot != -1) {
+        putchar(ch[tot]);
+        --tot;
+    }
+}
+
+
+
 int main() {
-    ios::sync_with_stdio(false);
     int n,m;
-    cin >> n >> m;
+    read(n);
+    read(m);
     loc[1] = 0;
     sum[1] = 0;
     for(int i = 2; i <= n ; ++i) {
-        cin >> loc[i];
+        read(loc[i]);
         loc[i] += loc[i-1];
         sum[i] =  sum[i-1] + loc[i];
     }
@@ -41,13 +66,11 @@ int main() {
             while((loc[k]<<1) <= loc[i]+loc[j]) ++k;
             c[i][j] -= query(i,j); 
             c[i][j] += query(i,k-1)+rquery(k,j);
-            c[j][i] = c[i][j];//·ÀÖ¹Ð´·´ÁË
         }
-        //cout << endl;
     }
 
     memset(dp,30,sizeof(dp));
-    //cout << dp[0][0][0] <<endl;
+
     for(int j = 1 ; j <= n ; ++j) {
         for(int k = 1  ;  k < j ; ++k) 
             dp[1][j][k] = dp[1][j-1][k] + dist(k,j);
@@ -70,6 +93,6 @@ int main() {
     for(int i = m ; i <= n ; ++i){
         ans = min(ans,dp[m & 1][n][i]);
     }
-    cout << ans << endl;
+    write(ans);
     return 0;
 }
