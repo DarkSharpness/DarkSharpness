@@ -5,7 +5,7 @@ typedef long long ll;
 const int N = 504;
 
 int dp[2][N][N];
-int loc[N];
+int loc[N];     //loc[i] = the location of i
 int sum[N];     //sum[i] = loc[1] + ... + loc[i]
 int c[N][N];
 #define endl '\n'
@@ -34,38 +34,40 @@ int main() {
         loc[i] += loc[i-1];
         sum[i] =  sum[i-1] + loc[i];
     }
+
     for(int i = 1; i <= n ; ++i) {
-        int k = i;
+        int k = i+1;
         for(int j = i + 1; j <= n; ++j) {
             while((loc[k]<<1) <= loc[i]+loc[j]) ++k;
             c[i][j] -= query(i,j); 
             c[i][j] += query(i,k-1)+rquery(k,j);
+            c[j][i] = c[i][j];//防止写反了
         }
         //cout << endl;
     }
 
-    memset(dp,60,sizeof(dp));
-    
+    memset(dp,30,sizeof(dp));
+    //cout << dp[0][0][0] <<endl;
     for(int j = 1 ; j <= n ; ++j) {
         for(int k = 1  ;  k < j ; ++k) 
             dp[1][j][k] = dp[1][j-1][k] + dist(k,j);
         dp[1][j][j] = rquery(1,j);
     }
-    //cout << dp[0][0][0] <<endl;
     for(int t = 2,i = 1; t <= m ; ++t) {
-        i ^= 1;
-        for(int j = i ; j <= n ; ++j) {
-            for(int k = i  ;  k < j ; ++k) 
+        i ^= 1;// i = t & 1
+        for(int j = t ; j <= n ; ++j) {
+            for(int k = t  ;  k < j ; ++k) 
                 dp[i][j][k] = dp[i][j-1][k] + dist(k,j);
-            dp[i][j][j] = 114514 << 14; //初始化的dp[i][j][j]
-            for(int g = i-1 ; g < j ; ++g) {//取min
+            dp[i][j][j] = 114514 << 11; //初始化的dp[i][j][j]
+            for(int g = t-1 ; g < j ; ++g) {//取min
                 dp[i][j][j] = min(dp[ i ][j][j],
                         c[g][j] + dp[i^1][j][g]);
             }
         }
     }
+
     int ans = 1919810 << 10;
-    for(int i = m ; i <=n ; ++i){
+    for(int i = m ; i <= n ; ++i){
         ans = min(ans,dp[m & 1][n][i]);
     }
     cout << ans << endl;

@@ -29,7 +29,8 @@ inline void getmax(T1& x,const T2& y){if (x<y) x=y;}
 #define MSG(s) 0
 #endif
 
-const int N=2e4+5;
+constexpr int N = 8e4+8;
+//const int N=2e4+5;
 int fa[N],sz[N];
 int find(int x){return fa[x]==x?x:(fa[x]=find(fa[x]));}
 inline void merge(int x,int y){
@@ -45,12 +46,12 @@ signed main(){
 	int n,m,e;
 	cin>>n>>m>>e;
 	iota(fa+1,fa+1+n,1);
-	fill(sz+1,sz+1+n,1);
-	double ti = clock();
+	fill(sz+1,sz+1+n,1);    
+    double ti = clock();
     For(i,1,e){
 		int x,y;cin>>x>>y;
 		merge(x,y);
-	}
+	}	
 	For(i,1,n) if (fa[i]==i) a.pb(sz[i]);
 	f[1][0]=1;
 	int nn=a.size()-1;
