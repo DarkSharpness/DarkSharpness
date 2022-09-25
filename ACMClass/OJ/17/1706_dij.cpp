@@ -35,7 +35,7 @@ inline void dijkstra(const int start,const int terminal) {
         for(int i = head[u] ; i ; i = e[i].nxt) {
             int  v  = e[i].to;
             ll  sum = dp[u] + e[i].len;
-            if((sum <= t[v]) && sum < dp[v] ) {
+            if((sum <= t[v] || v== terminal) && sum < dp[v] ) {
                 dp[v] = sum;
                 if(v!= terminal) 
                     q.emplace(-sum,v);
@@ -78,15 +78,16 @@ int main() {
     }
     
     while(m--) {
-        read(x);read(y);read(g);
-        adde(x,y,g);
-        adde(y,x,g);
+        int f;
+        read(x);read(y);read(f);
+        adde(x,y,f);
+        adde(y,x,f);
     }
 
     dijkstra(S,T);
 
     //slow output
-    if(dp[T] == dp[0]) puts("sad");
+    if(dp[T] == dp[0] || dp[T] > g) puts("sad");
     else printf("%lld\n",dp[T]);
     return 0;
 }

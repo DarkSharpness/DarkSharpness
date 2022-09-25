@@ -1,78 +1,59 @@
 #include<bits/stdc++.h>
 using namespace std;
 typedef long long ll;
-constexpr int N = 2008;
-/// @brief Fast read-in.
-inline void read(int &tmp) {
+const int N = 2004;
+
+int c[N][N];
+int dp[N];
+bitset <N> f;
+
+template <class T>
+inline void ffread(T &tmp) {
     static char ch;
     tmp = 0;
     while(!isdigit(ch = getchar()));
     while(isdigit(ch)) {
-        tmp = (tmp<<1) + (tmp<<3) + (ch^'0');
-        ch  = getchar();
+        tmp = tmp * 10 + (ch^'0');
+        ch = getchar();
     }
 }
-struct edge {
-    int l,r,v;
-    inline bool operator <(const edge & B) {
-        return v < B.v;
-    }
-}e[N * N];
-int tot = 0;
-struct FwTree {
-    private:
-    int data[N*N];
-    int maxn;
-    inline int lowbit(int x) {
-        return x&(-x);
-    }
-    inline void insert(int loc,int val) {
-        while(loc <= maxn) {
-            data[loc] += val;
-            loc += lowbit(loc);
-        }
-    }
-    inline int query(int loc) {
-        int ans = 0;
-        while(loc) {
-            ans += data[loc];
-            loc -= lowbit(loc);
-        }
-        return ans;
-    }
-    public:
-    inline void init(int n) {
-        maxn = n;
-    }
-    inline void Insert(int l,int r) {
-        insert( l , 1);
-        insert(r+1,-1);
-    }
-    inline int Query(int l,int r) {
-        return query(r)-query(l-1);
-    }
 
-}t;
+//终点
+inline void read() {}
+
+template <class T,class ...V>
+void read(T &arg,V& ...args) {
+    ffread(arg);
+    read(args...);
+}
 
 
 int main() {
-    int n ;
+    int n,x;
     read(n);
-    for(int i = 1 ; i <=n ; ++i)
-        for(int j = i ; j <= n ; ++j) {
-            e[++tot].l;
-            e[tot].r;
-            read(e[tot].v);
+    //覆盖点 x -> (x-1,x) 区间
+    for(int i = 0 ; i < n ; ++i)
+        for(int j = i+1 ; j <= n ; ++j) {
+            read(x);
+            c[j][i] = c[i][j] = x;
         }
-    t.init(n);
-    sort(e+1,e+tot+1); 
-    int ans = 0;
-    for(int i = 1 ; i <= tot ; ++i) {
-        int cover = t.Query(e[i].l,e[i].r);
-        if(cover < e[i].r - e[i].l +1) {
-            t.Insert(e[i].l,e[i].r);
-            ans +=
-        } 
+    memset(dp,63,sizeof(dp));
+    //prim 
+    dp[0] = 0;//最短的边长
+    f[0] = true;
+    memcpy(dp,c[0],(n+1) << 2);
+    for(int i = 1 ; i < n ; ++i) {
+        int root = 0;//找最小的距离
+        for(int j = 1 ; j <= n ; ++j) //没选过
+            if(!f[j] && (f[root] || dp[j] < dp[root])) 
+                root = j;
+        f[root] = true;
+        for(int j = 0 ; j <= n ; ++j) 
+            if(!f[j] && dp[j] > c[root][j]) 
+                dp[j] = c[root][j];
     }
+    ll ans = 0;
+    for(int i = 1 ; i <= n ; ++i) ans += dp[i];
+    printf("%lld\n",ans);
     return 0;
 }
