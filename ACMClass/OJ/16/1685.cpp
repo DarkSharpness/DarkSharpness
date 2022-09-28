@@ -3,7 +3,6 @@ using namespace std;
 typedef long long ll;
 
 const int N = 5e5 + 32;
-#define endl '\n' 
 struct node{
     int l,r,x;
     inline bool operator < (const node & T) {
@@ -77,7 +76,7 @@ int main() {
     read(n);
     read(Q);
     unordered_map <int,int> mp ;
-    mp.reserve(n+1);
+    mp.reserve(n<<1);
     for(int i = 1; i <= n ; ++i) {
         read(s[i]);
         int &ref = mp[s[i]];
