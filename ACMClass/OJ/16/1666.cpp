@@ -1,123 +1,122 @@
 #include<bits/stdc++.h>
 using namespace std;
-const int N = 1e5 +16;
+typedef long long ll;
 
-int col[N],cls = 0;
+const int N = 1e5 + 8;
+const int M = 1e5 + 8;
+struct edge {
+    int to,nxt;
+}e[M<<1];
+int head[N],tot = 1;
+inline void adde(int fr,int to){
+    e[++tot].to = to;
+    e[tot].nxt  = head[fr];
+    head[fr]    = tot;
+}
 
-namespace graph { //原来的图
-    struct edge{
-        int nxt,to;
-    }e[N<<1];
-    int head[N] , tot = 1;
-    inline void adde(int fr,int to){
-        e[++tot].to = to;
-        e[tot].nxt  = head[fr];
-        head[fr]    = tot;
-    }
-    int dfn[N],low[N];
-    int st[N] ,top = 0;
-    int cnt;
-    bitset <N> dir;
-    void dfs(int id,int fa) {
-        low[id] = dfn[id] = ++cnt;
-        st[++top] = id;
-        for(int i = head[id] ; i ; i = e[i].nxt) {
-            int to = e[i].to;
-            if(to == fa) continue;
-            if(!dfn[to]) dfs(to,id);
-            low[id] = min(low[to],low[id]);
-        }
-        if(low[id] == dfn[id]) { //没去过比自己更小的地方
-            col[id] = ++cls;
-            while(st[top] != id) {
-                col[st[top]] = cls;
-                --top;
+int cnt;
+int dfn[N],low[N];
+int st[N],top = 0;
+int col[N],sum = 0;
+bitset <M<<1> cut;
+void dfs(int id,int fa) {
+    dfn[id] = ++cnt;
+    low[id] = cnt;
+    st[++top] = id;
+    for(int i = head[id]; i ; i = e[i].nxt) {
+        int to = e[i].to;
+        if(!dfn[to]) {
+            dfs(to,id);
+            low[id] = min(low[id],low[to]);
+            if(low[to] > dfn[id]) {
+                cut[i] = true;   //是割边           
             }
-            --top;
+        } else if(to != fa) {
+            low[id] = min(low[id],dfn[to]);
         }
     }
 }
-
-namespace tree {
-    struct Edge{
-        int nxt,to,org;
-        //org 存储原来的边的编号
-    }E[N<<1];
-    int Head[N] , TOT = 0; 
-    inline void addE(int fr,int to,int org){
-        E[++TOT].to = to;
-        E[TOT].nxt  = Head[fr];
-        E[TOT].org  = org;
-        Head[fr]    = TOT;
-    }
-
-    int tag[N];
-    bitset <N> vis;
-    void dfs2(int id) {
-        vis[id] = true;
-        for(int i = Head[id] ; i ; i = E[i].nxt) {
-            int to = E[i].to;
-            if(!vis[to]) {
-                dfs2(to); 
-                if(tag[to] > 0) {
-                    graph::dir[E[i].org ^ 1] = true;
-                } else if(tag[to] < 0) {
-                    graph::dir[E[i].org] = true;
-                }
-                tag[id] += tag[to];
-            }
-        }
-    }
-    void dfs3(int id,int fa) {
-        for(int i = Head[id]; i ; i = E[i].nxt) {
-            //cout << E[i].org << endl;
-            if(E[i].to != fa)
-                dfs3(E[i].to,id);
-        }
+void color(int id) {
+    for(int i = head[id]; i ; i = e[i].nxt) {
+        int to = e[i].to;
+        if(col[to]) continue;
+        if(cut[i]) col[to] = ++sum;
+        else       col[to] = col[id];
+        color(to);
     }
 
 }
+struct NewEdge : edge {
+    int org;
+}E[M<<1];
+int first[N],Count = 0;
+inline void addEdge(int fr,int to,int org) {
+    E[++Count].org = org;
+    E[Count].nxt   = first[fr];
+    E[Count].to    = to;
+    first[fr]      = Count;
+}
+bitset <N> vis;
+bitset <M> dir;
+int tag[N];
+
+//dfs2走树
+void dfs2(int id) {
+    vis[id] = true;
+    for(int i = first[id] ; i ; i = E[i].nxt) {
+        int to = E[i].to;
+        if(vis[to]) continue;//父边
+        dfs2(to);
+        if(tag[to] < 0) { //正边方向
+            dir[E[i].org] = true;
+        } else if(tag[to] > 0) {//反边
+            dir[E[i].org ^ 1] = true;
+        }
+        tag[id] += tag[to];//书上差分
+    }
+}
 
 
-int n,m,p;
 
 
 int main() {
+    int n,m,p;
     scanf("%d%d",&n,&m);
-    for(int i = 1,x,y; i <= m ;++i) {
-        scanf("%d%d",&x,&y);        
-        graph::adde(x,y);
-        graph::adde(y,x);
-    }
-    for(int i = 1 ; i <= n ; ++i)
-        if(!graph::dfn[i])
-            graph::dfs(i,0);
-
-    for(int i = 1 ; i <= m ; ++i) {
-        int to = graph::e[ i<<1 ].to, 
-            fr = graph::e[i<<1|1].to;
-        if(col[fr] == col[to]) continue;
-        tree::addE(col[fr],col[to],i<<1);
-        tree::addE(col[to],col[fr],i<<1|1);
-    }
-    scanf("%d",&p);
-    for(int i = 1,x,y ; i <= p ; ++i) {
+    for(int i = 1,x,y ; i <= m ; ++i) {
         scanf("%d%d",&x,&y);
-        ++tree::tag[col[x]];
-        --tree::tag[col[y]];
+        adde(x,y);
+        adde(y,x);
     }
-    for(int i = 1 ; i <= cls ; ++i) {
-        if(!tree::vis[i]) {
-            tree::vis[i] = true;
-            tree::dfs2(i);
+    for(int i = 1 ; i <= n; ++i) 
+        if(!dfn[i])
+            dfs(i,0);
+    for(int i = 1 ; i <= n; ++i)
+        if(!col[i]) {
+            col[i] = ++sum;
+            color(i);
+        }
+    for(int i = 1 ; i <= m ; ++i) {
+        int fr = e[i<<1|1].to,
+            to = e[ i<<1 ].to;
+        if(col[fr] != col[to]) {
+            addEdge(col[fr],col[to],i<<1);  //原来边的编号
+            addEdge(col[to],col[fr],i<<1|1);
         }
     }
-    //tree::dfs3(1,0);
+    scanf("%d",&p);
+    for(int i = 1,x,y; i <= p ; ++i) {
+        scanf("%d%d",&x,&y);
+        
+        ++tag[col[x]];
+        --tag[col[y]];
+    }
+    for(int i = 1 ; i <= sum; ++i)
+        if(!vis[i]) 
+            dfs2(i);
     for(int i = 1 ; i <= m ; ++i) {
-        if(graph::dir[i<<1]) putchar('R');
-        else if(graph::dir[i<<1|1]) putchar('L');
+        if(dir[i<<1]) putchar('R');
+        else if(dir[i<<1|1]) putchar('L');
         else putchar('B');
-        //putchar('\n');
     }
     return 0;
 }
