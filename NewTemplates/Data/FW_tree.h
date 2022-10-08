@@ -23,6 +23,8 @@ static T lowbit(const T& x){
  * Fast-Single-Value-Add in O(log SIZE) 
  * Fast-Prefix-Sum-Query in O(log SIZE) . \n 
  * You can create other templates based on this one. 
+ * NOTE that the index start from 1. 
+ * 
  * 
  * @tparam value_type The value_type of elements.
  * @tparam SIZE       The maximum number of elements.
