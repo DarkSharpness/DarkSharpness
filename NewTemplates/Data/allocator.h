@@ -1,12 +1,9 @@
 #include<General/basic.h>
-
+#ifndef _DARK_ALLOCATOR_H_
+#define _DARK_ALLOCATOR_H_
 namespace dark{
 
- 
-//typedef int _VT;
-
-
-//An easy allocator
+//An easy allocator... Isn't it?
 template <typename _VT>
 struct allocator{
     typedef _VT* v_ptr;
@@ -18,4 +15,6 @@ struct allocator{
     }
 };
 
+
 }
+#endif
