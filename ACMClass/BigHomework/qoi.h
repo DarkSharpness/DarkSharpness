@@ -1,7 +1,7 @@
 #ifndef QOI_FORMAT_CODEC_QOI_H_
 #define QOI_FORMAT_CODEC_QOI_H_
 
-#include <utils.h>
+#include "utils.h"
 
 constexpr uint8_t QOI_OP_INDEX_TAG = 0x00;
 constexpr uint8_t QOI_OP_DIFF_TAG  = 0x40;
