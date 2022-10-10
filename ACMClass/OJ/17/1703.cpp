@@ -54,18 +54,19 @@ int main() {
         highest = max(highest,t[i].inter);
     }
     sort(t,t+n);
-    const float db = 0.33333333;
-    
     while(highest) {
         ++cnt;
         highest >>= 1; 
     }
-    //cout << cnt << endl;
     ll ans = 0;
-    for(int i = 0 ; i < n ; ++i) 
+    int cnt2 = 0;
+    for(int i = 0 ; i < n ; ++i) {
         if(Linear_Base(t[i].inter)) {
             ans += t[i].magic;
+            ++cnt2;
         }
+        if(cnt2 == cnt+1) break;
+    }
     printf("%lld",ans);
     return 0;
 }
