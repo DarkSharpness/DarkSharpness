@@ -10,12 +10,12 @@ int main() {
     int n = 1,x;
     while(n) {
         din >> n >> x ;
-        t[n] += x;
+        t[n] -= x;
         for(int i : t) {
             dout << i << ' ';
         }
-        t.begin();
-        dout << dend;
+        t.cbegin();
+        dout << dout;
     }
 
 

@@ -23,7 +23,7 @@ static T lowbit(const T& x){
  * Fast-Single-Value-Add in O(log SIZE) 
  * Fast-Prefix-Sum-Query in O(log SIZE) . \n 
  * You can create other templates based on this one. 
- * NOTE that the index start from 1. 
+ * NOTE that the index start from 1,end with SIZE. 
  * 
  * 
  * @tparam value_type The value_type of elements.
@@ -43,6 +43,7 @@ class FW_tree {
     /**
      * @brief Add a certain value at a specific location 
      * in O(log SIZE) time.
+     * Index larger than SIZE won't cause ERROR.
      * 
      * @param idx The index of the inserted element. 
      * @param val The value of the inserted element.
@@ -56,6 +57,7 @@ class FW_tree {
     /**
      * @brief Calculate the prefix-sum of idx ( data[1] ~ data[idx] )
      * in O(log SIZE) time.
+     * Index 0 is accpectable(which will return 0).
      * 
      * @param idx The idx to be queryed.
      * @return value_type The prefix-sum queried.
@@ -69,6 +71,12 @@ class FW_tree {
         return sum;
     }
     
+    /**
+     * @brief An array-like reference to 
+     * a certain index.
+     * @param idx Your target index without check. 
+     * @return[out] reference to the value at given index.
+     */
     inline reference operator[](size_type idx) {
         return reference(idx,this);
     }
@@ -91,7 +99,7 @@ class FW_tree {
      * in O(SIZE).
      * Note that the original sequence won't be cleared.
      * The current operation serves as adding one element
-     * in each certain possition.
+     * in each certain position.
      * You may clear it by using clear() function.
      * 
      * @param begin Begin Iterator
