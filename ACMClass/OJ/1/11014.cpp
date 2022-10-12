@@ -17,7 +17,7 @@ int main() {
     len_a = max(len_a,len_b);
     bool ret = false;
     for(int i = 0 ; i < len_a ; ++i) {
-        a[i] = (a[i] ? a[i] ^ '0') + (b[i] ? b[i] ^ '0') + ret;
+        a[i] = (a[i] + a[i] ^ '0') + (b[i] ? b[i] ^ '0') + ret;
         if(a[i] >= 10) {
             a[i] -= 10;
             ret = true;

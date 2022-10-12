@@ -90,7 +90,7 @@ bool QoiEncode(uint32_t width, uint32_t height, uint8_t channels, uint8_t colors
                b == pre_b &&
                g == pre_g) { // rgb also identical,use RUN encoding
                 if(run == 61) { //identical 62 times,so write in first 
-                    QoiWriteU8(QOI_OP_RUN_TAG | run);
+                    QoiWriteU8(QOI_OP_RUN_TAG | 61);
                     run = 0;
                 } else { // add run by 1
                     ++run;
