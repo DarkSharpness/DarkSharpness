@@ -34,6 +34,38 @@ class FW_tree {
     private:
     using value_cref = const value_type &;
     value_type data[SIZE];
+    
+    /**
+     * @brief A reference type of value. \n 
+     * Operations on the value of index at idx
+     * are all O(log SIZE)
+     * 
+     */
+    class iterator {
+        private:
+        size_type idx;
+        FW_tree <value_type,SIZE> * tptr;
+        public:
+        operator value_type() {
+            return tptr->query(idx)-tptr->query(idx-1);
+        }
+        /// @brief No recommended.If possible,use += or -= instead.  
+        value_type operator=(value_cref val) {
+            tptr->add(idx,val-tptr->query(idx)+tptr->query(idx-1));
+            return val;
+        }
+        /// @brief Add at this location.
+        void operator +=(value_cref val) {
+            tptr->add(idx,val);
+        }
+        void operator -=(value_cref val) {
+            tptr->add(idx,-val);
+        }
+        iterator(int _idx,FW_tree <value_type,SIZE> * t) {
+            idx  = _idx;
+            tptr = t;
+        }
+    };
     public:
     /**
      * @brief Add a certain value at a specific location 
@@ -53,6 +85,7 @@ class FW_tree {
      * in O(log SIZE) time.
      * 
      * @param idx The idx to be queryed.
+     * @return value_type The prefix-sum queried.
      */
     inline value_type query(size_type idx) const{
         value_type sum = 0;
@@ -62,6 +95,52 @@ class FW_tree {
         }
         return sum;
     }
+    
+    inline iterator operator[](size_type idx) {
+        return iterator(idx,this);
+    }
+    
+    /**
+     * @brief Clear the FW_tree in O(n) time.
+     * 
+     */
+    inline void clear() {
+        memset(data,0,sizeof(data));
+    }
+    //Work as what you think.
+    inline size_type size() const{
+        return SIZE;
+    }
+
+    /**
+     * @brief Initialize a new FW_tree object
+     * with a certain sequence 
+     * in O(SIZE).
+     * Note that the original sequence won't be cleared.
+     * The current operation serves as adding one element
+     * in each certain possition.
+     * You may clear it by using clear() function.
+     * 
+     * @param begin Begin Iterator
+     * @param end   End   Iterator
+     */
+    template <class iterator>
+    inline void initialize(iterator begin,iterator end) { 
+        size_type cnt = 0;
+        Iter(it,begin,end) {
+            ++cnt;
+            data[cnt] += (*it);
+            if(cnt + lowbit(cnt) <= SIZE)
+                data[cnt+lowbit(cnt)] += data[cnt];
+        }
+        while(cnt <= SIZE) {
+            ++cnt;
+            if(cnt + lowbit(cnt) <= SIZE)
+                data[cnt+lowbit(cnt)] += data[cnt];
+        }
+    }
+
+    
 
     FW_tree() {
     }
@@ -89,35 +168,8 @@ class FW_tree {
                 data[cnt+lowbit(cnt)] += data[cnt];
         }
     }
-    
-    /**
-     * @brief Initialize a new FW_tree object
-     * with a certain sequence 
-     * in O(SIZE).
-     * Note that the original sequence will be cleared.
-     * 
-     * @param begin Begin Iterator
-     * @param end   End   Iterator
-     */
-    template <class iterator>
-    inline void initialize(iterator begin,iterator end) { 
-        unsigned int cnt = 0;
-        memset(data,0,sizeof(data));
-        Iter(it,begin,end) {
-            ++cnt;
-            data[cnt] += (*it);
-            if(cnt + lowbit(cnt) <= SIZE)
-                data[cnt+lowbit(cnt)] += data[cnt];
-        }
-        while(cnt <= SIZE) {
-            ++cnt;
-            if(cnt + lowbit(cnt) <= SIZE)
-                data[cnt+lowbit(cnt)] += data[cnt];
-        }
-    }
 
 };
-
 
 }
 

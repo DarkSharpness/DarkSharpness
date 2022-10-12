@@ -1,6 +1,8 @@
 #include <stdio.h>
 #include <ctype.h>
 #include <General/basic.h>
+#ifndef _DARK_INOUT_H_
+#define _DARK_INOUT_H_
 
 namespace dark {
 
@@ -151,7 +153,41 @@ inline void write_u(const char * str,T arg,V...args) {
     write_u(++str,args...);
 }
 
+namespace basic_io {
+class in_stream {
+    public:
+    template <class T>
+    in_stream operator >>(T & arg) const{
+        Fread(arg);
+        return *this;
+    }
+};
 
+class out_stream {
+    public:
+    out_stream operator <<(const char *str) const{
+        while(*str != 0) {
+            putchar(*(str));
+            ++str;
+        }
+    }
+    out_stream operator <<(const char _ch) const{
+        putchar(_ch);
+    }
+    out_stream operator <<(out_stream _O) const {
+        putchar('\n');
+    }
+    template <class T>
+    out_stream operator <<(const T &arg) const{
+        Fwrite(arg);
+        return *this;
+    }
+};
+}
+const basic_io::in_stream  din ; //cin-like readin
+const basic_io::out_stream dout; //cout-like write
+const basic_io::out_stream dend; //equals to '\n'
 
 
 }
+#endif
