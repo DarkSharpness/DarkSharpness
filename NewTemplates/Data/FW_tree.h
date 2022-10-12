@@ -35,37 +35,10 @@ class FW_tree {
     using value_cref = const value_type &;
     value_type data[SIZE];
     
-    /**
-     * @brief A reference type of value. \n 
-     * Operations on the value of index at idx
-     * are all O(log SIZE)
-     * 
-     */
-    class iterator {
-        private:
-        size_type idx;
-        FW_tree <value_type,SIZE> * tptr;
-        public:
-        operator value_type() {
-            return tptr->query(idx)-tptr->query(idx-1);
-        }
-        /// @brief No recommended.If possible,use += or -= instead.  
-        value_type operator=(value_cref val) {
-            tptr->add(idx,val-tptr->query(idx)+tptr->query(idx-1));
-            return val;
-        }
-        /// @brief Add at this location.
-        void operator +=(value_cref val) {
-            tptr->add(idx,val);
-        }
-        void operator -=(value_cref val) {
-            tptr->add(idx,-val);
-        }
-        iterator(int _idx,FW_tree <value_type,SIZE> * t) {
-            idx  = _idx;
-            tptr = t;
-        }
-    };
+    class iterator;
+    class reference;
+    
+    
     public:
     /**
      * @brief Add a certain value at a specific location 
@@ -96,8 +69,8 @@ class FW_tree {
         return sum;
     }
     
-    inline iterator operator[](size_type idx) {
-        return iterator(idx,this);
+    inline reference operator[](size_type idx) {
+        return reference(idx,this);
     }
     
     /**
@@ -168,48 +141,106 @@ class FW_tree {
                 data[cnt+lowbit(cnt)] += data[cnt];
         }
     }
+    
+    /**
+     * @brief A read-write iterator
+     * of the first element.
+     * 
+     */
+    inline iterator begin() {
+        return iterator(1,this);
+    }
+    /**
+     * @brief A read-write iterator
+     * of one past the last elements.
+     * 
+     */
+    inline iterator end() {
+        return iterator(SIZE+1,this);
+    }
+    /**
+     * @brief A read-only iterator
+     * of the first element.
+     * 
+     */
+    inline iterator cbegin() const{
+        return iterator(1,this);
+    }
+    /**
+     * @brief A read-only iterator
+     * of one past the last elements.
+     * 
+     */
+    inline iterator cend() const{
+        return iterator(SIZE+1,this);
+    }
+
+    private :
+    /**
+     * @brief A reference type of value. \n 
+     * Operations on the value of index at idx
+     * are all O(log SIZE)
+     * 
+     */
+    class reference {
+        //private:
+        private:
+        mutable size_type idx;
+        FW_tree <value_type,SIZE> * tptr;
+        public:
+        friend class iterator;
+        operator value_type() const{
+            return tptr->query(idx)-tptr->query(idx-1);
+        }
+        /// @brief No recommended.If possible,use += or -= instead.  
+        value_type operator=(value_cref val) {
+            tptr->add(idx,val-tptr->query(idx)+tptr->query(idx-1));
+            return val;
+        }
+        /// @brief Add at this location.
+        void operator +=(value_cref val) {
+            tptr->add(idx,val);
+        }
+        /// @brief Minus at this location 
+        void operator -=(value_cref val) {
+            tptr->add(idx,-val);
+        }
+        reference(int _idx,FW_tree <value_type,SIZE> * t) {
+            idx  = _idx;
+            tptr = t;
+        }
+        reference() {
+            
+        }
+    };
+    
+    class iterator {
+        reference ref;
+        public:
+        iterator(int idx,FW_tree <value_type,SIZE> * ptr) {
+            ref.idx = idx;
+            ref.tptr = ptr;    
+        }
+        iterator operator ++(void) {
+            ++ref.idx;
+            return *this;
+        }
+        iterator operator --(void) {
+            --ref.idx;
+            return *this;
+        }
+        reference& operator *(void){
+            return ref;
+        }
+        bool operator !=(const iterator &B) const{
+            return ref.idx != B.ref.idx; 
+        }
+    };
 
 };
 
 }
 
-/* test use
-
-#include <General/inout.h>
-using namespace dark;
-const int N = 20;
-int a[N];
-int n,m;
-    
-FW_tree <int,N> F;
-
-
-void print() {
-    for(int i = 1 ; i <= n ; ++i) {
-        write("# ",F.query(i)-F.query(i-1));
-    }
-    puts("");
-}
-
-
-int main() {
-    read(n,m);
-    Iter(i,0,n) read(a[i]);
-    F.initialize(a,a+n);
-    print();
-    while(m--) {
-        int opt,x,y;
-        read(opt,x,y);
-        if(opt == 1) {
-            F.add(x,y);
-        } else {
-            write("#\n",F.query(y)-F.query(x-1));
-        }
-        print();
-    }
-    return 0;
-}
-*/
 
 
 

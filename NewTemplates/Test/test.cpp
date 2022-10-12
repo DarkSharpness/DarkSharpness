@@ -10,10 +10,11 @@ int main() {
     int n = 1,x;
     while(n) {
         din >> n >> x ;
-        t[n] = x;
-        for(int i = 1 ; i <= 10 ; ++i) {
-            dout << (long long)(t[i]) << ' ';
+        t[n] += x;
+        for(int i : t) {
+            dout << i << ' ';
         }
+        t.begin();
         dout << dend;
     }
 
