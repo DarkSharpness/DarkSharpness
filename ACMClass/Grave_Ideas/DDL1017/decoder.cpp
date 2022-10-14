@@ -23,17 +23,24 @@ inline ll read(const char *& str) {
     return tmp;
 }
 
+bool check_empty(const string &str) {
+    for(char ch : str) 
+        if(ch != '\0' && ch !='\n' && ch != ' ') return false;
+    return true;
+}
+
 int top = 0;
 void work() {
     int cnt = 0;
     bool load = false;
     bool overflow = false;
+    bool TLE = false;
     char mode;
     for(uint32_t i = 0 ; i < command.size() ; ++i) {
+        if(check_empty(command[i])) continue;//empty line
         ++cnt;
         if(cnt >= 1e4) {
-            printf("Time Limit Exceed!");
-            return ;
+            TLE = true;
         }
         const string & str = command[i];
         const char * ptr = str.c_str(); 
@@ -51,6 +58,7 @@ void work() {
                     load = true;
                     l[1] = v[k];
                 } else {
+                    overflow = false; //reset runup lever
                     load = false;
                     l[2] = v[k];
                     if(mode == '+') {
@@ -59,13 +67,15 @@ void work() {
                         e[1] = l[1] - l[2];
                         if(e[1] < 0) overflow = true;
                     } else {
-                        cnt += 59;
+                        //cnt += 59;
                         if(mode == '*') {
                             e[1] = l[1] * l[2];
                         } else {
                             if(l[2] == 0) overflow = true;
-                            else 
-                                e[1] = l[1] % l[2],e[2] = l[1] / l[2];
+                            else {
+                                e[1] = l[1] % l[2];
+                                e[2] = l[1] / l[2];
+                            }
                         } 
                     }
                 }
@@ -114,9 +124,14 @@ void work() {
 
     }
     printf("time:%d\n",cnt);
+    if(TLE) {
+        printf("Time Limit Exceed!");
+        return ;
+    }
 }
 
 int main() {
+//    cin >> v[0];
     string str;
     cout << "请输入文件相对路径与名称(样例:1.txt):" << endl;
     cin >> str;

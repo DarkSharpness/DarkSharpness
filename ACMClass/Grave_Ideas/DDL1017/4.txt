@@ -1,0 +1,48 @@
+N 1 2  #const v[1] = 2
+N 2 1
+N 5 1  #const v[5] = 1
+N 7 313 #maximum multi-prime
+/
+L 0
+L 1
+S 3   #remainder - > v[3]
+S' 4  #quotient  - > v[4]
+-
+L 3   #v[3] = remainder
+L 5   #v[5] = 1
+?F 1  #remainder == 0 jump to next
+F 5   #jump out when remainder == 1
+P 1
+L 4
+L 6   #v[6] = 0 (uninitialized)
+S 0   #v[0] = v[4] = quotient
+B 15  #Back to /
+
+L 0   #start function,default '-' mode
+L 1   #v[1] = 2
+?F 24 #v[0] == 1 - > jump to end
++     
+L 2
+L 1
+S 2   #v[2] += v[1]  (v[1] = 2)
+-
+L 7
+L 2
+?F 15 #v[7] > v[2] - > jump to prime
+/
+L 0
+L 2   #v[2] = current prime number
+S 3   #remainder - > v[3]
+S' 4  #quotient  - > v[4]
+-
+L 3   #v[3] == remainder
+L 5   #v[5] == 1
+?F 1  #remainder == 0 jump to next
+B 21  #back to start function
+P 2
+L 4
+L 6   #v[6] = 0 (uninitialized)
+S 0   #v[0] = v[4] = quotient
+B 15  #back to /
+P 0   #prime case
+end
