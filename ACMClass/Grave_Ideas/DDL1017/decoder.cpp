@@ -118,7 +118,9 @@ void work() {
 
 int main() {
     string str;
-    freopen("2.txt","r",stdin);
+    cout << "请输入文件相对路径与名称(样例:1.txt):" << endl;
+    cin >> str;
+    freopen(str.c_str(),"r",stdin);
     while(true) {
         getline(cin,str);
         //cout << str << endl;
