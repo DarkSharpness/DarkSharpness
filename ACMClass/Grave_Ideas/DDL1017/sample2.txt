@@ -1,0 +1,9 @@
+N 0 17	# Let v0 = 17
+N 1 25	# Let v1 = 25
+-	# Set the engine into subtraction mode
+L 0	# Load v0 into I1
+L 1	# Load v1 into I2
+?F 2	# If runup is set, skip the next two lines
+P 0	# Print the value of v0
+F 1	# Skip the next one line
+P 1	# Print the value of v1

@@ -1,0 +1,7 @@
+N 0 25	# Let v0 = 25
+N 1 17	# Let v1 = 17
++	# Set the engine into addition mode
+L 0	# Load v0 into I1
+L 1	# Load v1 into I2
+S 2	# Store the value from E to v2
+P 2	# Print the value of v2
