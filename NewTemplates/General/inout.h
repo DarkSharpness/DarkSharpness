@@ -15,7 +15,7 @@ namespace dark {
  * @param dst The variable to be written into.
  */
 template <class T>
-inline void Fread(T &dst) {
+inline constexpr void Fread(T &dst) {
     char ch = getchar();
     bool flag = false;
     while(!isdigit(ch)) {
@@ -101,7 +101,7 @@ inline void read_u() {}
  * 
  */
 template <class T,class ...V> 
-void read(T &arg,V &...args) {
+inline void read(T &arg,V &...args) {
     Fread(arg);
     read(args...);
 }
@@ -111,7 +111,7 @@ void read(T &arg,V &...args) {
  * 
  */
 template <class T,class ...V> 
-void read_u(T &arg,V &...args) {
+inline void read_u(T &arg,V &...args) {
     Fread_u(arg);
     read_u(args...);
 }
@@ -178,6 +178,7 @@ class in_stream {
         *str = 0;
         return *this;
     }
+    /// @brief Read in a char.
     icref operator >>(char &c) const{
         char ch = getchar();
         if(ch == EOF) { //end of a file
@@ -187,8 +188,6 @@ class in_stream {
         c = ch;
         return *this;
     }
-
-    
     /// @brief Default read-in for signed number types.
     template <class T>
     icref operator >>(T &dst) const{
