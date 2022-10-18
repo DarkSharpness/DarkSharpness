@@ -229,11 +229,11 @@ class FW_tree {
             ref.idx = idx;
             ref.tptr = ptr;    
         }
-        iterator operator ++(void) {
+        iterator& operator ++(void) {
             ++ref.idx;
             return *this;
         }
-        iterator operator --(void) {
+        iterator& operator --(void) {
             --ref.idx;
             return *this;
         }

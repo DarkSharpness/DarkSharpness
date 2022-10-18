@@ -7,6 +7,7 @@
 namespace dark {
 
 
+
 /**
  * @brief Fast read-in for signed integers. \n 
  * Suitable for OIers. 
@@ -15,17 +16,18 @@ namespace dark {
  */
 template <class T>
 inline void Fread(T &dst) {
-    static char ch;
-    static bool flag;
-    flag = false;
-    while(!isdigit(ch = getchar()))
+    char ch = getchar();
+    bool flag = false;
+    while(!isdigit(ch)) {
         if(ch == '-') flag = true;
+        ch = getchar();
+    }
     dst = 0;
     while(isdigit(ch)) {
         dst = dst * 10 + (ch ^ '0');
         ch  = getchar();
     }
-    if(flag) dst *= -1,flag = false;
+    if(flag) dst *= -1;
 }
 
 /**
@@ -36,7 +38,7 @@ inline void Fread(T &dst) {
  */
 template <class T>
 inline void Fread_u(T &dst) {
-    static char ch;
+    char ch;
     while(!isdigit(ch = getchar()));
     dst = 0;
     while(isdigit(ch)) {
@@ -44,6 +46,7 @@ inline void Fread_u(T &dst) {
         ch  = getchar();
     }
 }
+
 
 /**
  * @brief Fast print-out for signed integers. \n 
@@ -57,8 +60,8 @@ inline void Fwrite(T val) {
         putchar('0');
         return ;
     }
-    static char ch[sizeof(T)<<3];
-    static int  cnt = -1;
+    char ch[sizeof(T)<<3];
+    int  cnt = -1;
     if(val < 0) putchar('-'),val = -val;
     while(val) {
         ch[++cnt] = (val % 10) ^ '0';
@@ -80,8 +83,8 @@ inline void Fwrite_u(T val) {
         putchar('0');
         return ;
     }
-    static char ch[sizeof(T)<<3];
-    static int  cnt = -1;
+    char ch[sizeof(T)<<3];
+    int  cnt = -1;
     while(val) {
         ch[++cnt] = (val % 10) ^ '0';
         val /= 10;
@@ -138,6 +141,7 @@ inline void write(const char * str,T arg,V ...args) {
     write(++str,args...);
 }
 
+
 /**
  * @brief Faster print-out unsigned integers.
  * Initial with char *.
@@ -153,41 +157,105 @@ inline void write_u(const char * str,T arg,V...args) {
     write_u(++str,args...);
 }
 
-namespace basic_io {
 class in_stream {
+    mutable bool isEOF;
+    char func;
+    using icref = const in_stream &;
     public:
-    template <class T>
-    in_stream operator >>(T & arg) const{
-        Fread(arg);
+    /// @brief Reserve the space you need beforehand.
+    icref operator >>(char *str) const{
+        char ch = getchar();
+        if(ch == EOF) { //end of a file
+            isEOF = true;
+            return *this;
+        }
+        while(ch != '\0' &&
+              ch != '\n' && 
+              ch != EOF) {
+            *(str++) = ch ;
+            ch = getchar();
+        }
+        *str = 0;
         return *this;
+    }
+    icref operator >>(char &c) const{
+        char ch = getchar();
+        if(ch == EOF) { //end of a file
+            isEOF = true;
+            return *this;
+        }
+        c = ch;
+        return *this;
+    }
+
+    
+    /// @brief Default read-in for signed number types.
+    template <class T>
+    icref operator >>(T &dst) const{
+        char ch = getchar();
+        if(ch == EOF) {
+            isEOF = true;
+            return *this;
+        }
+        bool flag = false;
+        while(!isdigit(ch)) {
+            if(ch == '-') flag = true;
+            ch = getchar();
+        }
+        dst = 0;
+        while(isdigit(ch)) {
+            dst = dst * 10 + (ch ^ '0');
+            ch  = getchar();
+        }
+        if(flag) dst *= -1;
+        return *this;
+    }
+
+    /// @return bool true if end of file is reached
+    operator bool() const{
+        return !isEOF;
+    }
+    in_stream() {
+        isEOF = false;
     }
 };
 
 class out_stream {
+    using ocref = const out_stream&;
     public:
-    out_stream operator <<(const char *str) const{
+    ocref operator <<(const char * str) const{
+        while(*str != 0) {
+            putchar(*(str));
+            ++str;
+        }
+        return *this;
+    }
+    ocref operator <<(char * str) const{
         while(*str != 0) {
             putchar(*(str));
             ++str;
         }
     }
-    out_stream operator <<(const char _ch) const{
+    ocref operator <<(const char _ch) const{
         putchar(_ch);
     }
-    out_stream operator <<(out_stream _O) const {
+    ocref operator <<(ocref _O) const{
         putchar('\n');
     }
+    
     template <class T>
-    out_stream operator <<(const T &arg) const{
+    ocref operator <<(const T &arg) const{
         Fwrite(arg);
         return *this;
     }
+ 
+    out_stream() {
+    }
 };
-}
-const basic_io::in_stream  din ; //cin-like readin
-const basic_io::out_stream dout; //cout-like write
-const basic_io::out_stream dend; //equals to '\n'
 
+in_stream  din ; // cin-like  input 
+out_stream dout; // cout-like output
+out_stream endd; // start a new line
 
 }
 #endif

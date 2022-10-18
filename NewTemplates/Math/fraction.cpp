@@ -2,39 +2,68 @@
 using namespace std;
 typedef long long ll;
 
-ll gcd(ll a,ll b) {
+
+
+template <class value_type>
+static value_type gcd(value_type a,value_type b) {
     if(b == 0) return a;
     return gcd(b,a%b);
 }
 
+
 using value_type = ll;
 
 
-//template <value_type>
+//template <class value_type>
 struct fraction {
-    value_type num;
-    value_type den;
+    #define frac fraction
+
+    value_type num; // numerator
+    value_type den; // denominator > 0
     
-    fraction operator+(const fraction &B) const{
-        return fraction(num * B.den + B.num * den,
+    /**
+     * @brief Check whether this fraction is valid,
+     * which means whether its denominator is non-zero.
+     * @return bool true if this fraction is valid. 
+     */
+    inline bool valid() const {
+        return den == 0;
+    }
+
+    frac operator+(const frac &B) const{
+        value_type N = num * B.den + B.num * den;
+        value_type D = den * B.den;
+        bool flag = false;
+        if(N < 0) flag = true,N = -N;
+        value_type G = gcd(N,D);
+        N /= G;
+        D /= G;
+        return frac(N,D,false);
+    }
+    frac operator-(const frac &B) const{ 
+        value_type N = num * B.den - B.num * den;
+        value_type D = den * B.den;
+        bool flag = false;
+        if(N < 0) flag = true,N = -N;
+        value_type G = gcd(N,D);
+        N /= G;
+        D /= G;
+        return frac(N,D,false);}
+    frac operator*(const frac &B) const{
+        return frac(num * B.num,
                         den * B.den);
     }
-    fraction operator-(const fraction &B) const{ 
-        return fraction(num * B.den - B.num * den,
-                        den * B.den);
-    }
-    fraction operator*(const fraction &B) const{
-        return fraction(num * B.num,
-                        den * B.den);
-    }
-    fraction operator /(const fraction &B) const{
-        return fraction(num * B.den,
+    frac operator /(const frac &B) const{
+        return frac(num * B.den,
                         den * B.num);
     }
-    bool operator ==(const fraction &B) const{
+    bool operator !(void) const{
+        return num != 0;
+    }
+    bool operator ==(const frac &B) const{
         return num * B.den == den * B.num;
     }
-    bool operator !=(const fraction &B) const{
+    bool operator !=(const frac &B) const{
         return num * B.den != den * B.num;
     }
     void print() const{
@@ -62,33 +91,58 @@ struct fraction {
         while(tot) putchar(ch[tot--]);
         while(--top) putchar(' ');
     }
-    fraction() {
+
+    /// @brief Default value = 0
+    frac() {
         num = 0;
         den = 1;
     }
-    fraction(const value_type &B) {
+
+    /// @brief Change a value_type number into fraction
+    frac(const value_type &B) {
         num = B;
         den = 1;
     }
-    explicit fraction(value_type A,value_type B) {
-        if(A == 0) {
-            num = 0;
-            den = 1;
-        }
-        else {
-            bool flag = false;
-            if(A < 0) {
-                flag ^= true;
-                A = -A;
+    /// @brief Round the fraction down to 0 .
+    explicit operator value_type(void) const{
+        return num / den; 
+    }
+    /**
+     * @brief Create a fraction object
+     * with its numerator and denominator.
+     * Reduction will be done in default.
+     * Otherwise,you have to ensure its validity
+     * with gcd(N,D) = 1 and D > 0
+     * 
+     * @param N Its numerator 
+     * @param D Its denominator
+     * @param C Whether to do reduction or not
+     */
+    explicit frac(value_type N,
+                  value_type D,
+                  bool C = true) {
+        if(C) {
+            if(N == 0) { //0 case
+                num = 0;
+                den = 1;
+            } else { // non-0 case
+                bool flag = false;
+                if(N < 0) {
+                    flag ^= true;
+                    N = -N;
+                }
+                if(D < 0) {
+                    flag ^= true;
+                    D = -D;
+                }
+                value_type G = gcd(N,D);
+                num = N/G;
+                den = D/G;
+                if(flag) num *= -1;
             }
-            if(B < 0) {
-                flag ^= true;
-                B = -B;
-            }
-            value_type G = gcd(A,B);
-            num = A/G;
-            den = B/G;
-            if(flag) num *= -1;
+        } else {
+            num = N;
+            den = D;
         }
     }
 

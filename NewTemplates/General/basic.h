@@ -33,5 +33,34 @@ inline bool no_smaller(const _VT& _v1,const _VT& _v2){
 using size_type = unsigned int;
 
 
+namespace private_space { // Don't use this namespace unless neccesary!
+template <class _VT> 
+inline constexpr _VT MAX(const _VT &V1,const _VT &V2) {
+    if(V1 > V2) return V1;
+    else return V2;
+}
+}
+
+template <class _VT>
+inline constexpr _VT Max(const _VT& V) {
+    return V;
+}
+
+template <class _VT,class ..._VTs>
+constexpr _VT Max(const _VT& arg,const _VTs& ...args) {
+    return private_space::MAX(arg,Max(args...));
+}
+
+template <class iterator> 
+constexpr auto MaxIn(const iterator& begin,
+                     const iterator& end) {
+    iterator it = begin;
+    auto ans = *it;
+    for(++it; it != end ; ++it) {
+        if(*it > ans) ans = *it;
+    }
+    return ans;
+}
+
 }
 #endif

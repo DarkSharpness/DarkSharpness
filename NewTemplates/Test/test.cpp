@@ -1,23 +1,23 @@
-#include<General/inout.h>
-#include<Data/FW_tree.h>
+#include <General/inout.h>
+#include <General/basic.h>
+
 using namespace dark;
-typedef long long ll;
-FW_tree <int,10> t;
-
-
+class test {
+    public:
+        friend const out_stream& operator <<(out_stream &os,const test &t){
+           puts("Hello!");
+           return os;
+        }
+    test() {
+        
+    }
+};
 
 int main() {
-    int n = 1,x;
-    while(n) {
-        din >> n >> x ;
-        t[n] -= x;
-        for(int i : t) {
-            dout << i << ' ';
-        }
-        t.cbegin();
-        dout << dout;
+    int c;
+    while(din >> c) {
+        dout << (long long)(c) * c << endd;
     }
-
-
+    
     return 0;
 }
