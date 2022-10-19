@@ -1,4 +1,5 @@
 #include<new>
+#include<bits/move.h>
 #include<string.h>
 
 #ifndef _DARK_BASIC_H_

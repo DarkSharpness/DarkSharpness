@@ -5,7 +5,7 @@ namespace dark{
 
 //An easy allocator... Isn't it?
 template <typename _VT>
-struct Allocator{
+struct allocator{
     typedef _VT* v_ptr;
     v_ptr allocate(size_type _n) const{
         return static_cast<v_ptr>(::operator new(_n * sizeof(_VT)));

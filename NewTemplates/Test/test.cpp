@@ -3,7 +3,7 @@
 using namespace dark;
 
 
-const int N = quick_pow(3,3ULL<<39,9);
+const int N = factorial <int> (11);
 
 signed main() {
     dout << N << endd;

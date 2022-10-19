@@ -3,9 +3,10 @@ using namespace std;
 using ll = long long;
 using ull = unsigned long long;
 //#define int lont long
-priority_queue <int>;
+vector <int> v;
 
 signed main() {
-
+    int n;
+    v.emplace_back(n);
     return 0;
 }

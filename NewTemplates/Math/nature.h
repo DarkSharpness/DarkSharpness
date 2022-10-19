@@ -64,13 +64,14 @@ constexpr auto MinIn(const iterator& begin,
 }
 
 /**
- * @brief Find the ans of pow(base,exponent)
+ * @brief Find the value of pow(base,exponent)
  * in O(log exponent) time. \n 
  * The base can be integers,float numbers,Matrices...
+ * as long as it has "*=" operator. 
  * Note that exponent must be a positive integer,
- * stored in a integer-style type(e.g. int,long long),
- * supporting %>>=% operation and %&% operation.
- * Otherwise you may get unexpected outcome.
+ * stored in a integer-style type(e.g. short,unsigned int),
+ * supporting ">>=" operation and "&" operation.
+ * Otherwise you may get an unexpected outcome.
  * 
  * 
  * @param base     base of the expression 
@@ -98,13 +99,13 @@ constexpr value_type quick_pow(value_type base,
 }
 
 /**
- * @brief Find the ans of pow(base,exponent) % modulus
+ * @brief Find the value of pow(base,exponent) % modulus
  * in O(log exponent) time. \n 
- * The base can only be integers with % operatoion
+ * The base should be integers with "%" and "*=" operation.
  * Note that exponent must be a non-negative integer,
- * stored in a integer-style type(e.g. int,long long),
- * supporting ">>=" operation and "&"" operation.
- * Otherwise you may get unexpected outcome.
+ * stored in a integer-style type(e.g. short,unsigned int),
+ * supporting ">>=" operation and "&" operation.
+ * Otherwise you may get an unexpected outcome.
  * 
  * @param base     base of the expression 
  * @param exponent exponent of the expression 
@@ -112,9 +113,10 @@ constexpr value_type quick_pow(value_type base,
  * @return pow(base,exponent)
  */
 template <class integer1,class integer2>
-constexpr integer1 quick_pow(integer1 base,
+constexpr integer1 quick_pow_mod(integer1 base,
                              integer2 exponent,
                              integer1 mod) {
+    if(mod == 1) return 0;
     integer1 ans = 1;
     while(exponent > 0) {
         if(exponent & 1) {
@@ -128,6 +130,22 @@ constexpr integer1 quick_pow(integer1 base,
     }
     return ans;
 }
+
+/**
+ * @brief Find the value of N! in O(N) time
+ * 
+ */
+template <class interger1,class interger2>
+constexpr interger1 factorial(interger2 N) {
+    interger1 ans = N;
+    --N;
+    while(N) {
+        ans *= N;
+        --N;
+    }
+    return ans;
+}
+
 
 }
 
