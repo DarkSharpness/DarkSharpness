@@ -79,14 +79,15 @@ bool QoiEncode(uint32_t width, uint32_t height, uint8_t channels, uint8_t colors
         if(r == pre_r &&
            g == pre_g &&
            b == pre_b &&
-           a == pre_a) { // use RGBA Encoding
-            if(run == 61) { //identical 62 times,so write in first
+           a == pre_a) {
+            // use RGBA Encoding
+            if(run == 61) { // identical 62 times,so write in first
                 QoiWriteU8(QOI_OP_RUN_TAG | 61);
                 run = 0;
             } else { // add run by 1
                 ++run;
             }
-        } else { 
+        } else {
             if(run > 0) { // RGB is different,so clear run first
                 QoiWriteU8(QOI_OP_RUN_TAG | (run-1));
                 run = 0;
@@ -107,31 +108,34 @@ bool QoiEncode(uint32_t width, uint32_t height, uint8_t channels, uint8_t colors
                     history[index][2] = b;
                     history[index][3] = a;
 
-                    if(a != pre_a) { // RGBA Encoding
+                    if(a != pre_a) {
+                        // RGBA Encoding
                         QoiWriteU8(QOI_OP_RGBA_TAG);
                         QoiWriteU8(r);
                         QoiWriteU8(g);
                         QoiWriteU8(b);
                         QoiWriteU8(a);
                     } else { // RGB difference exists
-                        int8_t dr = r - pre_r;
-                        int8_t dg = g - pre_g;
-                        int8_t db = b - pre_b;
+                        int8_t dr = r - pre_r; // delta_red
+                        int8_t dg = g - pre_g; // delta_green
+                        int8_t db = b - pre_b; // delta_blue
 
                         if(dr <=1 && dr >= -2 &&
-                        dg <=1 && dg >= -2 &&
-                        db <=1 && db >= -2) { // use DIFF Encoding
+                           dg <=1 && dg >= -2 &&
+                           db <=1 && db >= -2) {
+                            // use DIFF Encoding
                             QoiWriteU8(QOI_OP_DIFF_TAG |
                                        (dr+2) << 4     |
                                        (dg+2) << 2     |
                                        (db+2));
                         } else if (dg >= -32 && dg <= 31 &&
-                                dr - dg >= -8 && dr - dg <= 7 &&
-                                db - dg >= -8 && db - dg <= 7) {
+                                   dr - dg >= -8 && dr - dg <= 7 &&
+                                   db - dg >= -8 && db - dg <= 7) {
                             // use LUMA Encoding 
                             QoiWriteU8(QOI_OP_LUMA_TAG | (dg + 32));
                             QoiWriteU8(((dr - dg + 8) << 4 ) | (db - dg + 8));
-                        } else { // use RGB Encoding
+                        } else {
+                            // use RGB Encoding
                             QoiWriteU8(QOI_OP_RGB_TAG);
                             QoiWriteU8(r);
                             QoiWriteU8(g);
@@ -145,11 +149,11 @@ bool QoiEncode(uint32_t width, uint32_t height, uint8_t channels, uint8_t colors
         pre_b = b;
         pre_a = a;
     }
-
     if(run > 0) { // file end,so clear run first
         QoiWriteU8(QOI_OP_RUN_TAG | (run-1));
         run = 0;
     }
+
 
     // qoi-padding part
     for (int i = 0; i < sizeof(QOI_PADDING) / sizeof(QOI_PADDING[0]); ++i) {
@@ -189,7 +193,7 @@ bool QoiDecode(uint32_t &width, uint32_t &height, uint8_t &channels, uint8_t &co
     uint8_t g = 0u;
     uint8_t b = 0u;
     uint8_t a = 255u;
-    uint8_t index; // record hashed index position
+    uint8_t index; // hashed index position
 
     for (int i = 0; i < px_num; ++i) {
         if(run) { // RUN Decoding
@@ -199,11 +203,13 @@ bool QoiDecode(uint32_t &width, uint32_t &height, uint8_t &channels, uint8_t &co
             // read header information
             uint8_t head = QoiReadU8();
 
-            if(head == QOI_OP_RGB_TAG) { // RGB Decoding
+            if(head == QOI_OP_RGB_TAG) {
+                // RGB Decoding
                 r = QoiReadU8();
                 g = QoiReadU8();
                 b = QoiReadU8();
-            } else if(head == QOI_OP_RGBA_TAG) { // RGBA Decoding
+            } else if(head == QOI_OP_RGBA_TAG) {
+                // RGBA Decoding
                 r = QoiReadU8();
                 g = QoiReadU8();
                 b = QoiReadU8();
@@ -220,23 +226,24 @@ bool QoiDecode(uint32_t &width, uint32_t &height, uint8_t &channels, uint8_t &co
                 a = history[index][3];
             } else if((head & QOI_MASK_2) == QOI_OP_DIFF_TAG) {
                 // DIFF Decoding
-                r += ((head & 48u) >> 4) - 2;
-                g += ((head & 12u) >> 2) - 2;
-                b += ((head &  3u)     ) - 2;
+                r += ((head & 48u) >> 4) - 2; // take bit 4,5
+                g += ((head & 12u) >> 2) - 2; // take bit 2,3
+                b += ((head &  3u)     ) - 2; // take bit 0,1
             } else if((head & QOI_MASK_2) == QOI_OP_LUMA_TAG) {
                 //LUMA Decoding
 
-                int8_t  dg   = (head & 63u) - 32; // dg
-                uint8_t byte = QoiReadU8();       // the byte recording
-                                                  // dr-dg and db-dg
+                int8_t  dg   = (head & 63u) - 32; // delta_green
+                // recording delta_red - delta_green,delta_blue - delta_green
+                uint8_t byte = QoiReadU8();
 
                 r += dg + (((byte & 240u) >> 4) - 8);
                 b += dg + (((byte &  15u)     ) - 8);
                 g += dg;
-            } else {
-                // actually , this won't happen.
+            } else { // Incorrectly Encoded
+                return false;
             }
-            
+
+
             index = QoiColorHash(r,g,b,a);
             // update history
             history[index][0] = r;
@@ -250,8 +257,8 @@ bool QoiDecode(uint32_t &width, uint32_t &height, uint8_t &channels, uint8_t &co
         QoiWriteU8(b);
         if (channels == 4) QoiWriteU8(a);
     }
-
     if(run > 0) return false; // too many runs
+
 
     bool valid = true;
     for (int i = 0; i < sizeof(QOI_PADDING) / sizeof(QOI_PADDING[0]); ++i) {
