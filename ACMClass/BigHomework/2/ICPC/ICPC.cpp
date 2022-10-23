@@ -6,112 +6,257 @@ namespace ICPC{
 
 class instream {
     public:
-    instream() { 
-
+    /// @brief Custom read in for unsigned integers
+    template <class integer>
+    instream & operator>>(integer & num){
+        char _buff;
+        while(!isdigit(_buff = getchar()));
+        num = 0;
+        while(isdigit(_buff)) {
+            num = num * 10 + (_buff ^'0');
+            _buff = getchar();
+        }
+        return *this;
     }
-}read;
+
+    instream() { 
+    }
+}read; // A substitue for cin
 
 class outstream {
     public:
-    /// @brief Custom print out
+    char buff[100]; // standard buffer
+    char *top;      // top of current buffer
+    /// @brief Custom print out for char * style string
     outstream & operator<<(const char *str) {
         while(*str != '\0') {
             putchar(*(str++));
         }
         return *this;
     }
-    /// @brief Custom print out 
+    /// @brief Custom print out for char
     outstream & operator<<(char ch) {
         putchar(ch);
         return *this;
     }
+
+    /// @brief Custom print out for unsigned integers
+    template <class integer>
+    outstream &operator<<(integer num) {
+        if(!num) { // special case of 0
+            putchar('0');
+        } else {
+            top = buff;
+            while(num != 0) { // a normal fast_write template.
+                (*top) = (num % 10) ^ '0';
+                num /= 10;
+                ++top;
+            }
+            while(top != buff) {
+                putchar(*(--top));
+            }
+        }
+        return *this;        
+    }
     outstream() {
 
     }
-}write;
+}write; // A substitue for cout
 
 /**
  * @brief Use the last char to record the size.
- * Memory is aligned to 8.
- * Use short string optimization.
+ * Memory is aligned to 8 byte(24 in total).
+ * Use short string optimization designed for short strings.
+ * The memory is stored conversely.
+ * For example , string "abc" is stored as
+ * 3 0 0 0 0 ... 'c' 'b' 'a' in the array a
  * 
  */
 class string {
-    char c[24]; // data
+    char c[24]; // Data
 
     // const unsigned long long *
     using size_cptr = const unsigned long long*;
     public:
 
+    /// @brief Array-style index
+    inline constexpr char operator[](size_t index) {
+        return c[23-index];
+    }
+
     inline constexpr unsigned size() const{
-        return static_cast <unsigned> (c[23]); //last char
+        return static_cast <unsigned> (c[0]); //last char
     }
     /**
-     * @brief Use size_t to speed up comparation.
+     * @brief Fast comparation by comparing
+     * 8 byte at a time using unsigned long long.
      * 
      * @param  str   The string to compare 
      * @return bool true if this string is less than 
      * the given string in alphabetic order
      */
     bool operator <(const string & str) const{
-        
         size_cptr ptr1 = reinterpret_cast <size_cptr> (c);    
         size_cptr ptr2 = reinterpret_cast <size_cptr> (str.c);
-        for(int i = 0 ; i < 3 ; ++i) {
+        for(int i = 2 ; i >= 0 ; --i) {
             if(ptr1[i] < ptr2[i]) return true;
             if(ptr1[i] > ptr2[i]) return false;
         }
         return false;//the same
     }
-    /// @brief custom read in 
+    /// @brief Custom read in for string
     friend instream & operator >>(instream & read,string &str) {
+        memset(str.c,0,sizeof(str.c)); // clear previous data.
         char _buff = getchar(); // read in buffer
-        while(_buff == '\0' || _buff == '\n' || _buff == EOF) {
+        while(_buff == ' ' || _buff == '\n'  || _buff == EOF) {
             _buff = getchar();
         }
-        char *top = str.c; // current top pointer
-        while(_buff != '\0' && _buff != '\n' && _buff != EOF) {
-            *(top++) = _buff;
+        char *top = str.c + 24; // current top pointer
+        while(_buff != ' ' && _buff != '\n'  && _buff != EOF) {
+            *(--top) = _buff;
             _buff = getchar();
         }
-        str.c[23] = top - str.c;
+        str.c[0] = str.c + 24 - top;
         return read;
     }
-    /// @brief custom print out 
+    /// @brief Custom print out for string
     friend outstream & operator <<(outstream & write,const string &str) {
-        const char *top = str.c; // current top pointer
+        const char *top = str.c + 24; // current top pointer
         while(*top != '\0') {
-            putchar(*(top++));
+            putchar(*(--top));
         }
         return write;
     }
     string(const char *str) {
-        char *top = c;
+        memset(c,0,sizeof(c));
+        char *top = c + 24; // current top pointer
         while(*str != '\0') {
-            *top = *str;
-            ++top;
-            ++str;
+            *(--top) = *(str++);
         }
-        c[23] = top - c;
+        c[0] = c + 24 - top;
     }
     string() {
-        
+        memset(c,0,sizeof(c));
     }
 };
+
+string buffer;              // common buffer for read in
+
+std::set <string> nameSet;  // record team names
+bool gameStart = false;     // whether the game starts
+unsigned duration = 0;      // the duration of the game
+unsigned problem_count = 0; // total of problems
+
+///@brief Skip reading next string or number.
+void skip_string() {
+    char _buff = getchar(); // temporary buffer
+    while(_buff == ' ' || _buff == '\n'  || _buff == EOF) {
+        _buff = getchar();
+    }
+    while(_buff != ' ' && _buff != '\n'  && _buff != EOF) {
+        _buff = getchar();
+    }
+}
+
+
+/// @brief ADDTEAM operation
+void addTeam() {
+    #define teamName buffer
+    if(gameStart) { // Error occurred, so skip reading
+        skip_string();
+        write << "[Error]Add failed: competition has started.\n";
+    }
+    read >> teamName;
+    auto iter = nameSet.find(teamName);
+    if(nameSet.insert(teamName).second == false) {
+        // Fail to insert such a name
+        // so there exists an identical name
+        write << "[Error]Add failed: duplicated team name.\n";
+
+    } else { // Successful insertion
+        write << "[Info]Add successfully.\n";
+    }
+}
+/// @brief START operation
+void start() {
+    skip_string();// This string is useless!
+    if(gameStart) { // Error occurred,so skip reading everything
+        skip_string();
+        skip_string();
+        skip_string();
+        write << "[Error]Start failed: competition has started.\n";
+    }
+    read >> duration;
+    skip_string();// This string is useless!
+    read >> problem_count;
+}
+
+void submit() {
+    
+}
+
+
+/// @brief read in a single command
+void readCommand() {
+    #define command buffer
+    read >> command;
+    switch(command[1]) {
+        case 'D': // ADDTEAM
+            addTeam();
+            break;
+        case 'T': // START
+            start();
+            break;
+        case 'U': // SUBMIT
+
+            break;
+        case 'L': // FLUSH
+
+            break;
+        case 'R': // FREEZE
+            break;
+        case 'C': // SCROLL
+
+            break;
+
+        case 'N': // END
+            break;
+        default:
+            if(command[6] == 'R') { // QUERY_RANKING
+
+            }
+            else { // QUERY_SUBMISSION
+
+            }
+    }
+
+
+}
 
 
 
 }
-    
-using ICPC::string;
-std::string str1("abc");
-std::string str2("abc");
+
+ICPC::string str;
+using namespace ICPC;
+string str1("abce");
+string str2("abcef");
 //bool cmp = str2 < str1;
+std::set <string> mp;
+
 
 signed main() {
-    freopen("test.out","w",stdout);
-    //std::cout << cmp << std::endl;
-    std::cout << (str1 < str2);
-    std::cout << (str1 < str2);
+    int n;
+    std::vector <int>vec;
+    vec[ 1] = 0;
+    read >> n;
+    string str;
+    for(int i = 1 ; i <= n ; ++i) {
+        read >> str;
+        mp.insert(str); 
+    }
+    for(auto i : mp) {
+        write << i << '\n';
+    }
     return 0;
 }
