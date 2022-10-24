@@ -4,11 +4,23 @@
 
 namespace ICPC{
 
+/// @brief test whether it is the end of string
+inline bool isEnd(char _ch) {
+    return _ch == ' ' || _ch == '\n'  ||
+           _ch == EOF || _ch == '\0';
+}
+
 class instream {
     public:
+
+    instream & operator >>(char &_ch) {
+        while(isEnd(_ch = getchar()));
+        return *this;
+    }
+
     /// @brief Custom read in for unsigned integers
     template <class integer>
-    instream & operator>>(integer & num){
+    instream & operator >>(integer & num){
         char _buff;
         while(!isdigit(_buff = getchar()));
         num = 0;
@@ -25,7 +37,7 @@ class instream {
 
 class outstream {
     public:
-    char buff[100]; // standard buffer
+    char buff[100]; // standard buffer for output
     char *top;      // top of current buffer
     /// @brief Custom print out for char * style string
     outstream & operator<<(const char *str) {
@@ -40,12 +52,16 @@ class outstream {
         return *this;
     }
 
-    /// @brief Custom print out for unsigned integers
+    /// @brief Custom print out for signed integers
     template <class integer>
     outstream &operator<<(integer num) {
         if(!num) { // special case of 0
             putchar('0');
         } else {
+            if(num < 0) {
+                putchar('-');
+                num = -num;
+            }
             top = buff;
             while(num != 0) { // a normal fast_write template.
                 (*top) = (num % 10) ^ '0';
@@ -96,8 +112,8 @@ class string {
      * the given string in alphabetic order
      */
     bool operator <(const string & str) const{
-        size_cptr ptr1 = reinterpret_cast <size_cptr> (c);    
-        size_cptr ptr2 = reinterpret_cast <size_cptr> (str.c);
+        size_cptr ptr1 = reinterpret_cast <size_cptr> (this);    
+        size_cptr ptr2 = reinterpret_cast <size_cptr> (&str);
         for(int i = 2 ; i >= 0 ; --i) {
             if(ptr1[i] < ptr2[i]) return true;
             if(ptr1[i] > ptr2[i]) return false;
@@ -107,7 +123,7 @@ class string {
     /// @brief Custom read in for string
     friend instream & operator >>(instream & read,string &str) {
         memset(str.c,0,sizeof(str.c)); // clear previous data.
-        char _buff = getchar(); // read in buffer
+        char _buff = getchar(); // temporary buffer
         while(_buff == ' ' || _buff == '\n'  || _buff == EOF) {
             _buff = getchar();
         }
@@ -127,6 +143,7 @@ class string {
         }
         return write;
     }
+    /// @brief Initialize with a const char* string 
     string(const char *str) {
         memset(c,0,sizeof(c));
         char *top = c + 24; // current top pointer
@@ -135,17 +152,42 @@ class string {
         }
         c[0] = c + 24 - top;
     }
+    /// @brief Initialization
     string() {
         memset(c,0,sizeof(c));
     }
 };
 
-string buffer;              // common buffer for read in
 
-std::set <string> nameSet;  // record team names
-bool gameStart = false;     // whether the game starts
-unsigned duration = 0;      // the duration of the game
-unsigned problem_count = 0; // total of problems
+
+const unsigned INF = 1919810;   // infinity for this program
+const unsigned kProblems = 26;  // maximum number of problems
+
+
+// status : AC = 0,WA = 0,RE = 0,TL = 0,
+enum status {AC,WA,RE,TL};
+
+// the data of each team
+struct team {
+
+    // last[1~ 26] : last submission of problem 'A' ~ 'Z'
+    // last[0] : last submission of all    
+    int last[kProblems+1][4];
+    int penalty;    // penalty time
+
+    inline void sumbit(int problem,int time,status _st) {
+        last[problem][_st] = time;
+        last[0][_st] = time;
+        if(penalty <= 0) { // have no AC yet
+            if(_st == AC) { // pass this problem
+                penalty = penalty * (-10) + time;
+            } else { // add to the penalty
+                --penalty;
+            }
+        }
+    }
+
+};
 
 ///@brief Skip reading next string or number.
 void skip_string() {
@@ -158,37 +200,63 @@ void skip_string() {
     }
 }
 
+string buffer;              // common buffer for read in
+
+std::map<string,int>nameMap;// record team names and its alphabetic rank
+bool gameStart  = false;    // whether the game starts
+bool gameFreeze = false;    // whether the billboard is frozen
+int  duration = 0;          // the duration of the game
+int  problem_count = 0;     // total of problems
+std::vector <team> gameData;// data of each team
+
+void submit()
+
+
+/// @brief Things to do before starting the game
+void prework() {
+    int rank = 0;// alphabetic rank of team
+    for(auto it : nameMap) {
+        it.second = rank++;
+    }
+}
+
 
 /// @brief ADDTEAM operation
 void addTeam() {
-    #define teamName buffer
     if(gameStart) { // Error occurred, so skip reading
         skip_string();
         write << "[Error]Add failed: competition has started.\n";
+        return;
     }
+
+    #define teamName buffer
     read >> teamName;
-    auto iter = nameSet.find(teamName);
-    if(nameSet.insert(teamName).second == false) {
+    auto iter = nameMap.find(teamName);
+    if(iter == nameMap.end()) {
         // Fail to insert such a name
         // so there exists an identical name
         write << "[Error]Add failed: duplicated team name.\n";
-
     } else { // Successful insertion
+        (*iter).second = 1;
         write << "[Info]Add successfully.\n";
     }
 }
 /// @brief START operation
 void start() {
-    skip_string();// This string is useless!
+    skip_string();  // This string is useless!
     if(gameStart) { // Error occurred,so skip reading everything
         skip_string();
         skip_string();
         skip_string();
         write << "[Error]Start failed: competition has started.\n";
+        return;
     }
+
     read >> duration;
-    skip_string();// This string is useless!
+    skip_string(); // This string is useless!
     read >> problem_count;
+    prework();
+
 }
 
 void submit() {
@@ -197,7 +265,7 @@ void submit() {
 
 
 /// @brief read in a single command
-void readCommand() {
+bool readCommand() {
     #define command buffer
     read >> command;
     switch(command[1]) {
@@ -208,7 +276,7 @@ void readCommand() {
             start();
             break;
         case 'U': // SUBMIT
-
+            submit();
             break;
         case 'L': // FLUSH
 
@@ -220,7 +288,7 @@ void readCommand() {
             break;
 
         case 'N': // END
-            break;
+            return false;
         default:
             if(command[6] == 'R') { // QUERY_RANKING
 
@@ -229,34 +297,16 @@ void readCommand() {
 
             }
     }
-
-
+    return true;
 }
 
 
 
 }
 
-ICPC::string str;
-using namespace ICPC;
-string str1("abce");
-string str2("abcef");
-//bool cmp = str2 < str1;
-std::set <string> mp;
 
 
 signed main() {
-    int n;
-    std::vector <int>vec;
-    vec[ 1] = 0;
-    read >> n;
-    string str;
-    for(int i = 1 ; i <= n ; ++i) {
-        read >> str;
-        mp.insert(str); 
-    }
-    for(auto i : mp) {
-        write << i << '\n';
-    }
+    while(ICPC::readCommand());
     return 0;
 }
