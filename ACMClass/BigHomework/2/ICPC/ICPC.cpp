@@ -124,11 +124,11 @@ class string {
     friend instream & operator >>(instream & read,string &str) {
         memset(str.c,0,sizeof(str.c)); // clear previous data.
         char _buff = getchar(); // temporary buffer
-        while(_buff == ' ' || _buff == '\n'  || _buff == EOF) {
+        while(isEnd(_buff)) {
             _buff = getchar();
         }
         char *top = str.c + 24; // current top pointer
-        while(_buff != ' ' && _buff != '\n'  && _buff != EOF) {
+        while(!isEnd(_buff)) {
             *(--top) = _buff;
             _buff = getchar();
         }
@@ -138,8 +138,8 @@ class string {
     /// @brief Custom print out for string
     friend outstream & operator <<(outstream & write,const string &str) {
         const char *top = str.c + 24; // current top pointer
-        while(*top != '\0') {
-            putchar(*(--top));
+        while(*(--top) != '\0') {
+            putchar(*top);
         }
         return write;
     }
@@ -159,37 +159,7 @@ class string {
 };
 
 
-
-const unsigned INF = 1919810;   // infinity for this program
-const unsigned kProblems = 26;  // maximum number of problems
-
-
-// status : AC = 0,WA = 0,RE = 0,TL = 0,
-enum status {AC,WA,RE,TL};
-
-// the data of each team
-struct team {
-
-    // last[1~ 26] : last submission of problem 'A' ~ 'Z'
-    // last[0] : last submission of all    
-    int last[kProblems+1][4];
-    int penalty;    // penalty time
-
-    inline void sumbit(int problem,int time,status _st) {
-        last[problem][_st] = time;
-        last[0][_st] = time;
-        if(penalty <= 0) { // have no AC yet
-            if(_st == AC) { // pass this problem
-                penalty = penalty * (-10) + time;
-            } else { // add to the penalty
-                --penalty;
-            }
-        }
-    }
-
-};
-
-///@brief Skip reading next string or number.
+///@brief skip reading next string or number.
 void skip_string() {
     char _buff = getchar(); // temporary buffer
     while(_buff == ' ' || _buff == '\n'  || _buff == EOF) {
@@ -200,17 +170,137 @@ void skip_string() {
     }
 }
 
+
+const unsigned INF = 1919810;   // infinity for this program
+const unsigned kProblems = 26;  // maximum number of problems
+
+
+// status : AC = 0,WA = 1,RE = 2,TL = 3,
+enum status {AC,WA,RE,TL};
+
+
+
+
+
+status status_map[128];     // mapping a char into status 
 string buffer;              // common buffer for read in
 
-std::map<string,int>nameMap;// record team names and its alphabetic rank
+std::map<string,int>nameMap;// record team names
 bool gameStart  = false;    // whether the game starts
 bool gameFreeze = false;    // whether the billboard is frozen
 int  duration = 0;          // the duration of the game
 int  problem_count = 0;     // total of problems
-std::vector <team> gameData;// data of each team
 
-void submit()
 
+/// @brief Real time time-data of a team
+struct team {
+    // last[0] : last submission of all    
+    // last[1~ 26] : last submission of problem 'A' ~ 'Z'
+    // [4] : Four status
+    // last  =  last submission time,
+    std::vector <int[4]> last;
+
+    // pass[0]:penalty time in all pass cases
+    // pass[1 ~ 26]:penalty time of question
+    // pass  =  0 uninitalized
+    // pass  <  0 fail for -pass times
+    // pass  >  0 successfull pass
+    std::vector <int> pass;
+
+    // history submit from small to big in tme
+    std::vector <int> history;
+
+    // pass number count
+    inline int passCount() const{
+        return history.size();
+    }
+    // penalty time in all
+    inline int penalty() const {
+        return pass[0];
+    }
+    /// @brief if this problem can bring new AC 
+    inline bool judgeAC(int problem,status _st) {
+        return pass[problem] <= 0 && _st == AC;
+    }
+
+    /// @brief submit problem at time with _st as status 
+    inline void sumbit(int problem,int time,status _st) {
+        // update last first
+        last[problem][_st] = time;
+        last[0][_st] = time;
+        
+        // if not AC,update submission state
+        if(pass[problem] <= 0) { // have not AC yet
+            if(_st == AC) { // pass this problem
+                pass[problem] = pass[problem] * (-10) + time;
+                pass[0] += pass[problem];
+                // find the postion for this pass time
+                auto iter = std::upper_bound(history.begin(),
+                                             history.end(),
+                                             pass[problem]);
+                history.insert(iter,pass[problem]);
+            } else { // add to the penalty
+                --pass[problem];
+            }
+        }
+    }
+    /// @brief Initialize last,pass as an array
+    /// while history as a stack
+    team() {
+        last.resize(problem_count + 1,{0,0,0,0});
+        pass.resize(problem_count + 1,0);
+        history.reserve(problem_count);
+    }
+};
+
+
+std::vector <team> teamData;// real time data of each team
+
+
+
+// compare function
+struct compare {
+    // custom less operation
+    bool operator ()(int ID1,int ID2) const{
+        // whether identical
+        if(ID1 == ID2) return false;
+
+        const team & team1 = teamData[ID1];
+        const team & team2 = teamData[ID2];
+
+        // pass count
+        if(team1.passCount() != team2.passCount()) {
+            return team1.passCount() < team2.passCount();
+        }
+
+        // penalty time in all
+        if(team1.penalty() != team2.penalty())
+            return team1.penalty() < team2.penalty();
+        
+        // penalty time from big to small
+        for(int i = team1.passCount() - 1 ; i != -1 ; --i) {
+            if(team1.history[i] != team2.history[i]) {
+                return team1.history[i] < team2.history[i];
+            }
+        }
+
+        // alphabetic order
+        return ID1 < ID2;
+    }
+
+};
+
+// real time billboard
+std::set<int,compare> billboard;
+// recording rank after FLUSH operation
+std::vector <int> flushed_rank;
+
+
+
+/// @brief return the teamID of a team
+inline int getTeamID(const string &teamName) {
+    return nameMap[teamName];
+}
 
 /// @brief Things to do before starting the game
 void prework() {
@@ -218,6 +308,12 @@ void prework() {
     for(auto it : nameMap) {
         it.second = rank++;
     }
+    // reserve enough space for flush
+    flushed_rank.reserve(rank);
+    status_map['A'] = AC;
+    status_map['W'] = WA;
+    status_map['R'] = RE;
+    status_map['T'] = TL; 
 }
 
 
@@ -243,7 +339,7 @@ void addTeam() {
 }
 /// @brief START operation
 void start() {
-    skip_string();  // This string is useless!
+    skip_string();  // DURATION
     if(gameStart) { // Error occurred,so skip reading everything
         skip_string();
         skip_string();
@@ -252,15 +348,56 @@ void start() {
         return;
     }
 
+    gameStart = true;
     read >> duration;
-    skip_string(); // This string is useless!
+    skip_string(); // PROBLEM
     read >> problem_count;
     prework();
 
 }
 
+/// @brief SUBMIT operation
 void submit() {
+    char problem; // the problem to solve
+    char _status; // statue char
+    int _time;    // time of submission
+
+    read >> problem;
+    problem ^= 64; // 'A'~'Z' -> 1 ~ 26;
+
+    skip_string(); // BY
     
+    #define teamName buffer
+    read >> teamName;
+    int teamID = getTeamID(teamName);
+    team & team1 = teamData[teamID]; // current team
+
+    skip_string(); // WITH 
+
+    read >> _status;
+
+    skip_string();  // remainder of the status string
+    skip_string();  // AT
+
+    read >> _time;
+
+    // if there will be new AC
+    bool flag = team1.judgeAC(problem,status_map[_status]);
+    if(flag) billboard.erase(teamID);
+    team1.sumbit(problem,_time,status_map[_status]);
+    if(flag) billboard.insert(teamID);
+    if(gameFreeze) {
+
+    }
+}
+
+/// @brief FLUSH operation in O(n)
+void flush() {
+    flushed_rank.clear();
+    for(auto iter : billboard) {
+        flushed_rank.push_back(iter);
+    }
+    write << "[Info]Flush scoreboard.\n";
 }
 
 
