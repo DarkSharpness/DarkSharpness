@@ -162,7 +162,7 @@ class in_stream {
     char func;
     using icref = const in_stream &;
     public:
-    /// @brief Reserve the space you need beforehand.
+    /// @brief Reserve the space you need before-hand.
     icref operator >>(char *str) const{
         char ch = getchar();
         if(ch == EOF) { //end of a file

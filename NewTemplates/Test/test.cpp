@@ -1,12 +1,14 @@
-#include <Math/nature.h>
-#include <General/inout.h>
-using namespace dark;
+#include<bits/stdc++.h>
+using namespace std;
+using ll = long long;
+using ull = unsigned long long;
+//#define int lont long
 
-
-const int N = factorial <int> (11);
 
 signed main() {
-    dout << N << endd;
-
+    freopen("test.txt","r",stdin);
+    char ch;
+    while((ch = getchar()) != EOF)
+        cout << int(ch) << endl; 
     return 0;
 }

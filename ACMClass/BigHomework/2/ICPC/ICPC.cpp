@@ -179,18 +179,18 @@ const unsigned kProblems = 26;  // maximum number of problems
 enum status {AC,WA,RE,TL};
 
 
-
-
-
 status status_map[128];     // mapping a char into status 
-string buffer;              // common buffer for read in
+string buffer;              // common buffer for string to read in
 
 std::map<string,int>nameMap;// record team names
 bool gameStart  = false;    // whether the game starts
 bool gameFreeze = false;    // whether the billboard is frozen
+bool gameChange = false;    // whether there is new pass AC
 int  duration = 0;          // the duration of the game
-int  problem_count = 0;     // total of problems
+int  problem_count = 0;     // total count of problems
 
+// recording rank after FLUSH operation
+std::vector <int> flushed_rank;
 
 /// @brief Real time time-data of a team
 struct team {
@@ -252,13 +252,10 @@ struct team {
         history.reserve(problem_count);
     }
 };
-
-
 std::vector <team> teamData;// real time data of each team
 
 
-
-// compare function
+/// @brief Compare function class
 struct compare {
     // custom less operation
     bool operator ()(int ID1,int ID2) const{
@@ -289,15 +286,10 @@ struct compare {
     }
 
 };
-
-// real time billboard
-std::set<int,compare> billboard;
-// recording rank after FLUSH operation
-std::vector <int> flushed_rank;
+std::set <int,compare> billboard;// real time billboard
 
 
-
-/// @brief return the teamID of a team
+/// @return the teamID of a team
 inline int getTeamID(const string &teamName) {
     return nameMap[teamName];
 }
@@ -308,8 +300,10 @@ void prework() {
     for(auto it : nameMap) {
         it.second = rank++;
     }
-    // reserve enough space for flush
+
+    // reserve enough space for flush_rank
     flushed_rank.reserve(rank);
+
     status_map['A'] = AC;
     status_map['W'] = WA;
     status_map['R'] = RE;
@@ -327,13 +321,14 @@ void addTeam() {
 
     #define teamName buffer
     read >> teamName;
-    auto iter = nameMap.find(teamName);
-    if(iter == nameMap.end()) {
+    int &iter = nameMap[teamName];
+    if(iter != 0) {
         // Fail to insert such a name
         // so there exists an identical name
         write << "[Error]Add failed: duplicated team name.\n";
-    } else { // Successful insertion
-        (*iter).second = 1;
+    } else { 
+        // Successful insertion
+        iter = 1;
         write << "[Info]Add successfully.\n";
     }
 }
@@ -354,6 +349,7 @@ void start() {
     read >> problem_count;
     prework();
 
+    
 }
 
 /// @brief SUBMIT operation
@@ -388,16 +384,21 @@ void submit() {
     if(flag) billboard.insert(teamID);
     if(gameFreeze) {
 
+    } else {
+        if(flag) gameChange = true;
     }
 }
 
 /// @brief FLUSH operation in O(n)
 void flush() {
+    // the game doesn't make a difference
+    if(!gameChange) return;
     flushed_rank.clear();
     for(auto iter : billboard) {
         flushed_rank.push_back(iter);
     }
     write << "[Info]Flush scoreboard.\n";
+    gameChange = false;
 }
 
 
@@ -416,7 +417,7 @@ bool readCommand() {
             submit();
             break;
         case 'L': // FLUSH
-
+            flush();
             break;
         case 'R': // FREEZE
             break;
