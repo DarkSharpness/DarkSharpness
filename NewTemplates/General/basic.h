@@ -1,6 +1,7 @@
 #include<new>
 #include<bits/move.h>
 #include<string.h>
+#include<inttypes.h>
 
 #ifndef _DARK_BASIC_H_
 #define _DARK_BASIC_H_

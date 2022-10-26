@@ -15,7 +15,7 @@ namespace dark {
  * @param dst The variable to be written into.
  */
 template <class T>
-inline constexpr void Fread(T &dst) {
+inline void Fread_s(T &dst) {
     char ch = getchar();
     bool flag = false;
     while(!isdigit(ch)) {
@@ -47,6 +47,99 @@ inline void Fread_u(T &dst) {
     }
 }
 
+/// @brief Read a char object like getchar does 
+inline void Fread_c(char &ch) {
+    ch = getchar();
+}
+
+// A series of smart fast read for integers/signs/char *
+
+// Fast read-in.
+inline void Fread(int16_t &dst) {
+    char ch = getchar();
+    bool flag = false;
+    while(!isdigit(ch)) {
+        if(ch == '-') flag = true;
+        ch = getchar();
+    }
+    dst = 0;
+    while(isdigit(ch)) {
+        dst = dst * 10 + (ch ^ '0');
+        ch  = getchar();
+    }
+    if(flag) dst *= -1;
+}
+// Fast read-in.
+inline void Fread(int32_t &dst) {
+    char ch = getchar();
+    bool flag = false;
+    while(!isdigit(ch)) {
+        if(ch == '-') flag = true;
+        ch = getchar();
+    }
+    dst = 0;
+    while(isdigit(ch)) {
+        dst = dst * 10 + (ch ^ '0');
+        ch  = getchar();
+    }
+    if(flag) dst *= -1;
+}
+// Fast read-in.
+inline void Fread(int64_t &dst) {
+    char ch = getchar();
+    bool flag = false;
+    while(!isdigit(ch)) {
+        if(ch == '-') flag = true;
+        ch = getchar();
+    }
+    dst = 0;
+    while(isdigit(ch)) {
+        dst = dst * 10 + (ch ^ '0');
+        ch  = getchar();
+    }
+    if(flag) dst *= -1;
+}
+// Fast read-in.
+inline void Fread(uint16_t &dst) {
+    char ch;
+    while(!isdigit(ch = getchar()));
+    dst = 0;
+    while(isdigit(ch)) {
+        dst = dst * 10 + (ch ^ '0');
+        ch  = getchar();
+    }
+}
+// Fast read-in.
+inline void Fread(uint32_t &dst) {
+    char ch;
+    while(!isdigit(ch = getchar()));
+    dst = 0;
+    while(isdigit(ch)) {
+        dst = dst * 10 + (ch ^ '0');
+        ch  = getchar();
+    }
+}
+// Fast read-in.
+inline void Fread(uint64_t &dst) {
+    char ch;
+    while(!isdigit(ch = getchar()));
+    dst = 0;
+    while(isdigit(ch)) {
+        dst = dst * 10 + (ch ^ '0');
+        ch  = getchar();
+    }
+}
+
+// Fast read-in
+inline void Fread(int8_t &ch) {
+    ch = getchar();
+}
+// Fast read-in
+inline void Fread(uint8_t &ch) {
+    ch = getchar();
+}
+
+
 
 /**
  * @brief Fast print-out for signed integers. \n 
@@ -55,7 +148,7 @@ inline void Fread_u(T &dst) {
  * @param val The value to be printed.
  */
 template <class T>
-inline void Fwrite(T val) {
+inline void Fwrite_s(T val) {
     if(!val) {
         putchar('0');
         return ;
@@ -94,10 +187,9 @@ inline void Fwrite_u(T val) {
 }
 
 inline void read() {}
-inline void read_u() {}
 
 /**
- * @brief Read in multiple signed integers.
+ * @brief Read in multiple integers.
  * 
  */
 template <class T,class ...V> 
@@ -106,25 +198,11 @@ inline void read(T &arg,V &...args) {
     read(args...);
 }
 
-/**
- * @brief Read in multiple unsigned integers.
- * 
- */
-template <class T,class ...V> 
-inline void read_u(T &arg,V &...args) {
-    Fread_u(arg);
-    read_u(args...);
-}
 
 //Print out a certain string.
-inline void write(const char * str) {
+inline void write_s(const char * str) {
     while(*str != '\0') putchar(*(str++));
 }
-//Print out a certain string.
-inline void write_u(const char * str) {
-    while(*str != '\0') putchar(*(str++));
-}
-
 
 /**
  * @brief Faster print-out signed Integers.
@@ -135,10 +213,10 @@ inline void write_u(const char * str) {
  * is where the variable is printed. 
  */
 template <class T,class ...V>
-inline void write(const char * str,T arg,V ...args) {
+inline void write_s(const char * str,T arg,V ...args) {
     while(*str != '#') putchar(*(str++));
     Fwrite(arg);
-    write(++str,args...);
+    write_s(++str,args...);
 }
 
 
@@ -158,14 +236,16 @@ inline void write_u(const char * str,T arg,V...args) {
 }
 
 class in_stream {
-    mutable bool isEOF;
-    char func;
-    using icref = const in_stream &;
+    bool isEOF;     // reach EOF = true
+    bool sign_mode; // unsigned  = true
+    using iref = in_stream &;
     public:
-    /// @brief Reserve the space you need before-hand.
-    icref operator >>(char *str) const{
+
+    /// @brief Reserve the space you need for 
+    /// a char * style string before-hand.
+    iref operator >>(char *str) {
         char ch = getchar();
-        if(ch == EOF) { //end of a file
+        if(ch == EOF) { // end of a file
             isEOF = true;
             return *this;
         }
@@ -178,77 +258,100 @@ class in_stream {
         *str = 0;
         return *this;
     }
-    /// @brief Read in a char.
-    icref operator >>(char &c) const{
-        char ch = getchar();
-        if(ch == EOF) { //end of a file
+
+    /// @brief Read in a single char,just like getchar().
+    iref operator >>(char &c) {
+        c = getchar();
+        if(c == EOF) { //end of a file
             isEOF = true;
             return *this;
         }
-        c = ch;
-        return *this;
-    }
-    /// @brief Default read-in for signed number types.
-    template <class T>
-    icref operator >>(T &dst) const{
-        char ch = getchar();
-        if(ch == EOF) {
-            isEOF = true;
-            return *this;
-        }
-        bool flag = false;
-        while(!isdigit(ch)) {
-            if(ch == '-') flag = true;
-            ch = getchar();
-        }
-        dst = 0;
-        while(isdigit(ch)) {
-            dst = dst * 10 + (ch ^ '0');
-            ch  = getchar();
-        }
-        if(flag) dst *= -1;
         return *this;
     }
 
+    /// @brief Default read-in for number types.
+    /// Whether it's signed depend on sign mode.
+    /// For maximum speed, use read()/read_u() instead.
+    template <class T>
+    iref operator >>(T &dst) {
+        if(sign_mode == false) {
+            Fread(dst);
+        } else {
+            Fread_u(dst);
+        }
+        return *this;
+    }
+
+    
     /// @return bool true if end of file is reached
     operator bool() const{
         return !isEOF;
     }
+
+    /// @brief Switch sign mode between signed/unsigned
+    inline void switch_mode() {
+        sign_mode ^= true;
+    }
+    /// @brief Switch sign mode to signed/unsigned
+    /// @param mode 0(false):signed  1(true):unsigned
+    inline void switch_mode(bool mode) {
+        sign_mode = mode;
+    }
+
+    /// @brief 
     in_stream() {
-        isEOF = false;
+        sign_mode = isEOF = false;
     }
 };
 
 class out_stream {
-    using ocref = const out_stream&;
+    using oref = out_stream&;
+    bool sign_mode;
     public:
-    ocref operator <<(const char * str) const{
+    oref operator <<(const char * str) {
         while(*str != 0) {
             putchar(*(str));
             ++str;
         }
         return *this;
     }
-    ocref operator <<(char * str) const{
+    oref operator <<(char * str) {
         while(*str != 0) {
             putchar(*(str));
             ++str;
         }
+        return *this;
     }
-    ocref operator <<(const char _ch) const{
+    oref operator <<(const char _ch) {
         putchar(_ch);
+        return *this;
     }
-    ocref operator <<(ocref _O) const{
+    oref operator <<(oref _O) {
         putchar('\n');
+        return *this;
     }
     
+    /// @brief Write an signed/unsigned number.
+    /// Whether it's signed depend on sign mode.
+    /// For maximum speed, use write()/write_u() instead.
     template <class T>
-    ocref operator <<(const T &arg) const{
+    oref operator <<(const T &arg) {
         Fwrite(arg);
         return *this;
     }
- 
+
+    /// @brief Switch sign mode between signed/unsigned
+    inline void switch_mode() {
+        sign_mode ^= true;
+    }
+    /// @brief Switch sign mode to signed/unsigned
+    /// @param mode 0(false):signed  1(true):unsigned
+    inline void switch_mode(bool mode) {
+        sign_mode = mode;
+    }
+
     out_stream() {
+        sign_mode = false;
     }
 };
 
