@@ -10,6 +10,7 @@ inline bool isEnd(char _ch) {
            _ch == EOF || _ch == '\0';
 }
 
+/// @brief Custom input class
 class instream {
     public:
 
@@ -33,11 +34,12 @@ class instream {
 
     instream() { 
     }
-}read; // A substitue for cin
+}read;  // A substitue for cin
 
+/// @brief Custom output class
 class outstream {
     public:
-    char buff[100]; // standard buffer for output
+    char buff[32]; // standard buffer for output
     char *top;      // top of current buffer
     /// @brief Custom print out for char * style string
     outstream & operator<<(const char *str) {
@@ -80,7 +82,7 @@ class outstream {
 }write; // A substitue for cout
 
 /**
- * @brief Use the last char to record the size.
+ * @brief Use the first char to record the size.
  * Memory is aligned to 8 byte(24 in total).
  * Use short string optimization designed for short strings.
  * The memory is stored conversely.
@@ -111,7 +113,7 @@ class string {
      * @return bool true if this string is less than 
      * the given string in alphabetic order
      */
-    bool operator <(const string & str) const{
+    bool operator <(const string &str) const{
         size_cptr ptr1 = reinterpret_cast <size_cptr> (this);    
         size_cptr ptr2 = reinterpret_cast <size_cptr> (&str);
         for(int i = 2 ; i >= 0 ; --i) {
@@ -120,6 +122,53 @@ class string {
         }
         return false;//the same
     }
+
+    /**
+     * @brief Fast comparation by comparing
+     * 8 byte at a time using unsigned long long.
+     * 
+     * @param  str   The string to compare 
+     * @return bool true if this string is equal to 
+     * the given string in alphabetic order
+     */
+    bool operator ==(const string &str) const{
+        size_cptr ptr1 = reinterpret_cast <size_cptr> (this);    
+        size_cptr ptr2 = reinterpret_cast <size_cptr> (&str);
+        for(int i = 2 ; i >= 0 ; --i) {
+            if(ptr1[i] != ptr2[i]) return false;
+        }
+        return true;//the same
+    }
+    
+    /**
+     * @brief Fast comparation by comparing
+     * 8 byte at a time using unsigned long long.
+     * 
+     * @param  str   The string to compare 
+     * @return bool true if this string doesn't equal 
+     * the given string in alphabetic order
+     */
+    bool operator !=(const string &str) const{
+        size_cptr ptr1 = reinterpret_cast <size_cptr> (this);    
+        size_cptr ptr2 = reinterpret_cast <size_cptr> (&str);
+        for(int i = 2 ; i >= 0 ; --i) {
+            if(ptr1[i] != ptr2[i]) return true;
+        }
+        return false;//the same
+    }
+    // If this <  str return 1.
+    // If this >  str return 0.
+    // If this == str return 2.
+    int compare(const string & str) const {
+        size_cptr ptr1 = reinterpret_cast <size_cptr> (this);    
+        size_cptr ptr2 = reinterpret_cast <size_cptr> (&str);
+        for(int i = 2 ; i >= 0 ; --i) {
+            if(ptr1[i] < ptr2[i]) return 1;
+            if(ptr1[i] > ptr2[i]) return 0;
+        }
+        return 2;
+    }
+
     /// @brief Custom read in for string
     friend instream & operator >>(instream & read,string &str) {
         memset(str.c,0,sizeof(str.c)); // clear previous data.
@@ -159,46 +208,65 @@ class string {
 };
 
 
-///@brief skip reading next string or number.
+///@brief Skip reading next string or number.
 void skip_string() {
     char _buff = getchar(); // temporary buffer
-    while(_buff == ' ' || _buff == '\n'  || _buff == EOF) {
+    while(isEnd(_buff)) {
         _buff = getchar();
     }
-    while(_buff != ' ' && _buff != '\n'  && _buff != EOF) {
+    while(!isEnd(_buff)) {
         _buff = getchar();
     }
 }
 
+const unsigned kProblems = 26;  // Maximum number of problems
 
-const unsigned INF = 1919810;   // infinity for this program
-const unsigned kProblems = 26;  // maximum number of problems
 
+string buffer;              // Common buffer for string to read in
+
+
+bool gameStart  = false;    // Whether the game starts
+bool gameFreeze = false;    // Whether the scoreboard is frozen
+bool gameChange = false;    // Whether there is new pass AC before freezing
+int  duration      = 0;     // The duration of the game
+int  problem_count = 0;     // Total count of problems
+
+
+// Set to judge if a name has existed.
+std::set <string> nameSet;
+// TeamNames in alphabetic order.
+std::vector <string> teamName; 
+// Recording given ID's rank
+// Value is 1-base , namely first = 1
+std::vector <int> flushedRank;
+
+// The submissions after frozen of each team
+// submissions[i][j] problem:i submission from ID:j
+std::vector <std::vector<int>> submissions;
 
 // status : AC = 0,WA = 1,RE = 2,TL = 3,
 enum status {AC,WA,RE,TL};
+status status_map[96];     // Mapping a char into a status 
 
-
-status status_map[128];     // mapping a char into status 
-string buffer;              // common buffer for string to read in
-
-std::map<string,int>nameMap;// record team names
-bool gameStart  = false;    // whether the game starts
-bool gameFreeze = false;    // whether the billboard is frozen
-bool gameChange = false;    // whether there is new pass AC
-int  duration = 0;          // the duration of the game
-int  problem_count = 0;     // total count of problems
-
-// recording rank after FLUSH operation
-std::vector <int> flushed_rank;
 
 /// @brief Real time time-data of a team
 struct team {
+    // special vector
+    struct array_4 {
+        int data[4];
+        int & operator[](size_t index_pos) {
+            return data[index_pos];
+        }
+        int operator[](size_t index_pos) const{
+            return data[index_pos];
+        }
+    };
+
     // last[0] : last submission of all    
     // last[1~ 26] : last submission of problem 'A' ~ 'Z'
-    // [4] : Four status
+    // [0~3] : Four status
     // last  =  last submission time,
-    std::vector <int[4]> last;
+    std::vector <array_4> last;
 
     // pass[0]:penalty time in all pass cases
     // pass[1 ~ 26]:penalty time of question
@@ -207,17 +275,28 @@ struct team {
     // pass  >  0 successfull pass
     std::vector <int> pass;
 
-    // history submit from small to big in tme
+
+    // history submit time from small to big
     std::vector <int> history;
+
+    team &operator =(const team &team2) {
+        last = team2.last;
+        pass = team2.pass;
+        history = team2.history;
+        return *this;
+    }
 
     // pass number count
     inline int passCount() const{
         return history.size();
     }
+
+
     // penalty time in all
     inline int penalty() const {
         return pass[0];
     }
+
     /// @brief if this problem can bring new AC 
     inline bool judgeAC(int problem,status _st) {
         return pass[problem] <= 0 && _st == AC;
@@ -228,17 +307,13 @@ struct team {
         // update last first
         last[problem][_st] = time;
         last[0][_st] = time;
-        
+
         // if not AC,update submission state
         if(pass[problem] <= 0) { // have not AC yet
             if(_st == AC) { // pass this problem
                 pass[problem] = pass[problem] * (-10) + time;
                 pass[0] += pass[problem];
-                // find the postion for this pass time
-                auto iter = std::upper_bound(history.begin(),
-                                             history.end(),
-                                             pass[problem]);
-                history.insert(iter,pass[problem]);
+                history.push_back(time);
             } else { // add to the penalty
                 --pass[problem];
             }
@@ -247,30 +322,30 @@ struct team {
     /// @brief Initialize last,pass as an array
     /// while history as a stack
     team() {
-        last.resize(problem_count + 1,{0,0,0,0});
-        pass.resize(problem_count + 1,0);
-        history.reserve(problem_count);
+        last.resize(problem_count + 1);
+        pass.resize(problem_count + 1);  
     }
 };
-std::vector <team> teamData;// real time data of each team
-
+std::vector <team> teamData;    // Real time data of each team
+std::vector <team> frozenData;  // Temp team data if frozen
 
 /// @brief Compare function class
 struct compare {
-    // custom less operation
+
+    // Custom less operation
     bool operator ()(int ID1,int ID2) const{
-        // whether identical
+        // Whether identical
         if(ID1 == ID2) return false;
 
-        const team & team1 = teamData[ID1];
-        const team & team2 = teamData[ID2];
+        const team &team1 = teamData[ID1];
+        const team &team2 = teamData[ID2];
 
-        // pass count
+        // Pass count
         if(team1.passCount() != team2.passCount()) {
             return team1.passCount() < team2.passCount();
         }
 
-        // penalty time in all
+        // Penalty time in all
         if(team1.penalty() != team2.penalty())
             return team1.penalty() < team2.penalty();
         
@@ -286,32 +361,71 @@ struct compare {
     }
 
 };
-std::set <int,compare> billboard;// real time billboard
+// Public scoreboard of teamID
+// If frozen , it won't change
+std::set <int,compare> scoreboard;
 
 
-/// @return the teamID of a team
-inline int getTeamID(const string &teamName) {
-    return nameMap[teamName];
+
+/// @return Find the teamID of a team (0-base) in O(logn)
+inline int getTeamID(const string &Name) {
+    int l = 0, r = teamName.size(), mid,cmp;
+    // Iterator style binary search
+    while(l != r) { // Search [l,r)
+        mid = (l + r) >> 1; 
+        cmp = Name.compare(teamName[mid]);
+        if(cmp == 2) return mid;
+        // Now mid not available
+        if(cmp == 1) {
+            r = mid;
+        } else {
+            l = mid + 1;
+        }
+    }
+    return -1; // Do not exist
 }
 
-/// @brief Things to do before starting the game
+
+/// @brief Things to do before starting the game,
+/// Initialize frozenRank, flushedRank, teamName
+/// and scoreboard in O(nlogn)
 void prework() {
-    int rank = 0;// alphabetic rank of team
-    for(auto it : nameMap) {
-        it.second = rank++;
+    // Reserve space for teamData
+    // Use it like an array 
+    teamData.resize(nameSet.size());
+
+
+    // Reserve space for flushedRank
+    // Use it like an array
+    flushedRank.resize(nameSet.size());
+    // Initialize scoreboard and flushedRank
+    for(int i = 0 ; i < (int)nameSet.size() ; ++i) {
+        scoreboard.insert(i);
+        flushedRank[i] = i+1;
     }
 
-    // reserve enough space for flush_rank
-    flushed_rank.reserve(rank);
 
+    // Reserve space for nameSet
+    teamName.reserve(nameSet.size());
+    // Initialize teamName
+    for(auto &&it : nameSet) {
+        teamName.push_back(it);
+    }
+
+
+    // Initialize status_map
     status_map['A'] = AC;
     status_map['W'] = WA;
     status_map['R'] = RE;
-    status_map['T'] = TL; 
+    status_map['T'] = TL;
+
+    //Initialize submissions.
+    submissions.resize(problem_count+1);
+    for(int i = 1 ; i <= problem_count ; ++i)
+        submissions[i].resize(nameSet.size());
 }
 
-
-/// @brief ADDTEAM operation
+/// @brief ADDTEAM operation in O(logn)
 void addTeam() {
     if(gameStart) { // Error occurred, so skip reading
         skip_string();
@@ -319,88 +433,183 @@ void addTeam() {
         return;
     }
 
-    #define teamName buffer
-    read >> teamName;
-    int &iter = nameMap[teamName];
-    if(iter != 0) {
+    #define Name buffer
+    read >> Name;
+
+    if(nameSet.insert(Name).second == false) {
         // Fail to insert such a name
         // so there exists an identical name
         write << "[Error]Add failed: duplicated team name.\n";
     } else { 
         // Successful insertion
-        iter = 1;
         write << "[Info]Add successfully.\n";
     }
+
+    #undef Name
 }
-/// @brief START operation
+
+/// @brief START operation in O(nlogn)
 void start() {
     skip_string();  // DURATION
+
     if(gameStart) { // Error occurred,so skip reading everything
-        skip_string();
-        skip_string();
-        skip_string();
+        skip_string(); // duration
+        skip_string(); // PROBLEM
+        skip_string(); // problem_count
         write << "[Error]Start failed: competition has started.\n";
         return;
     }
-
     gameStart = true;
     read >> duration;
-    skip_string(); // PROBLEM
-    read >> problem_count;
-    prework();
 
-    
+    skip_string();   // PROBLEM
+
+    read >> problem_count;
+
+    prework(); // Doing something beforehand
 }
 
-/// @brief SUBMIT operation
+/// @brief SUBMIT operation in O(logn)
 void submit() {
-    char problem; // the problem to solve
-    char _status; // statue char
-    int _time;    // time of submission
+    char problem; // The problem to solve
+    char _status; // Status char
+    int  _time;   // Time of submission
 
     read >> problem;
     problem ^= 64; // 'A'~'Z' -> 1 ~ 26;
 
     skip_string(); // BY
-    
-    #define teamName buffer
-    read >> teamName;
-    int teamID = getTeamID(teamName);
-    team & team1 = teamData[teamID]; // current team
 
-    skip_string(); // WITH 
+    #define Name buffer
+    read >> Name;
+    int ID = getTeamID(Name);
+    team & team1 = teamData[ID]; // Current team
+
+    skip_string(); // WITH
 
     read >> _status;
 
-    skip_string();  // remainder of the status string
+    skip_string();  // Remainder of the status string
     skip_string();  // AT
 
     read >> _time;
 
-    // if there will be new AC
-    bool flag = team1.judgeAC(problem,status_map[_status]);
-    if(flag) billboard.erase(teamID);
-    team1.sumbit(problem,_time,status_map[_status]);
-    if(flag) billboard.insert(teamID);
-    if(gameFreeze) {
-
-    } else {
-        if(flag) gameChange = true;
+    // Note down submission count
+    if(gameFreeze && frozenData[ID].pass[problem] != false) {
+        ++submissions[status_map[int(_status)]][ID];
     }
+
+    // Whether there will be new AC
+    bool flag = team1.judgeAC(problem,status_map[int(_status)]);
+    // Nothing to update.
+    if(flag == false || gameFreeze == true) {
+        team1.sumbit(problem,_time,status_map[int(_status)]);
+    } else { // Now not freeze + new AC
+        // The scoreboard won't change after freezing
+        scoreboard.erase(ID);
+        team1.sumbit(problem,_time,status_map[int(_status)]);        
+        scoreboard.insert(ID);
+        gameChange = true;
+    }
+    #undef Name
 }
 
 /// @brief FLUSH operation in O(n)
 void flush() {
-    // the game doesn't make a difference
-    if(!gameChange) return;
-    flushed_rank.clear();
-    for(auto iter : billboard) {
-        flushed_rank.push_back(iter);
-    }
+    // "The game doesn't make a difference" case.
+    if(gameChange == false) return;
+    
+    // Now update flushed rank
     write << "[Info]Flush scoreboard.\n";
     gameChange = false;
+    // Update flushed rank
+    int rank = 0;
+    for(auto iter : scoreboard) {
+        flushedRank[iter] = ++rank;
+    }
 }
 
+/// @brief FREEZE operation in O(n)
+void freeze() {
+    if(gameFreeze) {
+        write << "[Error]Freeze failed: scoreboard has been frozen.\n";
+        return;
+    }
+    gameFreeze = true;
+    write << "[Info]Freeze scoreboard.\n";
+    // update frozon rank
+    frozenData = teamData;
+}
+
+
+/// @brief SCROLL operation in O(nlogn)
+void scroll() {
+    teamData.swap(frozenData); // go back to frozen state
+    gameFreeze = false; // Defreeze
+    // The first untested index of a teamName
+    std::vector <int> first_index(teamName.size(),1);
+    int rank = 0;
+    for(auto ID : scoreboard) {
+        ++rank;
+        write << teamName[ID] << ' '
+              << rank         << ' '
+              << teamData[ID].passCount() << ' '
+              << teamData[ID].penalty()   << ' ';
+        for(int i = 1 ; i <= problem_count ; ++i) {
+            if(teamData[ID].pass[i] > 0)
+                write << '+';
+            write << teamData[ID].pass[i] << ' ';            
+        }
+    }
+
+
+    while(!scoreboard.empty()) {
+        auto iter = --scoreboard.end(); 
+        int ID = *iter;
+        if(teamData[ID].penalty() == frozenData[ID].penalty()) {
+            scoreboard.erase(iter);
+            continue;
+        }
+        // Use i as problem ID
+        for(int i = first_index[ID] ; i <= problem_count ; ++i) {
+            if(teamData[ID].pass[i] <= 0 &&
+             frozenData[ID].pass[i] >  0) {
+                // Now this might affect ranking
+                scoreboard.erase(iter);
+                iter = scoreboard.insert(ID).first;
+                ++iter;
+                if(iter == scoreboard.end()) continue;
+                write << teamName[ID]    << ' ' 
+                      << teamName[*iter] << ' '
+                      << teamData[ID].passCount() << ' '
+                      << teamData[ID].penalty()   << '\n';
+                first_index[ID] = i + 1;
+                break; 
+            }
+        }
+    }
+
+
+}
+
+/// @brief QUERY_SUBMISSION O(logn)
+inline void query_ranking() {
+    #define Name buffer
+    read >> Name;
+    int ID = getTeamID(Name);
+    if(ID == -1) {
+        // Not found
+        write << "[Error]Query ranking failed: cannot find the team.\n";
+    } else {
+        write << "[Info]Complete query ranking.\n";
+        if(gameFreeze) {
+            write << "[Warning]Scoreboard is frozen. ";
+            write << "The ranking may be inaccurate until it were scrolled.\n";
+        }
+        write << flushedRank[ID];
+    }
+    #undef Name
+}
 
 /// @brief read in a single command
 bool readCommand() {
@@ -420,23 +629,25 @@ bool readCommand() {
             flush();
             break;
         case 'R': // FREEZE
+            freeze();
             break;
         case 'C': // SCROLL
-
+            scroll();
             break;
-
         case 'N': // END
             return false;
         default:
             if(command[6] == 'R') { // QUERY_RANKING
-
+                query_ranking();
             }
             else { // QUERY_SUBMISSION
 
             }
     }
     return true;
+    #undef command
 }
+
 
 
 
