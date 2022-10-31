@@ -3,6 +3,11 @@
 
 namespace ICPC{
 
+inline void submit(int ID,int problem,int time,status _st) {
+    teamData[ID].sumbit(problem,time,_st);
+    historyData[ID].update(problem,time,_st);
+}
+
 /// @brief Print out frozen scoreboard
 inline void printFreeze() {
     scoreboard.clear();
@@ -77,31 +82,27 @@ void prework() {
     // update teamCount
     teamCount = nameSet.size();
 
-
-    // Reserve space for teamData
-    // Use it like an array 
+    // Reserve space for teamData.
+    // Use it like an array.
     teamData.resize(teamCount);
 
-
-    // Reserve space for flushedRank
-    // Use it like an array
+    // Reserve space for flushedRank.
+    // Use it like an array.
     flushedRank.reserve(teamCount);
-    // Initialize scoreboard and flushedRank
+    // Initialize scoreboard and flushedRank.
     for(int i = 0 ; i < teamCount ; ++i) {
         scoreboard.insert(i);
         flushedRank.push_back(i+1);
     }
 
-
-    // Reserve space for nameSet
+    // Reserve space for nameSet.
     teamName.reserve(teamCount);
     // Initialize teamName
     for(auto &&it : nameSet) {
         teamName.push_back(it);
     }
 
-
-    // Initialize status_map
+    // Initialize status_map.
     status_map['A'] = AC;
     status_map['W'] = WA;
     status_map['R'] = RE;
@@ -112,6 +113,10 @@ void prework() {
     for(int i = 1 ; i <= problemCount ; ++i) {
         submissions.resize(teamCount);
     }
+
+    // Initialize historyData.
+    // Just use it like an array.
+    historyData.resize(teamCount);
 }
 
 /// @brief ADDTEAM operation in O(logn)
@@ -173,7 +178,6 @@ void submit() {
     #define Name buffer
     read >> Name;
     int ID = getTeamID(Name);
-    team & team1 = teamData[ID]; // Current team
 
     skip_string(); // WITH
 
@@ -187,21 +191,21 @@ void submit() {
     read >> _time;
 
     if(gameFreeze == true) { // Game freeze state.
-        team1.sumbit(problem,_time,_st);
+        submit(ID,(int)problem,_time,_st);
         // If frozon problem(not passed before frozen)
         if(frozenData[ID].passP(problem) == false) {
             submissions[problem][ID].submit();
             if(_st == AC) {submissions[problem][ID].addAC(_time);}
         }
     } else { // Game not freeze state.
-        if(team1.judgeAC(problem,_st) == false) {
+        if(teamData[ID].judgeAC(problem,_st) == false) {
             // No new AC.
-            team1.sumbit(problem,_time,_st);
+            submit(ID,(int)problem,_time,_st);
         } else {
             // With new AC,
             // so update scoreboard
             scoreboard.erase(ID);
-            team1.sumbit(problem,_time,_st);
+            submit(ID,(int)problem,_time,_st);
             scoreboard.insert(ID);
             gameChange = true;
         }
@@ -212,13 +216,14 @@ void submit() {
 
 /// @brief FLUSH operation in O(n)
 void flush() {
+    write << "[Info]Flush scoreboard.\n";
+
     if(gameChange == false) {
         // "The game doesn't make a difference" case.
         return;
     }
 
     // Now update flushed rank
-    write << "[Info]Flush scoreboard.\n";
     gameChange = false;
     // Update flushed rank
     int rank = 0;
@@ -295,6 +300,7 @@ void scroll() {
                       << teamData[ID].passCount() << ' '
                       << teamData[ID].penalty()   << '\n';
                 first_index[ID] = i + 1;
+                break;
             }
         }
     }
@@ -302,6 +308,7 @@ void scroll() {
     // Go back to updated state in O(1);
     teamData.swap(frozenData);
     printUpdate();
+
     // Update scoreboard
     int rank = 0;
     for(auto iter : scoreboard) {
@@ -342,7 +349,6 @@ void query_submission() {
 
     // team exists
     write << "[Info]Complete query submission.\n";
-    const team &team1 = teamData[ID];
 
     skip_string(); // WHERE
 
@@ -359,26 +365,21 @@ void query_submission() {
     #define STATUS buffer2
     read >> STATUS;
     status _st = status_map[(int)STATUS[7]];
-    int _time = 0;
+    int _time;
     if(STATUS[7] == 'A' && STATUS[8] == 'L') {
         // STATUS  ALL CASE
-        for(int i = 0 ; i < 4 ; ++i) {
-            if(team1.last[problem][i] > _time) {
-                _time = team1.last[problem][i];
-                _st   = status(i);
-            } else {} // Nothing
-        }
         if(problem == 0) {
-            problem = team1.last_submission[_st];
-        } else {} // Nothing
+            _time = historyData[ID].getALLALL(problem,_st);
+        } else {
+            _time = historyData[ID].getPROBLEMALL(problem,_st);
+        }
     } else {
-        // AC,WA,RE,TLE CASE
-        _time = team1.last[problem][_st];
-        if(problem == 0) { // Find the problem index
-            problem = team1.last_submission[_st];
-        } else {}; // Nothing
+        if(problem == 0) {
+            _time = historyData[ID].getALLSTATUS(problem,_st);
+        } else {
+            _time = historyData[ID].getPROBLEMSTATUS(problem,_st);
+        } // Nothing
     }
-
     if(_time == 0) {
         write << "Cannot find any submission.\n"; 
     } else {
@@ -432,7 +433,7 @@ bool readCommand() {
 
 
 signed main() {
-    freopen()
+    freopen("ICPC/data/bigger.in","r",stdin);
     freopen("ans.out","w",stdout);
     while(ICPC::readCommand());
     ICPC::write << "[Info]Competition ends.\n";

@@ -4,18 +4,6 @@
 #include <vector>
 #include <set>
 namespace ICPC {
-    
-/// @brief Custom max function 
-template <class T> 
-constexpr T max(const T &arg){
-    return arg;
-}
-
-/// @brief Custom max function 
-template <class T,class ...V> 
-constexpr T max(const T &arg,const V &...args) {
-    return std::max(arg,max(args...));
-}
 
 /// @brief test whether it is the end of string
 inline bool isEnd(char _ch) {
@@ -266,9 +254,11 @@ std::vector <int> flushedRank;
 struct submission {
     int first_AC_time;
     int submission_times;
+    /// @brief Submit after freezing
     inline void submit() {
         ++submission_times;
     }
+    /// @brief Add AC_data after freezing.
     inline void addAC(int time) {
         if(first_AC_time == 0) {
             first_AC_time = time;
@@ -293,25 +283,82 @@ const char* status_string[4] = {
     "Time_Limit_Exceed"
 };
 
-/// @brief Real time time-data of a team
-struct team {
-    private:
-    // special vector
-    struct array_4 {
-        int data[4];
-        array_4& operator =(const array_4& array_B) {
-            memcpy(data,array_B.data,16);
-            return *this;
-        }
-        int & operator [](size_t index_pos) {
-            return data[index_pos];
-        }
-        int operator [](size_t index_pos) const{
-            return data[index_pos];
-        }
-    };
+/// @brief Special array for status
+struct array_4 {
+    int data[4];
+    array_4& operator =(const array_4& array_B) {
+        memcpy(data,array_B.data,16);
+        return *this;
+    }
+    int & operator [](size_t index_pos) {
+        return data[index_pos];
+    }
+    int operator [](size_t index_pos) const{
+        return data[index_pos];
+    }
+};
 
-    
+/// @brief Store latest information.
+class historyInfo {
+    private:
+    // [i][j]: Last submission time of problem i,status j.
+    std::vector <array_4> lastTime;
+    // [i]: Last status of problem i.
+    std::vector <status>  lastStatus;
+    // [i]: Last problem of status i.
+    array_4               lastProblem;
+    #define last_submission_problem lastTime[0][0]
+    #define last_submission_status  lastStatus[0]
+
+    public:
+    /// @brief Update history information.
+    inline void update(int problem,int time,status _st) {
+        lastTime[problem][_st]  = time;
+        lastProblem[_st]        = problem;
+        lastStatus[problem]     = _st;
+        last_submission_problem = problem;
+        last_submission_status  = _st;
+    }
+
+    /// @brief Get the status and problem.
+    inline int getALLALL(int &problem,status &_st) {
+        problem = last_submission_problem;
+        _st     = last_submission_status;
+        if(problem == 0) {
+            return 0; // Problem not found
+        }
+        return lastTime[problem][_st];
+    }
+    /// @brief Get the status.
+    inline int getPROBLEMALL(int problem,status &_st) {
+        _st = lastStatus[problem];
+        return lastTime[problem][_st];
+    }
+    /// @brief Get the problem
+    inline int getALLSTATUS(int &problem,status _st) {
+        problem = lastProblem[_st];
+        if(problem == 0) {
+            return 0;// Problem not found
+        }
+        return lastTime[problem][_st];
+    }
+    inline int getPROBLEMSTATUS(int problem,status _st) {
+        return lastTime[problem][_st];
+    }
+
+    #undef last_submission_problem
+    #undef last_submission_status
+    historyInfo() {
+        lastTime.  resize(problemCount + 1);
+        lastStatus.resize(problemCount + 1);
+    }
+};
+/// History-data of a team
+std::vector <historyInfo> historyData;
+
+/// @brief Time-data of a team
+class team {
+    private:
 
     // pass[0]:Penalty time in all pass cases
     // pass[1 ~ 26]:Submission count before passed.
@@ -325,20 +372,9 @@ struct team {
     // History AC submit time from small to big
     std::vector <int> history;
 
-    // last[0] : Last submission time of all
-    // last[1~ 26] : Last submission time of problem 'A' ~ 'Z'
-    // [0~3] : Four status
-    // last  =  Last submission time,
-    std::vector <array_4> last;
-
-    // The last submission problem of a certain state.
-    array_4 last_submission;
-
     inline team &operator =(const team &team2) {
-        last    = team2.last;
-        pass    = team2.pass;
-        history = team2.history;
-        last_submission = team2.last_submission;
+        pass        = team2.pass;
+        history     = team2.history;
         return *this;
     }
 
@@ -387,10 +423,6 @@ struct team {
 
     /// @brief Submit problem at time with _st as status 
     inline void sumbit(int problem,int time,status _st) {
-        // Update last first
-        last[problem][_st] = time;
-        last[0][_st] = time;
-        last_submission[_st] = problem;
         // If not AC,update submission state
         if(pass[problem] <= 0) { // Have not AC yet
             if(_st == AC) { // Pass this problem
@@ -405,12 +437,7 @@ struct team {
     /// @brief Initialize last,pass as an array
     /// while history as a stack
     team() {
-        last.resize(problemCount + 1);
         pass.resize(problemCount + 1);
-        last_submission[AC] = 0;
-        last_submission[WA] = 0;
-        last_submission[RE] = 0;
-        last_submission[TL] = 0;
     }
 };
 std::vector <team> teamData;    // Real time data of each team
@@ -418,7 +445,8 @@ std::vector <team> frozenData;  // Temp team data if frozen
 
 
 /// @brief Real-time compare function class
-struct compare {
+class compare {
+    public:
     // Custom less operation
     bool operator ()(int ID1,int ID2) const{
         // Whether identical
