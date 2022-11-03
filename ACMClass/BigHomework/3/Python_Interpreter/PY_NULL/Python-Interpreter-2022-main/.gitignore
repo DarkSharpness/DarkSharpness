@@ -1,0 +1,9 @@
+# IDE files
+.idea/
+cmake-build-debug/
+build/
+gen/
+antlr-playground/.antlr
+
+# Testcases
+testcases/hidden-testcases
