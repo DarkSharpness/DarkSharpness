@@ -3,6 +3,7 @@
 #include <cstring>
 #include <vector>
 #include <set>
+#include <chrono>
 namespace ICPC {
 
 /// @brief test whether it is the end of string
@@ -1007,11 +1008,16 @@ bool readCommand() {
 
 } // END of ICPC
 
+using namespace std::chrono;
 
 signed main() {
-    //freopen("ICPC/data/10.in","r",stdin);
+    freopen("bigger.in","r",stdin);
     //freopen("ans.out","w",stdout);
+    freopen("ans.txt","w",stdout);
+    auto now = high_resolution_clock::now();
     while(ICPC::readCommand());
     ICPC::write << "[Info]Competition ends.\n";
+    freopen("CON","w",stdout);
+    ICPC::write << duration_cast<milliseconds>(high_resolution_clock::now() - now).count();
     return 0;
 }
