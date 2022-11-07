@@ -1,0 +1,22 @@
+2
+copy move compare Palindromic notPalindromic
+copy
+Palindromic notPalindromic
+1 0 0 1 0 1 1
+
+copy
+0 * ; 0 ; > > ; copy
+1 * ; 1 ; > > ; copy
+* * ; * ; < - ; move
+
+move
+0 * ; * ; < - ; move
+1 * ; * ; < - ; move
+* * ; * ; > < ; compare
+
+compare
+0 0 ; 0 ; > < ; compare
+1 1 ; 1 ; > < ; compare
+0 1 ; 1 ; - - ; notPalindromic
+1 0 ; 0 ; - - ; notPalindromic
+* * ; * ; - - ; Palindromic

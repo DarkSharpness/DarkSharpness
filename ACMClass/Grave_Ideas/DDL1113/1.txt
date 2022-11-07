@@ -1,0 +1,15 @@
+1
+begin add end
+begin
+end
+1 0 0 1 1
+
+begin
+0 ; 0 ; > ; begin
+1 ; 1 ; > ; begin
+* ; * ; < ; add
+
+add 
+0 ; 1 ; - ; end
+1 ; 0 ; < ; add
+* ; 1 ; - ; end
