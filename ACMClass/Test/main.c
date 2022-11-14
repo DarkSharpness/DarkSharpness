@@ -1,9 +1,9 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
-#include "Game.h"
-#include "terminal.h"
-#include "utils.h"
+#include "Game.c"
+#include "terminal.c"
+#include "utils.c"
 int main(void) {
     srand(time(NULL) * 100);
     Game game;

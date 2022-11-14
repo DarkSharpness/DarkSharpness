@@ -1,9 +1,11 @@
+#ifndef UTILS_C
+#define UTILS_C
 #include "utils.h"
 #include <math.h>
 #include <stdbool.h>
 #include <stdio.h>
 #include <string.h>
-#include "Game.h"
+#include "Game.c"
 int getDigit(const int num, const int digitPos) {
     static int div[] = {10000,1000,100,10,1};
     return (num / div[digitPos]) % 10;
@@ -29,7 +31,7 @@ bool isValidResult(const Result res) {
     // It takes about 8 lines of code.
 }
 void printNum(const int num) {
-    for(int i = 0 ; i < 4 ; ++i) {
+    for(int i = 1 ; i <= 4 ; ++i) {
         printf("%d",getDigit(num,i));
     }
     // It takes about 3 lines of code.
@@ -40,3 +42,5 @@ void printWithWidth(const char s[], const int width) {
     if(len < width) for(int i = len ; i < width ; ++i) putchar(' ');
     // It takes about 4 lines of code.
 }
+
+#endif

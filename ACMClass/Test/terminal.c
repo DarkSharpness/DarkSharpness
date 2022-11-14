@@ -1,15 +1,18 @@
+#ifndef TERMINAL_C
+#define TERMINAL_C
 #include "terminal.h"
 #include <ctype.h>
 #include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include "utils.h"
+#include "utils.c"
 #define WIDTH (85)
 int beforeTurn(const Game* const game) {
     // This function has been implemented, you can read the code to get a sense of how this function works.
     printf("------------------------------\n");
-    printf("Turn #%d. The number of possible answer is %d. AI's choice is to guess ", game->turnCnt + 1, game->possibleCnt);
+    printf("Turn #%d. The number of possible answer is %d. AI's choice is to guess ",
+            game->turnCnt + 1, game->possibleCnt);
     int aiGuess = makeGuess(game);
     printNum(aiGuess);
     puts("");
@@ -41,25 +44,29 @@ int requestNewGuess(const int aiGuess) {
     // It takes about 17 lines of code.
 }
 Result requestNewGuessResult(const int guess) {
-    printf("%Input the result of the new guess ");// 35
+    printf("Input the result of the new guess ");// 33
     printNum(guess); // 4
-    printf(":                                             "); // 46
+    printf(":                                              "); // 46
     while(true) {
         Result ans;
-        scanf("%d%d",ans.A,ans.B);
+        scanf("%d%d",&ans.A,&ans.B);
         if(isValidResult(ans)) {
             return ans;
         }
-        char ch[] = "Your result is invalid. Input again:";
+        const char ch[] = "Your result is invalid. Input again:";
         printf("%-85s",ch);
     }
 }
 void endGame(const Game* const game, const GameResult gameResult) {
-
-    if(game->isPossible) {
+    if(gameResult == Correct) {
+        printf("Congratulations! You've guessed the correct number in %d steps!",
+                   game->turnCnt);
+    } else {
         printf("Oops! It seems that there's something wrong with the input,");
         printf(" since a number satisfying such input does not exist.");
-    } else printf("Congratulations! You've guessed the correct number in %d steps!",
-                   game->turnCnt);
+    }
     putchar('\n');
 }
+
+
+#endif
