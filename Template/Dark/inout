@@ -1,0 +1,6 @@
+#ifndef _DARK_INOUT_
+#define _DARK_INOUT_
+
+#include "General/inout.cc"
+
+#endif

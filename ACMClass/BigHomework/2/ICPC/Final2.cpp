@@ -3,18 +3,18 @@
 #include <cstring>
 #include <vector>
 #include <set>
+
 namespace ICPC {
 
 /// @brief test whether it is the end of string
 inline bool isEnd(char _ch) {
-    return _ch == ' ' || _ch == '\n'  ||
+    return _ch == ' ' || _ch == '\n' ||
            _ch == EOF || _ch == '\0';
 }
 
 /// @brief Custom input class
 class instream {
     public:
-
     instream & operator >>(char &_ch) {
         while(isEnd(_ch = getchar()));
         return *this;
@@ -22,7 +22,7 @@ class instream {
 
     /// @brief Custom read in for unsigned integers
     template <class integer>
-    instream & operator >>(integer & num){
+    instream & operator >>(integer & num) {
         char _buff;
         while(!isdigit(_buff = getchar()));
         num = 0;
@@ -33,8 +33,7 @@ class instream {
         return *this;
     }
 
-    instream() { 
-    }
+    instream() = default;
 }read;  // A substitue for cin
 
 /// @brief Custom output class
@@ -228,7 +227,8 @@ void skip_line() {
     }
 }
 
-const unsigned kProblems = 26;  // Maximum number of problems
+
+// const unsigned kProblems = 26;  // Maximum number of problems
 
 string buffer;              // Common buffer for string to read in
 string buffer2;             // Common buffer for string to read in
@@ -244,13 +244,13 @@ int  teamCount    = 0;      // Total count of teams
 std::set <string> nameSet;
 // TeamNames in alphabetic order.
 // Designed for binary_search.
-std::vector <string> teamName; 
+std::vector <string> teamName;
 // Recording given ID's rank
 // Value is 1-base , namely first = 1
 std::vector <int> flushedRank;
 
 
-/// @brief Simple submission class
+/// @brief Simple submission class for a problem number
 struct submission {
     int first_AC_time;
     int submission_times;
@@ -286,11 +286,11 @@ const char* status_string[4] = {
 /// @brief Special array for status
 struct array_4 {
     int data[4];
-    array_4& operator =(const array_4& array_B) {
+    array_4 &operator =(const array_4 &array_B) {
         memcpy(data,array_B.data,16);
         return *this;
     }
-    int & operator [](size_t index_pos) {
+    int &operator [](size_t index_pos) {
         return data[index_pos];
     }
     int operator [](size_t index_pos) const{
@@ -395,13 +395,13 @@ class team {
 
     /// @brief Fail times before AC
     inline int passF(int problem) const{
-        if(pass[problem] < 0) throw("");
+        // if(pass[problem] < 0) throw("");
         return pass[problem] - 1;
     }
 
     /// @brief Fail times without AC
     inline int failF(int problem) const{
-        if(pass[problem] > 0) throw("");
+        // if(pass[problem] > 0) throw("");
         return pass[problem];
     }
 
@@ -480,9 +480,9 @@ class compare {
 
 
 /// @return Find the teamID of a team (0-base) in O(logn).
-///         If not found , it will return -1
+/// If not found , it will return -1.
 inline int getTeamID(const string &Name) {
-    int l = 0, r = teamCount, mid,cmp;
+    int l = 0, r = teamCount,mid,cmp;
     // Iterator style binary search
     while(l != r) { // Search [l,r)
         mid = (l + r) >> 1; 
@@ -499,13 +499,11 @@ inline int getTeamID(const string &Name) {
 }
 
 
-// Public scoreboard of teamID
-// If frozen , it won't change
-std::set <int,compare>   scoreboard;
-}
+// Public scoreboard of teamID.
+// If frozen , it won't change.
+std::set <int,compare> scoreboard;
 
-namespace ICPC{
-
+/// @brief team[ID] sumbit problem at time with _st 
 inline void submit(int ID,int problem,int time,status _st) {
     teamData[ID].sumbit(problem,time,_st);
     historyData[ID].update(problem,time,_st);
