@@ -20,16 +20,19 @@ namespace sjtu {
 class NTT_base {
   protected:
     NTT_base() = default;
-    constexpr uint64_t fastPow(uint64_t base,uint64_t pow,uint32_t type);
-    constexpr static uint64_t modA    = 3892314113; // mod number A
-    constexpr static uint64_t modB    = 3489660929; // mod number B
+    uint64_t fastPow(uint64_t base,uint64_t pow,bool type) const;
+    void NTT(uint64_t *A,uint32_t *rev,uint32_t len,uint32_t type) const;
+    constexpr static uint64_t mod[2]  = {3892314113,3489660929}; // mod number
     constexpr static uint64_t lenb    = 18;   // base len in decimal
-    constexpr static uint64_t base    = 1e18; // base of int2048
+    constexpr static uint64_t base    = 1e18; // base of int2048 = 10 ^ lenb
     constexpr static uint64_t initLen = 2;    // initial length reserved
     constexpr static uint64_t rate    = 3;    // compressing rate
-    constexpr static uint64_t NTTLen  = 1e6;  // pow(NTTLen,rate) = base.
-    constexpr static uint64_t root[3] = {3};  // common root
-    constexpr static uint64_t unit[lenb * rate] = { // units below base
+    constexpr static uint64_t NTTLen  = 1e6;  // pow(NTTLen,rate) = base
+    constexpr static uint64_t BFLen   = 1e9;  // Brute Force length
+    constexpr static uint64_t root[4] = {     // root and inv root
+        3,3,(mod[0] + 1) / 3,(mod[1] + 1) / 3
+    };  // common root
+    constexpr static uint64_t unit[lenb] = { // units below base
         1,
         10,
         100,
@@ -49,6 +52,12 @@ class NTT_base {
         10000000000000000,
         100000000000000000
     };
+    /**
+     * @brief Least length for NTT.
+     * Note that 2 * threshold * base should be less than 2 ^ 64. 
+     * 
+     */
+    constexpr static uint64_t NTT_threshold = 6; 
 };
 
 /// @brief Easy Wrapping of vector.
@@ -119,10 +128,12 @@ class int2048 : private custom_vector,private NTT_base {
 
     friend int2048 Add(const int2048 &X,const int2048 &Y);
     friend int2048 Sub(const int2048 &X,const int2048 &Y);
+    friend int2048 Mult_BF(const int2048 &X,const int2048 &Y);
     inline friend int32_t Compare_abs(const int2048 &X,const int2048 &Y);
     //inline void copy(const int2048 &tmp);
     void read(const std::string &str);
     void print(std::ostream &os) const;
+    void move(std::vector <uint64_t> &tmp);
     void reverse();
     
     

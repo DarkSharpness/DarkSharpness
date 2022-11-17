@@ -6,7 +6,9 @@ using sjtu::int2048;
 std::list<int> l;
 std::vector <int> v;
 signed main() {
-    int2048 a = std::string("114514191981000000000");
-    a.print();
+    std::string str = std::string("9999999999999999999999999999999");
+    int2048 a = str;
+    (a * a).print();
+    std::cout << '\n' <<std::stold(str) *std::stold(str);
     return 0;
 }

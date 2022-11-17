@@ -23,7 +23,7 @@ int main()
     v.push_back(v[0] * 114514);
     v.push_back(v[0] / 114514);
     for (int i = 0; i < 10; i++)
-        v.push_back(0 - v[i]);
+        v.push_back( - v[i]);
 
     v.push_back(0);
 
