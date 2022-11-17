@@ -12,6 +12,7 @@ std::vector<sjtu::int2048> v;
 
 int main()
 {
+    freopen("ans.out","w",stdout);
     v.push_back(sjtu::int2048("19260817192608171926081719260817192608171926081719260817192608171926081719260817"));
     v.push_back(v[0]);
     v.push_back(v[0] + 1);

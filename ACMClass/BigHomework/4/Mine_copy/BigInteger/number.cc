@@ -8,7 +8,7 @@
  * 
  */
 namespace sjtu {
-    
+
 /** 
  * @brief Safe const reference to idx.
  * @return 0 if idx >= size() || element at idx otherwise 
@@ -23,13 +23,13 @@ inline uint64_t int2048::operator ()(uint64_t idx) const {
  * Use it instead of * (-1) or x = -x.
  * 
 */
-void int2048::reverse() {
+inline void int2048::reverse() {
     sign = !sign;
 }
 
 
 /**
- * @brief Split the number to given length.
+ * @brief Split the 18-bit vector to 6-bit.(DEC)
  * 
  */
 std::vector <uint64_t> int2048::split(uint32_t len) const {
@@ -41,7 +41,23 @@ std::vector <uint64_t> int2048::split(uint32_t len) const {
         ans.push_back(it % int2048::NTTLen);
         ans.push_back(it / int2048::NTTLen);
     }
+    ans.resize(len);
     return ans;
+}
+
+/**
+ * @brief Merge a 6-bit vector into a 18-bit one.(DEC)
+ * 
+ * @param A 
+ */
+void int2048::merge(const std::vector <uint64_t> &A) {
+    clear();
+    for(uint32_t i = 0 ; i < A.size() / 3 ; ++i) {
+        push_back(A[i * 3]     * unit[0] +
+                  A[i * 3 + 1] * unit[6] +
+                  A[i * 3 + 2] * unit[12]);
+    }
+    while(!back()) pop_back();
 }
 
 
@@ -223,22 +239,29 @@ int2048 Mult_BF(const int2048 &X,const int2048 &Y) {
 }
 
 
+/**
+ * @brief Multiply X and Y by NTT algorithm.
+ * 
+ * @return int2048 
+ */
 int2048 Mult_NTT(const int2048 &X,const int2048 &Y) {
     uint32_t len = 1;
-    while(len < (X.size() + Y.size()) * 3) len <<= 1;
-    std::vector <uint32_t> rev = getRev(len);
+    while(len < 3 * (X.size() + Y.size())) len <<= 1;
+    std::vector <uint32_t> rev = NTT_base::getRev(len);
     std::vector <uint64_t> A0  = X.split(len);
-    std::vector <uint64_t> B0  = Y.split(len); 
+    std::vector <uint64_t> B0  = Y.split(len);
+
 
     // Perform operation.
-    NTT_base::reverse(&A0[0],&rev[0],len);
-    NTT_base::reverse(&B0[0],&rev[0],len);
+    NTT_base::reverse(&(A0[0]),&(rev[0]),len);
+    NTT_base::reverse(&(B0[0]),&(rev[0]),len);
     std::vector <uint64_t> A1 = A0;
     std::vector <uint64_t> B1 = B0;
-    NTT_base::NTT(&A0[0],len,0);
-    NTT_base::NTT(&A1[0],len,1);
-    NTT_base::NTT(&B0[0],len,0);
-    NTT_base::NTT(&B1[0],len,1);
+
+    NTT_base::NTT0(&A0[0],len,0);
+    NTT_base::NTT1(&A1[0],len,0);
+    NTT_base::NTT0(&B0[0],len,0);
+    NTT_base::NTT1(&B1[0],len,0);
 
     for(uint32_t i = 0 ; i < len ; ++i) {
         A0[i] = (A0[i] * B0[i]) % int2048::mod[0];
@@ -247,17 +270,31 @@ int2048 Mult_NTT(const int2048 &X,const int2048 &Y) {
 
     NTT_base::reverse(&A0[0],&rev[0],len);
     NTT_base::reverse(&A1[0],&rev[0],len);
-    NTT_base::NTT(&A0[0],len,2);
-    NTT_base::NTT(&A1[0],len,3);
+    NTT_base::NTT0(&A0[0],len,1);
+    NTT_base::NTT1(&A1[0],len,1);
 
-    const uint64_t inv[2] = {
-        NTT_base::fastPow(len,NTT_base::mod[0]-2,0),
-        NTT_base::fastPow(len,NTT_base::mod[1]-2,1)
+    const uint64_t inv[3] = {
+        NTT_base::fastPow0(len,NTT_base::mod[0] - 2),
+        NTT_base::fastPow1(len,NTT_base::mod[1] - 2),
+        NTT_base::fastPow0(NTT_base::mod[1],NTT_base::mod[0] - 2)
     };
-    for(uint32_t i = 0 ; i < len ; ++i) {
+
+    uint64_t ret = 0;
+
+    for(uint32_t i = 0 ; i < (X.size() + Y.size()) * 3 ; ++i) {
         A0[i] = (A0[i] * inv[0]) % int2048::mod[0];
         A1[i] = (A1[i] * inv[1]) % int2048::mod[1];
+        ret += int2048::getMult(A0[i],A1[i],inv[2]);
+        A0[i] = ret % int2048::NTTLen;
+        ret /= int2048::NTTLen; // ret = ret / NTTLen
     }
+
+    int2048 ans(0,X.sign ^ Y.sign);
+    ret = 0;
+    ans.swap(B0); // get space from others
+    A0.resize((X.size() + Y.size()) * 3);
+    ans.merge(A0);
+    return ans;
 }
 
 
@@ -275,21 +312,44 @@ namespace sjtu {
  * 
  * @return uint64_t Pow(base,pow) % mod_type.
  */
-uint64_t NTT_base::fastPow(uint64_t base,uint64_t pow,bool type) {
+inline uint64_t NTT_base::fastPow0(uint64_t base,uint64_t pow) {
     uint64_t ans = 1;
     while(pow) {
-        if(pow & 1) ans = (ans * base) % mod[type];
-        base = (base * base) % mod[type];
+        if(pow & 1) ans = (ans * base) % mod[0];
+        base = (base * base) % mod[0];
+        pow >>= 1;
+    }
+    return ans;
+}
+
+inline uint64_t NTT_base::fastPow1(uint64_t base,uint64_t pow) {
+    uint64_t ans = 1;
+    while(pow) {
+        if(pow & 1) ans = (ans * base) % mod[1];
+        base = (base * base) % mod[1];
         pow >>= 1;
     }
     return ans;
 }
 
 /**
+ * @brief As Below:
+ * A0 + x * mod[0] = A1 + y * mod[1] = C < mod[0] * mod[1]. \n 
+ * Then : y = (A0 - A1) ^ inv(mod[1]) (in mod[0]).\n 
+ *  
+ * 
+ * @return uint64_t 
+ */
+inline uint64_t NTT_base::getMult(uint64_t A0,uint64_t A1,uint64_t inv) {
+    if(A0 == A1) return A0;
+    else return (A0 - A1 + mod[0] * 2) * inv % mod[0] * mod[1] + A1;  
+}
+
+/**
  * @brief Work out the rev vector.
  * 
  */
-inline std::vector <uint32_t> getRev(uint32_t len) {
+inline std::vector <uint32_t> NTT_base::getRev(uint32_t len) {
     std::vector <uint32_t> rev(len);
     for(uint32_t i = 0 ; i < len ; ++i) {
         rev[i] = (rev[i >> 1] >> 1) | ((i & 1) * len >> 1);
@@ -317,26 +377,47 @@ inline void NTT_base::reverse(uint64_t *A,uint32_t *rev,uint32_t len) {
  * @param type 0: mod[0],NTT  || 1 : mod[1],NTT  || \n 
  *             2: mod[0],INTT || 3 : mod[1],INTT ||
  */
-void NTT_base::NTT(uint64_t *A,uint32_t len,uint32_t type) {
+void NTT_base::NTT0(uint64_t *A,uint32_t len,bool type) {
+    uint32_t cnt = 0;
     for(uint32_t i = 1; i < len; i <<= 1) {
-        // unit root for NTT.
-        #define mod mod[type & 1]
-        uint64_t wn = fastPow(root[type],(mod - 1)/(i << 1),type & 1);
+        // uint64_t wn = fastPow0(root[0][type],(mod - 1)/(i << 1));
+        uint64_t wn = root[0][type][cnt++];
         for(uint32_t j = 0; j < len; j += (i << 1)) {
             uint64_t w = 1; // current w for NTT.
             for(uint32_t k = 0; k < i; ++k) {
                 uint64_t x = A[j + k];
-                uint64_t y = A[j + k + i] * w % mod;
-                A[j + k]     = (x + y) % mod;
-                A[j + k + i] = (x - y +  mod) % mod;
-                w = (w * wn) % mod;
+                uint64_t y = A[j + k + i] * w % mod[0];
+                A[j + k]     = (x + y) % mod[0];
+                A[j + k + i] = (x - y +  mod[0]) % mod[0];
+                w = w * wn % mod[0];
             }
         }
-        #undef mod
+    }
+}
+
+void NTT_base::NTT1(uint64_t *A,uint32_t len,bool type) {
+    uint32_t cnt = 0;
+    for(uint32_t i = 1; i < len; i <<= 1) {
+        // unit root for NTT.
+        // uint64_t wn = fastPow1(root[1][type],(mod[1] - 1)/(i << 1));
+        uint64_t wn = root[1][type][cnt++];
+        for(uint32_t j = 0; j < len; j += (i << 1)) {
+            uint64_t w = 1; // current w for NTT.
+            for(uint32_t k = 0; k < i; ++k) {
+                uint64_t x = A[j + k];
+                uint64_t y = A[j + k + i] * w % mod[1];
+                A[j + k]     = (x + y) % mod[1];
+                A[j + k + i] = (x - y +  mod[1]) % mod[1];
+                w = w * wn % mod[1];
+            }
+        }
     }
 }
 
 }
+
+
+
 
 
 /**
@@ -395,6 +476,19 @@ inline bool operator >=(const int2048 &X,const int2048 &Y) {
 inline bool operator !(const int2048 &X) { 
     return X.back();
 }
+
+}
+
+/**
+ * @brief This part includes augassign operators.
+ * 
+ */
+namespace sjtu {
+
+int2048& operator *=(int2048 &X,const int2048 &Y) {
+    return X = X * Y;
+}
+
 
 }
 

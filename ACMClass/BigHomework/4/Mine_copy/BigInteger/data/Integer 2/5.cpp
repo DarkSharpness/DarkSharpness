@@ -12,6 +12,8 @@ std::string s;
 
 int main()
 {
+    freopen("5.in","r",stdin);
+    freopen("ans.out","w",stdout);
     int n;
     std::cin >> n;
     for (int i = 1; i <= n; i++)

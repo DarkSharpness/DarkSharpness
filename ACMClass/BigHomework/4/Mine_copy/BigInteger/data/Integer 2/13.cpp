@@ -12,6 +12,7 @@ std::string s1, s2;
 
 int main()
 {
+    freopen("ans.out","w",stdout);
     for (int i = 1; i <= 100; i++)
     {
         a = 0, b = 0;

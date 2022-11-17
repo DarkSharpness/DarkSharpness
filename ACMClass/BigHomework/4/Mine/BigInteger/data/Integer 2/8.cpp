@@ -11,6 +11,8 @@ sjtu::int2048 a, b;
 
 int main()
 {
+    freopen("8.in","r",stdin);
+    freopen("ans.out","w",stdout);
     int T;
     std::cin >> T;
     while (T--)
