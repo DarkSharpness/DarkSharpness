@@ -8,6 +8,7 @@
  * 
  */
 namespace sjtu {
+
 /** 
  * @brief Safe const reference to idx.
  * @return 0 if idx >= size() || element at idx otherwise 
@@ -15,7 +16,6 @@ namespace sjtu {
 inline uint64_t int2048::operator ()(uint64_t idx) const {
     return idx >= size() ? 0 : (*this)[idx];
 }
-
 
 
 /**
@@ -27,25 +27,23 @@ void int2048::reverse() {
     sign = !sign;
 }
 
+
 /**
- * @brief Judge whether abs(X) > abs(Y) in O(log(X*Y)) time.\n 
- * Naturally,it satisfies that Compare_abs(X,Y) = -Compare_abs(Y,X).
+ * @brief Split the number to given length.
  * 
- * @return 1  if abs(X) > abs(Y) ||
- *         0  if abs(X) = abs(Y) ||
- *         -1 if abs(X) < abs(Y) ||
  */
-inline int32_t Compare_abs(const int2048 &X,const int2048 &Y) {
-    if(X.size() != Y.size()) {
-        return X.size() > Y.size() ? 1 : -1;
+std::vector <uint64_t> int2048::split(uint32_t len) const {
+    std::vector <uint64_t> ans;
+    ans.reserve(len);
+    for(auto it : (*this)) {
+        ans.push_back(it % int2048::NTTLen);
+        it /= int2048::NTTLen;
+        ans.push_back(it % int2048::NTTLen);
+        ans.push_back(it / int2048::NTTLen);
     }
-    for(uint32_t i = X.size() - 1 ; i != -1u ; --i) {
-        if(X[i] != Y[i]) {
-            return X[i] > Y[i] ? 1 : -1; 
-        }
-    }
-    return 0;
+    return ans;
 }
+
 
 /**
  * @brief Initialize from a string.
@@ -78,6 +76,7 @@ void int2048::read(const std::string &str) {
     }
 }
 
+
 /** 
  * @brief Print out the inside number.
  * Default outstream is std::cout.
@@ -97,6 +96,28 @@ void int2048::print(std::ostream &os = std::cout) const{
     }
     os << buffer;
 }
+
+
+/**
+ * @brief Judge whether abs(X) > abs(Y) in O(log(X*Y)) time.\n 
+ * Naturally,it satisfies that Compare_abs(X,Y) = -Compare_abs(Y,X).
+ * 
+ * @return 1  if abs(X) > abs(Y) ||
+ *         0  if abs(X) = abs(Y) ||
+ *         -1 if abs(X) < abs(Y) ||
+ */
+int32_t Compare_abs(const int2048 &X,const int2048 &Y) {
+    if(X.size() != Y.size()) {
+        return X.size() > Y.size() ? 1 : -1;
+    }
+    for(uint32_t i = X.size() - 1 ; i != -1u ; --i) {
+        if(X[i] != Y[i]) {
+            return X[i] > Y[i] ? 1 : -1; 
+        }
+    }
+    return 0;
+}
+
 
 /**
  * @brief Add X by Y in X's sign.
@@ -121,6 +142,7 @@ int2048 Add(const int2048 &X,const int2048 &Y) {
     return ans;
 }
 
+
 /**
  * @brief Subtract X by Y in X's sign.
  * Make sure abs(X) > abs(Y).
@@ -144,6 +166,7 @@ int2048 Sub(const int2048 &X,const int2048 &Y) {
     return ans;
 }
 
+
 /**
  * @brief Multiply X and Y by brute force.
  * For Maximum speed, X.size() should be greater than Y.size().
@@ -164,6 +187,7 @@ int2048 Mult_BF(const int2048 &X,const int2048 &Y) {
         Y2_bit[j] = Y[j] / int2048::BFLen;    
         Y1_bit[j] = Y[j] % int2048::BFLen;    
     } // static optimization
+
 
     #define Y1 Y1_bit[j] // lower  bit of Y
     #define Y2 Y2_bit[j] // higher bit of Y
@@ -199,6 +223,51 @@ int2048 Mult_BF(const int2048 &X,const int2048 &Y) {
 }
 
 
+int2048 Mult_NTT(const int2048 &X,const int2048 &Y) {
+    uint32_t len = 1;
+    while(len < (X.size() + Y.size()) * 3) len <<= 1;
+    std::vector <uint32_t> rev = getRev(len);
+    std::vector <uint64_t> A0  = X.split(len);
+    std::vector <uint64_t> B0  = Y.split(len); 
+
+    // Perform operation.
+    NTT_base::reverse(&A0[0],&rev[0],len);
+    NTT_base::reverse(&B0[0],&rev[0],len);
+    std::vector <uint64_t> A1 = A0;
+    std::vector <uint64_t> B1 = B0;
+    
+    NTT_base::NTT(&A0[0],len,0);
+    NTT_base::NTT(&A1[0],len,1);
+    NTT_base::NTT(&B0[0],len,0);
+    NTT_base::NTT(&B1[0],len,1);
+
+    for(uint32_t i = 0 ; i < len ; ++i) {
+        A0[i] = (A0[i] * B0[i]) % int2048::mod[0];
+        A1[i] = (A1[i] * B1[i]) % int2048::mod[1];
+    }
+
+    NTT_base::reverse(&A0[0],&rev[0],len);
+    NTT_base::reverse(&A1[0],&rev[0],len);
+    NTT_base::NTT(&A0[0],len,2);
+    NTT_base::NTT(&A1[0],len,3);
+
+    const uint64_t inv[2] = {
+        NTT_base::fastPow(len,NTT_base::mod[0]-2,0),
+        NTT_base::fastPow(len,NTT_base::mod[1]-2,1)
+    };
+    uint64_t ret = 0;
+    int2048 ans(X.size() + Y.size(),X.sign ^ Y.sign);
+    for(uint32_t i = 0 ; i < (X.size() + Y.size()) * 3 ; ++i) {
+        A0[i] = (A0[i] * inv[0]) % int2048::mod[0];
+        A1[i] = (A1[i] * inv[1]) % int2048::mod[1];
+        ret += getMod(A0[i],A1[i],mod[0],mod[1]);
+
+    }
+    if()
+}
+
+
+
 }
 
 /**
@@ -212,7 +281,7 @@ namespace sjtu {
  * 
  * @return uint64_t Pow(base,pow) % mod_type.
  */
-uint64_t NTT_base::fastPow(uint64_t base,uint64_t pow,bool type) const{
+uint64_t NTT_base::fastPow(uint64_t base,uint64_t pow,bool type) {
     uint64_t ans = 1;
     while(pow) {
         if(pow & 1) ans = (ans * base) % mod[type];
@@ -223,6 +292,29 @@ uint64_t NTT_base::fastPow(uint64_t base,uint64_t pow,bool type) const{
 }
 
 /**
+ * @brief Work out the rev vector.
+ * 
+ */
+inline std::vector <uint32_t> getRev(uint32_t len) {
+    std::vector <uint32_t> rev(len);
+    for(uint32_t i = 0 ; i < len ; ++i) {
+        rev[i] = (rev[i >> 1] >> 1) | ((i & 1) * len >> 1);
+    }
+    return rev;
+}
+
+/**
+ * @brief Perform reverse operator on A.
+ * 
+ */
+inline void NTT_base::reverse(uint64_t *A,uint32_t *rev,uint32_t len) {
+    for(uint32_t i = 0 ; i < len; ++i){
+        if(i < rev[i]) std::swap(A[i],A[rev[i]]);
+    }
+}
+
+
+/**
  * @brief Key operation of NTT algorithm.
  * 
  * @param A    The array of the original value.  
@@ -231,23 +323,22 @@ uint64_t NTT_base::fastPow(uint64_t base,uint64_t pow,bool type) const{
  * @param type 0: mod[0],NTT  || 1 : mod[1],NTT  || \n 
  *             2: mod[0],INTT || 3 : mod[1],INTT ||
  */
-void NTT_base::NTT(uint64_t *A,uint32_t *rev,uint32_t len,uint32_t type) const{
-    for(uint32_t i = 0 ; i < len; ++i){
-        if(i < rev[i]) std::swap(A[i],A[rev[i]]);
-    }
+void NTT_base::NTT(uint64_t *A,uint32_t len,uint32_t type) {
     for(uint32_t i = 1; i < len; i <<= 1) {
         // unit root for NTT.
-        uint64_t wn = fastPow(root[type],(mod[type & 1]-1)/(i << 1),type & 1);
+        #define mod mod[type & 1]
+        uint64_t wn = fastPow(root[type],(mod - 1)/(i << 1),type & 1);
         for(uint32_t j = 0; j < len; j += (i << 1)) {
             uint64_t w = 1; // current w for NTT.
             for(uint32_t k = 0; k < i; ++k) {
                 uint64_t x = A[j + k];
-                uint64_t y = A[j + k + i] * w % mod[type & 1];
-                A[j + k]     = (x + y) % mod[type & 1];
-                A[j + k + i] = (x - y +  mod[type & 1]) % mod[type & 1];
-                w = (w * wn) % mod[type & 1];
+                uint64_t y = A[j + k + i] * w % mod;
+                A[j + k]     = (x + y) % mod;
+                A[j + k + i] = (x - y +  mod) % mod;
+                w = (w * wn) % mod;
             }
         }
+        #undef mod
     }
 }
 
@@ -331,7 +422,6 @@ int2048 operator -(int2048 &&X) {
     return ans;
 }
 
-
 /**
  * @brief Return the number of X * (-1).
  * If you simply want to multiply X by -1,
@@ -344,7 +434,6 @@ int2048 operator -(const int2048 &X) {
     ans.reverse();
     return ans;
 }
-
 
 int2048 operator +(const int2048 &X,const int2048 &Y) {
     if(X.sign == Y.sign) {
@@ -374,7 +463,7 @@ int2048 operator *(const int2048 &X,const int2048 &Y) {
     } else if(Y.size() <= int2048::NTT_threshold) {
         return Mult_BF(X,Y);
     } else {
-        throw("Fuck you!");
+        return Mult_NTT(X,Y);
     }
 }
 
