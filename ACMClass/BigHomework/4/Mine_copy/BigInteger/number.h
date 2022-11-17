@@ -30,8 +30,8 @@ class NTT_base {
     
 
     constexpr static uint64_t mod[2]  = {2281701377,3489660929}; // mod number
-    constexpr static uint64_t lenb    = 18;   // base len in decimal
-    constexpr static uint64_t base    = 1e18; // base of int2048 = 10 ^ lenb
+    constexpr static uint64_t lenb    = 6;   // base len in decimal
+    constexpr static uint64_t base    = 1e6; // base of int2048 = 10 ^ lenb
     constexpr static uint64_t initLen = 2;    // initial length reserved
     constexpr static uint64_t MaxLen  = 1 << 21; // Maximum possible NTT length
     // constexpr static uint64_t rate    = 3;    // compressing rate
@@ -46,19 +46,7 @@ class NTT_base {
         100,
         1000,
         10000,
-        100000,
-        1000000,
-        10000000,
-        100000000,
-        1000000000,
-        10000000000,
-        100000000000,
-        1000000000000,
-        10000000000000,
-        100000000000000,
-        1000000000000000,
-        10000000000000000,
-        100000000000000000
+        100000
     };
     constexpr static uint64_t root[2][2][22]= {
         2281701376,344250126,483803410,617790083,2023592065,
@@ -91,7 +79,7 @@ class NTT_base {
      * Note that 2 * threshold * base should be less than 2 ^ 64. 
      * 
      */
-    constexpr static uint64_t NTT_threshold = 6;
+    constexpr static uint64_t NTT_threshold = 0;
 };
 
 

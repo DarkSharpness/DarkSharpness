@@ -45,20 +45,6 @@ std::vector <uint64_t> int2048::split(uint32_t len) const {
     return ans;
 }
 
-/**
- * @brief Merge a 6-bit vector into a 18-bit one.(DEC)
- * 
- * @param A 
- */
-void int2048::merge(const std::vector <uint64_t> &A) {
-    clear();
-    for(uint32_t i = 0 ; i < A.size() / 3 ; ++i) {
-        push_back(A[i * 3]     * unit[0] +
-                  A[i * 3 + 1] * unit[6] +
-                  A[i * 3 + 2] * unit[12]);
-    }
-    while(!back()) pop_back();
-}
 
 
 /**
@@ -246,12 +232,16 @@ int2048 Mult_BF(const int2048 &X,const int2048 &Y) {
  */
 int2048 Mult_NTT(const int2048 &X,const int2048 &Y) {
     uint32_t len = 1;
-    while(len < 3 * (X.size() + Y.size())) len <<= 1;
+    while(len < X.size() + Y.size()) len <<= 1;
     std::vector <uint32_t> rev = NTT_base::getRev(len);
-    std::vector <uint64_t> A0  = X.split(len);
-    std::vector <uint64_t> B0  = Y.split(len);
-
-
+    std::vector <uint64_t> A0;
+    std::vector <uint64_t> B0;
+    A0.reserve(len);
+    A0 = X;
+    A0.resize(len);
+    B0.reserve(len);
+    B0 = Y;
+    B0.resize(len); 
     // Perform operation.
     NTT_base::reverse(&(A0[0]),&(rev[0]),len);
     NTT_base::reverse(&(B0[0]),&(rev[0]),len);
@@ -281,7 +271,7 @@ int2048 Mult_NTT(const int2048 &X,const int2048 &Y) {
 
     uint64_t ret = 0;
 
-    for(uint32_t i = 0 ; i < (X.size() + Y.size()) * 3 ; ++i) {
+    for(uint32_t i = 0 ; i < X.size() + Y.size() ; ++i) {
         A0[i] = (A0[i] * inv[0]) % int2048::mod[0];
         A1[i] = (A1[i] * inv[1]) % int2048::mod[1];
         ret += int2048::getMult(A0[i],A1[i],inv[2]);
@@ -291,9 +281,8 @@ int2048 Mult_NTT(const int2048 &X,const int2048 &Y) {
 
     int2048 ans(0,X.sign ^ Y.sign);
     ret = 0;
-    ans.swap(B0); // get space from others
-    A0.resize((X.size() + Y.size()) * 3);
-    ans.merge(A0);
+    ans.swap(A0); 
+    while(!ans.back()) ans.pop_back();
     return ans;
 }
 
