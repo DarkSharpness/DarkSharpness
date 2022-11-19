@@ -18,10 +18,19 @@ signed main() {
     while(getline(cin,str)) {
         cout << str << '\n';
     }
+    freopen("BigInteger/NTT.cc","r",stdin);
+    cin.clear();
+    while(getline(cin,str)) {
+        if(str != "#include \"number.h\"" &&
+           str != "#include \"NTT.cc\"") {
+            cout << str << '\n';
+        }
+    }
     freopen("BigInteger/number.cc","r",stdin);
     cin.clear();
     while(getline(cin,str)) {
-        if(str != "#include \"number.h\"") {
+        if(str != "#include \"number.h\"" &&
+           str != "#include \"NTT.cc\"") {
             cout << str << '\n';
         }
     }
