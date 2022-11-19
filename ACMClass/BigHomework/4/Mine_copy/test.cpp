@@ -6,8 +6,8 @@ using sjtu::int2048;
 std::list<int> l;
 std::vector <int> v;
 signed main() {
-    std::string str = std::string("1000000000010000000000100000000001");
-    int2048 a = str;
-    (a * a * a).print();
+    int2048 a,b;
+    while(std::cin >> a >> b)
+        std::cout << a * b << '\n';
     return 0;
 }

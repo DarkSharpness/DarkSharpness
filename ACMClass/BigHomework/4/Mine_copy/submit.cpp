@@ -1,7 +1,7 @@
 #ifndef _NUMBER_H_
 #define _NUMBER_H_
 
-// #include <complex>
+#include <complex>
 #include <string>
 #include <cstdio>
 #include <vector>
@@ -19,6 +19,7 @@ namespace sjtu {
  */
 class NTT_base {
   protected:
+  public:
     NTT_base() = default;
     static inline uint64_t fastPow0(uint64_t base,uint64_t pow);
     static inline uint64_t fastPow1(uint64_t base,uint64_t pow);
@@ -33,7 +34,7 @@ class NTT_base {
     constexpr static uint64_t lenb    = 6;   // base len in decimal
     constexpr static uint64_t base    = 1e6; // base of int2048 = 10 ^ lenb
     constexpr static uint64_t initLen = 2;    // initial length reserved
-    constexpr static uint64_t MaxLen  = 1 << 21; // Maximum possible NTT length
+    constexpr static uint64_t MaxLen  = 22;   // Maximum possible NTT length
     // constexpr static uint64_t rate    = 3;    // compressing rate
     constexpr static uint64_t NTTLen  = 1e6;  // pow(NTTLen,rate) = base
     constexpr static uint64_t BFLen   = 1e9;  // Brute Force length
@@ -48,7 +49,7 @@ class NTT_base {
         10000,
         100000
     };
-    constexpr static uint64_t root[2][2][22]= {
+    constexpr static uint64_t root[2][2][MaxLen] = { // root prework
         2281701376,344250126,483803410,617790083,2023592065,
         216937880,123697435,1639385633,1301610063,865646229,
         1780348903,799681555,977546242,1286750706,1294996786,
@@ -73,7 +74,21 @@ class NTT_base {
         997063351,2673837393,2327172879,845347823,1749721614,
         2180195085,87513231,
     };
-    
+    constexpr static uint64_t inv [2][MaxLen]    = { // invs prework
+        1,1140850689,1711276033,1996488705,2139095041,2210398209,
+        2246049793,2263875585,2272788481,2277244929,2279473153,
+        2280587265,2281144321,2281422849,2281562113,2281631745,
+        2281666561,2281683969,2281692673,2281697025,2281699201,
+        2281700289,
+        1,1744830465,2617245697,3053453313,3271557121,3380609025,
+        3435134977,3462397953,3476029441,3482845185,3486253057,
+        3487956993,3488808961,3489234945,3489447937,3489554433,
+        3489607681,3489634305,3489647617,3489654273,3489657601,
+        3489659265
+    };
+
+
+
     /**
      * @brief Least length for NTT.
      * Note that 2 * threshold * base should be less than 2 ^ 64. 
@@ -104,8 +119,6 @@ class int2048 : private custom_vector,private NTT_base {
     static std::string buffer; // buffer inside
     int2048(uint64_t cap,bool flag);
     inline uint64_t operator ()(uint64_t idx)  const;
-    std::vector <uint64_t> split(uint32_t len) const;
-    void merge(const std::vector <uint64_t> &A);
 
 
   public:
@@ -348,25 +361,6 @@ inline void int2048::reverse() {
 
 
 /**
- * @brief Split the 18-bit vector to 6-bit.(DEC)
- * 
- */
-std::vector <uint64_t> int2048::split(uint32_t len) const {
-    std::vector <uint64_t> ans;
-    ans.reserve(len);
-    for(auto it : (*this)) {
-        ans.push_back(it % int2048::NTTLen);
-        it /= int2048::NTTLen;
-        ans.push_back(it % int2048::NTTLen);
-        ans.push_back(it / int2048::NTTLen);
-    }
-    ans.resize(len);
-    return ans;
-}
-
-
-
-/**
  * @brief Initialize from a string.
  * 
  * @param str The string to initialize from.
@@ -491,12 +485,12 @@ int2048 Sub(const int2048 &X,const int2048 &Y) {
 /**
  * @brief Multiply X and Y by brute force.
  * For Maximum speed, X.size() should be greater than Y.size().
- * Also, ensure that Y.size() <= NTT_threshold .
+ * Also, ensure that Y.size() <= NTT_threshold.
  * 
  * @return int2048 X * Y in brute force time.
  */
 int2048 Mult_BF(const int2048 &X,const int2048 &Y) {
-    
+    return 0; // TODO
 }
 
 
@@ -506,8 +500,16 @@ int2048 Mult_BF(const int2048 &X,const int2048 &Y) {
  * @return int2048 
  */
 int2048 Mult_NTT(const int2048 &X,const int2048 &Y) {
-    uint32_t len = 1;
-    while(len < X.size() + Y.size()) len <<= 1;
+    uint32_t len = 0;
+    while((1u << len) < X.size() + Y.size()) ++len;
+    const uint64_t inv[3] = {
+        // fastpow(len,mod-2)
+        NTT_base::inv[0][len],
+        NTT_base::inv[1][len],
+        1014089499u
+    };
+
+    len = 1 << len;
     std::vector <uint32_t> rev = NTT_base::getRev(len);
     std::vector <uint64_t> A0;
     std::vector <uint64_t> B0;
@@ -520,6 +522,7 @@ int2048 Mult_NTT(const int2048 &X,const int2048 &Y) {
     // Perform operation.
     NTT_base::reverse(&(A0[0]),&(rev[0]),len);
     NTT_base::reverse(&(B0[0]),&(rev[0]),len);
+
     std::vector <uint64_t> A1 = A0;
     std::vector <uint64_t> B1 = B0;
 
@@ -538,14 +541,7 @@ int2048 Mult_NTT(const int2048 &X,const int2048 &Y) {
     NTT_base::NTT0(&A0[0],len,1);
     NTT_base::NTT1(&A1[0],len,1);
 
-    const uint64_t inv[3] = {
-        NTT_base::fastPow0(len,NTT_base::mod[0] - 2),
-        NTT_base::fastPow1(len,NTT_base::mod[1] - 2),
-        NTT_base::fastPow0(NTT_base::mod[1],NTT_base::mod[0] - 2)
-    };
-
     uint64_t ret = 0;
-
     for(uint32_t i = 0 ; i < X.size() + Y.size() ; ++i) {
         A0[i] = (A0[i] * inv[0]) % int2048::mod[0];
         A1[i] = (A1[i] * inv[1]) % int2048::mod[1];
@@ -555,7 +551,6 @@ int2048 Mult_NTT(const int2048 &X,const int2048 &Y) {
     }
 
     int2048 ans(0,X.sign ^ Y.sign);
-    ret = 0;
     ans.swap(A0); 
     while(!ans.back()) ans.pop_back();
     return ans;
@@ -819,12 +814,3 @@ int2048::int2048(const std::string &str) {
 
 
 #endif
-
-int main() {
-    sjtu::int2048 x,y;
-    std::ios::sync_with_stdio(false);
-    while(std::cin >> x >> y) {
-        std::cout << x * y << '\n';
-    }
-    return 0;
-}

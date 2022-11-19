@@ -1,7 +1,8 @@
 #ifndef _NUMBER_CC_
 #define _NUMBER_CC_
-#include "NTT.cc"
+
 #include "number.h"
+#include "NTT.cc"
 
 
 /**
@@ -178,7 +179,8 @@ int2048 Sub(const int2048 &X,const int2048 &Y) {
  * @return int2048 X * Y in brute force time.
  */
 int2048 Mult_BF(const int2048 &X,const int2048 &Y) {
-    
+    // TODO 
+    return 0; 
 }
 
 
@@ -249,8 +251,6 @@ int2048 Mult_NTT(const int2048 &X,const int2048 &Y) {
 
 
 
-
-
 /**
  * @brief This part includes logical operators for int2048.
  * 
@@ -315,6 +315,10 @@ inline bool operator !(const int2048 &X) {
  * 
  */
 namespace sjtu {
+
+int2048& operator *=(int2048 &X,const int2048 &Y) {
+    return X = X * Y;
+}
 
 
 }
@@ -498,6 +502,5 @@ int2048::int2048(const std::string &str) {
 
 
 }
-
 
 #endif
