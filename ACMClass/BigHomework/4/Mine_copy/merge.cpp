@@ -18,11 +18,11 @@ signed main() {
     while(getline(cin,str)) {
         cout << str << '\n';
     }
-    freopen("BigInteger/NTT.cc","r",stdin);
+    freopen("BigInteger/FFT.cc","r",stdin);
     cin.clear();
     while(getline(cin,str)) {
         if(str != "#include \"number.h\"" &&
-           str != "#include \"NTT.cc\"") {
+           str != "#include \"FFT.cc\"") {
             cout << str << '\n';
         }
     }
@@ -30,7 +30,7 @@ signed main() {
     cin.clear();
     while(getline(cin,str)) {
         if(str != "#include \"number.h\"" &&
-           str != "#include \"NTT.cc\"") {
+           str != "#include \"FFT.cc\"") {
             cout << str << '\n';
         }
     }

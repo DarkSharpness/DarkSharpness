@@ -1,9 +1,7 @@
 #ifndef _NUMBER_CC_
 #define _NUMBER_CC_
-
+#include "FFT.cc"
 #include "number.h"
-#include "NTT.cc"
-
 
 /**
  * @brief This part includes basic functions for int2048.
@@ -29,23 +27,6 @@ inline void int2048::reverse() {
     sign = !sign;
 }
 
-
-/**
- * @brief Split the 18-bit vector to 6-bit.(DEC)
- * 
- */
-std::vector <uint64_t> int2048::split(uint32_t len) const {
-    std::vector <uint64_t> ans;
-    ans.reserve(len);
-    for(auto it : (*this)) {
-        ans.push_back(it % int2048::NTTLen);
-        it /= int2048::NTTLen;
-        ans.push_back(it % int2048::NTTLen);
-        ans.push_back(it / int2048::NTTLen);
-    }
-    ans.resize(len);
-    return ans;
-}
 
 
 
@@ -174,29 +155,12 @@ int2048 Sub(const int2048 &X,const int2048 &Y) {
 /**
  * @brief Multiply X and Y by brute force.
  * For Maximum speed, X.size() should be greater than Y.size().
+ * Also, ensure that Y.size() <= NTT_threshold .
  * 
  * @return int2048 X * Y in brute force time.
  */
 int2048 Mult_BF(const int2048 &X,const int2048 &Y) {
-    if(!X || !Y) return 0;
-    if(Y.size() == 1) return Mult_Low(X,(Y.sign ? -1 : 1) * Y.back());
-
-    // Now X.size() > 1 && Y.size() > 1
-
-    int2048 ans(0,X.sign ^ Y.sign);
-    ans.resize(X.size() + Y.size());
-    // cache friendly for X.
-    for(uint64_t i = 0 ; i < X.size() ; ++i)
-        for(uint64_t j = 0 ; j < Y.size() ; ++j)
-            ans[i + j] += X[i] * Y[j];
-    for(uint64_t i = 0 ; i < ans.size() ; ++i) {
-        if(ans[i] > NTT_base::NTTLen) {
-            ans[i + 1] += ans[i] / NTT_base::NTTLen;
-            ans[i]     %= NTT_base::NTTLen;
-        }
-    }
-    if(!ans.back()) ans.pop_back();
-    return ans;
+    
 }
 
 
@@ -250,8 +214,8 @@ int2048 Mult_NTT(const int2048 &X,const int2048 &Y) {
         A0[i] = (A0[i] * inv[0]) % int2048::mod[0];
         A1[i] = (A1[i] * inv[1]) % int2048::mod[1];
         ret += int2048::getMult(A0[i],A1[i],inv[2]);
-        A0[i] = ret % int2048::NTTLen;
-        ret /= int2048::NTTLen; // ret = ret / NTTLen
+        A0[i] = ret % int2048::base;
+        ret /= int2048::base; // ret = ret / NTTLen
     }
 
     int2048 ans(0,X.sign ^ Y.sign);
@@ -261,29 +225,11 @@ int2048 Mult_NTT(const int2048 &X,const int2048 &Y) {
     return ans;
 }
 
-/**
- * @brief Mult a high precision with a low precision number.
- * Note that X !=0 && Y != 0. && abs(Y) < NTT_base
- * 
- * @return int2048 X * Y
- */
-int2048 Mult_Low(const int2048 &X,const int64_t Y) {
-    int2048 ans(0,(Y < 0) ^ X.sign);
-    ans.resize(X.size() + 1);
-
-    for(uint64_t i = 0 ; i < X.size() ; ++i) {
-        ans[i] += X[i] * Y;
-        if(ans[i] > NTT_base::NTTLen) {
-            ans[i + 1] += ans[i] / NTT_base::NTTLen;
-            ans[i]     %= NTT_base::NTTLen;
-        }
-    }
-    if(!ans.back()) ans.pop_back();
-    return ans;
-}
 
 
 }
+
+
 
 
 
@@ -341,7 +287,7 @@ inline bool operator >=(const int2048 &X,const int2048 &Y) {
 
 /// @return bool true if X != 0 
 inline bool operator !(const int2048 &X) { 
-    return !X.back();
+    return X.back();
 }
 
 }
@@ -351,10 +297,6 @@ inline bool operator !(const int2048 &X) {
  * 
  */
 namespace sjtu {
-
-int2048& operator *=(int2048 &X,const int2048 &Y) {
-    return X = X * Y;
-}
 
 
 }
@@ -413,9 +355,10 @@ int2048 operator -(const int2048 &X,const int2048 &Y) {
 }
 
 int2048 operator *(const int2048 &X,const int2048 &Y) {
-    if(std::min(X.size(),Y.size()) <= int2048::NTT_threshold) {
-        if(X.size() > Y.size()) return Mult_BF(X,Y);
-        else                    return Mult_BF(Y,X);
+    if(X.size() <= int2048::NTT_threshold) {
+        return Mult_BF(Y,X);
+    } else if(Y.size() <= int2048::NTT_threshold) {
+        return Mult_BF(X,Y);
     } else {
         return Mult_NTT(X,Y);
     }
@@ -471,41 +414,6 @@ std::ostream &operator <<(std::ostream &os,const int2048 &src) {
     return os;
 }
 
-/**
- * @brief Convert to bool in O(1) time.
- *  
- */
-int2048::operator bool() const{
-    return back();
-}
-
-/**
- * @brief Convert to double in O(log size()) time.
- * This works because precision of double is only 2^53,
- * which is smaller than NTTLen ^ 3.
- * 
- */
-int2048::operator double() const{
-    double tmp = 0;
-    if(size() <= 3) {
-        for(auto it = rbegin() ; it != rend() ; ++it)
-            tmp = tmp * 1e6 + double(*it);
-        return tmp;
-    }
-    else {
-        for(uint64_t i = size() - 1; i != size() - 4 ; --i) 
-            tmp = tmp * 1e6 + double((*this)[i]);
-        uint64_t ret = size() - 3;
-        double base  = 1e6;
-        while(ret) {
-            if(ret) tmp *= base;
-            base *= base;
-            ret >>= 1;
-        }
-        return tmp;
-    }
-
-}
 /**
  * @brief Reserve space and set sign.
  * It's a private initializing function.
@@ -573,4 +481,6 @@ int2048::int2048(const std::string &str) {
 
 }
 
+
 #endif
+

@@ -1,8 +1,8 @@
 #ifndef _NUMBER_H_
 #define _NUMBER_H_
 
-#include <complex>
 #include <string>
+#include <cmath>
 #include <cstdio>
 #include <vector>
 #include <cstring>
@@ -11,91 +11,57 @@
 
 namespace sjtu {
 
-
-/**
- * @brief NTT related data.
- * You can't apply for an NTT_base object. 
- * 
- */
-class NTT_base {
-  protected:
-  public:
-    NTT_base() = default;
-    static inline uint64_t fastPow0(uint64_t base,uint64_t pow);
-    static inline uint64_t fastPow1(uint64_t base,uint64_t pow);
-    static void NTT0(uint64_t *A,uint32_t len,bool type);
-    static void NTT1(uint64_t *A,uint32_t len,bool type);
-    static inline void reverse(uint64_t *A,uint32_t *rev,uint32_t len);
-    static inline std::vector <uint32_t> getRev(uint32_t len);
-    static inline uint64_t getMult(uint64_t A0,uint64_t A1,uint64_t inv);
-    
-
-    constexpr static uint64_t mod[2]  = {2281701377,3489660929}; // mod number
-    constexpr static uint64_t lenb    = 6;   // base len in decimal
-    constexpr static uint64_t base    = 1e6; // base of int2048 = 10 ^ lenb
-    constexpr static uint64_t initLen = 2;    // initial length reserved
-    constexpr static uint64_t MaxLen  = 22;   // Maximum possible NTT length
-    // constexpr static uint64_t rate    = 3;    // compressing rate
-    constexpr static uint64_t NTTLen  = 1e6;  // pow(NTTLen,rate) = base
-    constexpr static uint64_t BFLen   = 1e9;  // Brute Force length
-    // constexpr static uint64_t root[2][2] = {     // root and inv root
-    // 3,(mod[0] + 1) / 3,3,(mod[1] + 1) / 3
-    // };  // common root
-    constexpr static uint64_t unit[lenb] = { // units below base
-        1,
-        10,
-        100,
-        1000,
-        10000,
-        100000
-    };
-    constexpr static uint64_t root[2][2][MaxLen] = { // root prework
-        2281701376,344250126,483803410,617790083,2023592065,
-        216937880,123697435,1639385633,1301610063,865646229,
-        1780348903,799681555,977546242,1286750706,1294996786,
-        2270548020,451618310,637539285,231852688,1783582410,
-        1346120317,1057547068,
-
-        2281701376,1937451251,582229479,1778233327,996068929,
-        533126167,1540362740,1845123106,1922965124,1184734049,
-        369448383,1732276489,1444283332,92283190,2059450554,
-        114788634,1156211696,2033086166,1274602630,1845241368,
-        656109765,1987373021,
-
-        3489660928,1841841630,1054308003,1513900834,1424003439,
-        3290428437,2792923286,424291397,1938306374,731827882,
-        340708175,1005229295,3231347667,962117947,1030533309,
-        725028937,3369885469,72934420,758575992,3373763992,
-        1882435536,1143890192,
-
-        3489660928,1647819299,1761617041,724177331,38202934,
-        2302762011,917171561,3348395406,763600137,382076615,
-        417640332,3318291862,2451874772,3398023446,1583677827,
-        997063351,2673837393,2327172879,845347823,1749721614,
-        2180195085,87513231,
-    };
-    constexpr static uint64_t inv [2][MaxLen]    = { // invs prework
-        1,1140850689,1711276033,1996488705,2139095041,2210398209,
-        2246049793,2263875585,2272788481,2277244929,2279473153,
-        2280587265,2281144321,2281422849,2281562113,2281631745,
-        2281666561,2281683969,2281692673,2281697025,2281699201,
-        2281700289,
-        1,1744830465,2617245697,3053453313,3271557121,3380609025,
-        3435134977,3462397953,3476029441,3482845185,3486253057,
-        3487956993,3488808961,3489234945,3489447937,3489554433,
-        3489607681,3489634305,3489647617,3489654273,3489657601,
-        3489659265
-    };
-
-
-
-    /**
-     * @brief Least length for NTT.
-     * Note that 2 * threshold * base should be less than 2 ^ 64. 
-     * 
-     */
-    constexpr static uint64_t NTT_threshold = 0;
+struct complex {
+    double real,imag;
+    complex(double _r = 0,double _i = 0): real(_r),imag(_i) {}
+    inline friend complex operator +(const complex &X,const complex &Y) {
+        return complex(X.real + Y.real,X.imag + Y.imag);
+    }
+    inline friend complex operator -(const complex &X,const complex &Y) {
+        return complex(X.real - Y.real,X.imag - Y.imag);
+    }
+    inline friend complex operator *(const complex &X,const complex &Y) {
+        return complex(X.real * Y.real - X.imag * Y.imag, 
+                       X.real * Y.imag + X.imag * Y.real);
+    }
+    inline friend complex operator *=(complex &X,const complex &Y) {
+        return X = X * Y;
+    }
+    inline friend complex operator ~(const complex &X) {
+        return complex(X.real,-X.imag);
+    }
+    inline void conjugate() {
+        imag = -imag;
+    }
+    void setangle(double sita) {
+        real = std::cos(sita);
+        imag = std::sin(sita);
+    }
 };
+
+constexpr double PI = 3.141592653589793238462643383;
+
+class FFT_base {
+  protected:
+    
+    constexpr static uint64_t lenb          = 3;   // log10(base)
+    constexpr static uint64_t base          = 1e3; // base of FFT
+    constexpr static uint64_t FFT_threshold = 00;  // FFT_threshold
+    constexpr static uint64_t maxLen        = 20;  // maximum length for FFT
+    constexpr static uint64_t initLen       = 6;   // initial length for vector
+    static complex root[maxLen];
+    constexpr static uint64_t unit[lenb] = {1,10,100};
+
+    // Functions part:
+
+    inline static void reverse(complex *A,uint64_t *rev,uint32_t len);
+    static void FFT(complex *A,uint32_t len,bool type);
+    static inline void IFFT(complex *A,uint32_t len);
+    FFT_base() = default;
+    static inline void FFT_init();
+};
+complex FFT_base::root[FFT_base::maxLen]; // Initialize
+
 
 
 /// @brief Easy Wrapping of vector.
@@ -114,7 +80,7 @@ class custom_vector : public std::vector <uint64_t> {
  * Maximum length is 
  * 
  */
-class int2048 : private custom_vector,private NTT_base {
+class int2048 : private custom_vector,private FFT_base {
   private:
     static std::string buffer; // buffer inside
     int2048(uint64_t cap,bool flag);
@@ -170,12 +136,13 @@ class int2048 : private custom_vector,private NTT_base {
     friend int2048 Mult_BF (const int2048 &X,const int2048 &Y);
     friend int2048 Mult_NTT(const int2048 &X,const int2048 &Y);
     friend int32_t Compare_abs(const int2048 &X,const int2048 &Y);
+    // friend int2048 Inverse(const int2048 &X);
     void read(const std::string &str);
     void print(std::ostream &os) const;
-    void move(std::vector <uint64_t> &tmp);
     inline void reverse();
-    
-    
+    friend int2048 operator <<(const int2048 &X,const uint64_t Y);
+    friend int2048 operator >>(const int2048 &X,const uint64_t Y);
+
     friend std::istream &operator >>(std::istream &is,int2048 &dst);
     friend std::ostream &operator <<(std::ostream &os,const int2048 &src);
 
@@ -200,8 +167,9 @@ const size_t SIZEOFINT2048 = sizeof(int2048);
 
 
 #endif
-#ifndef _NTT_CC
-#define _NTT_CC
+
+#ifndef _FFT_CC
+#define _FFT_CC
 
 
 /**
@@ -210,129 +178,72 @@ const size_t SIZEOFINT2048 = sizeof(int2048);
  */
 namespace sjtu {
 
-/**
- * @brief Built-in fast pow function.
- * 
- * @return uint64_t Pow(base,pow) % mod_type.
- */
-inline uint64_t NTT_base::fastPow0(uint64_t base,uint64_t pow) {
-    uint64_t ans = 1;
-    while(pow) {
-        if(pow & 1) ans = (ans * base) % mod[0];
-        base = (base * base) % mod[0];
-        pow >>= 1;
-    }
-    return ans;
-}
 
-inline uint64_t NTT_base::fastPow1(uint64_t base,uint64_t pow) {
-    uint64_t ans = 1;
-    while(pow) {
-        if(pow & 1) ans = (ans * base) % mod[1];
-        base = (base * base) % mod[1];
-        pow >>= 1;
-    }
-    return ans;
-}
-
-/**
- * @brief As Below:
- * A0 + x * mod[0] = A1 + y * mod[1] = C < mod[0] * mod[1]. \n 
- * Then : y = (A0 - A1) ^ inv(mod[1]) (in mod[0]).\n 
- *  
- * 
- * @return uint64_t 
- */
-inline uint64_t NTT_base::getMult(uint64_t A0,uint64_t A1,uint64_t inv) {
-    if(A0 == A1) return A0;
-    else return (A0 - A1 + mod[0] * 2) * inv % mod[0] * mod[1] + A1;  
-}
-
-/**
- * @brief Work out the rev vector.
- * 
- */
-inline std::vector <uint32_t> NTT_base::getRev(uint32_t len) {
-    std::vector <uint32_t> rev(len);
-    for(uint32_t i = 0 ; i < len ; ++i) {
-        rev[i] = (rev[i >> 1] >> 1) | ((i & 1) * len >> 1);
-    }
-    return rev;
-}
 
 /**
  * @brief Perform reverse operator on A.
  * Namely "Butterfly Operation"
  * 
  */
-inline void NTT_base::reverse(uint64_t *A,uint32_t *rev,uint32_t len) {
+inline void FFT_base::reverse(complex *A,uint64_t *rev,uint32_t len) {
     for(uint32_t i = 0 ; i < len; ++i){
         if(i < rev[i]) std::swap(A[i],A[rev[i]]);
     }
 }
 
-
 /**
- * @brief Key operation of NTT algorithm.
+ * @brief Initlize the FFT_base's roots.
+ * Called only once in initializer.
  * 
- * @param A    The array of the original value.  
- * @param rev  The array of reverse pair.
- * @param len  The length of the NTT array.
- * @param type 0: NTT || 1: INTT 
- *             
  */
-void NTT_base::NTT0(uint64_t *A,uint32_t len,bool type) {
-    uint32_t cnt = 0;
-    for(uint32_t i = 1; i < len; i <<= 1) {
-        // uint64_t wn = fastPow0(root[0][type],(mod - 1)/(i << 1));
-        uint64_t wn = root[0][type][cnt++];
-        for(uint32_t j = 0; j < len; j += (i << 1)) {
-            uint64_t w = 1; // current w for NTT.
-            for(uint32_t k = 0; k < i; ++k) {
-                uint64_t x = A[j + k];
-                uint64_t y = A[j + k + i] * w % mod[0];
-                A[j + k]     = (x + y) % mod[0];
-                A[j + k + i] = (x - y +  mod[0]) % mod[0];
-                w = w * wn % mod[0];
-            }
-        }
+inline void FFT_base::FFT_init() {
+    for(uint32_t i = 0 ; i != maxLen ; ++i) {
+        root[i].setangle(PI/(1ll << i));
     }
 }
 
 /**
- * @brief Key operation of NTT algorithm.
+ * @brief FFT function part.
  * 
- * @param A    The array of the original value.  
- * @param rev  The array of reverse pair.
- * @param len  The length of the NTT array.
- * @param type 0: NTT || 1: INTT
- *             
+ * @param A    Complex data array.
+ * @param len  Length of the operation.
+ * @param type 0 : FFT(default) || 1 : IFFT
  */
-void NTT_base::NTT1(uint64_t *A,uint32_t len,bool type) {
-    uint32_t cnt = 0;
+void FFT_base::FFT(complex *A,uint32_t len,bool type = 0) {
+    int cnt = 0;
     for(uint32_t i = 1; i < len; i <<= 1) {
-        // unit root for NTT.
-        // uint64_t wn = fastPow1(root[1][type],(mod[1] - 1)/(i << 1));
-        uint64_t wn = root[1][type][cnt++];
+        complex w = root[cnt++]; // unit root
+        if(type) w.conjugate();
         for(uint32_t j = 0; j < len; j += (i << 1)) {
-            uint64_t w = 1; // current w for NTT.
-            for(uint32_t k = 0; k < i; ++k) {
-                uint64_t x = A[j + k];
-                uint64_t y = A[j + k + i] * w % mod[1];
-                A[j + k]     = (x + y) % mod[1];
-                A[j + k + i] = (x - y +  mod[1]) % mod[1];
-                w = w * wn % mod[1];
+            //temp.real=1.0 , temp.imaginery=0.0;
+            complex tmp(1,0);
+            for(uint32_t k = 0; k < i;++k) {
+                complex x = A[j + k] ;
+                complex y = A[j + k + i] * tmp;
+                A[j + k]     = x + y;
+                A[j + k + i] = x - y;
+                tmp *= w;
             }
         }
     }
 }
+/**
+ * @brief As its name suggests.
+ * 
+ */
+inline void FFT_base::IFFT(complex *A,uint32_t len) {
+    FFT(A,len,true);
+}
+
 
 }
+
 
 
 #endif
 #ifndef _NUMBER_CC_
 #define _NUMBER_CC_
+
 
 
 /**
@@ -358,6 +269,9 @@ inline uint64_t int2048::operator ()(uint64_t idx) const {
 inline void int2048::reverse() {
     sign = !sign;
 }
+
+
+
 
 
 /**
@@ -436,15 +350,15 @@ int32_t Compare_abs(const int2048 &X,const int2048 &Y) {
 
 /**
  * @brief Add X by Y in X's sign.
+ * Ensure that X.size() >= Y.size()
  * 
  * @return int2048 sgn(X) * (abs(X) + abs(Y)).
  */
 int2048 Add(const int2048 &X,const int2048 &Y) {
-    uint32_t len = std::max(X.size(),Y.size());
-    int2048 ans(len + 1u,X.sign);
+    int2048 ans(X.size() + 1,X.sign);
     uint64_t ret = 0;
-    for(uint32_t i = 0; i < len ; ++i) {
-        ret += X(i) + Y(i);
+    for(uint32_t i = 0; i < X.size() ; ++i) {
+        ret += X[i] + Y(i);
         if(ret < int2048::base) {
             ans.push_back(ret);
             ret = 0;
@@ -460,7 +374,7 @@ int2048 Add(const int2048 &X,const int2048 &Y) {
 
 /**
  * @brief Subtract X by Y in X's sign.
- * Make sure abs(X) > abs(Y).
+ * Ensure that abs(X) > abs(Y).
  * 
  * @return int2048 sgn(X) * (abs(X) - abs(Y)).
  */
@@ -485,73 +399,78 @@ int2048 Sub(const int2048 &X,const int2048 &Y) {
 /**
  * @brief Multiply X and Y by brute force.
  * For Maximum speed, X.size() should be greater than Y.size().
- * Also, ensure that Y.size() <= NTT_threshold.
  * 
  * @return int2048 X * Y in brute force time.
  */
 int2048 Mult_BF(const int2048 &X,const int2048 &Y) {
-    return 0; // TODO
+    if(!X || !Y) return 0;
+
+    int2048 ans(0,X.sign ^ Y.sign);
+    ans.resize(X.size() + Y.size());
+    // cache friendly for X.
+    for(uint32_t i = 0 ; i < X.size() ; ++i)
+        for(uint32_t j = 0 ; j < Y.size() ; ++j)
+            ans[i + j] += X[i] * Y[j];
+    for(uint32_t i = 0 ; i < ans.size() ; ++i) {
+        if(ans[i] > FFT_base::base) {
+            ans[i + 1] += ans[i] / FFT_base::base;
+            ans[i]     %= FFT_base::base;
+        }
+    }
+    if(!ans.back()) ans.pop_back();
+    return ans;
 }
 
 
 /**
  * @brief Multiply X and Y by NTT algorithm.
  * 
- * @return int2048 
  */
 int2048 Mult_NTT(const int2048 &X,const int2048 &Y) {
-    uint32_t len = 0;
-    while((1u << len) < X.size() + Y.size()) ++len;
-    const uint64_t inv[3] = {
-        // fastpow(len,mod-2)
-        NTT_base::inv[0][len],
-        NTT_base::inv[1][len],
-        1014089499u
-    };
+    uint32_t len = 1;
+    while(len < X.size() + Y.size()) len <<= 1;
 
-    len = 1 << len;
-    std::vector <uint32_t> rev = NTT_base::getRev(len);
-    std::vector <uint64_t> A0;
-    std::vector <uint64_t> B0;
-    A0.reserve(len);
-    A0 = X;
-    A0.resize(len);
-    B0.reserve(len);
-    B0 = Y;
-    B0.resize(len); 
-    // Perform operation.
-    NTT_base::reverse(&(A0[0]),&(rev[0]),len);
-    NTT_base::reverse(&(B0[0]),&(rev[0]),len);
-
-    std::vector <uint64_t> A1 = A0;
-    std::vector <uint64_t> B1 = B0;
-
-    NTT_base::NTT0(&A0[0],len,0);
-    NTT_base::NTT1(&A1[0],len,0);
-    NTT_base::NTT0(&B0[0],len,0);
-    NTT_base::NTT1(&B1[0],len,0);
-
+    // Work out rev
+    std::vector <uint64_t> rev(len);
     for(uint32_t i = 0 ; i < len ; ++i) {
-        A0[i] = (A0[i] * B0[i]) % int2048::mod[0];
-        A1[i] = (A1[i] * B1[i]) % int2048::mod[1];
+        rev[i] = (rev[i >> 1] >> 1) | ((i & 1) * len >> 1);
     }
 
-    NTT_base::reverse(&A0[0],&rev[0],len);
-    NTT_base::reverse(&A1[0],&rev[0],len);
-    NTT_base::NTT0(&A0[0],len,1);
-    NTT_base::NTT1(&A1[0],len,1);
+    static std::vector <complex> A;
+    static std::vector <complex> B;
 
-    uint64_t ret = 0;
-    for(uint32_t i = 0 ; i < X.size() + Y.size() ; ++i) {
-        A0[i] = (A0[i] * inv[0]) % int2048::mod[0];
-        A1[i] = (A1[i] * inv[1]) % int2048::mod[1];
-        ret += int2048::getMult(A0[i],A1[i],inv[2]);
-        A0[i] = ret % int2048::NTTLen;
-        ret /= int2048::NTTLen; // ret = ret / NTTLen
-    }
+    A.assign(len,complex(0,0));
+    for(uint32_t i = 0 ; i != X.size() ; ++i) A[i].real = X[i];
+    B.assign(len,complex());
+    for(uint32_t i = 0 ; i != Y.size() ; ++i) B[i].real = Y[i];
 
+
+    // Perform reverse operation.
+    FFT_base::reverse(&A[0],&rev[0],len);
+    FFT_base::reverse(&B[0],&rev[0],len);
+
+    // Perform NTT
+    FFT_base::FFT(&A[0],len);
+    FFT_base::FFT(&B[0],len);
+
+    for(uint32_t i = 0 ; i < len ; ++i) 
+        A[i] *= B[i];
+
+    FFT_base::reverse(&A[0],&rev[0],len);
+    FFT_base::IFFT(&A[0],len);
     int2048 ans(0,X.sign ^ Y.sign);
-    ans.swap(A0); 
+    ans.swap(rev); // getSpace from rev vector.
+    ans.assign(X.size() + Y.size(),0);
+
+    // move the data from real to answer.
+    for(uint32_t i = 0 ; i < ans.size() ; ++i) {
+        ans[i] += uint64_t(A[i].real / double(len) + 0.5);
+        if(ans[i] >= int2048::base) {
+            ans[i + 1] += ans[i] / int2048::base;
+            ans[i] -= ans[i + 1] * int2048::base; 
+        }
+    }
+
     while(!ans.back()) ans.pop_back();
     return ans;
 }
@@ -559,8 +478,6 @@ int2048 Mult_NTT(const int2048 &X,const int2048 &Y) {
 
 
 }
-
-
 
 
 
@@ -618,7 +535,7 @@ inline bool operator >=(const int2048 &X,const int2048 &Y) {
 
 /// @return bool true if X != 0 
 inline bool operator !(const int2048 &X) { 
-    return X.back();
+    return !X.back();
 }
 
 }
@@ -630,6 +547,8 @@ inline bool operator !(const int2048 &X) {
 namespace sjtu {
 
 
+
+
 }
 
 
@@ -638,6 +557,31 @@ namespace sjtu {
  * 
  */
 namespace sjtu {
+
+/**
+ * @brief X expands by base ^ Y
+ *  
+ * 
+*/
+int2048 operator <<(const int2048 &X,const uint64_t Y) {
+    int2048 ans(X.size() + Y,X.sign);
+    ans.insert(ans.end(),Y,0);
+    ans.insert(ans.end(),X.begin(),X.end());
+    return ans;
+}
+
+/**
+ * @brief X shrinks by base ^ Y
+ *  
+ * 
+*/
+int2048 operator >>(const int2048 &X,const uint64_t Y) {
+    if(Y >= X.size()) return 0;
+    int2048 ans(X.size() - Y,X.sign);
+    ans.insert(ans.begin(),X.begin() + Y,X.end());
+    return ans;
+}
+
 
 /**
  * @brief Return the number of  X * (-1).
@@ -665,7 +609,7 @@ int2048 operator -(const int2048 &X) {
 
 int2048 operator +(const int2048 &X,const int2048 &Y) {
     if(X.sign == Y.sign) {
-        return Add(X,Y);
+        return X.size() >= Y.size() ?  Add(X,Y) : Add(Y,X);
     } else {
         int32_t cmp = Compare_abs(X,Y);
         if(cmp == 0)     return 0;
@@ -676,7 +620,7 @@ int2048 operator +(const int2048 &X,const int2048 &Y) {
 
 int2048 operator -(const int2048 &X,const int2048 &Y) {
     if(X.sign != Y.sign) {
-        return Add(X,Y);
+        return X.size() >= Y.size() ?  Add(X,Y) : Add(Y,X);
     } else {
         int32_t cmp = Compare_abs(X,Y); // abs_compare of X,Y
         if(cmp == 0)     return 0;
@@ -686,14 +630,15 @@ int2048 operator -(const int2048 &X,const int2048 &Y) {
 }
 
 int2048 operator *(const int2048 &X,const int2048 &Y) {
-    if(X.size() <= int2048::NTT_threshold) {
-        return Mult_BF(Y,X);
-    } else if(Y.size() <= int2048::NTT_threshold) {
-        return Mult_BF(X,Y);
+    if(std::min(X.size(),Y.size()) <= int2048::FFT_threshold) {
+        if(X.size() > Y.size()) return Mult_BF(X,Y);
+        else                    return Mult_BF(Y,X);
     } else {
         return Mult_NTT(X,Y);
     }
 }
+
+
 
 }
 
@@ -745,6 +690,41 @@ std::ostream &operator <<(std::ostream &os,const int2048 &src) {
     return os;
 }
 
+/**
+ * @brief Convert to bool in O(1) time.
+ *  
+ */
+int2048::operator bool() const{
+    return back();
+}
+
+/**
+ * @brief Convert to double in O(log size()) time.
+ * This works because precision of double is only 2^53,
+ * which is smaller than base ^ 3.
+ * 
+ */
+int2048::operator double() const{
+    double tmp = 0;
+    if(size() <= 3) {
+        for(auto it = rbegin() ; it != rend() ; ++it)
+            tmp = tmp * FFT_base::base + double(*it);
+        return tmp;
+    }
+    else {
+        for(uint32_t i = size() - 1; i != size() - 4 ; --i) 
+            tmp = tmp * FFT_base::base + double((*this)[i]);
+        uint64_t ret = size() - 3;
+        double base  = FFT_base::base;
+        while(ret) {
+            if(ret) tmp *= base;
+            base *= base;
+            ret >>= 1;
+        }
+        return tmp;
+    }
+
+}
 /**
  * @brief Reserve space and set sign.
  * It's a private initializing function.
@@ -808,9 +788,22 @@ int2048::int2048(const std::string &str) {
 
 
 
+struct initializer : FFT_base{
+    initializer() {
+        FFT_init();
+        // std::ios::sync_with_stdio(false);
+    }
+}_INITIALIZER;
+
 
 
 }
 
-
 #endif
+
+int main() {
+    sjtu::int2048 x,y;
+    std::cin >> x >> y;
+    std::cout << x * y;
+    return 0;
+}
