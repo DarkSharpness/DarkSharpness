@@ -28,11 +28,11 @@ class NTT_base {
     static inline std::vector <uint32_t> getRev(uint32_t len);
     static inline uint64_t getMult(uint64_t A0,uint64_t A1,uint64_t inv);
     
-
+    constexpr static uint64_t NTT_threshold = 0;
     constexpr static uint64_t mod[2]  = {2281701377,3489660929}; // mod number
     constexpr static uint64_t lenb    = 4;   // base len in decimal
     constexpr static uint64_t base    = 1e4; // base of int2048 = 10 ^ lenb
-    constexpr static uint64_t initLen = 2;    // initial length reserved
+    constexpr static uint64_t initLen = 6;    // initial length reserved
     constexpr static uint64_t MaxLen  = 1 << 21; // Maximum possible NTT length
     // constexpr static uint64_t rate    = 3;    // compressing rate
     constexpr static uint64_t BFLen   = 1e9;  // Brute Force length
@@ -76,7 +76,6 @@ class NTT_base {
      * Note that 2 * threshold * base should be less than 2 ^ 64. 
      * 
      */
-    constexpr static uint64_t NTT_threshold = 0;
 };
 
 
@@ -101,7 +100,7 @@ class int2048 : private custom_vector,private NTT_base {
     static std::string buffer; // buffer inside
     int2048(uint64_t cap,bool flag);
     inline uint64_t operator ()(uint64_t idx)  const;
-    void merge(const std::vector <uint64_t> &A);
+    friend int2048 operator ~(const int2048 &X);
 
 
   public:
@@ -140,13 +139,14 @@ class int2048 : private custom_vector,private NTT_base {
     inline friend int2048 operator -(int2048 &&X);
     inline friend int2048 operator -(const int2048 &X);
 
-
     friend int2048& operator +=(int2048 &X,const int2048 &Y);
     friend int2048& operator -=(int2048 &X,const int2048 &Y);
     friend int2048& operator *=(int2048 &X,const int2048 &Y);
     friend int2048& operator /=(int2048 &X,const int2048 &Y);
     friend int2048& operator %=(int2048 &X,const int2048 &Y);
 
+    friend int2048 operator <<(const int2048 &X,const uint64_t Y);
+    friend int2048 operator >>(const int2048 &X,const uint64_t Y);
 
     friend int2048 Add(const int2048 &X,const int2048 &Y);
     friend int2048 Sub(const int2048 &X,const int2048 &Y);

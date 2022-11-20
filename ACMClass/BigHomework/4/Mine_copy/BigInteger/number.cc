@@ -39,16 +39,19 @@ void int2048::read(const std::string &str) {
     if(str.front() == '-') sign = true;
     else                   sign = false;
     clear(); // clear the previous data.
-    if(str.size() == sign + 1u && str.back() == '0') { // 0 case
+    uint64_t j = sign + 1;
+    while(str[j] == '0') ++j;
+    if(!str[j]) { // 0 case.
         sign = false;
         push_back(0);
         return;
     }
-    reserve(1 + (str.size() - sign) / lenb);
+    --j;
+    reserve(1 + (str.size() - j) / lenb);
     uint64_t i    = str.size();
     uint64_t cnt  = 0;
     uint64_t ret  = 0;
-    while(i-- != sign) { // Loop in [sign,str.size())
+    while(i-- != j) { // Loop in [sign,str.size())
         ret += unit[cnt] * (str[i] ^ '0');
         if(++cnt == lenb) {
             push_back(ret);
@@ -56,9 +59,7 @@ void int2048::read(const std::string &str) {
         } else {
         }
     }
-    if(cnt) {
-        push_back(ret);
-    }
+    if(cnt) push_back(ret);
 }
 
 
@@ -160,7 +161,7 @@ int2048 Sub(const int2048 &X,const int2048 &Y) {
  * @return int2048 X * Y in brute force time.
  */
 int2048 Mult_BF(const int2048 &X,const int2048 &Y) {
-    
+    return 0;
 }
 
 
@@ -287,7 +288,7 @@ inline bool operator >=(const int2048 &X,const int2048 &Y) {
 
 /// @return bool true if X != 0 
 inline bool operator !(const int2048 &X) { 
-    return X.back();
+    return !X.back();
 }
 
 }
@@ -297,8 +298,10 @@ inline bool operator !(const int2048 &X) {
  * 
  */
 namespace sjtu {
-
-
+int2048& operator +=(int2048 &X,const int2048 &Y) {return X = X + Y;}
+int2048& operator -=(int2048 &X,const int2048 &Y) {return X = X - Y;}
+int2048& operator *=(int2048 &X,const int2048 &Y) {return X = X * Y;}
+int2048& operator /=(int2048 &X,const int2048 &Y) {return X = X / Y;}
 }
 
 
@@ -318,6 +321,22 @@ int2048 operator -(int2048 &&X) {
     ans.swap(X);
     return ans;
 }
+
+int2048 operator <<(const int2048 &X,const uint64_t Y) {
+    if(!X) return 0;
+    int2048 ans(X.size() + Y,X.sign);
+    ans.assign(Y,0);
+    ans.insert(ans.end(),X.begin(),X.end());
+    return ans;
+}
+
+int2048 operator >>(const int2048 &X,const uint64_t Y) {
+    if(Y >= X.size()) return 0;
+    int2048 ans(X.size() - Y,X.sign);
+    ans.insert(ans.end(),X.begin() + Y,X.end());
+    return ans;
+}
+
 
 /**
  * @brief Return the number of X * (-1).
@@ -364,6 +383,65 @@ int2048 operator *(const int2048 &X,const int2048 &Y) {
     }
 }
 
+int2048 operator /(const int2048 &X,const int2048 &Y) {
+    int32_t cmp = Compare_abs(X,Y);
+    if(cmp == -1) return 0;
+    if(cmp ==  0) return X.sign ^ Y.sign ? -1 : 1;
+    uint64_t dif = X.size() - Y.size() * 2;
+
+    if(int64_t(dif) < 0) dif = 0;
+
+    int2048 ans = ((X << dif) * (~(Y << dif))) 
+                  >> (2 * (dif + Y.size()));
+    
+    ans.sign = false;
+    
+    // Small adjustments
+    int2048 tmp = ans + 1;
+    while(Compare_abs(tmp * Y,X) != 1) {
+        ans = tmp;
+        tmp = tmp + 1;
+    }
+    while(Compare_abs(ans * Y,X) == 1) {
+        ans = ans - 1;
+    }
+    ans.sign = X.sign ^ Y.sign;
+    return ans;
+}
+
+/**
+ * @brief Get inverse.
+ * 
+ */
+int2048 operator ~(const int2048 &X) {
+    #define base int2048::base
+    if(X.size() == 1) {
+        int2048 ans(0,0);
+        uint64_t i = base * base / X[0];
+        while(i) {
+            ans.push_back(i % base);
+            i /= base;
+        }
+        return ans;
+    } else if(X.size() == 2) {
+        int2048 ans(0,0);
+        uint64_t i = (base * base * base * base) /
+                     (X[0] + X[1] * base);
+        while(i) {
+            ans.push_back(i % base);
+            i /= base;
+        }
+        return ans;
+    }
+    uint32_t hf = 1 + (X.size() >> 1); // half of X.size()
+    int2048 Y(0,0);
+    Y.insert(Y.end(),X.end() - hf,X.end());
+    Y = ~Y;
+    return (2 * Y << (X.size() - hf)) - (X * Y * Y >> (hf * 2)); 
+    #undef base
+}
+
+
 }
 
 /**
@@ -378,6 +456,7 @@ namespace sjtu {
  * 
  */
 int2048 &int2048::operator =(int2048 &&tmp) {
+    if(this == &tmp) return *this;
     swap(tmp);
     sign = tmp.sign;
     return *this;
@@ -389,6 +468,7 @@ int2048 &int2048::operator =(int2048 &&tmp) {
  * 
  */
 int2048 &int2048::operator =(const int2048 &tmp) {
+    if(this == &tmp) return *this;
     copy(tmp);
     sign = tmp.sign;
     return *this;
@@ -463,7 +543,6 @@ int2048::int2048(int2048 &&tmp) {
 /**
  * @brief Copy construction.
  * 
- * @param tmp 
  */
 int2048::int2048(const int2048 &tmp) {
     copy(tmp);

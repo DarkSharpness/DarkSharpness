@@ -4,11 +4,8 @@
 
 using sjtu::int2048;
 std::list<int> l;
-std::vector <int> v;
 signed main() {
-    int2048 a;
-    int b;
-    while(std::cin >> a >> b)
-        std::cout << (a * b) << '\n';
+    int2048 a = std::string("00000000000");
+    std::cout << a;
     return 0;
 }
