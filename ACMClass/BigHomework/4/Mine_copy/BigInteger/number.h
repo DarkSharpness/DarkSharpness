@@ -70,7 +70,7 @@ class NTT_base {
         2180195085,87513231,
     };
 
-    constexpr static uint64_t NTT_threshold = 0;
+    constexpr static uint64_t NTT_threshold = 48;
 };
 
 
@@ -147,10 +147,10 @@ class int2048 : private custom_vector,private NTT_base {
     friend int2048 Sub(const int2048 &X,const int2048 &Y);
     friend int2048 Mult_BF (const int2048 &X,const int2048 &Y);
     friend int2048 Mult_NTT(const int2048 &X,const int2048 &Y);
+    friend int2048 Mult_Low(const int2048 &X,const int64_t  Y);
     friend int32_t Compare_abs(const int2048 &X,const int2048 &Y);
     void read(const std::string &str);
     void print(std::ostream &os) const;
-    void move(std::vector <uint64_t> &tmp);
     inline void reverse();
     
     

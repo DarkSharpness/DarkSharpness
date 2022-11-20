@@ -38,17 +38,16 @@ inline uint64_t NTT_base::fastPow1(uint64_t base,uint64_t pow) {
  * @brief As Below:
  * A0 + x * mod[0] = A1 + y * mod[1] = C < mod[0] * mod[1]. \n 
  * Then : y = (A0 - A1) ^ inv(mod[1]) (in mod[0]).\n 
- *  
  * 
- * @return uint64_t 
  */
 inline uint64_t NTT_base::getMult(uint64_t A0,uint64_t A1,uint64_t inv) {
     if(A0 == A1) return A0;
-    else return (A0 - A1 + mod[0] * 2) * inv % mod[0] * mod[1] + A1;  
+    else return (A0 - A1 + (mod[0] << 1)) * inv % mod[0] * mod[1] + A1;  
 }
 
 /**
  * @brief Work out the rev vector.
+ * 
  * 
  */
 inline std::vector <uint32_t> NTT_base::getRev(uint32_t len) {
