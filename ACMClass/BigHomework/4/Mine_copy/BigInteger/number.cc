@@ -39,14 +39,13 @@ void int2048::read(const std::string &str) {
     if(str.front() == '-') sign = true;
     else                   sign = false;
     clear(); // clear the previous data.
-    uint64_t j = sign + 1;
+    uint64_t j = sign;
     while(str[j] == '0') ++j;
     if(!str[j]) { // 0 case.
         sign = false;
         push_back(0);
         return;
     }
-    --j;
     reserve(1 + (str.size() - j) / lenb);
     uint64_t i    = str.size();
     uint64_t cnt  = 0;
@@ -153,6 +152,8 @@ int2048 Sub(const int2048 &X,const int2048 &Y) {
 }
 
 
+
+
 /**
  * @brief Multiply X and Y by brute force.
  * For Maximum speed, X.size() should be greater than Y.size().
@@ -163,6 +164,9 @@ int2048 Sub(const int2048 &X,const int2048 &Y) {
 int2048 Mult_BF(const int2048 &X,const int2048 &Y) {
     return 0;
 }
+
+
+
 
 
 /**
@@ -383,6 +387,9 @@ int2048 operator *(const int2048 &X,const int2048 &Y) {
     }
 }
 
+
+
+
 int2048 operator /(const int2048 &X,const int2048 &Y) {
     int32_t cmp = Compare_abs(X,Y);
     if(cmp == -1) return 0;
@@ -391,7 +398,7 @@ int2048 operator /(const int2048 &X,const int2048 &Y) {
 
     if(int64_t(dif) < 0) dif = 0;
 
-    int2048 ans = ((X << dif) * (~(Y << dif))) 
+    int2048 ans = ((X << dif) * ~(Y << dif)) 
                   >> (2 * (dif + Y.size()));
     
     ans.sign = false;
@@ -409,6 +416,9 @@ int2048 operator /(const int2048 &X,const int2048 &Y) {
     return ans;
 }
 
+
+
+
 /**
  * @brief Get inverse.
  * 
@@ -425,8 +435,12 @@ int2048 operator ~(const int2048 &X) {
         return ans;
     } else if(X.size() == 2) {
         int2048 ans(0,0);
-        uint64_t i = (base * base * base * base) /
-                     (X[0] + X[1] * base);
+        constexpr __uint128_t M = __uint128_t(base) * base * base * base;
+        __uint128_t i = M / (X[0] + X[1] * base);
+        //constexpr uint64_t N = base * base * base;
+        //uint64_t div = X[0] + X[1] * base;
+        // Make sure base < div
+        //uint64_t i = (N / div) * base + ((N % div) * base) /div;
         while(i) {
             ans.push_back(i % base);
             i /= base;

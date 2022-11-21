@@ -30,9 +30,9 @@ class NTT_base {
     
     constexpr static uint64_t NTT_threshold = 0;
     constexpr static uint64_t mod[2]  = {2281701377,3489660929}; // mod number
-    constexpr static uint64_t lenb    = 4;   // base len in decimal
-    constexpr static uint64_t base    = 1e4; // base of int2048 = 10 ^ lenb
-    constexpr static uint64_t initLen = 6;    // initial length reserved
+    constexpr static uint64_t lenb    = 6;   // base len in decimal
+    constexpr static uint64_t base    = 1e6; // base of int2048 = 10 ^ lenb
+    constexpr static uint64_t initLen = 6;   // initial length reserved
     constexpr static uint64_t MaxLen  = 1 << 21; // Maximum possible NTT length
     // constexpr static uint64_t rate    = 3;    // compressing rate
     constexpr static uint64_t BFLen   = 1e9;  // Brute Force length
@@ -44,6 +44,9 @@ class NTT_base {
         10,
         100,
         1000,
+        10000,
+        100000,
+        // 1000000,
     };
     constexpr static uint64_t root[2][2][22]= {
         2281701376,344250126,483803410,617790083,2023592065,
@@ -353,15 +356,14 @@ void int2048::read(const std::string &str) {
     if(str.front() == '-') sign = true;
     else                   sign = false;
     clear(); // clear the previous data.
-    uint64_t j = sign + 1;
+    uint64_t j = sign;
     while(str[j] == '0') ++j;
     if(!str[j]) { // 0 case.
         sign = false;
         push_back(0);
         return;
     }
-    --j;
-    reserve(1 + (str.size() - sign) / lenb);
+    reserve(1 + (str.size() - j) / lenb);
     uint64_t i    = str.size();
     uint64_t cnt  = 0;
     uint64_t ret  = 0;
@@ -373,9 +375,7 @@ void int2048::read(const std::string &str) {
         } else {
         }
     }
-    if(cnt) {
-        push_back(ret);
-    }
+    if(cnt) push_back(ret);
 }
 
 
@@ -469,6 +469,8 @@ int2048 Sub(const int2048 &X,const int2048 &Y) {
 }
 
 
+
+
 /**
  * @brief Multiply X and Y by brute force.
  * For Maximum speed, X.size() should be greater than Y.size().
@@ -479,6 +481,9 @@ int2048 Sub(const int2048 &X,const int2048 &Y) {
 int2048 Mult_BF(const int2048 &X,const int2048 &Y) {
     return 0;
 }
+
+
+
 
 
 /**
@@ -699,6 +704,9 @@ int2048 operator *(const int2048 &X,const int2048 &Y) {
     }
 }
 
+
+
+
 int2048 operator /(const int2048 &X,const int2048 &Y) {
     int32_t cmp = Compare_abs(X,Y);
     if(cmp == -1) return 0;
@@ -707,7 +715,7 @@ int2048 operator /(const int2048 &X,const int2048 &Y) {
 
     if(int64_t(dif) < 0) dif = 0;
 
-    int2048 ans = ((X << dif) * (~(Y << dif))) 
+    int2048 ans = ((X << dif) * ~(Y << dif)) 
                   >> (2 * (dif + Y.size()));
     
     ans.sign = false;
@@ -725,6 +733,9 @@ int2048 operator /(const int2048 &X,const int2048 &Y) {
     return ans;
 }
 
+
+
+
 /**
  * @brief Get inverse.
  * 
@@ -741,8 +752,10 @@ int2048 operator ~(const int2048 &X) {
         return ans;
     } else if(X.size() == 2) {
         int2048 ans(0,0);
-        uint64_t i = (base * base * base * base) /
-                     (X[0] + X[1] * base);
+        constexpr uint64_t N = base * base * base;
+        uint64_t div = X[0] + X[1] * base;
+        // Make sure base < div
+        uint64_t i = (N / div) * base + ((N % div) * base) /div;
         while(i) {
             ans.push_back(i % base);
             i /= base;

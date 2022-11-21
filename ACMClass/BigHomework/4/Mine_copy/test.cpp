@@ -5,7 +5,8 @@
 using sjtu::int2048;
 std::list<int> l;
 signed main() {
-    int2048 a = std::string("00000000000");
-    std::cout << a;
+    int2048 x,y;
+    std::cin >> x >> y;
+    std::cout << x / y;
     return 0;
 }

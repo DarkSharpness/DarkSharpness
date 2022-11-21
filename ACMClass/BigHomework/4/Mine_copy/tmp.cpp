@@ -353,6 +353,10 @@ void int2048::read(const std::string &str) {
     if(str.front() == '-') sign = true;
     else                   sign = false;
     clear(); // clear the previous data.
+    uint64_t j = sign;
+    while(j != str.size() && str[j] == '0') ++j;
+    if(j =)
+
     if(str.size() == sign + 1u && str.back() == '0') { // 0 case
         sign = false;
         push_back(0);
@@ -697,7 +701,7 @@ int2048 operator *(const int2048 &X,const int2048 &Y) {
 }
 
 int2048 operator /(const int2048 &X,const int2048 &Y) {
-    bool cmp = Compare_abs(X,Y);
+    int32_t cmp = Compare_abs(X,Y);
     if(cmp == -1) return 0;
     if(cmp ==  0) return X.sign ^ Y.sign ? -1 : 1;
     uint64_t dif = X.size() - Y.size() * 2;
