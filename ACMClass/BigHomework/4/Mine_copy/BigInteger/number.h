@@ -29,16 +29,13 @@ class NTT_base {
     static inline uint64_t getMult(uint64_t A0,uint64_t A1,uint64_t inv);
     
     constexpr static uint64_t NTT_threshold = 0;
+    constexpr static uint64_t DIV_threshold = 0;
     constexpr static uint64_t mod[2]  = {2281701377,3489660929}; // mod number
     constexpr static uint64_t lenb    = 6;   // base len in decimal
     constexpr static uint64_t base    = 1e6; // base of int2048 = 10 ^ lenb
     constexpr static uint64_t initLen = 6;   // initial length reserved
-    constexpr static uint64_t MaxLen  = 1 << 21; // Maximum possible NTT length
-    // constexpr static uint64_t rate    = 3;    // compressing rate
-    constexpr static uint64_t BFLen   = 1e9;  // Brute Force length
-    // constexpr static uint64_t root[2][2] = {     // root and inv root
-    // 3,(mod[0] + 1) / 3,3,(mod[1] + 1) / 3
-    // };  // common root
+    constexpr static uint64_t NTTLen  = 22;
+    constexpr static uint64_t MaxLen  = 1 << NTTLen; // Maximum possible NTT length
     constexpr static uint64_t unit[lenb] = { // units below base
         1,
         10,
@@ -48,7 +45,7 @@ class NTT_base {
         100000,
         // 1000000,
     };
-    constexpr static uint64_t root[2][2][22]= {
+    constexpr static uint64_t root[2][2][NTTLen]= {
         2281701376,344250126,483803410,617790083,2023592065,
         216937880,123697435,1639385633,1301610063,865646229,
         1780348903,799681555,977546242,1286750706,1294996786,
@@ -158,7 +155,6 @@ class int2048 : private custom_vector,private NTT_base {
     friend int32_t Compare_abs(const int2048 &X,const int2048 &Y);
     void read(const std::string &str);
     void print(std::ostream &os) const;
-    void move(std::vector <uint64_t> &tmp);
     inline void reverse();
     
     

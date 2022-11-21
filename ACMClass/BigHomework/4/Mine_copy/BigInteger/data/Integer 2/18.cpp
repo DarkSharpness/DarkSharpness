@@ -26,4 +26,5 @@ int main()
 
         std::cout << a / b << '\n';
     }
+    freopen("ans.out","w",stdout);
 }
