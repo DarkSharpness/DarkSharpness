@@ -20,21 +20,25 @@ namespace sjtu {
 class NTT_base {
   protected:
     NTT_base() = default;
+
     static inline uint64_t fastPow0(uint64_t base,uint64_t pow);
     static inline uint64_t fastPow1(uint64_t base,uint64_t pow);
     static void NTT0(uint64_t *A,uint32_t len,bool type);
     static void NTT1(uint64_t *A,uint32_t len,bool type);
     static inline void reverse(uint64_t *A,uint32_t *rev,uint32_t len);
-    static inline std::vector <uint32_t> getRev(uint32_t len);
+    static inline void getRev(std::vector <uint32_t> &rev,uint32_t len);
     static inline uint64_t getMult(uint64_t A0,uint64_t A1,uint64_t inv);
-    
-    constexpr static uint64_t NTT_threshold = 0;
-    constexpr static uint64_t DIV_threshold = 0;
+
+
+    constexpr static uint64_t NTT_threshold = 12; // where NTT start from(>=0)
+    constexpr static uint64_t DIV_threshold = 10; // where DIV start from(>=5)
+
+
     constexpr static uint64_t mod[2]  = {2281701377,3489660929}; // mod number
     constexpr static uint64_t lenb    = 6;   // base len in decimal
     constexpr static uint64_t base    = 1e6; // base of int2048 = 10 ^ lenb
-    constexpr static uint64_t initLen = 6;   // initial length reserved
-    constexpr static uint64_t NTTLen  = 22;
+    constexpr static uint64_t initLen = 4;   // initial length reserved
+    constexpr static uint64_t NTTLen  = 22;  // Max NTT capable length
     constexpr static uint64_t MaxLen  = 1 << NTTLen; // Maximum possible NTT length
     constexpr static uint64_t unit[lenb] = { // units below base
         1,
@@ -45,7 +49,8 @@ class NTT_base {
         100000,
         // 1000000,
     };
-    constexpr static uint64_t root[2][2][NTTLen]= {
+
+    constexpr static uint64_t root[2][2][NTTLen]= {  // unit roots
         2281701376,344250126,483803410,617790083,2023592065,
         216937880,123697435,1639385633,1301610063,865646229,
         1780348903,799681555,977546242,1286750706,1294996786,
@@ -70,12 +75,20 @@ class NTT_base {
         997063351,2673837393,2327172879,845347823,1749721614,
         2180195085,87513231,
     };
-    
-    /**
-     * @brief Least length for NTT.
-     * Note that 2 * threshold * base should be less than 2 ^ 64. 
-     * 
-     */
+
+    constexpr static uint64_t inverse[2][NTTLen] = { // inverses
+        1,1140850689,1711276033,1996488705,2139095041,2210398209,
+        2246049793,2263875585,2272788481,2277244929,2279473153,
+        2280587265,2281144321,2281422849,2281562113,2281631745,
+        2281666561,2281683969,2281692673,2281697025,2281699201,
+        2281700289,
+
+        1,1744830465,2617245697,3053453313,3271557121,3380609025,
+        3435134977,3462397953,3476029441,3482845185,3486253057,
+        3487956993,3488808961,3489234945,3489447937,3489554433,
+        3489607681,3489634305,3489647617,3489654273,3489657601,
+        3489659265,
+    };
 };
 
 
@@ -92,7 +105,6 @@ class custom_vector : public std::vector <uint64_t> {
 
 /**
  * @brief Custom integer type.
- * Maximum length is 
  * 
  */
 class int2048 : private custom_vector,private NTT_base {
@@ -101,7 +113,8 @@ class int2048 : private custom_vector,private NTT_base {
     int2048(uint64_t cap,bool flag);
     inline uint64_t operator ()(uint64_t idx)  const;
     friend int2048 operator ~(const int2048 &X);
-
+    friend int2048 &selfAdd(int2048 &X);
+    friend int2048 &selfSub(int2048 &X);
 
   public:
     // Sign of the number.
@@ -152,7 +165,13 @@ class int2048 : private custom_vector,private NTT_base {
     friend int2048 Sub(const int2048 &X,const int2048 &Y);
     friend int2048 Mult_BF (const int2048 &X,const int2048 &Y);
     friend int2048 Mult_NTT(const int2048 &X,const int2048 &Y);
+    friend int2048 Div_BF(const int2048 &X,const int2048 &Y);
+    friend int2048 Div_NT(const int2048 &X,const int2048 &Y);
     friend int32_t Compare_abs(const int2048 &X,const int2048 &Y);
+
+    int2048 Sub_abs_at(const int2048 &Y,uint64_t len);
+    int32_t Compare_abs_at(const int2048 &Y,uint64_t len) const;
+
     void read(const std::string &str);
     void print(std::ostream &os) const;
     inline void reverse();

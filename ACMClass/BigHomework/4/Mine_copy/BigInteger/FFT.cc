@@ -50,12 +50,15 @@ inline uint64_t NTT_base::getMult(uint64_t A0,uint64_t A1,uint64_t inv) {
  * @brief Work out the rev vector.
  * 
  */
-inline std::vector <uint32_t> NTT_base::getRev(uint32_t len) {
-    std::vector <uint32_t> rev(len);
+inline void NTT_base::getRev(std::vector <uint32_t> &rev,uint32_t len) {
+    static uint32_t last = 0;
+    if(last == len) return; // Doing nothing if the same.
+    last = len;
+    rev.resize(len);
+    rev[0] = 0;
     for(uint32_t i = 0 ; i < len ; ++i) {
         rev[i] = (rev[i >> 1] >> 1) | ((i & 1) * len >> 1);
     }
-    return rev;
 }
 
 /**

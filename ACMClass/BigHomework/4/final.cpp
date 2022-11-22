@@ -35,8 +35,8 @@ class NTT_base {
 
 
     constexpr static uint64_t mod[2]  = {2281701377,3489660929}; // mod number
-    constexpr static uint64_t lenb    = 7;   // base len in decimal
-    constexpr static uint64_t base    = 1e7; // base of int2048 = 10 ^ lenb
+    constexpr static uint64_t lenb    = 5;   // base len in decimal
+    constexpr static uint64_t base    = 1e5; // base of int2048 = 10 ^ lenb
     constexpr static uint64_t initLen = 6;   // initial length reserved
     constexpr static uint64_t NTTLen  = 22;  // Max NTT capable length
     constexpr static uint64_t MaxLen  = 1 << NTTLen; // Maximum possible NTT length
@@ -46,8 +46,6 @@ class NTT_base {
         100,
         1000,
         10000,
-        100000,
-        1000000,
     };
 
     constexpr static uint64_t root[2][2][NTTLen]= {  // unit roots
@@ -698,6 +696,7 @@ int2048 operator -(int2048 &&X) {
 
 int2048 operator <<(const int2048 &X,const uint64_t Y) {
     if(!X) return 0;
+    if(!Y) return X;
     int2048 ans(X.size() + Y,X.sign);
     ans.assign(Y,0);
     ans.insert(ans.end(),X.begin(),X.end());
@@ -706,6 +705,7 @@ int2048 operator <<(const int2048 &X,const uint64_t Y) {
 
 int2048 operator >>(const int2048 &X,const uint64_t Y) {
     if(Y >= X.size()) return 0;
+    if(!Y) return X;
     int2048 ans(X.size() - Y,X.sign);
     ans.insert(ans.end(),X.begin() + Y,X.end());
     return ans;
@@ -765,23 +765,24 @@ int2048 operator /(const int2048 &X,const int2048 &Y) {
     int32_t cmp = Compare_abs(X,Y);
     if(cmp == -1) return 0;
     if(cmp ==  0) return X.sign ^ Y.sign ? -1 : 1;
-    uint64_t dif = X.size() - Y.size() * 2;
 
+    uint64_t dif = X.size() - Y.size() * 2;
     if(int64_t(dif) < 0) dif = 0;
 
-    int2048 ans = ((X << dif) * ~(Y << dif)) 
-                  >> (2 * (dif + Y.size()));
-    
+    // Y.size() + dif is the new length of Y.
+    int2048 ans = ((X << dif) * ~(Y << dif)) >> (2 * (dif + Y.size()));
     ans.sign = false;
-    
+
     // Small adjustments
-    int2048 tmp = ans + 1;
-    while(Compare_abs(tmp * Y,X) != 1) {
-        ans = tmp;
-        selfAdd(tmp);
+    int2048 tmp = (ans + 1) * Y;
+    while(Compare_abs(tmp,X) != 1) {
+        selfAdd(ans);
+        tmp += Y;
     }
-    while(Compare_abs(ans * Y,X) == 1) {
+    tmp = ans * Y;
+    while(Compare_abs(tmp,X) == 1) {
         selfSub(ans);
+        tmp = ans * Y;
     }
     ans.sign = X.sign ^ Y.sign;
     return ans;
@@ -806,24 +807,24 @@ int2048 operator ~(const int2048 &X) {
         return ans;
     } else if(X.size() == 2) {
         int2048 ans(0,0);
-        constexpr __uint128_t M = __uint128_t(base) * base * base * base;
-        __uint128_t i = M / (X[0] + X[1] * base);
-        // constexpr uint64_t N = base * base * base;
-        // uint64_t div = X[0] + X[1] * base;
+        constexpr uint64_t N = base * base * base;
+        uint64_t div = X[0] + X[1] * base;
         // Make sure base < div
-        // uint64_t i = (N / div) * base + ((N % div) * base) /div;
+        uint64_t i = (N / div) * base + ((N % div) * base) /div;
         while(i) {
             ans.push_back(i % base);
             i /= base;
         }
         return ans;
     }
-    uint32_t hf = 1 + (X.size() >> 1); // half of X.size()
-    int2048 Y(0,0);
-    Y.insert(Y.end(),X.end() - hf,X.end());
-    Y = ~Y;
-    return (2 * Y << (X.size() - hf)) - (X * Y * Y >> (hf * 2)); 
     #undef base
+
+    // half of X.size()
+    uint32_t hf = 1 + (X.size() >> 1);
+    int2048 Y = ~(X >> (X.size() - hf)); // First half bits.
+    // Newton's method Y1 = Y0 * (2 - X * Y0).
+    // When multiply Y0 ,it should be Y0 >> (hf << 1) 
+    return 2 * (Y << (X.size() - hf)) - (X * Y * Y >> (hf << 1)); 
 }
 
 
@@ -947,4 +948,3 @@ int2048::int2048(const std::string &str) {
 
 
 #endif
-
