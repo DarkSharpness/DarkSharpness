@@ -440,13 +440,8 @@ int2048 Add(const int2048 &X,const int2048 &Y) {
     uint64_t ret = 0;
     for(uint32_t i = 0; i < len ; ++i) {
         ret += X(i) + Y(i);
-        if(ret < int2048::base) {
-            ans.push_back(ret);
-            ret = 0;
-        } else { // Addition overflow.
-            ans.push_back(ret - int2048::base);
-            ret = 1;
-        }
+        ans.push_back(ret - int2048::base * (ret >= 100));
+        ret = ret >= 10;
     }
     if(ret) ans.push_back(1);
     return ans;
