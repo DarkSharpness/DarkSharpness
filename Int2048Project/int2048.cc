@@ -144,10 +144,23 @@ int2048::int2048(const int2048 &X,size_t len) {
     copy(X);
 }
 
+int2048::int2048(const array<uint64_t> &X,bool _sign) {
+    sign = _sign;
+    copy(X);
+}
+
+int2048::int2048(array<uint64_t> &&X,bool _sign) {
+    sign = _sign;
+    swap(X);
+}
+
+inline int2048::operator bool() const{
+    return back();
+}
+
 
 
 }
-
 
 
 
@@ -223,11 +236,61 @@ inline bool operator !(const int2048 &X) {
 
 
 
-
 /* Arithmetic operator part. */
 namespace sjtu {
 
-/* Reverse a number's sign.It will return itself. */
+int2048 operator <<(const int2048 &X,const int64_t Y) {
+    int2048 ans = int2048(array <uint64_t> (Y,X),X.sign);
+    if(ans.empty()) return 0;
+    else return ans;
+}
+
+
+int2048 operator >>(const int2048 &X,const int64_t Y) {
+    int2048 ans = int2048(array <uint64_t> (-Y,X),X.sign);
+    if(ans.empty()) return 0;
+    else return ans;
+}
+
+/* Add X's abs value by 1. */
+int2048 &SelfAdd(int2048 &X) {
+    for(size_t i = 0 ; i != X.size() ; ++i) {
+        if(++X[i] < int2048::base) return X;
+        X[i] = 0;
+    }
+    X.push_back(1);
+    return X;
+}
+
+/* Subtract X's abs value by 1.
+   Note that X != 0 */
+int2048 &SelfSub(int2048 &X) {
+    for(size_t i = 0 ; i != X.size() ; ++i) {
+        if(--X[i] < int2048::base) break;
+        X[i] = int2048::base;
+    }
+    while(!X.back()) X.pop_back();
+    return X;
+}
+
+/* X = X + 1 */
+int2048 &operator ++(int2048 &X) {
+    if(X.sign && X.size() == 1 && X.back() == 1) {
+        X[0] = X.sign = 0;
+        return X;
+    } return X.sign ? SelfSub(X) : SelfAdd(X);
+}
+/* X= X - 1*/
+int2048 &operator --(int2048 &X) {
+    if(X.back()) {
+        X[0] = X.sign = 1;
+        return X;
+    } return X.sign ? SelfAdd(X) : SelfSub(X);
+}
+
+
+/* Reverse a number's sign.It will return itself. 
+   Please use it instead of X *= (-1) or X = -X  */
 inline int2048 &int2048::reverse() {
     sign ^= 1;
     return *this;
@@ -243,6 +306,7 @@ inline int2048 operator -(const int2048 &X) {
     int2048 ans(X);
     return ans.reverse();
 }
+
 
 /**
  * @brief Add abs(X) by abs(Y) from X's front bit.
@@ -404,14 +468,79 @@ int2048 operator *(const int2048 &X,const int2048 &Y) {
     return Mult_FT(ans,Y);
 }
 
-inline int2048::operator bool() const{
-    return back();
+int2048 operator /(const int2048 &X,const int2048 &Y) {
+    int32_t cmp = Abs_Compare(X,Y);
+    if(cmp == -1) return 0;
+    if(cmp ==  0) return X.sign ^ Y.sign ? -1 : 1;
+
+    uint64_t dif = X.size() - Y.size() * 2;
+    if(int64_t(dif) < 0) dif = 0;
+
+    // Y.size() + dif is the new length of Y.
+    int2048 ans = ((X << dif) * ~(Y << dif)) >> (2 * (dif + Y.size()));
+    ans.sign = false;
+
+    // Small adjustments
+    int2048 tmp = (ans + 1) * Y;
+    while(Abs_Compare(tmp,X) != 1) {
+        SelfAdd(ans);
+        tmp += Y;
+    }
+    tmp = ans * Y;
+    while(Abs_Compare(tmp,X) == 1) {
+        SelfSub(ans);
+        tmp -= Y;
+    }
+    ans.sign = X.sign ^ Y.sign;
+    return ans;
+}
+
+int2048 &operator /=(int2048 &X,const int2048 &Y) {
+    return X = X / Y;
+}
+
+/* The reverser of Y in twice the size() of Y.
+   In other words , 1 / Y =  (~Y) / base ^ (2 * Y.size()) */
+int2048 operator ~(const int2048 &X) {
+    #define base int2048::base
+    if(X.size() == 1) {
+        int2048 ans; ans.pop_back();
+        uint64_t i = base * base / X[0];
+        while(i) {
+            ans.push_back(i % base);
+            i /= base;
+        }
+        return ans;
+    } else if(X.size() == 2) {
+        int2048 ans; ans.pop_back();
+#if NUMBER_TYPE != 1
+        constexpr uint64_t N = base * base * base; 
+        uint64_t div = X[0] + X[1] * base;
+        // i = base ^ 4 / div
+        uint64_t i = (N / div) * base + ((N % div) * base) /div;
+#else
+        constexpr uint64_t N = base * base * base * base;
+        uint64_t i = N / (X[0] + X[1] * base);
+#endif
+        while(i) { 
+            ans.push_back(i % base);
+            i /= base;
+        }
+#
+        return ans;
+    }
+    #undef base
+
+    size_t hf = 1 + (X.size() >> 1);     // half of X.size()
+    int2048 Y = ~(X >> (X.size() - hf)); // First half bits reverse
+
+    // Newton's method Y1 = Y0 * (2 - X * Y0).
+    // When multiply Y0 ,it should be Y0 >> (hf << 1) 
+    return 2 * (Y << (X.size() - hf)) - (X * Y * Y >> (hf << 1)); 
 }
 
 
 }
-
-
 
 
 

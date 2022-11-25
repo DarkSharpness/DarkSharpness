@@ -1,7 +1,11 @@
 #ifndef _INT2048_H_
 #define _INT2048_H_
 
-#define NUMBER_TYPE 0
+
+#ifndef NUMBER_TYPE
+#define NUMBER_TYPE 0 // Default : NTT
+#endif
+
 
 #include "complex.cc"
 #include "vector.cc"
@@ -175,10 +179,16 @@ class int2048 : private array <uint64_t>,
     static std::string buffer; // buffer inside
     // int2048(int2048 &&X,size_t len);
     int2048(const int2048 &X,size_t len);
+    int2048(const array <uint64_t> &X,bool _sign);
+    int2048(array<uint64_t> &&X,bool _sign);
+
 
     friend int2048 operator ~(const int2048 &X);
 
     friend int32_t Abs_Compare(const int2048 &X,const int2048 &Y);
+
+    friend int2048 &SelfAdd(int2048 &X);
+    friend int2048 &SelfSub(int2048 &X);
     friend int2048 &Add(int2048 &X,const int2048 &Y);
     friend int2048 &Sub(int2048 &X,const int2048 &Y);
     friend int2048 &Sub(const int2048 &Y,int2048 &X);
@@ -198,6 +208,9 @@ class int2048 : private array <uint64_t>,
     int2048(const std::string &str);
     ~int2048() = default;
 
+    friend int2048 &operator ++(int2048 &X);
+    friend int2048 &operator --(int2048 &X);
+    
 
     friend int2048 operator +(const int2048 &X,const int2048 &Y);
     friend int2048 operator -(const int2048 &X,const int2048 &Y);
@@ -223,8 +236,9 @@ class int2048 : private array <uint64_t>,
     friend int2048& operator %=(int2048 &X,const int2048 &Y);
 
 
-    friend int2048 operator <<(const int2048 &X,const uint64_t Y);
-    friend int2048 operator >>(const int2048 &X,const uint64_t Y);
+    friend int2048 operator <<(const int2048 &X,const int64_t Y);
+    friend int2048 operator >>(const int2048 &X,const int64_t Y);
+    
     void read(const std::string &str);
     void print(std::ostream &os) const;
     

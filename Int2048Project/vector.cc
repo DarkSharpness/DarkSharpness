@@ -40,6 +40,24 @@ class array : private std::allocator <value_t> {
         tail = head + siz;
     }
 
+    /* Initialize from Y and fill front with 0 to siz*/
+    array(int64_t siz,const array &Y) {
+        head = tail = term = nullptr;
+        if(siz > 0) {
+            reserve(siz + Y.size());
+            memset(head,0,siz * sizeof(value_t));
+            memcpy(head + siz,Y.head,Y.size() * sizeof(value_t));
+            tail = term;
+        } else if(siz < 0) {
+            if(siz + Y.size() <= 0) return; // empty
+            reserve(siz + Y.size());
+            memcpy(head,Y.head - siz,(siz + Y.size()) * sizeof(value_t));
+            tail = term;
+        } else { /* siz = 0*/
+            copy(Y);
+        }
+    }
+
     /* Move data from Y. */
     array(array &&Y) {
         head = tail = term = nullptr;
@@ -69,6 +87,10 @@ class array : private std::allocator <value_t> {
     
     ~array() {
         this->deallocate(head,capacity());
+    }
+
+    inline bool empty() const{
+        return head == tail;
     }
 
     /* Return the count of elements in the array */
@@ -174,6 +196,7 @@ class array : private std::allocator <value_t> {
         memset(tail,0,count * sizeof(value_t));
         tail += count;
     }
+
 
     /* Copy the data from Y. No deconstruction is done.*/
     inline array &operator =(const array &Y) {
