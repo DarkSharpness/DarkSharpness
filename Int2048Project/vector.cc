@@ -34,10 +34,12 @@ class array : private std::allocator <value_t> {
     array(const array &Y,size_t siz) {
         head = tail = term = nullptr;
         reserve(siz);
-        copy(Y);
-        expand_back(siz - size());
+        tail = head + Y.size();
+        memcpy(head,Y.head, Y.size() * sizeof(value_t));
+        memset(tail,0,(siz - size()) * sizeof(value_t));
+        tail = head + siz;
     }
-    
+
     /* Move data from Y. */
     array(array &&Y) {
         head = tail = term = nullptr;
@@ -47,8 +49,9 @@ class array : private std::allocator <value_t> {
     /* Initialize from Y and fill back with 0 to siz*/
     array(array &&Y,size_t siz) {
         head = tail = term = nullptr;
-        swap(Y);
-        reserve(siz);
+        std::swap(head,Y.head);
+        std::swap(tail,Y.tail);
+        std::swap(term,Y.term);
         expand_back(siz - size());
     }
 
@@ -90,7 +93,6 @@ class array : private std::allocator <value_t> {
      * If currrent capacity() > cap, nothing is done.
      * 
      * @param cap The target capacity() to be reached.
-     * @param cap The target capacity() to 
      */
     inline void reserve(size_t cap) {
         if(cap > capacity()) {

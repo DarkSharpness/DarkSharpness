@@ -1,7 +1,7 @@
 #ifndef _INT2048_H_
 #define _INT2048_H_
 
-#define NUMBER_TYPE 1
+#define NUMBER_TYPE 0
 
 #include "complex.cc"
 #include "vector.cc"
@@ -12,14 +12,33 @@
 
 namespace sjtu {
 
+
+/**
+ * @brief Fast built-in LOG2 function from
+ * "骆可强《论程序底层优化的一些方法与技巧"
+ * You can access that at 
+ * https://github.com/lzyrapx/Competitive-Programming-Docs/.
+ * 
+ * 
+ * @return log2(x) in 32-bit.
+ */
+inline unsigned int LOG2(unsigned x){
+    unsigned ret;
+    __asm__ __volatile__ ("bsrl %1, %%eax":"=a"(ret):"m"(x));
+    return ret;
+}
+
+
+
 class Number_base {
   protected:
     Number_base() = default;
     // The minimum length for Newton Method division.
-    static constexpr uint64_t DIV_minLen = 8;
-    static constexpr int32_t judgeMap[2] = {1 , -1};
+    static constexpr uint64_t DIV_minLen  = 8;
+    static constexpr int32_t  judgeMap[2] = {1 , -1};
+    static constexpr uint64_t MULT_minLen = 12;
 
-    /* Get the reverse vector */
+    /* Get the reverse vector.(With small optimization) */
     static void getRev (array <size_t> &rev,size_t len) {
         static size_t last = -1;
         if(len == last) return;
@@ -41,7 +60,7 @@ class NTT_base : protected Number_base{
     NTT_base() = default;
 
     static constexpr uint64_t initLen     = 2  ;
-    static constexpr uint64_t MULT_minLen = 12 ;
+    // static constexpr uint64_t MULT_minLen = 12 ;
     static constexpr uint64_t baseBit     = 5  ;
     static constexpr uint64_t base        = 1e5;
     static constexpr uint64_t unit[baseBit] = {
@@ -117,14 +136,13 @@ class FFT_base : protected Number_base {
     FFT_base() = default;
 
     static constexpr uint64_t initLen     = 2  ;
-    static constexpr uint64_t MULT_minLen = 12 ;
     static constexpr uint64_t baseBit     = 3  ;
     static constexpr uint64_t base        = 1e3;
     static constexpr uint64_t unit[baseBit] = {
         1,10,100
     };
 
-
+    static uint64_t Round(double num);
     // The maximum 01bits for NTT multiplication 
     static constexpr uint64_t FFT_maxBit = 20;
     // The maximum length for NTT multiplication
@@ -137,7 +155,9 @@ class FFT_base : protected Number_base {
 
     static void FFT (complex *A,size_t len,bool opt);
     static void IFFT(complex *A,size_t len);
+    static void reverse(complex *A,size_t *rev,size_t len);
 };
+complex FFT_base::root[FFT_maxBit];
 
 
 /**
@@ -153,7 +173,9 @@ class int2048 : private array <uint64_t>,
 {
   private:
     static std::string buffer; // buffer inside
-    int2048(uint64_t cap,bool flag);
+    // int2048(int2048 &&X,size_t len);
+    int2048(const int2048 &X,size_t len);
+
     friend int2048 operator ~(const int2048 &X);
 
     friend int32_t Abs_Compare(const int2048 &X,const int2048 &Y);

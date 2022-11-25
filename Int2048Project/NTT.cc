@@ -20,6 +20,7 @@ inline void NTT_base::NTT_init() {
     } // test passed
 }
 
+/* Perform "butterfly operation". */
 inline void NTT_base::reverse(uint64_t *A,size_t *rev,size_t len) {
     for(size_t i = 0 ; i < len ; ++i) {
         if(i < rev[i]) std::swap(A[i],A[rev[i]]);
@@ -28,13 +29,15 @@ inline void NTT_base::reverse(uint64_t *A,size_t *rev,size_t len) {
 
 int2048 &Mult_FT(int2048 &X,const int2048 &Y) {
     X.sign ^= Y.sign;
-    size_t len = 1;
+
     size_t maxLen = X.size() + Y.size();
-    while((1 << len) < maxLen) ++len;
+    size_t len    = LOG2(maxLen - 1) + 1;
+
     const uint64_t inv[2] = {
         NTT_base::inverse[0][len],
         NTT_base::inverse[1][len]
     };
+
     constexpr uint64_t invMod = 1014089499ULL;
 
     len = 1ULL << len;
@@ -45,8 +48,8 @@ int2048 &Mult_FT(int2048 &X,const int2048 &Y) {
     static array <size_t> rev;
     int2048::getRev(rev,len);
 
-    Number_base::reverse(A0.begin(),rev.begin(),len);
-    Number_base::reverse(B0.begin(),rev.begin(),len);
+    NTT_base::reverse(A0.begin(),rev.begin(),len);
+    NTT_base::reverse(B0.begin(),rev.begin(),len);
 
     array <uint64_t> A1 = A0;
     array <uint64_t> B1 = B0;
@@ -61,8 +64,8 @@ int2048 &Mult_FT(int2048 &X,const int2048 &Y) {
         A1[i] = (A1[i] * B1[i]) % int2048::mod[1];
     }
 
-    Number_base::reverse(A0.begin(),rev.begin(),len);
-    Number_base::reverse(A1.begin(),rev.begin(),len);
+    NTT_base::reverse(A0.begin(),rev.begin(),len);
+    NTT_base::reverse(A1.begin(),rev.begin(),len);
 
     int2048::INTT <0> (A0.begin(),len);
     int2048::INTT <1> (A1.begin(),len);
@@ -72,8 +75,10 @@ int2048 &Mult_FT(int2048 &X,const int2048 &Y) {
         A0[i] = (A0[i] * inv[0]) % int2048::mod[0];
         A1[i] = (A1[i] * inv[1]) % int2048::mod[1];
         ret += (A0[i] == A1[i]) ?
-                0 : (A0[i] - A1[i] + int2048::mod[0] * 2) * invMod
-                    % int2048::mod[0] * int2048::mod[1] + A1[i];
+                A0[i] : (A0[i] - A1[i] + int2048::mod[0] * 2) * invMod
+                     % int2048::mod[0] * int2048::mod[1] + A1[i];
+        A0[i] = ret % int2048::base;
+        ret  /= int2048::base;
     }
     X.swap(A0);
     X.resize(maxLen);

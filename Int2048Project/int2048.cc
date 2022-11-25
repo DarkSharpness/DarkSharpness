@@ -120,29 +120,29 @@ int2048::int2048(intmax_t tmp = 0) {
 
 }
 
-/**
- * @brief Move construction.
- * 
- */
+/* Move construction. */
 int2048::int2048(int2048 &&tmp) {
     swap(tmp);
     sign = tmp.sign;
 }
 
-/**
- * @brief Copy construction.
- * 
- */
+/* Copy construction. */
 int2048::int2048(const int2048 &tmp) {
     copy(tmp);
     sign = tmp.sign;
 }
 
-/// @brief Initialize from std::string.  
+/* Initialize from std::string. */
 int2048::int2048(const std::string &str) {
     read(str);
 }
 
+/* */
+int2048::int2048(const int2048 &X,size_t len) {
+    sign = X.sign;
+    reserve(len);
+    copy(X);
+}
 
 
 
@@ -204,14 +204,16 @@ inline bool operator ==(const int2048 &X,const int2048 &Y) {
     if(X.sign != Y.sign || X.size() != Y.size()) return false;
     return !Abs_Compare(X,Y);
 }
+
 /* Compare X and Y*/
 inline bool operator !=(const int2048 &X,const int2048 &Y) {
     if(X.sign != Y.sign || X.size() != Y.size()) return true;
     return Abs_Compare(X,Y);
 }
+
 /* Compare X and Y*/
 inline bool operator !(const int2048 &X) {
-    return X.back();
+    return !X.back();
 }
 
 
@@ -383,6 +385,28 @@ int2048 operator -(const int2048 &X,const int2048 &Y) {
     }
 }
 
+int2048 &operator *=(int2048 &X,const int2048 &Y) {
+    if(!X) return X;
+    if(!Y) return X = 0;
+    // TODO : Brute Force Mult
+    return Mult_FT(X,Y);
+}
+
+int2048 operator *(const int2048 &X,const int2048 &Y) {
+    // TODO : Brute Force Mult
+    if(!X || !Y) return 0;
+    int2048 ans = 
+#if NUMBER_TYPE != 1 // NTT needs at most 2 ^ n size()
+    int2048(X,1 << (LOG2(X.size() + Y.size() - 1) + 1));
+#else                // FFT only needs exact size()
+    int2048(X,X.size() + Y.size());
+#endif
+    return Mult_FT(ans,Y);
+}
+
+inline int2048::operator bool() const{
+    return back();
+}
 
 
 }
