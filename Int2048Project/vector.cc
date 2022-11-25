@@ -4,6 +4,7 @@
 #include <stdint.h>
 #include <string.h>
 #include <initializer_list>
+
 namespace sjtu {
 
 /**
@@ -24,12 +25,33 @@ class array : private std::allocator <value_t> {
         tail = head = this->allocate(1);
         term = head + 1;
     }
+    /* Copy data from Y. */
     array(const array &Y) {
+        head = tail = term = nullptr;
         copy(Y);
     }
+    /* Initialize from Y and fill back with 0 to siz*/
+    array(const array &Y,size_t siz) {
+        head = tail = term = nullptr;
+        reserve(siz);
+        copy(Y);
+        expand_back(siz - size());
+    }
+    
+    /* Move data from Y. */
     array(array &&Y) {
+        head = tail = term = nullptr;
         swap(Y);
     }
+
+    /* Initialize from Y and fill back with 0 to siz*/
+    array(array &&Y,size_t siz) {
+        head = tail = term = nullptr;
+        swap(Y);
+        reserve(siz);
+        expand_back(siz - size());
+    }
+
     array(std::initializer_list <value_t> list) {
         if(!list.size()) {
             tail = head = this->allocate(1);
@@ -96,24 +118,28 @@ class array : private std::allocator <value_t> {
     /**
      * @brief Push an element to the back of the array.
      * It behaves like a stack operation.
-     * Note that you should this->allocate space beforehand.
      * 
      * @param val The value to be pushed_back.
      */
     inline void push_back(const value_t &val) {
+        if(tail == term) reserve(capacity() * 2);
         *(tail++) = val;
     }
 
     /**
      * @brief Push an element to the back of the array.
      * It behaves like a stack operation.
-     * Note that you should this->allocate space beforehand.
-     * Also,the element must be rvalue.
+     * You should allocate the space beforehand.
      * 
      * @param val The value to be pushed_back.
      */
-    inline void emplace_back(value_t &&val) {
+    inline void emplace_back(const value_t &val) {
         *(tail++) = std::move(val);
+    }
+
+    /* Shrink the size() by 1*/
+    inline void pop_back() {
+        --tail;
     }
 
     /**
@@ -124,7 +150,7 @@ class array : private std::allocator <value_t> {
      */
     inline void expand_front(size_t count = 1) {
         if(count <= remainder()) {
-            memmove(head + count,head,count * sizeof(value_t));
+            memmove(head + count,head,size() * sizeof(value_t));
         } else {
             value_t *temp = this->allocate(size() + count);
             memcpy(temp + count,head,size() * sizeof(value_t));
@@ -147,11 +173,13 @@ class array : private std::allocator <value_t> {
         tail += count;
     }
 
+    /* Copy the data from Y. No deconstruction is done.*/
     inline array &operator =(const array &Y) {
         copy(Y);
         return *this;
     }
-    
+
+    /* Swap the data with Y. No deconstruction is done.*/
     inline array &operator =(array &&Y) {
         swap(Y);
         return *this;
@@ -203,6 +231,18 @@ class array : private std::allocator <value_t> {
         return tail;
     }
 
+    inline value_t &front() {
+        return *head;
+    }
+    inline const value_t &front() const{
+        return *head;
+    }
+    inline value_t &back() {
+        return *(tail - 1);
+    }
+    inline const value_t &back() const{
+        return *(tail - 1);
+    }
 
 };
 
@@ -211,3 +251,4 @@ class array : private std::allocator <value_t> {
 }
 
 #endif
+

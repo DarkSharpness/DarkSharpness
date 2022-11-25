@@ -1,5 +1,6 @@
 #ifndef _COMPLEX_CC_
 #define _COMPLEX_CC_
+#include <cmath>
 
 namespace sjtu {
 
@@ -55,10 +56,14 @@ struct complex {
 
 
     inline friend complex &operator +=(complex &X,const complex & Y) {
-        return X = X + Y;
+        X.real += Y.real;
+        X.imag += Y.imag;
+        return X;
     }
     inline friend complex &operator -=(complex &X,const complex & Y) {
-        return X = X - Y;
+        X.real -= Y.real;
+        X.imag -= Y.imag;
+        return X;
     }
     inline friend complex &operator *=(complex &X,const complex & Y) {
         return X = X * Y;
@@ -67,9 +72,17 @@ struct complex {
         return X = X / Y;
     }
 
+    inline void set(double sita) {
+        real = cos(sita);
+        imag = sin(sita);
+    }
+
 
 };
+constexpr double PI = 3.141592653589793238462643383;
+
 
 }
 
 #endif
+

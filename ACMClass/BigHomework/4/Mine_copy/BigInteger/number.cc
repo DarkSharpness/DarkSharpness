@@ -575,7 +575,6 @@ int2048::int2048(int64_t tmp = 0) {
 /**
  * @brief Move construction.
  * 
- * @param tmp 
  */
 int2048::int2048(int2048 &&tmp) {
     swap(tmp);

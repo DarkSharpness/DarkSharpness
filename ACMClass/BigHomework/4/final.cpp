@@ -440,8 +440,8 @@ int2048 Add(const int2048 &X,const int2048 &Y) {
     uint64_t ret = 0;
     for(uint32_t i = 0; i < len ; ++i) {
         ret += X(i) + Y(i);
-        ans.push_back(ret - int2048::base * (ret >= 100));
-        ret = ret >= 10;
+        ans.push_back(ret - int2048::base * (ret >= int2048::base));
+        ret = ret >= int2048::base;
     }
     if(ret) ans.push_back(1);
     return ans;
@@ -566,6 +566,7 @@ int2048 Mult_NTT(const int2048 &X,const int2048 &Y) {
         A0[i] = (A0[i] * B0[i]) % int2048::mod[0];
         A1[i] = (A1[i] * B1[i]) % int2048::mod[1];
     }
+
 
     // INTT with reverse operation.
     NTT_base::reverse(&A0[0],&rev[0],len);
@@ -943,3 +944,25 @@ int2048::int2048(const std::string &str) {
 
 
 #endif
+
+
+inline long long ran() {
+    return ((long long)(rand()) << 32) + rand();
+}
+
+int main() {
+    srand(time(NULL) + 114514);
+    sjtu::int2048 x,y;
+    long long a,b,n;
+    std::cin >> n;
+    std::cout << ran() << ' ' << ran() << '\n';
+    while(n--) {
+        x = a = ran();
+        y = b = ran();
+        // std::cout << a + b << '\n' << x + y << '\n';
+        if(a + b != x + y || a - b != x - y) {
+            std::cout << "fuck!";
+        }
+    }
+    return 0;
+}
