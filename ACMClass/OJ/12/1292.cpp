@@ -1,142 +1,63 @@
 #include <iostream>
-#include <string>
-
-namespace dark{
-class calendar {
+#include <cstring>
+#define size_t int64_t
+inline size_t ToInt(const char *ptr) {
+    size_t ret = 0;
+    while(isdigit(*ptr)) { ret = ret * 10 + ((*ptr) ^ '0');++ptr; }
+    return ret;
+}
+class Calendar {
   private:
-//   public:
-    constexpr static int month[2][12] = {
-        31,28,31,30,31,30,
-        31,31,30,31,30,31,
-
-        31,29,31,30,31,30,
-        31,31,30,31,30,31,
+    static constexpr size_t Month[2][13] = {
+        0, 31, 59, 90, 120, 151, 181, 212, 243, 273, 304, 334, 365,
+        0, 31, 60, 91, 121, 152, 182, 213, 244, 274, 305, 335, 366
     };
-    constexpr static int pre[2][12] = {
-        31,59,90,120,151,181,
-        212,243,273,304,334,365,
-
-        31,60,91,121,152,182,
-        213,244,274,305,335,366
-    };
-    int time;
-    inline int getDay  () const{
-        return time % 100;
-    }
-    inline int getMonth() const{
-        return (time / 100) % 10000;
-    }
-    inline int getYear () const {
-        return time / 10000;
-    }
-    static inline bool isRun(int tmp) {
-        return (!(tmp % 400)) || (!(tmp % 4) && (tmp % 100));
-    }
-    inline int getDelta(const calendar &rhs) const{
-        int tmp0 = getYear() - 1,tmp1 = rhs.getYear() - 1;
-        int delta = (tmp1 - tmp0) * 365 
-                   + tmp1 % 4   - tmp0 % 4
-                   - tmp1 % 100 + tmp0 % 100
-                   + tmp1 % 400 - tmp0 % 400;
-        ++tmp0; ++tmp1;
-        delta += pre[isRun(tmp1)][rhs.getMonth() - 1];
-               - pre[isRun(tmp0)][    getMonth() - 1];
-        delta += rhs.getDay() - getDay(); 
-        return delta;
-    }
-    inline calendar &add(const int delta) {
-        calendar test((time / 10000 + delta / 365),1,1);
-        while(getDelta(test) < delta) {
-            test.time += 10000;
-        }
-        test.time -= 10000;
-        while(test.time <= 12 && getDelta(test) < delta) {
-            test.time += 100;
-        }
-        test.time -= 100;
-        test.time += delta - getDelta(test);
-    }
-    inline calendar &sub(int delta) {
-
-    }
-
+    size_t dfn;
+    Calendar(size_t tim) : dfn(tim) {}
   public:
-    inline bool operator <(const calendar &rhs) const{
-        return time < rhs.time;
+    static size_t GetYear(size_t year) {return year * 365 + year / 4 - year / 100 + year / 400;}
+    static size_t GetMonth(size_t month,bool type) {return Month[type][month];}
+    static bool isRun(size_t year) {return !(year % 400) || ((year % 100) && !(year % 4));}
+    Calendar() : dfn(0) {}
+    inline size_t getday() {return dfn % 7;}
+    Calendar(size_t year,size_t month,size_t day) {dfn = GetYear(year - 1) + GetMonth(month - 1,isRun(year)) + day;}
+    friend bool operator ==(const Calendar &x, const Calendar &y) {return x.dfn == y.dfn;}
+    friend bool operator !=(const Calendar &x, const Calendar &y) {return x.dfn != y.dfn;}
+    friend bool operator >=(const Calendar &x, const Calendar &y) {return x.dfn >= y.dfn;}
+    friend bool operator <=(const Calendar &x, const Calendar &y) {return x.dfn <= y.dfn;}
+    friend bool operator > (const Calendar &x, const Calendar &y) {return x.dfn >  y.dfn;}
+    friend bool operator < (const Calendar &x, const Calendar &y) {return x.dfn <  y.dfn;}
+    Calendar &operator ++() {++dfn;return *this;}
+    Calendar &operator --() {--dfn;return *this;}
+    Calendar operator ++(int) {++dfn;return Calendar(dfn - 1);}
+    Calendar operator --(int) {--dfn;return Calendar(dfn + 1);}
+    friend int64_t  operator -(const Calendar &x,const Calendar &y) {return x.dfn - y.dfn;}
+    friend Calendar operator +(const Calendar &x,size_t tim) {return Calendar(x.dfn + tim);} 
+    friend Calendar operator -(const Calendar &x,size_t tim) {return Calendar(x.dfn - tim);} 
+    friend Calendar &operator +=(Calendar &x,size_t tim) {x.dfn += tim;return x;} 
+    friend Calendar &operator -=(Calendar &x,size_t tim) {x.dfn -= tim;return x;} 
+    operator std::string() const{
+        size_t delta = dfn;
+        size_t year = delta / 365 + 2;
+        while(Calendar::GetYear(year) >= delta) --year;
+        delta -= GetYear(year);
+        const bool type = Calendar::isRun(++year);
+        size_t month = 0;
+        while(Calendar::GetMonth(month,type) < delta) ++month;
+        delta -= Month[type][month - 1];
+        char buffer[11];
+        sprintf(buffer,"%04lld-%02lld-%02lld",year,month,delta);
+        return buffer;
     }
-    inline bool operator >(const calendar &rhs) const{
-        return time > rhs.time;
+    Calendar(const char *str) {*this = Calendar(ToInt(str + 0),ToInt(str + 5),ToInt(str + 8));}
+    friend std::istream &operator >>(std::istream &is,Calendar &x) {
+        std::string buffer;
+        is >> buffer; x = Calendar(buffer.c_str());
+        return is;
     }
-    inline bool operator <=(const calendar &rhs) const{
-        return time <= rhs.time;
+    friend std::ostream &operator <<(std::ostream &os,const Calendar &x) {
+        os << std::string(x);
+        return os;
     }
-    inline bool operator >=(const calendar &rhs) const{
-        return time >= rhs.time;
-    }
-    inline bool operator ==(const calendar &rhs) const{
-        return time == rhs.time;
-    }
-    inline bool operator !=(const calendar &rhs) const{
-        return time != rhs.time;
-    }
-    inline calendar &operator ++(void) {
-        if(getDay() < month[isRun(getYear())][getMonth() - 1]) ++time;
-        else if(getMonth() < 12) {
-            time = time / 100 + 1;
-            time = time * 100 + 1;
-        } else {
-            time = time / 10000 + 1;
-            time = time * 10000 + 101;
-        }
-    }
-
-    inline calendar &operator +=(int delta) {
-        if(delta == 0) return *this;
-        else if(delta > 0)  return add(delta);
-        else                return sub(delta);
-
-    }
-
-
-
-    inline calendar &operator --(void) {
-        if(getDay() > 1) --time;
-        else if(getMonth() > 1) {
-            time = time / 100 - 1 ;
-            time = time * 100 + month[isRun(time / 100)][time % 100 - 1];
-        } else {
-            time = time / 10000 - 1;
-            time = time * 10000 + 1231;
-        }
-    }
-
-    calendar() {
-        time = 10101;
-    }
-
-    calendar(const std::string &str) {
-        time = 0;
-        for(char _ch : str) {
-            if(!isdigit(_ch)) continue;
-            time = time * 10 + (_ch ^ '0');
-        }
-    }
-    calendar(int year,int month,int day) {
-        time = year * 10000 + month * 100 + day;
-    }
-
-
 };
-
-const calendar operator "" _C(const char *ptr,size_t n) {
-    return calendar(ptr);
-}
-
-
-
-}
-using Calendar = dark::calendar;
-
-signed main() {
-    return 0;
-}
+const Calendar operator "" _C( const char *col, uint64_t n) {return Calendar(col);}

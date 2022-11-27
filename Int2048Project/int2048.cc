@@ -526,7 +526,6 @@ int2048 operator ~(const int2048 &X) {
             ans.push_back(i % base);
             i /= base;
         }
-#
         return ans;
     }
     #undef base
