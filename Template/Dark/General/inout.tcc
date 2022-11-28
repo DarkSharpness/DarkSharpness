@@ -121,6 +121,7 @@ void read(integer &arg,others &...args) {
  * @brief This parts includes all basic ouput
  * functions for integers.
  * It's easy to use and quite effiecent for OIers.
+ * TODO: Flow control
  * 
  */
 namespace dark {
@@ -168,6 +169,8 @@ void write(const integer &arg,const others &...args) {
 /**
  * @brief This part includes all standard inouts
  * classes for darksharpness class.
+ * TODO: INOUT STREAM OPERATION
+ * 
  */
 namespace dark {
 

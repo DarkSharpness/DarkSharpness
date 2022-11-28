@@ -2,21 +2,26 @@
 using namespace std;
 using ll = long long;
 using ull = unsigned long long;
-//#define int lont long
-const int N = 5e5 + 8;
-const int M = 2e6 + 8;
-
-struct edge {
-    int to,nxt,fr;
-}e[M << 1];
-
-
+const int N = 1e5 + 9;
+const int M = 3e5 + 9;
+struct edge {int to,nxt;}e[M << 1];
 int head[N],cnt = 0;
 inline void adde(int fr,int to) {
-    e[++cnt] = (edge){to,head[fr],fr};
+    e[++cnt] = (edge){to,head[fr]};
     head[fr] = cnt;
 }
-
+/// @brief Read an unsigned integer.
+/// @param dst Where the unsigned integer will be written into.
+template <class integer>
+void read(integer &dst) {
+    int  ch;
+    while(!isdigit(ch = getchar()) && ch != EOF);
+    dst = 0;
+    while(isdigit(ch)) {
+        dst = dst * 10 + (ch ^ '0');
+        ch  = getchar();
+    }
+}
 
 int dfn[N],low[N],dnt = 0;
 int tot = 0;
@@ -54,30 +59,22 @@ bool dfs(int u,int fa) {
             if(v != fa) low[u] = min(low[u],dfn[v]); // backwards.
         }
     }
-    // if(st.back() == u) st.pop_back();
     if(low[u] < dfn[u]) return tmp;
     else                return false;
 }
 
 
-
-
-
 signed main() {
     int n,m;
-    ios::sync_with_stdio(false);
-    cin >> n >> m;
+    read(n);read(m);
     while(m--) {
         int x,y;
-        cin >> x >> y;
+        read(x);read(y);
         if(x == y) continue;
         adde(x,y);adde(y,x);
     }
     for(int i = 1 ; i <= n ; ++i)
-        if(!dfn[i]) {
-            st.clear();
-            dfs(i,0);
-        }
-    cout << n - invited.count();
+        if(!dfn[i]) {st.clear();dfs(i,0);}
+    printf("%d",n - (int)invited.count());
     return 0;
 }
