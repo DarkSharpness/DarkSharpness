@@ -1,8 +1,8 @@
-#ifndef _DARK_INOUT_CC_
-#define _DARK_INOUT_CC_
+#ifndef _DARK_INOUT_HPP_
+#define _DARK_INOUT_HPP_
 
 #include <stdio.h> // standard inout is required
-#include "../include/basic.h"
+#include "../include/basic.hpp"
 
 /**
  * @brief This parts includes all basic input
@@ -12,10 +12,14 @@
  */
 namespace dark {
 
-/// @brief Read a signed integer
-/// @param dst Where the signed integer will be written into.
+/**
+ * @brief Read a signed integer.
+ * 
+ * @param  dst Where the signed integer will be written into.
+ * @return The signed number which has been read.
+ */
 template <class integer>
-void Fread_s(integer &dst) {
+integer &Fread_s(integer &dst) {
     int  ch;
     bool flag = false;
     while(!isdigit(ch = getchar()) && ch != EOF) {
@@ -26,14 +30,18 @@ void Fread_s(integer &dst) {
         dst = dst * 10 + (ch ^ '0');
         ch  = getchar();
     }
-    if(flag) {dst = -dst;}
+    return flag ? dst = -dst : dst;
 }
 
 
-/// @brief Read an unsigned integer.
-/// @param dst Where the unsigned integer will be written into.
+/**
+ * @brief Read an unsigned integer.
+ * 
+ * @param  dst Where the unsigned integer will be written into.
+ * @return The unsigned number which has been read.
+ */
 template <class integer>
-void Fread_u(integer &dst) {
+integer &Fread_u(integer &dst) {
     int  ch;
     while(!isdigit(ch = getchar()) && ch != EOF);
     dst = 0;
@@ -41,71 +49,110 @@ void Fread_u(integer &dst) {
         dst = dst * 10 + (ch ^ '0');
         ch  = getchar();
     }
+    return dst;
 }
 
 
-/// @brief Read a signed integer. 
-/// If you want to read a char,use getchar() instead.
-/// @param dst Where the signed integer will be written into.
-void Fread(int8_t  &dst)  {Fread_s(dst);}
-/// @brief Read a signed integer. 
-/// @param dst Where the signed integer will be written into.
-void Fread(int16_t &dst)  {Fread_s(dst);}
-/// @brief Read a signed integer. 
-/// @param dst Where the signed integer will be written into.
-void Fread(int32_t &dst)  {Fread_s(dst);}
-/// @brief Read a signed integer. 
-/// @param dst Where the signed integer will be written into.
-void Fread(int64_t &dst)  {Fread_s(dst);}
-/// @brief Read an unsigned integer.
-/// If you want to read in a char,use getchar() instead.
-/// @param dst Where the unsigned integer will be written into.
-void Fread(uint8_t  &dst) {Fread_u(dst);}
-/// @brief Read an unsigned integer.
-/// @param dst Where the unsigned integer will be written into.
-void Fread(uint16_t &dst) {Fread_u(dst);}
-/// @brief Read an unsigned integer.
-/// @param dst Where the unsigned integer will be written into.
-void Fread(uint32_t &dst) {Fread_u(dst);}
-/// @brief Read an unsigned integer.
-/// @param dst Where the unsigned integer will be written into.
-void Fread(uint64_t &dst) {Fread_u(dst);}
+/**
+ * @brief Read a signed integer. 
+ * If you want to read a char,use getchar() instead.
+ * 
+ * @param dst Where the signed integer will be written into.
+ * @return The signed number which has been read.
+ */
+int8_t  &Fread(int8_t  &dst)  {return Fread_s(dst);}
+/**
+ * @brief Read a signed integer. 
+ * 
+ * @param dst Where the signed integer will be written into.
+ * @return The signed number which has been read.
+ */
+int16_t &Fread(int16_t &dst)  {return Fread_s(dst);}
+/**
+ * @brief Read a signed integer. 
+ * 
+ * @param dst Where the signed integer will be written into.
+ * @return The signed number which has been read.
+ */
+int32_t &Fread(int32_t &dst)  {return Fread_s(dst);}
+/**
+ * @brief Read a signed integer. 
+ * 
+ * @param dst Where the signed integer will be written into.
+ * @return The signed number which has been read.
+ */
+int64_t & Fread(int64_t &dst) {return Fread_s(dst);}
+/**
+ * @brief Read a signed integer. 
+ * 
+ * @param dst Where the signed integer will be written into.
+ * @return The signed number which has been read.
+ */
+uint8_t &Fread(uint8_t  &dst) {return Fread_u(dst);}
+/**
+ * @brief Read an unsigned integer.
+ * If you want to read a char,use getchar() instead.
+ * 
+ * @param dst Where the unsigned integer will be written into.
+ * @return The unsigned number which has been read.
+ */
+uint16_t &Fread(uint16_t &dst) {return Fread_u(dst);}
+/**
+ * @brief Read an unsigned integer.
+ * 
+ * @param dst Where the unsigned integer will be written into.
+ * @return The unsigned number which has been read.
+ */
+uint32_t &Fread(uint32_t &dst) {return Fread_u(dst);}
+/**
+ * @brief Read an unsigned integer.
+ * 
+ * @param dst Where the unsigned integer will be written into.
+ * @return The unsigned number which has been read.
+ */
+uint64_t &Fread(uint64_t &dst) {return Fread_u(dst);}
 
-/// @brief  Read an integer(signed or unsigned).
-/// @tparam integer Any integer type.
-/// @return The integer which has been read.
+
+/**
+ * @brief  Read an integer(signed or unsigned).
+ * 
+ * @tparam integer Any integer type.
+ * @return The integer which has been read.
+ */
 template <class integer>
 integer Fread() {
     integer tmp;
-    Fread(tmp);
-    return tmp;}
+    return Fread(tmp);
+}
 
-
-
-/// @brief  Read a signed integer.
-/// @tparam integer Signed integer type,default int64_t.
-/// @return The signed integer which has been read.
-template <class integer = int64_t>
+/**
+ * @brief  Read a signed integer.
+ * 
+ * @tparam integer Signed integer type,default intmax_t.
+ * @return he signed integer which has been read.
+ */
+template <class integer = intmax_t>
 integer Fread_s(void) {
-    integer A;
-    Fread_s <integer>(A);
-    return A;
+    integer tmp;
+    return Fread_s <integer> (tmp);
 }
 
-/// @brief  Read a unsigned integer.
-/// @tparam integer Unsigned integer type,default uint64_t.
-/// @return The unsigned integer which has been read.
-template <class integer = uint64_t>
+/**
+ * @brief  Read an unsigned integer.
+ * 
+ * @tparam integer Unsigned integer type,default uintmax_t.
+ * @return he signed integer which has been read.
+ */
+template <class integer = uintmax_t>
 integer Fread_u(void) {
-    integer A;
-    Fread_u <integer>(A);
-    return A;
+    integer tmp;
+    return Fread_u <integer> (tmp);
 }
 
-/// @brief Ending
+/* Ending */
 void read() {};
 
-/// @brief Read a series of integers. 
+/* Read a series of integers. */
 template <class integer,class ...others>
 void read(integer &arg,others &...args) {
     Fread(arg);
@@ -234,8 +281,8 @@ class basic_inout{
     constexpr static ostream oput = ostream(nullptr);
 };
 
-const istream &din  = basic_inout::iput;
-const ostream &dout = basic_inout::oput;
+const istream &iput  = basic_inout::iput;
+const ostream &oput = basic_inout::oput;
 
 }
 

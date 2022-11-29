@@ -1,12 +1,18 @@
 #include "Dark/inout"
+#include "Dark/string"
 
 using namespace dark;
 
 
 signed main() {
-    long long x;
-    din >> x;
-    dout << LOG2(x) << ' ' << x;
-    // dout << "666";
+    // int x;
+    char str[20];
+    iput >> str;
+    auto it = string_view(str);
+    for(auto c : it) {
+        oput << c;
+    }
+
+
     return 0;
 }

@@ -1,0 +1,6 @@
+#ifndef _DARK_STRING_
+#define _DARK_STRING_
+
+#include "Strings/string.hpp"
+
+#endif
