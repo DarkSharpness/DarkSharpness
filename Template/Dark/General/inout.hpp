@@ -159,6 +159,27 @@ void read(integer &arg,others &...args) {
     read(args...);
 }
 
+/* Read into a given range. */
+template <class Iterator>
+void readRange(Iterator begin,Iterator end) {
+    while(begin != end) {
+        read(*begin);
+        ++begin;
+    }
+}
+/* Read into a given range. */
+template <class Iterator>
+void readRange(Iterator begin,size_t len) {
+    while(len--) {
+        read(*begin);
+        ++begin;
+    }
+}
+/* Read into a given range. */
+template <class Container>
+void readRange(Container &_C) {
+    for(auto &it : _C) {Fread(it);}
+}
 
 
 }
@@ -197,11 +218,24 @@ void Fwrite(integer src) {
     printf("%s",ch + top);
 }
 
-/// @brief Ending.
+
+
+/* Write a char * string. */
+void Fwrite(char *ptr) {
+    printf("%s",ptr);
+}
+/* Write a char * string. */
+void Fwrite(const char *ptr) {
+    printf("%s",ptr);
+}
+/* Write a single char. */
+void Fwrite(char _ch) {putchar(_ch);}
+
+/* Ending. */
 void write() {}
 
-/// @brief Print a series of integers separated by space.
-/// Note that there's no '\\n' in the end.
+/* Print a series of integers separated by space.
+   Note that there's no '\\n' in the end. */
 template <class integer,class ...others>
 void write(const integer &arg,const others &...args) {
     Fwrite(arg);
@@ -209,12 +243,37 @@ void write(const integer &arg,const others &...args) {
     write(args...);
 }
 
+/* Print out elements within a range.
+   Each element separated by space. */
 template <class Iterator>
-void writeRange(Iterator first,Iterator last) {
-    while(first != last) {
-        Fwrite(*(first++));
+void writeRange(Iterator begin,Iterator end) {
+    if(begin == end) return;
+    Fwrite(*begin);
+    while(++begin != end) {
         putchar(' ');
+        Fwrite(*begin);
     }
+}
+
+/* Start a new line. */
+void endl(){putchar('\n');}
+
+/* Print out elements within a range */
+template <class Iterator>
+void writeRange(Iterator begin,size_t len) {
+    if(!len) return;
+    Fwrite(*begin);
+    while(--len) {
+        putchar(' ');
+        Fwrite(*(++begin));
+    }
+}
+
+/* Write the elements in the Container. */
+template <class Container>
+void writeRange(const Container &_C) {
+    for(const auto &it : _C) {Fwrite(it);putchar(' ');}
+    putchar('\b');
 }
 
 
