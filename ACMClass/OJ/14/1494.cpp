@@ -16,6 +16,8 @@ inline void read(int &tmp) {
 }
 
 int main() {
+    int n;
+    int a[N];
     read(n);
     for(int i = 1 ; i <= n ; ++i) {
         read(a[i]);

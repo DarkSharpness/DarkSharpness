@@ -209,6 +209,14 @@ void write(const integer &arg,const others &...args) {
     write(args...);
 }
 
+template <class Iterator>
+void writeRange(Iterator first,Iterator last) {
+    while(first != last) {
+        Fwrite(*(first++));
+        putchar(' ');
+    }
+}
+
 
 
 }
@@ -226,7 +234,7 @@ class istream {
     istream() = default;
 
   public:
-    constexpr istream(nullptr_t ptr) {}
+    constexpr istream(std::nullptr_t ptr) {}
     template <class integer>
     const istream &operator >>(integer &dst) const{
         Fread(dst);
@@ -251,7 +259,7 @@ class ostream {
     ostream() = default;
 
   public:
-    explicit constexpr ostream(nullptr_t ptr) {}
+    explicit constexpr ostream(std::nullptr_t ptr) {}
     
     template <class integer>
     const ostream &operator <<(const integer &src) const{

@@ -1,5 +1,7 @@
 #ifndef _DARK_BASIC_H_
 #define _DARK_BASIC_H_
+
+#include <bits/c++config.h>
 #include <string.h>
 #include <stdint.h>
 #include <ctype.h>
