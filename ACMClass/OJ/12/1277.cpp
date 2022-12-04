@@ -3,28 +3,28 @@
 
 class BasicException {
 protected:
-    const char *message;
-
+    std::string message;
 public:
     explicit BasicException(const char *_message) {
-        int len = strlen(_message);
-        char *tmp = new char[len + 1];
-        memcpy(tmp,_message,len + 1);
-        message = tmp;
+        message = _message;
     }
 
     virtual const char *what() const {
         //return: ´íÎóÐÅÏ¢×Ö·û´®
-        return message;
+        return message.c_str();
     }
-    BasicException() {message = nullptr;}
-    ~BasicException() {delete message;}
+    BasicException()  = default;
+    ~BasicException() = default;
 };
 
 class ArgumentException: public BasicException {
+  public:
+    ArgumentException(const char *word) : BasicException(word) {}
 };
 
 class IteratorException: public BasicException {
+  public:
+    IteratorException(const char *word) : BasicException(word) {}
 };
 
 struct Pokemon {
