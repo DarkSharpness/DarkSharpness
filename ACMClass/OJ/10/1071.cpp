@@ -1,75 +1,69 @@
 #include <bits/stdc++.h>
 
 class LinkList {
-  private:
     struct node {
+        int val;
         node *nxt;
-        int value;
+        node(int v = 1919810 << 10,node *ptr = nullptr) :val(v),nxt(ptr) {}
     };
-    node head;
+    node *head;
   public:
     LinkList() {
-        head.nxt = &head;
-        head.value = 2147483647; 
+        head = new node;
+        head->nxt = head;
     }
     ~LinkList() {
-        node *now = head.nxt;
-        while(now != &head) {
-            node *tmp = now;
-            now = now->nxt;
-            delete tmp; 
+        node *cur = head->nxt;
+        while(cur != head) {
+            node *tmp = cur;
+            cur = cur->nxt;
+            delete(tmp);
         }
-        head.nxt = &head;
+        delete head;
     }
-    void push(int value) {
-        node *now = &head;
-        node *nxt = head.nxt;
-        while(nxt->value < value) {
-            now = nxt;
-            nxt = nxt->nxt;
+    void push(int x) {
+        node *ptr = head->nxt;
+        node *cur = head;
+        while(ptr->val <= x) {
+            ptr = (cur = ptr)->nxt;
         }
-        now->nxt = new node {nxt,value};
+        cur->nxt = new node{x,ptr};
     }
-    int getKth(int kth) const{
-        const node *now = head.nxt;
-        while(now != &head && kth--) now = now->nxt;
-        if(now == &head) return -1;
-        else             return now->value;
+    int getKth(int x) const{
+        node *ptr = head->nxt;
+        while(ptr != head && x--) ptr = ptr->nxt;
+        if(ptr == head) return -1;
+        else            return ptr->val;
     }
-    void merge(LinkList *L) {
-        // LinkList *ans;
-        node *ptr1 = &head;
-        node *nxt1 = head.nxt;
-        node *ptr2 = L->head.nxt;
-        while(nxt1 != &head && ptr2 != &L->head) {
-            if(nxt1->value >= ptr2->value) {                
-                node *tmp = ptr2->nxt;
-                ptr2->nxt = ptr1->nxt;
-                ptr1->nxt = ptr2;
-                ptr2 = tmp;
+    void merge(LinkList *tmp) {
+        if(this == tmp) return;
+        if(tmp->head->nxt == tmp->head) return;
+
+        node first(0,head);
+        node *top = &first;
+        node *end1 = head,*top1 = end1->nxt;
+        node *end2 = tmp->head,*top2 = end2->nxt;
+        while(top1 != end1 || top2 != end2) {
+            if(top1 != end1 && (top2 == end2 || top1->val < top2->val)) {
+                top = top->nxt = top1;
+                top1 = top1->nxt;
+            } else {
+                top = top->nxt = top2;
+                top2 = top2->nxt;
             }
-            ptr1 = nxt1;
-            nxt1 = nxt1->nxt;
         }
-        if(ptr2 == &L->head) {ptr2->nxt = ptr2;}
-        else {
-            ptr1->nxt = ptr2;
-            nxt1 = ptr2->nxt;
-            while(nxt1 != &L->head) {
-                ptr2 = nxt1;
-                nxt1 = nxt1->nxt;
-            }
-            ptr2->nxt = &head;
-            nxt1->nxt = nxt1;
+        head->nxt = first.nxt;
+        top->nxt  = head;
+        tmp->head->nxt = tmp->head;
+    }
+    void print() const {
+        node *cur = head->nxt;
+        while(cur != head) {
+            std::cout << cur->val << (cur->nxt == head ? '\0' : ' ');
+            cur = cur->nxt;
         }
     }
-    void print() const{
-        node *ptr = head.nxt;
-        while(ptr != &head) {
-            printf("%d ",ptr->value);
-            ptr = ptr->nxt;
-        }
-    }
+    //TODO
 };
 
 class LinkListArray {
@@ -100,9 +94,9 @@ public:
     }
     void print() const{
         for(int i = 0 ; i < len ; ++i) {
-            printf("%d:",i);
+            std::cout << i  << ':';
             lists[i]->print();
-            putchar('\n');
+            std::cout << '\n';
         }
     }
 };
@@ -122,8 +116,8 @@ int main() {
         if (op == 2) {
             a.mergeLists(s1, s2);
         }
-        // printf("PRINT:\n");
-        // a.print();
+        std::cout << "Info:\n";
+        a.print();
     }
     return 0;
 }

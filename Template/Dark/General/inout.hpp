@@ -52,7 +52,6 @@ integer &Fread_u(integer &dst) {
     return dst;
 }
 
-
 /**
  * @brief Read a signed integer. 
  * If you want to read a char,use getchar() instead.
@@ -111,6 +110,8 @@ uint32_t &Fread(uint32_t &dst) {return Fread_u(dst);}
  * @return The unsigned number which has been read.
  */
 uint64_t &Fread(uint64_t &dst) {return Fread_u(dst);}
+
+char &Fread(char &dst) {return dst = getchar();}
 
 
 /**
