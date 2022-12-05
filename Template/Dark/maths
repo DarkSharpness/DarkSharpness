@@ -1,0 +1,7 @@
+#ifndef _DARK_MATH_
+#define _DARK_MATH_
+
+#include "Mathematics/compare.hpp"
+#include "Mathematics/complex.hpp"
+
+#endif

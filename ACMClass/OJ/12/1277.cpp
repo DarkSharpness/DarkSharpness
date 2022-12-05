@@ -1,17 +1,32 @@
 //可以自己定义一些全局变量、引用头文件
 #include <bits/stdc++.h>
 
+inline bool checkChar(char ch) {
+    return (ch >= 'a' && ch <= 'z') ||
+           (ch >= 'A' && ch <= 'Z');
+}
+
+
+enum pokeType {
+    fire,
+    water,
+    grass,
+    electric,
+    flying,
+    ground,
+    dragon
+};
+
 class BasicException {
 protected:
     std::string message;
 public:
-    explicit BasicException(const char *_message) {
+    explicit BasicException(const std::string & _message) {
         message = _message;
     }
 
-    virtual const char *what() const {
-        //return: 错误信息字符串
-        return message.c_str();
+    virtual std::string what() const {
+        return message;
     }
     BasicException()  = default;
     ~BasicException() = default;
@@ -19,34 +34,87 @@ public:
 
 class ArgumentException: public BasicException {
   public:
-    ArgumentException(const char *word) : BasicException(word) {}
+    ArgumentException(const std::string &word) : BasicException(word) {}
 };
 
 class IteratorException: public BasicException {
   public:
-    IteratorException(const char *word) : BasicException(word) {}
+    IteratorException(const std::string &word) : BasicException(word) {}
 };
 
 struct Pokemon {
     char name[12];
     int id;
-    int type[7];
+    std::bitset <7> type;
     Pokemon() {
-        memset(name,0,sizeof(name));
-        memset(type,0,sizeof(type));
         id = 0;
+        memset(name,0,sizeof(name));
     }
+    inline bool operator <(const Pokemon &p) {return id < p.id;}
 
-
-    //...
 };
+
+int getType(const std::string &name) {
+    if(name == "fire")     return fire;
+    if(name == "water")    return fire;
+    if(name == "grass")    return grass;
+    if(name == "electric") return electric;
+    if(name == "flying")   return flying;
+    if(name == "ground")   return ground;
+    if(name == "dragon")   return dragon;
+    throw ArgumentException(
+        "Argument Error: PM Type Invalid ("
+        + name
+        + ')'
+    );
+}
+
+void checkName(Pokemon &tmp,const char *name) {
+    int len = strlen(name);
+    for(int i = 0 ; i < len ; ++i) {
+        if(!checkChar(name[i])) {
+            throw ArgumentException(
+                "Argument Error: PM Name Invalid ("
+                + std::string(name)
+                + ')'
+            );
+        }
+    }
+    strcpy(tmp.name,name);
+}
+
+void checkID(Pokemon &tmp,int id) {
+    if(id <= 0) {
+        throw ArgumentException(
+            "Argument Error: PM ID Invalid ("
+            + std::to_string(id)   
+            + ')'
+        );
+    }
+    tmp.id = id;
+}
+
+
+void checkType(Pokemon &tmp,const char *types) {
+    std::string name;
+    int len = strlen(types);
+    for(int i = 0 ; i < len ; ++i) {
+        if(types[i] != '#') {
+            name.push_back(types[i]);
+        } else {
+            tmp.type.set(getType(name));
+            name.clear();
+        }
+    }
+}
+
 
 class Pokedex {
 private:
     //可以自己定义需要的成员
     std::fstream File;
     std::string  FileName;
-
+    std::set <Pokemon> set;
     static constexpr double atkMap[7][7] =
     {
         0.5,0.5, 2 , 1 , 1 , 1 ,0.5,
@@ -59,23 +127,40 @@ private:
     };
 
 public:
-    explicit Pokedex(const char *_fileName) {
+    explicit Pokedex(const std::string &_fileName) {
         FileName = _fileName;
         File.open(_fileName);
         if(!File.good()) {
-
+            File.open(_fileName,std::ios::out);
+            File.close();
+        } else {
+            Pokemon tmp;
+            File.seekg(0);
+            while(!File.eof()) {
+                File.read(reinterpret_cast <char *>(&tmp),sizeof(Pokemon));
+                set.insert(tmp);
+            }
+            File.close();
         }
-
-        File.close();
+  
     }
 
     ~Pokedex() {
-        //TO DO: 析构函数
+        File.open(FileName);
+        for(auto &tmp : set) {
+            File.write(reinterpret_cast <const char *>(&tmp),sizeof(Pokemon));
+        }
+        File.close();
     }
 
     bool pokeAdd(const char *name, int id, const char *types) {
-        //TO DO: 添加宝可梦
-        //返回是否添加成功
+        Pokemon ans;
+
+        checkName(ans,name);
+        checkID(ans,id);
+        checkType(ans,types);
+
+        return set.insert(ans).second;
     }
 
     bool pokeDel(int id) {

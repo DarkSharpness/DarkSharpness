@@ -1,5 +1,5 @@
-#ifndef _DARK_INOUT_HPP_
-#define _DARK_INOUT_HPP_
+#ifndef _DARK_MATHS_HPP_
+#define _DARK_MATHS_HPP_
 
 #include <stdio.h> // standard inout is required
 #include "../include/basic.hpp"
@@ -111,7 +111,14 @@ uint32_t &Fread(uint32_t &dst) {return Fread_u(dst);}
  */
 uint64_t &Fread(uint64_t &dst) {return Fread_u(dst);}
 
+/* Equal to getchar(). */
 char &Fread(char &dst) {return dst = getchar();}
+
+/* Equal to scanf*/
+float  &Fread(float &dst)  {scanf("%f",&dst); return dst;}
+/* Equal to scanf*/
+double &Fread(double &dst) {scanf("%lf",&dst);return dst;}
+
 
 
 /**
@@ -125,6 +132,8 @@ integer Fread() {
     integer tmp;
     return Fread(tmp);
 }
+
+
 
 /**
  * @brief  Read a signed integer.
@@ -232,6 +241,12 @@ void Fwrite(const char *ptr) {
 /* Write a single char. */
 void Fwrite(char _ch) {putchar(_ch);}
 
+/* Write a float. */
+void Fwrite(float src) {printf("%f",src);}
+
+/* Write a double. */
+void Fwrite(double src) {printf("%lf",src);}
+
 /* Ending. */
 void write() {}
 
@@ -281,77 +296,5 @@ void writeRange(const Container &_C) {
 
 }
 
-/**
- * @brief This part includes all standard inouts
- * classes for darksharpness class.
- * TODO: INOUT STREAM OPERATION
- * 
- */
-namespace dark {
-
-class istream {
-  protected:
-    istream() = default;
-
-  public:
-    constexpr istream(std::nullptr_t ptr) {}
-    template <class integer>
-    const istream &operator >>(integer &dst) const{
-        Fread(dst);
-        return *this;
-    }
-
-    const istream &operator >>(char &dst) const{
-        dst = getchar();
-        return *this;
-    }
-    const istream &operator >>(char *dst) const{
-        scanf("%s",dst);
-        return *this;
-    }
-
-    
-
-};
-
-class ostream {
-  protected:  
-    ostream() = default;
-
-  public:
-    explicit constexpr ostream(std::nullptr_t ptr) {}
-    
-    template <class integer>
-    const ostream &operator <<(const integer &src) const{
-        Fwrite(src);
-        return *this;
-    }
-    const ostream &operator <<(char src) const{
-        putchar(src);
-        return *this;
-    }
-    const ostream &operator <<(const char* src) const{
-        printf("%s",src);
-        return *this;
-    }
-    const ostream &operator <<(char src[]) const{
-        printf("%s",src);
-        return *this;
-    }
-    
-};
-
-class basic_inout{
-  private:
-    basic_inout() = default;
-  public:
-    constexpr static istream iput = istream(nullptr);
-    constexpr static ostream oput = ostream(nullptr);
-};
-
-const istream &iput  = basic_inout::iput;
-const ostream &oput = basic_inout::oput;
-
-}
 
 #endif
