@@ -6,6 +6,7 @@ using namespace std;
 
 int main() {
     int a[] = {0,1,2};
+
     span <int> s(a);
     array <int,10> tmp {1,2,3,4,5};
     span <int> sa(tmp);

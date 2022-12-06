@@ -1,5 +1,6 @@
 #include <cstddef>
 #include <utility>
+#include <stdlib.h>
 
 
 constexpr size_t FIXED_RET = (114514ULL * 1919810) % 19260817;
@@ -14,7 +15,7 @@ inline void swap(value_t &X,value_t &Y) {
 }
 
 template <class RandomIt, class Compare>
-void slow_sort(RandomIt first,size_t len,Compare comp) {
+void bubble_sort(RandomIt first,size_t len,Compare comp) {
     for(size_t i = 0 ; i < len ; ++i)
         for(size_t j = 0 ; j < i ; ++j) 
             if(comp(first[i],first[j])) 
