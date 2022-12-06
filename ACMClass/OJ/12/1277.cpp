@@ -21,6 +21,9 @@ int main() {
     std::cout << pokedex.attack("electric", 130) << '\n';
     std::cout << pokedex.catchTry() << '\n';
 
+    for(auto it : pokedex) {
+        std::cout << it << '\n';
+    }
 
     return 0;
 }

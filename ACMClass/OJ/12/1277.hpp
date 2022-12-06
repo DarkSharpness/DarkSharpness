@@ -1,4 +1,3 @@
-//可以自己定义一些全局变量、引用头文件
 #include <bits/stdc++.h>
 
 inline bool checkChar(char ch) {
@@ -33,6 +32,9 @@ class BasicException {
     explicit BasicException(const std::string & _message) {
         message = _message;
     }
+    explicit BasicException(std::string && _message) {
+        message = std::move(_message);
+    }
 
     virtual std::string what() const {
         return message;
@@ -46,11 +48,13 @@ class BasicException {
 class ArgumentException: public BasicException {
   public:
     ArgumentException(const std::string &word) : BasicException(word) {}
+    ArgumentException(std::string &&word) : BasicException(std::move(word)) {}
 };
 
 class IteratorException: public BasicException {
   public:
     IteratorException(const std::string &word) : BasicException(word) {}
+    IteratorException(std::string &&word) : BasicException(std::move(word)) {}
 };
 
 struct Pokemon {
@@ -62,6 +66,11 @@ struct Pokemon {
         memset(name,0,sizeof(name));
     }
     inline bool operator <(const Pokemon &p) const{return id < p.id;}
+    friend std::ostream & operator <<(std::ostream &os,const Pokemon &t) {
+        os << t.name << ' ' << t.id << ' ' << t.type;
+        return os;
+    }
+
 };
 
 int getType(const std::string &name) {
@@ -267,7 +276,7 @@ public:
                 ); 
             ++iter;
             return *this;
-            //TO DO: ++迭代器
+            //TO DO: ++迭代�?
         }
 
         iterator &operator--() {
@@ -277,7 +286,7 @@ public:
                 ); 
             --iter;
             return *this;
-            //TO DO: --迭代器
+            //TO DO: --迭代�?
         }
         iterator operator++(int) {
             iterator tmp = *this;
@@ -325,3 +334,4 @@ public:
         return iterator(set.end(),&set);
     }
 };
+
