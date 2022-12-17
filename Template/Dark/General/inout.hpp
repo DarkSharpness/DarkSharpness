@@ -248,7 +248,10 @@ void Fwrite(float src) {printf("%f",src);}
 void Fwrite(double src) {printf("%lf",src);}
 
 /* Ending. */
-void write() {}
+template <class integer>
+void write(const integer &arg) {
+    Fwrite(arg);
+}
 
 /* Print a series of integers separated by space.
    Note that there's no '\\n' in the end. */
