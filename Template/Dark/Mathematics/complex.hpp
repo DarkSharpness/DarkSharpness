@@ -7,7 +7,12 @@
 namespace dark {
 
 
-
+/**
+ * @brief Basic complex number , implemented by 
+ * separately storing the real and imaginary part.
+ * 
+ * @tparam value_t Value type of internal data.(Default double)
+ */
 template <class value_t = double>
 struct complex {
     // using value_t =  double;
@@ -19,8 +24,8 @@ struct complex {
     complex(value_t _r = 0.0,value_t _i = 0.0) : real(_r),imag(_i) {}
     
     /* Initialize with another complex number. */
-    // template <class value_t_2>
-    // complex(const complex <value_t_2> &rhs) : real(rhs.real),imag(rhs.imag) {}
+    template <class value_t_2>
+    complex(const complex <value_t_2> &rhs) : real(rhs.real),imag(rhs.imag) {}
 
     /* Assign operation. */
     complex &operator =(const complex &rhs) {
@@ -53,12 +58,12 @@ struct complex {
     }
 
 
-    /* Set the argument of a complex number in given length(default). */
+    /* Set the argument of a complex number in given length(default 1). */
     inline void set(double arg,value_t len = 1.0) {
         real = len * cos(arg);
         imag = len * sin(arg);
     }
-    /* Return the argumnet of a complex number.
+    /* Return the argument of a complex number.
        The argument ranges from -pi/2 to pi/2.  */
     inline double argument() {
         return atan(imag / real);
@@ -66,44 +71,44 @@ struct complex {
 
 
 
-    /* Arbitrary addition assign. */
+    /* Arithmetic addition assign. */
     inline complex &operator +=(const complex &rhs) {
         real += rhs.real;
         imag += rhs.imag;
         return *this;
     }
-    /* Arbitrary addition. */
+    /* Arithmetic addition. */
     friend inline complex operator +(complex lhs,const complex &rhs) {
         return lhs += rhs;
     }
 
-    /* Arbitrary subtraction assign. */
+    /* Arithmetic subtraction assign. */
     inline complex &operator -=(const complex &rhs) {
         real -= rhs.real;
         imag -= rhs.imag;
         return *this;
     }
-    /* Arbitrary subtraction. */
+    /* Arithmetic subtraction. */
     friend inline complex operator -(complex lhs,const complex &rhs) {
         return lhs -= rhs;
     }
 
-    /* Arbitrary multiplication assign.
+    /* Arithmetic multiplication assign.
        Note that it is the same as lhs = lhs * rhs. */
     inline complex &operator *=(const complex &rhs) {
         return *this = *this * rhs;
     }
-    /* Arbitrary multiplication. */
+    /* Arithmetic multiplication. */
     friend inline complex operator *(const complex &lhs,const complex &rhs) {
         return complex(lhs.real * rhs.real - lhs.imag * rhs.imag,
                        lhs.real * rhs.imag + lhs.imag * rhs.real);
     }
-    /* Arbitrary division assign.
+    /* Arithmetic division assign.
        Note that it is the same as lhs = lhs * rhs. */
     inline complex &operator /=(const complex &rhs) {
         return *this = *this / rhs;
     }
-    /* Arbitrary division. */    
+    /* Arithmetic division. */    
     friend inline complex operator /(const complex &lhs,const complex &rhs) {
         value_t tmp = rhs.abs2();
         return complex((lhs.real * rhs.real + lhs.imag * rhs.imag) / tmp,
