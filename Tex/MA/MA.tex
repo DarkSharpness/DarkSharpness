@@ -74,7 +74,7 @@
 
 事实上，我们可以考虑下参数 $t$ 的现实意义，在一条曲线相同位置固定 $d\vec{r}$ 的情况下，选择不同的参数， $dt$ 也会不同。若把 $t$ 当作为时间，$\vec{r}$ 当作位移，那么不同的 $t$ 则对应了我们在曲线上移动的速度  $\frac{d\vec{r}}{dt}$ 不同。
 
-为了解决这一问题，我们引入新的一个参数 $ds$，定义 $ds = \sqrt{dx_1^2+dx_2^2+...+dx_n^2}$ ，$ s= \int{ds} + C $。
+为了解决这一问题，我们引入新的一个参数 $s$，定义 $ds = \sqrt{dx_1^2+dx_2^2+...+dx_n^2}$ ，$ s= \int{ds} + C $。
 
 为了简化讨论，我们将讨论范围局限于 \textbf{正则曲线\upcite{ref2}}，即满足 $\vec{r}$ 对于 $t$ 处处可微的曲线。此时，将 $\vec{r(t)}$ 可写作 $\vec{r(s)}$。由复合函数求导公式， $\frac{d\vec{r}}{ds} = \frac{d\vec{r}/dt}{ds/dt}$ 。而注意到 $|d\vec{r}| = \sqrt{dx_1^2+dx_2^2+...+dx_n^2}$，因此 $|\frac{d\vec{r}}{ds}| = 1$。该参数与曲线本身密切相关，用前面的现实意义去分析，$s$ 就可以理解为固定速度为1的在曲线上移动。
 
@@ -113,35 +113,46 @@ $$
 
 因此，记\textbf{曲率}为 $\kappa$ ，由定义，$\kappa = \lim_{\delta s \rightarrow 0}{\frac{\delta \theta}{\delta s}} = \lim_{\delta s \rightarrow 0}{\frac{|\delta {\vec{T}}|}{\delta s}}\cdot{\frac1{|\vec{T}|}} = |\frac{d\vec T}{ds}|$ ，所以由单位法向量 $\vec{N}$ 的定义，$\frac{d\vec T}{ds} = \kappa \vec{N}$ 。 在一般情况下，我们还用记曲率半径 $\rho = \frac1{\kappa}$ 。对于一个特殊的曲线:圆，该曲率半径就等于圆的半径。
 
-\subsection{切向量、法向量与曲率的其他性质}
-
-由上，在二维弧长参数 $\vec{r} = \vec{r}(s)$ 下 ，我们已经定义了如下三个量:
+总结一下，我们大致可以得到如下的定义式:
 
 $$
 \begin{aligned}
-\vec{T} &= \frac{d\vec{r}}{ds} \\
-\kappa  &= |\frac{d\vec{T}}{ds}| \\
-\vec{N} &= \frac{1}{\kappa} \cdot \frac{d\vec{T}}{ds} \\
+    \vec{T} &= \frac{d\vec{r}}{ds} \\
+    \kappa  &= |\frac{d\vec{T}}{ds}| \\
+    \vec{N} &= \frac{1}{\kappa} \frac{d\vec{T}}{ds} \\
+            &= \frac{1}{\kappa} \frac{d^2{\vec{r}}}{ds}
 \end{aligned}
 $$
 
-而这些量之间还存在一些内在的联系。由 $|\vec{T}| = 1$，即 $\vec{T}\cdot\vec{T} = 1 $ ，对两边求二阶导，$\frac{d^2\vec{T}}{ds^2} \cdot T + (\frac{d\vec{T}}{ds})^2 = 0 $ 此时由定义以及 $|\vec{N}| = 1$ ，有 $\frac{d^2\vec{T}}{ds^2} \cdot \vec{T} = -\kappa^2$。记为(1)式。
+% \subsection{切向量、法向量与曲率的其他性质}
 
-类似的，因为 $|\vec{N}| = 1$ 即 $\vec{N}\cdot\vec{N} = 1$，我们对两边对 $s$ 求导 $\vec{N}\cdot \frac{d\vec{N}}{ds} = 0$ ，所以可知 $\vec{N} \perp \frac{d\vec{N}}{ds}$。又因为已经证过 $\vec{T} \perp \frac{d\vec{T}}{ds} = \kappa\cdot{\vec{N}}$ ，所以 $\frac{d\vec{N}}{ds} $ 与 $\vec{T}$ 共线。再带入 ${\vec N} $ 的定义，以及(1)式，可知 $\frac{d{\vec{N}}}{ds} = -\kappa \vec{T}$
+% 由上，在二维弧长参数 $\vec{r} = \vec{r}(s)$ 下 ，我们已经定义了如下三个量:
 
-因此，我们可以总结出下面几个常用的式子。
+% $$
+% \begin{aligned}
+% \vec{T} &= \frac{d\vec{r}}{ds} \\
+% \kappa  &= |\frac{d\vec{T}}{ds}| \\
+% \vec{N} &= \frac{1}{\kappa} \cdot \frac{d\vec{T}}{ds} \\
+% \end{aligned}
+% $$
 
-$$
-\begin{aligned}
-\vec{T} &= \frac{d\vec{r}}{ds} \\
-\vec{N} &= \frac{1}{\kappa} \cdot \frac{d^2\vec{r}}{ds^2} \\
-\\
-\frac{d\vec{T}}{ds} &= {\kappa} \cdot {\vec{N}} \\
-\frac{d\vec{N}}{ds} &= -{\kappa} \cdot {\vec{T}} \\
-\\
-\frac{d^2\vec{T}}{ds^2} &= - \kappa ^ 2 \cdot \vec{T} \\
-\end{aligned}
-$$
+% 而这些量之间还存在一些内在的联系。由 $|\vec{T}| = 1$，即 $\vec{T}\cdot\vec{T} = 1 $ ，对两边求二阶导，$\frac{d^2\vec{T}}{ds^2} \cdot T + (\frac{d\vec{T}}{ds})^2 = 0 $ 此时由定义以及 $|\vec{N}| = 1$ ，有 $\frac{d^2\vec{T}}{ds^2} \cdot \vec{T} = -\kappa^2$。记为(1)式。
+
+% 类似的，因为 $|\vec{N}| = 1$ 即 $\vec{N}\cdot\vec{N} = 1$，我们对两边对 $s$ 求导 $\vec{N}\cdot \frac{d\vec{N}}{ds} = 0$ ，所以可知 $\vec{N} \perp \frac{d\vec{N}}{ds}$。又因为已经证过 $\vec{T} \perp \frac{d\vec{T}}{ds} = \kappa\cdot{\vec{N}}$ ，所以 $\frac{d\vec{N}}{ds} $ 与 $\vec{T}$ 共线。再带入 ${\vec N} $ 的定义，以及(1)式，可知 $\frac{d{\vec{N}}}{ds} = -\kappa \vec{T}$
+
+% 因此，我们可以总结出下面几个常用的式子。
+
+% $$
+% \begin{aligned}
+% \vec{T} &= \frac{d\vec{r}}{ds} \\
+% \vec{N} &= \frac{1}{\kappa} \cdot \frac{d^2\vec{r}}{ds^2} \\
+% \\
+% \frac{d\vec{T}}{ds} &= {\kappa} \cdot {\vec{N}} \\
+% \frac{d\vec{N}}{ds} &= -{\kappa} \cdot {\vec{T}} \\
+% \\
+% \frac{d^2\vec{T}}{ds^2} &= - \kappa ^ 2 \cdot \vec{T} \\
+% \end{aligned}
+% $$
 
 \subsection{法向量与切向量的现实意义}
 
@@ -185,7 +196,7 @@ $$
 \end{aligned}
 $$
 
-其中，$\vec B$ 是由 $\vec T \times \vec N$ 定义得到，$\beta$ 是一个曲线相关的常数，其绝对值大小等于 $|\frac{d\vec N}{ds} + \kappa \cdot \vec T|$，称为\textbf{挠率}。
+其中，$\vec B$ 是由 $\vec T \times \vec N$ 定义得到，$\beta$ 是一个曲线相关的常数，其大小等于 $|\frac{d\vec N}{ds} + \kappa \cdot \vec T|$，称为\textbf{挠率}。
 
 \subsection{挠率的几何直观}
 
@@ -197,24 +208,24 @@ $$
 	\caption{}
 \end{figure}
 
-最直观的例子就是弹簧的螺线，其在不同的地方有相同的疏密，但是不同弹簧疏密不同。假设所有弹簧在水平的投影圆半径相同。此时，几何直观告诉我们，弹簧钢丝绕的越稠密的，其法向量转动越慢，其挠率越小。反之在稀疏的地方，其挠率越大。但其实，这只是一种几何直观，并不正确。
+最直观的例子就是弹簧的螺线，其在不同的地方有相同的疏密，但是不同弹簧疏密不同。假设所有弹簧在水平的投影圆半径相同。此时，几何直观告诉我们，弹簧钢丝绕的越稠密的，其法向量和切向量构成的平面转动越慢，其挠率越小。反之在稀疏的地方，其挠率越大。但其实，这只是一种几何直观，并不完全正确。
 
 简单的证明如下:
 
 设弹簧螺线参数方程为:
 $$
 \begin{aligned}
-    x &= cos(t)      \\
-    y &= sin(t)      \\
-    z &= k \cdot t   \\
+    x &= \cos(\theta)      \\
+    y &= \sin(\theta)      \\
+    z &= k \cdot \theta    \\
 \end{aligned}
 $$
 
 我们很容易就能将其化为标准绳长参数下的形式：
 $$
 \begin{aligned}
-    x &= cos(\frac{s}{\sqrt{k^2 + 1}})  \\ 
-    y &= sin(\frac{s}{\sqrt{k^2 + 1}})  \\
+    x &= \cos(\frac{s}{\sqrt{k^2 + 1}})  \\ 
+    y &= \sin(\frac{s}{\sqrt{k^2 + 1}})  \\
     z &= \frac{k \cdot s}{\sqrt{k^2+1}}
 \end{aligned}
 $$
@@ -222,21 +233,21 @@ $$
 通过定义计算，我们可以得到
 $$
 \begin{aligned}
-    \vec{T}_x &= -\frac1{\sqrt{k^2 + 1}} sin(\frac{s}{\sqrt{k^2 + 1}}) \\
-    \vec{T}_y &=  \frac1{\sqrt{k^2 + 1}} cos(\frac{s}{\sqrt{k^2 + 1}}) \\
+    \vec{T}_x &= -\frac1{\sqrt{k^2 + 1}} \sin(\frac{s}{\sqrt{k^2 + 1}}) \\
+    \vec{T}_y &=  \frac1{\sqrt{k^2 + 1}} \cos(\frac{s}{\sqrt{k^2 + 1}}) \\
     \vec{T}_z &= \frac{k}{\sqrt{k^2 + 1}} \\
     \kappa    &= \frac{1}{k^2 + 1} \\
-    \vec{N}_x &= -cos(\frac{s}{\sqrt{k^2 + 1}}) \\
-    \vec{N}_y &= -sin(\frac{s}{\sqrt{k^2 + 1}}) \\
+    \vec{N}_x &= -\cos(\frac{s}{\sqrt{k^2 + 1}}) \\
+    \vec{N}_y &= -\sin(\frac{s}{\sqrt{k^2 + 1}}) \\
     \vec{N}_z &= 0 \\
     \beta     &= \frac{k}{k^2 + 1}  \\
-    \vec{B}_x &=  \frac{k}{\sqrt{k^2 + 1}} sin(\frac{s}{\sqrt{k^2 + 1}}) \\
-    \vec{B}_y &= -\frac{k}{\sqrt{k^2 + 1}} cos(\frac{s}{\sqrt{k^2 + 1}}) \\
+    \vec{B}_x &=  \frac{k}{\sqrt{k^2 + 1}} \sin(\frac{s}{\sqrt{k^2 + 1}}) \\
+    \vec{B}_y &= -\frac{k}{\sqrt{k^2 + 1}} \cos(\frac{s}{\sqrt{k^2 + 1}}) \\
     \vec{B}_z &= \frac{1}{\sqrt{k^2 + 1}}
 \end{aligned}
 $$
 
-容易看出，挠率在 $k \le 1$ 的时候随着 $k$ 减小而单调减(即前文所描述稀疏的地方，其挠率越大)，而现实生活中常见的弹簧如果不是过度拉伸，都是绕的比较紧密的，应该有 $k \ll 1$ 。所以在这里理论与几何直观基本符合。
+容易看出，挠率只有在 $k \le 1$ 的时候随着 $k$ 减小而单调减(即前文所描述稀疏的地方，其挠率越大)，而现实生活中常见的弹簧如果不是过度拉伸，都是绕的比较紧密的，应该有 $k \ll 1$ 。所以在这里理论与几何直观基本符合。
 
 \section{高维曲线}
 
@@ -304,7 +315,7 @@ $$
 \begin{aligned}    
     \frac{d\vec{T}_1}{ds}   &= \kappa_1 \vec{T}_2 \\
     \frac{d\vec{T}_2}{ds}   &= -\kappa_1 \vec{T}_1  + \kappa_2 \vec{T}_3 \\
-    ...\\
+    &...\\
     \frac{d\vec{T}_{n-1}}{ds} &= -\kappa_{n-2} \vec{T}_{n-2}  + \kappa_{n-1} \vec{T}_{n} \\
 \end{aligned}
 $$
@@ -340,17 +351,17 @@ $$
 \end{cases}
 $$
 
-对上式求导，结合已有的式子，可以得出对于 $\forall i < j$ , $\vec{T}_i \cdot \frac{\vec{T}_j}{ds} +\vec{T}_j \cdot \frac{\vec{T}_i}{ds} = 0 $。再带入 $\frac{\vec{T}_i}{ds}$ 的表达式，可以得出:
+对上式求导，结合已有的式子，可以得出对于 $\forall i < j$ , $\vec{T}_i \cdot \frac{d\vec{T}_j}{ds} +\vec{T}_j \cdot \frac{d\vec{T}_i}{ds} = 0 $。再带入 $\frac{d\vec{T}_i}{ds}$ 的表达式，可以得出:
 
 $$
-\vec{T}_i \cdot \frac{\vec{T}_j}{ds} = 
+\vec{T}_i \cdot \frac{d\vec{T}_j}{ds} = 
 \begin{cases}
     -\kappa_{j-1},&\text{if $i = j-1$}       \\
     0   ,&\text{if $i \ne j-1$}
 \end{cases}
 $$ 
 
-因此，我们可以类似将 $\frac{\vec{T}_j}{ds}$ 写成\textbf{在已有方向的投影}加上\textbf{自己减去这个投影的误差向量}的形式，并且由此得出一个新的方向向量。显然，此时新的方向向量垂直于原有的任何一个方向向量。
+因此，我们可以类似将 $\frac{d\vec{T}_j}{ds}$ 写成\textbf{在已有方向的投影}加上\textbf{自己减去这个投影的误差向量}的形式，并且由此得出一个新的方向向量。显然，此时新的方向向量垂直于原有的任何一个方向向量。
 
 $$
 \frac{d\vec{T}_{j}}{ds} = -\kappa_{j-1} \vec{T}_{j-1}  + \kappa_{j} \vec{T}_{j+1}
