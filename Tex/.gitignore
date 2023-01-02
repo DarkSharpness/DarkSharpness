@@ -1,4 +1,5 @@
 template
+MA/djvu2pdf/
 *.gz
 *.aux
 *.out
