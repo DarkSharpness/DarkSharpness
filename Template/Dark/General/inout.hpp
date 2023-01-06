@@ -1,5 +1,5 @@
-#ifndef _DARK_MATHS_HPP_
-#define _DARK_MATHS_HPP_
+#ifndef _DARK_INOUT_HPP_
+#define _DARK_INOUT_HPP_
 
 #include <stdio.h> // standard inout is required
 #include "../include/basic.hpp"

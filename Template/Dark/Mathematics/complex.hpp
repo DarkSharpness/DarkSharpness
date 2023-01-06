@@ -114,7 +114,18 @@ struct complex {
         return complex((lhs.real * rhs.real + lhs.imag * rhs.imag) / tmp,
                        (lhs.real * rhs.imag - lhs.imag * rhs.real) / tmp);
     }
+
+#ifdef _DARK_INOUT_HPP_
+    /* Fast read for complex number. */
+    friend complex &Fread(complex &dst) {
+        Fread(dst.real);
+        Fread(dst.imag);
+        return dst;
+    }
+
+#endif
 };
+
 
 
 }
