@@ -3,8 +3,10 @@
 #include <vector>
 
 /**
- * @brief A dynamic class which can hold any type (nullptr_t excluded)
+ * A dynamic class which can hold any type (%Any/nullptr excluded)
  * and support basic coversion function.
+ * Note that all the input type will be decayed, which means that 
+ * the const / & / volatile label of input type won't go into effect.
  * 
  */
 class Any {
@@ -22,21 +24,24 @@ class Any {
         virtual ~Data() override = default;
         Data(T &&val) : data(std::move(val)) {}
         Data(const T &val) : data(val) {}
-        virtual Base *clone() const override { return try_clone <> (); }
+
+        /* Tries to copy an T object and return a T pointer towards the value.
+           If attempt failed, nullptr will be returned instead. */
+        virtual Base *clone() const noexcept override { return try_clone <> (); }
 
       private:
 
         /* Clone a copy-constructible object. */
         template <typename Q = T,
                   typename std::enable_if_t<std::is_copy_constructible<Q>::value, int> = 0>
-        Base *try_clone() const {
+        Base *try_clone() const noexcept {
             return new Data <T> (data);
         }
 
-        /* Fail to clone , thus return nullptr. */
+        /* Fail to clone, thus return nullptr. */
         template <typename Q = T,
                   typename std::enable_if_t<!std::is_copy_constructible<Q>::value, int> = 0>
-        Base *try_clone() const {
+        Base *try_clone() const noexcept {
             return nullptr;
         }
     };
@@ -46,18 +51,23 @@ class Any {
 
   public:
     ~Any() { delete ptr; }
+    /* Initialize by setting as nullptr. */
     Any() : ptr(nullptr) {}
+    /* Special case for nullptr. */
     Any(std::nullptr_t) : ptr(nullptr) {}
 
-
+    /* Perfect forwarding initialization for normal types (%Any/nullptr excluded). */
     template <typename U>
     Any(U &&val) : ptr( new Data <std::decay_t <U>> (std::forward <U> (val)) ) {}
 
-
+    /* Move the content from rhs by swaping pointers. */
     Any(Any &&rhs) : ptr(rhs.ptr) { rhs.ptr = nullptr; }
+    /* Copy the content from rhs if the inner class of rhs is copy-constructible.
+     * Otherwise, this Any object will be set as nullptr.*/
     Any(const Any &rhs) : ptr(rhs.ptr->clone()) {}
+    Any(const Any &&rhs) : Any(rhs) {}
 
-    /* Special case for null_pointer. */
+    /* Special case for nullptr. */
     Any &operator = (std::nullptr_t) {
         this->~Any();
         ptr = nullptr;
@@ -66,9 +76,13 @@ class Any {
 
     /**
      * @brief Move the content from rhs by simply swaping pointers.
+     * Note that the original data of this will be deleted and if it
+     * is a pointer, the data pointed to won't be touched.
+     * It's user's responsibility to manage the them and delete them
+     * before the assignment operation.
      * 
-     * @param rhs   The content source to move from.
-     * @return Any& This object , which is equivently to previous rhs.
+     * @param  rhs  The content source to move from.
+     * @return Any& This object, which is equivently to previous rhs.
      */
     Any &operator = (Any &&rhs) noexcept {
         if(this != &rhs) {
@@ -78,13 +92,16 @@ class Any {
         }
         return *this;
     }
-
     /**
      * @brief Copy the content from rhs if the inner class
      * of rhs is copy-constructible.
-     * Otherwise , this Any object will be set as nullptr.
+     * Otherwise, this Any object will be set as nullptr.
+     * Note that the original data of this will be deleted and if it
+     * is a pointer, the data pointed to won't be touched.
+     * It's user's responsibility to manage the them and delete them
+     * before the assignment operation.
      * 
-     * @param  rhs  The content source to copy from.
+     * @param rhs The content source to copy from.
      */
     Any &operator = (const Any &rhs) noexcept {
         if(this != &rhs) {
@@ -94,13 +111,32 @@ class Any {
         }
         return *this;
     }
+    /**
+     * @brief Copy the content from rhs if the inner class
+     * of rhs is copy-constructible.
+     * Otherwise, this Any object will be set as nullptr.
+     * Note that the original data of this will be deleted and if it
+     * is a pointer, the data pointed to won't be touched.
+     * It's user's responsibility to manage the them and delete them
+     * before the assignment operation.
+     * 
+     * @param rhs The content source to copy from.
+     */
+    Any &operator = (Any &rhs) noexcept { return *this = (const Any &)rhs; }
+    /**
+     * @brief Copy the content from rhs if the inner class
+     * of rhs is copy-constructible.
+     * Otherwise, this Any object will be set as nullptr.
+     * Note that the original data of this will be deleted and if it
+     * is a pointer, the data pointed to won't be touched.
+     * It's user's responsibility to manage the them and delete them
+     * before the assignment operation.
+     * 
+     * @param rhs The content source to copy from.
+     */
+    Any &operator = (const Any &&rhs) noexcept { return *this = rhs; }
 
-    /* Copy rhs's content. */
-    Any &operator = (Any &rhs) { return *this = (const Any &)rhs; }
-    /* Copy rhs's content. */
-    Any &operator = (const Any &&rhs) { return *this = rhs; }
-
-    /* Perfect forwarding for normal types. */
+    /* Perfect forwarding assignment for normal types (%Any/nullptr excluded). */
     template <class U>
     Any &operator = (U &&rhs) {
         using T = std::decay_t <U>;
@@ -114,32 +150,34 @@ class Any {
         return *this;
     }
 
-    template <class U>
-    Any &operator = (const U &&rhs) {
-        using T = std::decay_t <U>;
-        Data <T> *tmp = dynamic_cast <Data <T> *> (ptr);
-        if(!tmp) {
-            this->~Any();
-            ptr = new Data <std::decay_t <U>> (std::forward <U> (rhs));
-        } else {
-            tmp->data = std::forward <U> (rhs);
-        }
-        return *this;
-    }
-
+    /* Force to change into a non-const type.
+       If attempt failed, std::bad_cast will be thrown. */
     template <typename U>
     operator U() { return as <U> (); }
 
+    /* Force to change into a const type.
+       If attempt failed, std::bad_cast will be thrown. */
     template <typename U>
     operator const U() const { return as <const U> (); }
 
+    /**
+     * @brief  Test whether the inner type this %Any object hold is U.
+     * @tparam U    Type to be tested.
+     * @return true if the inner type this %Any object hold is U.
+     */
     template <typename U>
-    bool is() const {
+    bool is() const noexcept {
         using T = std::decay_t <U>;
         Data <T> *tmp = dynamic_cast <Data <T> *> (ptr);
         return tmp;
     }
-
+     
+    /**
+     * @brief  Tries to convert this %Any object into type U.
+     * @tparam U       Type to be converted into.
+     * @return Decayed type reference to value stored.
+     * @exception std::bad_cast if the inner class isn't U.
+     */
     template <typename U>
     std::decay_t <U> &as() {
         using T = std::decay_t <U>;
@@ -148,6 +186,12 @@ class Any {
         return tmp->data;
     }
 
+     /**
+     * @brief  Tries to convert this %Any object into type U.
+     * @tparam U       Type to be converted into.
+     * @return Decayed type const reference to value stored.
+     * @exception std::bad_cast if the inner class isn't U.
+     */
     template <typename U>
     const std::decay_t <U> &as() const {
         using T = std::decay_t <U>;
@@ -156,30 +200,28 @@ class Any {
         return tmp->data;
     }
 
+    /* Test whether the inner pointer is nullptr. */
     bool isNull()    const {return !ptr;}
+    /* Test whether the inner pointer refers a value. */
     bool isNotNull() const {return  ptr;}
 };
 
 
-struct A {
-    A() = default;
-    A(const A &) = delete;
-    A(A &&) = default;
-};
-
-struct B : A{};
-
-
-void func(const int &x) {
+void func(const int x) {
     std::printf("space:%d\n",x);
 }
 
 
 signed main() {
-    Any x(1);
+    const int y = 1;
+    Any x(y);
     std::string str = "abcd";
+    x = y;
     x = std::move(str);
     x = std::vector <int> {1,2,3};
     func(x = 0);
+    (int)(x);
+    (const int)x;
+    if(x.isNotNull()) {std::cout << "isNotNull\n";}
     return 0;
 }
