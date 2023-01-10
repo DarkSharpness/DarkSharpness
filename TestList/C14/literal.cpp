@@ -1,9 +1,7 @@
 #include <bits/stdc++.h>
 // #include <Dark/inout>
 using namespace std;
-using ll = long long;
-using ull = unsigned long long;
-// #define int long long
+// Actually,C11 is enough , but can't reload constexpr version.
 
 constexpr long double operator"" _multiply2(long double x) {
     return x * 2;
