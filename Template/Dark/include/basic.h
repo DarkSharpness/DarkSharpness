@@ -15,15 +15,15 @@ namespace dark {
 
 /**
  * @brief Fast built-in LOG2 function from
- * "Âæ¿ÉÇ¿¡¶ÂÛ³ÌĞòµ×²ãÓÅ»¯µÄÒ»Ğ©·½·¨Óë¼¼ÇÉ"
+ * "éª†å¯å¼ºã€Šè®ºç¨‹åºåº•å±‚ä¼˜åŒ–çš„ä¸€äº›æ–¹æ³•ä¸æŠ€å·§".
  * You can access that at 
  * https://github.com/lzyrapx/Competitive-Programming-Docs/.
  * 
  * 
- * @return log2(x) in 32-bit.
+ * @return log2(x) in 32-bit. Note that log2(0) will return 0;
  */
 inline unsigned int LOG2(unsigned x){
-    unsigned ret;
+    unsigned ret = 0;
     __asm__ __volatile__ ("bsrl %1, %%eax":"=a"(ret):"m"(x));
     return ret;
 }
