@@ -1,0 +1,6 @@
+#ifndef _DARK_DYNAMIC_ARRAY_
+#define _DARK_DYNAMIC_ARRAY_
+
+#include "Container/dynamic_array.h"
+
+#endif

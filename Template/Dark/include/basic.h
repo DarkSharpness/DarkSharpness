@@ -1,20 +1,17 @@
 #ifndef _DARK_BASIC_H_
 #define _DARK_BASIC_H_
 
-#include <bits/c++config.h>
 #include <string.h>
 #include <stdint.h>
 #include <ctype.h>
+#include <version>
 
-// DarkSharpness's namespace.
+/**
+ * @brief DarkSharpness's namespace.
+ * Including some third party functions.
+ * 
+ */
 namespace dark {
-
-
-
-#define Iter(it,begin,end)  for(auto it = begin ; it != end ; ++it)
-#define Loop(it,begin,end)  for(auto it = begin ; it <= end ; ++it)
-#define Riter(it,begin,end) for(auto it = begin ; it != end ; --it)
-#define Rloop(it,begin,end) for(auto it = begin ; it >= end ; --it)
 
 /**
  * @brief Fast built-in LOG2 function from
@@ -30,7 +27,6 @@ inline unsigned int LOG2(unsigned x){
     __asm__ __volatile__ ("bsrl %1, %%eax":"=a"(ret):"m"(x));
     return ret;
 }
-
 
 }
 

@@ -1,12 +1,10 @@
-#ifndef _COMPARE_HPP_
-#define _COMPARE_HPP_
+#ifndef _COMPARE_H_
+#define _COMPARE_H_
 
-#include "../include/basic.hpp"
+#include "../include/basic.h"
 
 
 namespace dark {
-
-
 
 /* Return the Maximum value. */
 template <class value_t>

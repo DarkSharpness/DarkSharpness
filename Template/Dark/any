@@ -1,0 +1,6 @@
+#ifndef _DARK_ANY_
+#define _DARK_ANY_
+
+#include "Container/any.h"
+
+#endif

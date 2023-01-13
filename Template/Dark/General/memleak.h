@@ -1,5 +1,5 @@
-#ifndef _DARK_MEMINFO_HPP_
-#define _DARK_MEMINFO_HPP_
+#ifndef _DARK_MEMINFO_H_
+#define _DARK_MEMINFO_H_
 
 #include <iostream>
 
@@ -8,10 +8,10 @@ struct memory_recorder {
     static std::size_t allocated;
     static std::size_t ptr_count;
     ~memory_recorder() {
-        std::printf("\n------------------------------\n");
-        std::printf("Space allocated : %llu\n",allocated);
-        std::printf("Pointers leaked : %llu\n",ptr_count);
-        std::printf( "------------------------------\n" );
+        printf("\n------------------------------\n");
+        printf("Space allocated : %llu\n",allocated);
+        printf("Pointers leaked : %llu\n",ptr_count);
+        printf( "------------------------------\n" );
     }
 };
 

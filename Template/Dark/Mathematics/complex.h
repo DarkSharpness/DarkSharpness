@@ -1,7 +1,7 @@
-#ifndef _COMPLEX_HPP_
-#define _COMPLEX_HPP_
+#ifndef _COMPLEX_H_
+#define _COMPLEX_H_
 
-#include "../include/basic.hpp"
+#include "../include/basic.h"
 #include <cmath>
 
 namespace dark {
