@@ -4,20 +4,18 @@
 #include "../include/basic.h"
 #include <memory>
 #include <initializer_list>
+#include "../iterator"
 
 namespace dark {
 
-
-// using value_t = int;
-
 /**
  * @brief A dynamic %array that can expand itself automatically.
- * In other words,user don't need to consider the allocation and 
- * deallocation of data.
- * Note that,if the elements within are pointers,the data pointed 
+ * In other words, user don't need to consider the allocation and 
+ * deallocation of space.
+ * Note that if the elements within are pointers, the data pointed 
  * to won't be touched. It's user's responsibility to manage them.
  * 
- * @tparam value_t The value of elements stores within the %array.
+ * @tparam value_t The type of elements stored within the %array.
  */
 template <class value_t>
 class dynamic_array : private std::allocator <value_t> {
@@ -31,15 +29,15 @@ class dynamic_array : private std::allocator <value_t> {
     /* Deallocate of the memory of head. */
     inline void dealloc()      { this->deallocate(head,capacity()); }
     
-    /* Destory n elements */
+    /* Destory __n elements */
     void destroy_n(value_t *pointer,size_t __n) {
-        while(__n--) {this->destroy(pointer++);}
+        while(__n--) { this->destroy(pointer++); }
     }
 
     /* End of unfolding. */
     void reserved_push_back() {}
 
-    /* Push back a sequence of elements with reserved space. */
+    /* Push back a sequence of elements with space reserved in advance. */
     template <class U,class ...Args>
     void reserved_push_back(U &&obj,Args &&...objs) {
         this->construct(tail++,std::forward <U> (obj));
@@ -50,11 +48,8 @@ class dynamic_array : private std::allocator <value_t> {
 
     /* Construct a new empty %array. */
     dynamic_array() : head(nullptr),tail(nullptr),term(nullptr) {}
-    /* Clean all the elements. */
-    ~dynamic_array() {
-        this->destroy_n(head,size());
-        dealloc();
-    }
+    /* Destroy all the elements and deallocate the space. */
+    ~dynamic_array() { this->destroy_n(head,size()); dealloc(); }
 
     /* Construct a new %array from an initializer_list. */
     dynamic_array(std::initializer_list <value_t> __l) 
@@ -209,7 +204,7 @@ class dynamic_array : private std::allocator <value_t> {
         this->construct(tail++,std::forward <Args> (objs)...);
     }
 
-    inline void pop_back() { this->destroy(tail--); }
+    inline void pop_back() { this->destroy(--tail); }
 
 
     /**
@@ -347,11 +342,38 @@ class dynamic_array : private std::allocator <value_t> {
         }
     }
     
+    /**
+     * @brief Copy elements from a range [first,last).
+     * Note that the Iterator must be random access iterator.
+     * Otherwise, you should provide the count of elements.
+     * 
+     * @tparam Iterator A random access iterator type.
+     * @param first Iterator to the first element.
+     * @param last  Iterator to one past the last element.
+     * @attention Linear time complexity with respect to (last - first)
+     * multiplied by the time of moving one element.
+     * Note that there might be an additional time cost linear to the 
+     * elements destroyed.
+     */
     template <class Iterator>
     void copy_range(Iterator first,Iterator last) {
         return copy_range(first,last,last - first);
     }
 
+
+    /**
+     * @brief Copy elements from a range [first,last).
+     * The number of elements in the range should be exactly __n,
+     * or unexpected error may happen.
+     * 
+     * @param first Iterator to the first element.
+     * @param last  Iterator to one past the last element.
+     * @param __n   Count of all the elements in the range.
+     * @attention Linear time complexity with respect to __n,
+     * multiplied by the time of moving one element.
+     * Note that there might be an additional time cost linear to the 
+     * elements destroyed.
+     */
     template <class Iterator>
     void copy_range(Iterator first,Iterator last,size_t __n) {
         if(__n <= capacity()) {
@@ -367,11 +389,38 @@ class dynamic_array : private std::allocator <value_t> {
         }
     }
 
+
+    /**
+     * @brief Move elements from a range [first,last).
+     * Note that the Iterator must be random access iterator.
+     * Otherwise, you should provide the count of elements.
+     * 
+     * @tparam Iterator A random access iterator type.
+     * @param first Iterator to the first element.
+     * @param last  Iterator to one past the last element.
+     * @attention Linear time complexity with respect to (last - first),
+     * multiplied by the time of moving one element.
+     * Note that there might be an additional time cost linear to the 
+     * elements destroyed.
+     */
     template <class Iterator>
     void move_range(Iterator first,Iterator last) {
         return move_range(first,last,last - first);
     }
 
+    /**
+     * @brief Move elements from a range [first,last).
+     * The number of elements in the range should be exactly __n,
+     * or unexpected error may happen.
+     * 
+     * @param first Iterator to the first element.
+     * @param last  Iterator to one past the last element.
+     * @param __n   Count of all the elements in the range.
+     * @attention Linear time complexity with respect to __n,
+     * multiplied by the time of moving one element.
+     * Note that there might be an additional time cost linear to the 
+     * elements destroyed.
+     */
     template <class Iterator>
     void move_range(Iterator first,Iterator last,size_t __n) {
         if(__n <= capacity()) {
@@ -388,6 +437,10 @@ class dynamic_array : private std::allocator <value_t> {
     }
 
   public:
+    /* Return the pointer to the first element. */
+    inline value_t *data() { return head; }
+    /* Return the pointer to the first element. */
+    inline const value_t *data() const { return head; }
     /* Subscript access to the data in the %array.  */
     inline value_t &operator [] (size_t __n) { return head[__n]; }
     /* Subscript access to the data in the %array.  */
@@ -398,13 +451,12 @@ class dynamic_array : private std::allocator <value_t> {
     /* Reference to the  last element. */
     inline value_t &back()  {return *--end();}
     /* Const reference to the first element. */
-    inline const value_t &front() const {return *begin();}
+    inline const value_t &front() const {return *cbegin();}
     /* Const reference to the  last element. */
-    inline const value_t &back()  const {return *--end();}
+    inline const value_t &back()  const {return *--cend();}
 
-
-    using iterator       =       value_t *;
-    using const_iterator = const value_t *;
+    using iterator       = RandomAccess::iterator <value_t>;
+    using const_iterator = RandomAccess::const_iterator <value_t>;
 
     /* Iterator to the first element. */
     inline iterator begin() { return head; }

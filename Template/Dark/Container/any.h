@@ -71,7 +71,7 @@ class Any {
     Any(Any &&rhs) : ptr(rhs.ptr) { rhs.ptr = nullptr; }
     /* Copy the content from rhs if the inner class of rhs is copy-constructible.
      * Otherwise, this Any object will be set as nullptr.*/
-    Any(const Any &rhs) : ptr(rhs.ptr->clone()) {}
+    Any(const Any &rhs) : ptr(rhs.ptr ? rhs.ptr->clone() : nullptr) {}
     Any(const Any &&rhs) : Any(rhs) {}
 
     /* Special case for nullptr. */
