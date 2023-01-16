@@ -27,7 +27,7 @@ class dynamic_array : private std::allocator <value_t> {
     /* Allocate memory of __n elements. */
     inline value_t *alloc(size_t __n) { return this->allocate(__n); }
     /* Deallocate of the memory of head. */
-    inline void dealloc()      { this->deallocate(head,capacity()); }
+    inline void dealloc() { this->deallocate(head,capacity()); }
     
     /* Destory __n elements */
     void destroy_n(value_t *pointer,size_t __n) {
@@ -35,7 +35,7 @@ class dynamic_array : private std::allocator <value_t> {
     }
 
     /* End of unfolding. */
-    void reserved_push_back() {}
+    inline void reserved_push_back() {}
 
     /* Push back a sequence of elements with space reserved in advance. */
     template <class U,class ...Args>
@@ -113,19 +113,26 @@ class dynamic_array : private std::allocator <value_t> {
      * elements destroyed.
      */
     inline dynamic_array &operator = (const dynamic_array &rhs) {
-        if(this != &rhs) { copy_range(rhs.begin(),rhs.end()); }
+        if(this != &rhs) { copy_range(rhs.begin(),rhs.size()); }
         return *this;
     }
 
     /**
      * @brief Construct a new %array with identical elements with another %array.
-     * It will just swap the pointers with another %array.
+     * It will just move the pointers from another %array.
      * 
      * @param rhs The %array to move from.
      * @attention Constant time complexity in any case.
      */
-    inline dynamic_array &operator = (dynamic_array &&rhs) {
-        return this->swap(rhs);
+    dynamic_array &operator = (dynamic_array &&rhs) {
+        if(this != &rhs) {
+            this->~dynamic_array();
+            head = rhs.head;
+            tail = rhs.tail;
+            term = rhs.term;
+            rhs.head = rhs.tail = rhs.term = nullptr;
+        }
+        return *this;
     }
 
     /* Swap the content of two %array in constant time. */
@@ -144,22 +151,22 @@ class dynamic_array : private std::allocator <value_t> {
 
   public:
     /* Count of elements within the %array. */
-    constexpr inline size_t size() const {return tail - head;}
+    constexpr inline size_t size() const { return tail - head; }
     /**
      * @brief Count of elements the %array can hold 
      * before the next allocation.
      */
-    constexpr inline size_t capacity() const {return term - head;}
+    constexpr inline size_t capacity() const { return term - head; }
     /**
      * @brief Count of vacancy in the back of the %array  
      * before the next allocation.
      */
-    constexpr inline size_t vacancy() const {return term - tail;}
+    constexpr inline size_t vacancy() const { return term - tail; }
     /* Test whether the %array is empty */
-    constexpr inline bool empty()  const {return head == tail;}
+    constexpr inline bool empty()  const { return head == tail; }
 
     /* Doing nothing to the %array. */
-    constexpr void push_back() const {}
+    constexpr inline void push_back() {}
 
     /**
      * @brief Push one element to the back of the %array.
@@ -204,11 +211,12 @@ class dynamic_array : private std::allocator <value_t> {
         this->construct(tail++,std::forward <Args> (objs)...);
     }
 
+    /* Destroy the last element in the back, with no returning. */
     inline void pop_back() { this->destroy(--tail); }
-
 
     /**
      * @brief Clear all the elements in the %array.
+     * Note that the capacity() of the %array won't shrink.
      * 
      * @attention Linear complexity with respect to size(),
      * multiplied by the deconstruction time of one element.
@@ -216,6 +224,26 @@ class dynamic_array : private std::allocator <value_t> {
     void clear() {
         this->destroy_n(head,size());
         tail = head;
+    }
+
+    /**
+     * @brief Clear the vacancy of the %array.
+     * Note that it will disable the optimization of the %array.
+     * 
+     * @attention Linear complexity with respect to size(),
+     * multiplied by the deconstruction time of one element.
+     */
+    void shrink() {
+        if(tail != term) {
+            value_t *temp = alloc(size());
+            for(size_t i = 0 ; i < size() ; ++i) {
+                this->construct(temp + i,std::move(head[i]));
+            }
+
+            this->~dynamic_array();
+            term = tail = temp + size();
+            head = temp;
+        }
     }
 
     /**
@@ -275,18 +303,16 @@ class dynamic_array : private std::allocator <value_t> {
      * @param __n The space reserved for elements.
      * @attention Linear time complexity with respect to __n,
      * only if __n >= capacity(), multiplied by the time of (de-)construction. 
-     * Otherwise , constant time complexity.
+     * Otherwise, constant time complexity.
      */
     void reserve(size_t __n) {
         if(capacity() < __n) {
             value_t *temp = alloc(__n);
-
             for(size_t i = 0 ; i < size() ; ++i) {
                 this->construct(temp + i,std::move(head[i]));
             }
-            // memcpy(temp,head,size() * sizeof(value_t));
 
-            dealloc();
+            this->~dynamic_array();
             term = temp + __n;
             tail = temp + size();
             head = temp;
@@ -356,36 +382,37 @@ class dynamic_array : private std::allocator <value_t> {
      * elements destroyed.
      */
     template <class Iterator>
-    void copy_range(Iterator first,Iterator last) {
-        return copy_range(first,last,last - first);
+    inline void copy_range(Iterator first,Iterator last) {
+        return copy_range(first,last - first);
     }
-
 
     /**
      * @brief Copy elements from a range [first,last).
      * The number of elements in the range should be exactly __n,
      * or unexpected error may happen.
      * 
+     * 
      * @param first Iterator to the first element.
      * @param last  Iterator to one past the last element.
      * @param __n   Count of all the elements in the range.
      * @attention Linear time complexity with respect to __n,
-     * multiplied by the time of moving one element.
+     * multiplied by the time of copying one element.
      * Note that there might be an additional time cost linear to the 
      * elements destroyed.
      */
     template <class Iterator>
-    void copy_range(Iterator first,Iterator last,size_t __n) {
+    void copy_range(Iterator first,size_t __n) {
         if(__n <= capacity()) {
             value_t *temp = head;
-            while(first != last && temp != tail) { *(temp++) = *(first++); }
-            while(first != last) { this->construct(tail++,*(first++)); }
-            resize(__n);
-        }
-        else {
+            while(__n-- && temp != tail) { *(temp++) = *(first++); }
+            ++__n;
+            while(__n--) { this->construct(tail++,*(first++)); }
+            this->destroy_n(temp,tail - temp);
+            tail = temp;
+        } else {
             this->~dynamic_array();
             term = (tail = head = alloc(__n)) + __n;
-            while(tail != term) { this->construct(tail++,*(first++)); } 
+            while(__n--) { this->construct(tail++,*(first++)); } 
         }
     }
 
@@ -404,8 +431,8 @@ class dynamic_array : private std::allocator <value_t> {
      * elements destroyed.
      */
     template <class Iterator>
-    void move_range(Iterator first,Iterator last) {
-        return move_range(first,last,last - first);
+    inline void move_range(Iterator first,Iterator last) {
+        return move_range(first,last - first);
     }
 
     /**
@@ -422,17 +449,18 @@ class dynamic_array : private std::allocator <value_t> {
      * elements destroyed.
      */
     template <class Iterator>
-    void move_range(Iterator first,Iterator last,size_t __n) {
+    void move_range(Iterator first,size_t __n) {
         if(__n <= capacity()) {
             value_t *temp = head;
-            while(first != last && temp != tail) { *(temp++) = std::move(*(first++)); }
-            while(first != last) { this->construct(tail++,std::move(*(first++))); }
-            resize(__n);
-        }
-        else {
+            while(__n-- && temp != tail) { *(temp++) = std::move(*(first++)); }
+            ++__n;
+            while(__n--) { this->construct(tail++,std::move(*(first++))); }
+            this->destroy_n(temp,tail - temp);
+            tail = temp;
+        } else {
             this->~dynamic_array();
             term = (tail = head = alloc(__n)) + __n;
-            while(tail != term) { this->construct(tail++,std::move(*(first++))); } 
+            while(__n--) { this->construct(tail++,std::move(*(first++))); } 
         }
     }
 
@@ -455,7 +483,7 @@ class dynamic_array : private std::allocator <value_t> {
     /* Const reference to the  last element. */
     inline const value_t &back()  const {return *--cend();}
 
-    using iterator       = RandomAccess::iterator <value_t>;
+    using iterator       = RandomAccess::iterator       <value_t>;
     using const_iterator = RandomAccess::const_iterator <value_t>;
 
     /* Iterator to the first element. */
