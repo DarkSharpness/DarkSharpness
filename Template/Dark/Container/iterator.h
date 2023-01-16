@@ -38,7 +38,7 @@ class iterator {
         return iterator(__n + rhs.pointer);
     }
     friend size_t operator - (const iterator &lhs,const iterator &rhs) {
-        return rhs.pointer - lhs.pointer;
+        return lhs.pointer - rhs.pointer;
     }
     friend bool operator == (const iterator &lhs,const iterator &rhs) {
         return lhs.pointer == rhs.pointer;
@@ -51,6 +51,7 @@ class iterator {
     T &operator * (void) const { return *pointer; } 
     T *operator ->(void) const { return  pointer; }
 
+    T &operator [] (size_t __n) const { return pointer[__n]; }
 };
 
 template <class T>
@@ -63,10 +64,6 @@ class const_iterator {
     const_iterator(const T *rhs = nullptr)  : pointer(rhs) {}
     const_iterator(const iterator <T> &rhs) : pointer(rhs.base()) {}
     const_iterator &operator = (const const_iterator &rhs) = default;
-    const_iterator &operator = (const iterator <T> &rhs) {
-        pointer = rhs.base();
-        return *this;
-    }
 
     /* Return the inner pointer. */
     const T *base() const { return pointer; }
@@ -83,12 +80,11 @@ class const_iterator {
     const_iterator operator - (size_t __n) const { return const_iterator(pointer - __n); }
     const_iterator operator + (size_t __n) const { return const_iterator(pointer + __n); }
 
-
     friend const_iterator operator + (size_t __n,const const_iterator &rhs) {
         return const_iterator(__n + rhs.pointer);
     }
     friend size_t operator - (const const_iterator &lhs,const const_iterator &rhs) {
-        return rhs.pointer - lhs.pointer;
+        return lhs.pointer - rhs.pointer;
     }
     friend bool operator == (const const_iterator &lhs,const const_iterator &rhs) {
         return lhs.pointer == rhs.pointer;
@@ -97,9 +93,11 @@ class const_iterator {
         return lhs.pointer != rhs.pointer;
     }
 
-
+    
     const T &operator * (void) const { return *pointer; } 
     const T *operator ->(void) const { return  pointer; }
+
+    const T &operator [] (size_t __n) const { return pointer[__n]; }
 
 };
 
