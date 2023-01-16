@@ -13,24 +13,15 @@ void test(Any &a) {
 }
 
 signed main() {
-    dynamic_array <Any> d(3,nullptr);
-    d.pop_back();
-    d.push_back(1);
-    d.back() = 0;
-    for(auto &it : d) test(it);
-
-    dynamic_array <dynamic_array <int>> t;
-    dynamic_array <int> tmp{1,2,3};
-    t.push_back(tmp);
-    t.pop_back();
-    t.push_back(tmp);
-    tmp.pop_back();
-    t.push_back(tmp);
-    for(auto &it1 : t) {
-        for(auto &it2 : it1) {
-            std::cout << it2 << ' ';
-        }
-        std::cout << '\n';
-    }
+    dynamic_array <std::string> d,t;
+    t.push_back("1","2","3");
+    d.push_back("2");
+    d.copy_range(t.begin(),t.end());
+    for(std::string &iter : d) std::cout << iter << ' ';
+    std::cout << '\n';
+    d = dynamic_array <std::string> {"a","b","c"};
+    d = std::move(t);
+    t = std::move(d);
+    for(std::string &iter : d) std::cout << iter << ' ';
     return 0;
 }
