@@ -78,7 +78,7 @@ struct complex {
         return *this;
     }
     /* Arithmetic addition. */
-    friend inline complex operator +(complex lhs,const complex &rhs) {
+    friend inline const complex operator +(complex lhs,const complex &rhs) {
         return lhs += rhs;
     }
 
@@ -89,7 +89,7 @@ struct complex {
         return *this;
     }
     /* Arithmetic subtraction. */
-    friend inline complex operator -(complex lhs,const complex &rhs) {
+    friend inline const complex operator -(complex lhs,const complex &rhs) {
         return lhs -= rhs;
     }
 
@@ -99,7 +99,7 @@ struct complex {
         return *this = *this * rhs;
     }
     /* Arithmetic multiplication. */
-    friend inline complex operator *(const complex &lhs,const complex &rhs) {
+    friend inline const complex operator *(const complex &lhs,const complex &rhs) {
         return complex(lhs.real * rhs.real - lhs.imag * rhs.imag,
                        lhs.real * rhs.imag + lhs.imag * rhs.real);
     }
@@ -109,21 +109,11 @@ struct complex {
         return *this = *this / rhs;
     }
     /* Arithmetic division. */    
-    friend inline complex operator /(const complex &lhs,const complex &rhs) {
+    friend inline const complex operator /(const complex &lhs,const complex &rhs) {
         value_t tmp = rhs.abs2();
         return complex((lhs.real * rhs.real + lhs.imag * rhs.imag) / tmp,
                        (lhs.real * rhs.imag - lhs.imag * rhs.real) / tmp);
     }
-
-#ifdef _DARK_INOUT_HPP_
-    /* Fast read for complex number. */
-    friend complex &Fread(complex &dst) {
-        Fread(dst.real);
-        Fread(dst.imag);
-        return dst;
-    }
-
-#endif
 };
 
 

@@ -1,7 +1,12 @@
 #ifndef _DARK_MATH_
 #define _DARK_MATH_
 
-#include "Mathematics/compare.h"
 #include "Mathematics/complex.h"
+
+#if __cplusplus >= 202002L
+
+#include "Mathematics/compare.h"
+
+#endif
 
 #endif
