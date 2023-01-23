@@ -57,25 +57,25 @@ class Any {
     
 
   public:
-    ~Any() { delete ptr; }
+    ~Any() noexcept { delete ptr; }
     /* Initialize by setting as nullptr. */
-    Any() : ptr(nullptr) {}
+    Any() noexcept : ptr(nullptr) {}
     /* Special case for nullptr. */
-    Any(std::nullptr_t) : ptr(nullptr) {}
+    Any(std::nullptr_t) noexcept : ptr(nullptr) {}
 
     /* Perfect forwarding initialization for normal types (%Any/nullptr excluded). */
     template <typename U>
     Any(U &&val) : ptr( new Data <std::decay_t <U>> (std::forward <U> (val)) ) {}
 
     /* Move the content from rhs by swaping pointers. */
-    Any(Any &&rhs) : ptr(rhs.ptr) { rhs.ptr = nullptr; }
+    Any(Any &&rhs) noexcept : ptr(rhs.ptr) { rhs.ptr = nullptr; }
     /* Copy the content from rhs if the inner class of rhs is copy-constructible.
      * Otherwise, this Any object will be set as nullptr.*/
     Any(const Any &rhs) : ptr(rhs.ptr ? rhs.ptr->clone() : nullptr) {}
     Any(const Any &&rhs) : Any(rhs) {}
 
     /* Special case for nullptr. */
-    Any &operator = (std::nullptr_t) {
+    Any &operator = (std::nullptr_t) noexcept {
         this->~Any();
         ptr = nullptr;
         return *this;
@@ -208,9 +208,9 @@ class Any {
     }
 
     /* Test whether the inner pointer is nullptr. */
-    bool isNull()    const {return !ptr;}
+    bool isNull()    const noexcept {return !ptr;}
     /* Test whether the inner pointer refers a value. */
-    bool isNotNull() const {return  ptr;}
+    bool isNotNull() const noexcept {return  ptr;}
 };
 
 }
