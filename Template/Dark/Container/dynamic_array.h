@@ -2,9 +2,10 @@
 #define _DARK_DYNAMIC_ARRAY_H_
 
 #include "../include/basic.h"
+#include "../iterator"
+
 #include <memory>
 #include <initializer_list>
-#include "../iterator"
 
 namespace dark {
 
@@ -25,9 +26,9 @@ class dynamic_array : private std::allocator <value_t> {
     value_t *term; /* Terminal pointer to the end of storage. */
 
     /* Allocate memory of __n elements. */
-    inline value_t *alloc(size_t __n) { return this->allocate(__n); }
+    value_t *alloc(size_t __n) { return this->allocate(__n); }
     /* Deallocate of the memory of head. */
-    inline void dealloc() { this->deallocate(head,capacity()); }
+    void dealloc() { this->deallocate(head,capacity()); }
     
     /* Destory __n elements */
     void destroy_n(value_t *pointer,size_t __n) {
@@ -35,7 +36,7 @@ class dynamic_array : private std::allocator <value_t> {
     }
 
     /* End of unfolding. */
-    inline void reserved_push_back() {}
+    void reserved_push_back() noexcept {}
 
     /* Push back a sequence of elements with space reserved in advance. */
     template <class U,class ...Args>
@@ -49,7 +50,7 @@ class dynamic_array : private std::allocator <value_t> {
     /* Construct a new empty %array. */
     dynamic_array() : head(nullptr),tail(nullptr),term(nullptr) {}
     /* Destroy all the elements and deallocate the space. */
-    ~dynamic_array() { this->destroy_n(head,size()); dealloc(); }
+    ~dynamic_array() noexcept { this->destroy_n(head,size()); dealloc(); }
 
     /* Construct a new %array from an initializer_list. */
     dynamic_array(std::initializer_list <value_t> __l) 
@@ -94,7 +95,7 @@ class dynamic_array : private std::allocator <value_t> {
      * @param rhs The %array to move from.
      * @attention Constant time complexity in any case.
      */
-    dynamic_array(dynamic_array &&rhs) {
+    dynamic_array(dynamic_array &&rhs) noexcept {
         head = rhs.head;
         tail = rhs.tail;
         term = rhs.term;
@@ -112,7 +113,7 @@ class dynamic_array : private std::allocator <value_t> {
      * Note that there might be an additional time cost linear to the 
      * elements destroyed.
      */
-    inline dynamic_array &operator = (const dynamic_array &rhs) {
+    dynamic_array &operator = (const dynamic_array &rhs) {
         if(this != &rhs) { copy_range(rhs.begin(),rhs.size()); }
         return *this;
     }
@@ -124,7 +125,7 @@ class dynamic_array : private std::allocator <value_t> {
      * @param rhs The %array to move from.
      * @attention Constant time complexity in any case.
      */
-    dynamic_array &operator = (dynamic_array &&rhs) {
+    dynamic_array &operator = (dynamic_array &&rhs) noexcept {
         if(this != &rhs) {
             this->~dynamic_array();
             head = rhs.head;
@@ -136,14 +137,14 @@ class dynamic_array : private std::allocator <value_t> {
     }
 
     /* Swap the content of two %array in constant time. */
-    dynamic_array &swap(dynamic_array &rhs) {
+    dynamic_array &swap(dynamic_array &rhs) noexcept {
         std::swap(head,rhs.head);
         std::swap(tail,rhs.tail);
         std::swap(term,rhs.term);
         return *this;
     }
     /* Swap the content of two %array in constant time. */
-    friend void swap(dynamic_array &lhs,dynamic_array &rhs) {
+    friend void swap(dynamic_array &lhs,dynamic_array &rhs) noexcept {
         std::swap(lhs.head,rhs.head);
         std::swap(lhs.tail,rhs.tail);
         std::swap(lhs.term,rhs.term);
@@ -151,22 +152,22 @@ class dynamic_array : private std::allocator <value_t> {
 
   public:
     /* Count of elements within the %array. */
-    constexpr inline size_t size() const { return tail - head; }
+    size_t size() const noexcept { return tail - head; }
     /**
      * @brief Count of elements the %array can hold 
      * before the next allocation.
      */
-    constexpr inline size_t capacity() const { return term - head; }
+    size_t capacity() const noexcept { return term - head; }
     /**
      * @brief Count of vacancy in the back of the %array  
      * before the next allocation.
      */
-    constexpr inline size_t vacancy() const { return term - tail; }
+    size_t vacancy() const noexcept { return term - tail; }
     /* Test whether the %array is empty */
-    constexpr inline bool empty()  const { return head == tail; }
+    bool empty()  const noexcept { return head == tail; }
 
     /* Doing nothing to the %array. */
-    constexpr inline void push_back() {}
+    void push_back() noexcept {}
 
     /**
      * @brief Push one element to the back of the %array.
@@ -212,7 +213,7 @@ class dynamic_array : private std::allocator <value_t> {
     }
 
     /* Destroy the last element in the back, with no returning. */
-    inline void pop_back() { this->destroy(--tail); }
+    void pop_back() noexcept { this->destroy(--tail); }
 
     /**
      * @brief Clear all the elements in the %array.
@@ -221,7 +222,7 @@ class dynamic_array : private std::allocator <value_t> {
      * @attention Linear complexity with respect to size(),
      * multiplied by the deconstruction time of one element.
      */
-    void clear() {
+    void clear() noexcept {
         this->destroy_n(head,size());
         tail = head;
     }
@@ -382,7 +383,7 @@ class dynamic_array : private std::allocator <value_t> {
      * elements destroyed.
      */
     template <class Iterator>
-    inline void copy_range(Iterator first,Iterator last) {
+    void copy_range(Iterator first,Iterator last) {
         return copy_range(first,last - first);
     }
 
@@ -431,7 +432,7 @@ class dynamic_array : private std::allocator <value_t> {
      * elements destroyed.
      */
     template <class Iterator>
-    inline void move_range(Iterator first,Iterator last) {
+    void move_range(Iterator first,Iterator last) {
         return move_range(first,last - first);
     }
 
@@ -466,39 +467,39 @@ class dynamic_array : private std::allocator <value_t> {
 
   public:
     /* Return the pointer to the first element. */
-    inline value_t *data() { return head; }
+    value_t *data() { return head; }
     /* Return the pointer to the first element. */
-    inline const value_t *data() const { return head; }
+    const value_t *data() const { return head; }
     /* Subscript access to the data in the %array.  */
-    inline value_t &operator [] (size_t __n) { return head[__n]; }
+    value_t &operator [] (size_t __n) { return head[__n]; }
     /* Subscript access to the data in the %array.  */
-    inline const value_t &operator [] (size_t __n) const { return head[__n]; }
+    const value_t &operator [] (size_t __n) const { return head[__n]; }
 
     /* Reference to the first element. */
-    inline value_t &front() {return *begin();}
+    value_t &front() {return *begin();}
     /* Reference to the  last element. */
-    inline value_t &back()  {return *--end();}
+    value_t &back()  {return *--end();}
     /* Const reference to the first element. */
-    inline const value_t &front() const {return *cbegin();}
+    const value_t &front() const {return *cbegin();}
     /* Const reference to the  last element. */
-    inline const value_t &back()  const {return *--cend();}
+    const value_t &back()  const {return *--cend();}
 
     using iterator       = RandomAccess::iterator       <value_t>;
     using const_iterator = RandomAccess::const_iterator <value_t>;
 
     /* Iterator to the first element. */
-    inline iterator begin() { return head; }
+    iterator begin() { return head; }
     /* Iterator to the one past last element. */
-    inline iterator end()   { return tail; }
+    iterator end()   { return tail; }
 
     /* Const_iterator to the first element. */
-    inline const_iterator begin()  const {return head;}
+    const_iterator begin()  const {return head;}
     /* Const_iterator to one past the last element. */
-    inline const_iterator end()    const {return tail;}
+    const_iterator end()    const {return tail;}
     /* Const_iterator to the first element. */
-    inline const_iterator cbegin() const {return head;}
+    const_iterator cbegin() const {return head;}
     /* Const_iterator to one past the last element. */
-    inline const_iterator cend()   const {return tail;}
+    const_iterator cend()   const {return tail;}
 
 };
 
