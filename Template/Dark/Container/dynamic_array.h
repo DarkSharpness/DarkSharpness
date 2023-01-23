@@ -486,11 +486,13 @@ class dynamic_array : private std::allocator <value_t> {
 
     using iterator       = RandomAccess::iterator       <value_t>;
     using const_iterator = RandomAccess::const_iterator <value_t>;
+    using reverse_iterator = RandomAccess::reverse_iterator <value_t>;
+    using const_reverse_iterator = RandomAccess::const_reverse_iterator <value_t>;
 
     /* Iterator to the first element. */
-    iterator begin() { return head; }
-    /* Iterator to the one past last element. */
-    iterator end()   { return tail; }
+    iterator begin()  { return head; }
+    /* Iterator to one past the last element. */
+    iterator end()    { return tail; }
 
     /* Const_iterator to the first element. */
     const_iterator begin()  const {return head;}
@@ -500,6 +502,21 @@ class dynamic_array : private std::allocator <value_t> {
     const_iterator cbegin() const {return head;}
     /* Const_iterator to one past the last element. */
     const_iterator cend()   const {return tail;}
+
+
+    /* Reverse iterator to the last element. */
+    reverse_iterator rbegin() { return tail - 1; }
+    /* Reverse iterator to one before the first element. */
+    reverse_iterator rend()   { return head - 1; }
+
+    /* Const_reverse_iterator to the last element. */
+    const_reverse_iterator rbegin()  const {return tail - 1;}
+    /* Const_reverse_iterator to one before the first element. */
+    const_reverse_iterator rend()    const {return head - 1;}
+    /* Const_reverse_iterator to the last element. */
+    const_reverse_iterator crbegin() const {return tail - 1;}
+    /* Const_reverse_iterator to one before the first element. */
+    const_reverse_iterator crend()   const {return head - 1;}
 
 };
 
