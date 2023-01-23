@@ -27,5 +27,10 @@ signed main() {
     test.resize(3); // test.emplace_back();
     object A;
     printline();
+    test.emplace_back();
+    test.size();
+    test.clear();
+    *test.crbegin();
+    // std::vector <int> vec = std::vector <int>(3);
     return 0;
 }

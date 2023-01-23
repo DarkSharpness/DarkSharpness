@@ -4,6 +4,7 @@
 
 using dark::RandomAccess::iterator;
 using dark::RandomAccess::const_iterator;
+using dark::RandomAccess::reverse_iterator;
 
 
 struct foo {
@@ -22,7 +23,13 @@ signed main() {
     x += 4;
     y = x;
     x->name[0] = 'c';
-    std::cout << y->name;
+    std::cout << y->name << '\n';
     delete y.base();
+    if(x == y) std::cout << "true\n";
+    if(x != y) std::cout << "false\n";
+    reverse_iterator <foo> tmp((new foo[2] {1,"AC",1.3}) + 1);
+    std::cout << tmp[1].name << '\n';
+    ++tmp;
+    delete[] tmp.base();
     return 0;
 }
