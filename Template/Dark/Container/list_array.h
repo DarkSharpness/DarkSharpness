@@ -8,12 +8,14 @@
 
 namespace dark {
 
-// using value_t = long long;
 
 /**
  * @brief A list-like %array which support %array addition and number multiplication.
  * Compared with dark::dynamic_array, this %array have no vacancy left,
  * which means that pop/push_back() and pop/push_front() are costly linear operation.
+ * 
+ * Abandoned! Don't use it!
+ * 
  * 
  * @tparam value_t 
  */
