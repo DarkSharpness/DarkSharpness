@@ -23,5 +23,12 @@ signed main() {
     d = std::move(t);
     t = std::move(d);
     for(std::string &iter : d) std::cout << iter << ' ';
+    std::cout << '\n';
+    d.push_back("abc");
+    d.emplace_back("66");
+    d.push_back("13221");
+    for(auto iter = d.rbegin() ; iter != d.crend() ; ++iter) {
+        std::cout << *iter << ' ';
+    }
     return 0;
 }
