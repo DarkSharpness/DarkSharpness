@@ -2,33 +2,92 @@
 #define _DARK_ROUND_ARRAY_H_
 
 #include "../include/basic.h"
-#include "../dynamic_array"
+
+#include <memory>
+#include <initializer_list>
 
 namespace dark {
 
 using value_t = int;
 
-class round_array : public dynamic_array <value_t> {
+class round_array : private std::allocator <value_t>  {
   protected:
-    size_t offset; /* Offset of the array. Ranged in [0,size()) */
+    value_t *head;    // Head pointer
+    value_t *tail;    // Tail pointer
+    size_t prefix;    // Prefix size
+    size_t suffix;    // Suffix size
 
   public:
-    round_array()
-        : dynamic_array(),offset(0) {}
-    round_array(const round_array &rhs)
-        : dynamic_array(rhs),offset(rhs.offset) {}
-    round_array(const round_array &rhs)
-        : dynamic_array(rhs),offset(rhs.offset) {}
     
 
-    value_t &operator [] (size_t __n) {
-        __n = (__n + size() - offset) % size();
-        return dynamic_array <value_t>::operator[](__n); 
+
+  public:
+    size_t size() const noexcept { return prefix + suffix; }
+    size_t capacity() const noexcept { return tail - head; }
+    size_t vacancy() const noexcept { return capacity() - size(); }
+    bool empty() const noexcept { return !(prefix || suffix); }
+
+    /**
+     * @brief Push one element to the back of the %array.
+     * 
+     * @param obj The object pushed back to initialize the element. 
+     * @attention Amortized constant time complexity,
+     * multiplied by the construction time of one element.
+     */
+    template <class U>
+    void push_back(U &&obj) {
+        if(size() == capacity()) { reserve(size() << 1 | empty()); } 
+        this->construct(head + (prefix++),std::forward <U> (obj));
     }
-    const value_t &operator [] (size_t __n) const {
-        __n = (__n + size() - offset) % size();
-        return dynamic_array <value_t>::operator[](__n); 
+
+    /**
+     * @brief Push one element to the back of the %array.
+     * 
+     * @param obj The object pushed front to initialize the element. 
+     * @attention Amortized constant time complexity,
+     * multiplied by the construction time of one element.
+     */
+    template <class U>
+    void push_front(U &&obj) {
+        if(size() == capacity()) { reserve(size() << 1 | empty()); } 
+        this->construct(tail - (++suffix),std::forward <U> (obj));
     }
+
+    /**
+     * @brief Construct one element after the back of the %array.
+     * 
+     * @param obj The object pushed back to initialize the element. 
+     * @attention Amortized constant time complexity,
+     * multiplied by the construction time of one element.
+     */
+    template <class ...Args>
+    void emplace_back(Args &&...objs) {
+        if(size() == capacity()) { reserve(size() << 1 | empty()); }
+        this->construct(head + (prefix++),std::forward <Args> (objs)...);
+    }
+
+    /**
+     * @brief Construct one element before the front of the %array.
+     * 
+     * @param obj The object pushed front to initialize the element. 
+     * @attention Amortized constant time complexity,
+     * multiplied by the construction time of one element.
+     */
+    template <class ...Args>
+    void emplace_front(Args &&...objs) {
+        if(size() == capacity()) { reserve(size() << 1 | empty()); }
+        this->construct(tail - (++suffix),std::forward <Args> (objs)...);
+    }
+
+
+
+
+
+
+
+
+
+
     
 
 };
