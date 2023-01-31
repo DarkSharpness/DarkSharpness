@@ -6,6 +6,33 @@
 
 namespace dark {
 
+
+template <class value_t,bool QSUM,bool QMAX>
+struct Tnode;
+
+template <class value_t>
+struct Tnode <value_t,true,false> {
+    value_t sum; /* Sum of the node. */
+    value_t tag; /* Forever tag. */
+    void initTag() { tag = 0; }
+};
+
+template <class value_t>
+struct Tnode <value_t,false,true> {
+    value_t max; /* Max val. */
+    value_t tmx; /* Max tag. */
+    void initTag() { }
+};
+
+template <class value_t>
+struct Tnode <value_t,true,true> : public 
+    Tnode <value_t,true,false>,Tnode <value_t,false,true>{
+    void initTag() { 
+        Tnode<value_t,true,false>::initTag(); 
+    }
+};
+
+
 /**
  * @brief Basic template of segment_tree.
  * 
@@ -14,66 +41,99 @@ namespace dark {
  */
 template <class value_t,size_t __N> 
 class segment_tree {
-  private:
-    struct node {
-        value_t val; /* Value of the node. */
-        value_t tag; /* Forever tag. */
-    } data[__N << 2]; /* 4 times at most. */
+    // static_assert (QSUM || QMAX,"Don't use empty segment_tree!");
 
-    const unsigned N; /* Length of inner data. */
+  private:
+    using node = Tnode <value_t,true,false>;
+    node data[__N << 2]; /* 4 times at most. */
+    
+    size_t N; /* Length of inner data. */
     #define ls id << 1
     #define rs id << 1 | 1
 
-    /* Build the segment tree with initial array. */
-    void build(value_t *src,unsigned id,unsigned l,unsigned r) {
+    /**
+     * @brief Build the segment tree with initial array.
+     * 
+     * @param src Source of data. If nullptr, all data will be set 0.
+     * @param id  The index of inner node.
+     * @param l   The left  border of the node.
+     * @param r   The right border of the node.
+     */
+    void build(value_t *src,size_t id,size_t l,size_t r) {
         data[id].tag = 0;
+        // initTag();
         if(l == r) {
-            data[id].val = src[l];
+            data[id].sum = (src ? src[l] : 0);
+            // initVal();
             return;
         }
-        unsigned mid = (l + r) >> 1;
+        size_t mid = (l + r) >> 1;
         build(src,ls, l , mid );
         build(src,rs,mid + 1,r);
-        data[id].val = data[ls].val + data[rs].val;
+        data[id].sum = data[ls].sum + data[rs].sum;
+        // initPushUp();
     }
 
     /* Add in a range. Optimized by lifelong tagging. */
-    void add(unsigned id,unsigned l,unsigned r,
-             unsigned L,unsigned R,value_t val) {
-        data[id].val += (R - L + 1) * val;
-        if(l == L && r == R) { data[id].tag += val; return; }
+    void update(size_t id,size_t l,size_t r,
+             size_t L,size_t R,value_t val) {
+        data[id].sum += (R - L + 1) * val;
+        // updateVal(data[id],L,R);
+        if(l == L && r == R) {
+            return (void) (data[id].tag += val); 
+            // return updateTag(data[id],val);
+        }
 
-        unsigned mid = (l + r) >> 1;
-        if(R <= mid)      add(ls, l , mid ,L,R,val);
-        else if(L > mid)  add(rs,mid + 1,r,L,R,val);
+        size_t mid = (l + r) >> 1;
+        if(R <= mid)      update(ls, l , mid ,L,R,val);
+        else if(L > mid)  update(rs,mid + 1,r,L,R,val);
         else {
-            add(ls, l , mid , L , mid ,val);
-            add(rs,mid + 1,r,mid + 1,R,val);
+            update(ls, l , mid , L , mid ,val);
+            update(rs,mid + 1,r,mid + 1,R,val);
         }
     }
-    /* Query in a range. Optimized by lifelong tagging. */
-    value_t query(unsigned id,unsigned l,unsigned r,
-                  unsigned L,unsigned R,value_t tag) const {
-        if(l == L && r == R) return data[id].val + (R - L + 1) * tag;
 
-        unsigned mid = (l + r) >> 1;
+    /* Query in a range. Optimized by lifelong tagging. */
+    value_t querySUM(size_t id,size_t l,size_t r,
+                  size_t L,size_t R,value_t tag) const {
+        // static_assert(QSUM == true,"Can't query sum!");
+
+        if(l == L && r == R) return data[id].sum + (R - L + 1) * tag;
+
         tag += data[id].tag;
-        if(R <= mid)     return query(ls, l , mid ,L,R,tag);
-        else if(L > mid) return query(rs,mid + 1,r,L,R,tag);
-        else return query(ls, l , mid , L , mid ,tag)
-                  + query(rs,mid + 1,r,mid + 1,R,tag);  
+        size_t mid = (l + r) >> 1;
+        if(R <= mid)     return querySUM(ls, l , mid ,L,R,tag);
+        else if(L > mid) return querySUM(rs,mid + 1,r,L,R,tag);
+        else return querySUM(ls, l , mid , L , mid ,tag)
+                  + querySUM(rs,mid + 1,r,mid + 1,R,tag);  
     }
+
     #undef ls
     #undef rs
   
   public:
-    
+
+    size_t length() const { return N; }
+    size_t size()   const { return N; }
+
     /**
-     * @brief Build from a given array (1-base).
+     * @brief Initialize from an array.
      * 
-     * @param src If src == nullptr,nothing is done.
+     * @param src The data source. If null, all data will be set 0. 
      */
-    void build(value_t *src) { if(src) return build(src,1,1,N); }
+    void build(value_t *src = nullptr) {
+        return build(src,1,1,N);
+    }
+
+    /**
+     * @brief Reset the length and initialize from an array.
+     * 
+     * @param __n Length of inner data. Can't be 0 or it will crash!
+     * @param src The data source. If null, all data will be set 0. 
+     */
+    void build(size_t __n,value_t *src = nullptr) {
+        return build(src,1,1,N = __n);
+    }
 
     /**
      * @brief Add a value to range [l,r].
@@ -82,8 +142,8 @@ class segment_tree {
      * @param r The right side of the range.
      * @param val The value to be added.
      */
-    void update(unsigned l,unsigned r,value_t val) {
-        return add(1,1,N,l,r,val);
+    void add(size_t l,size_t r,value_t val) {
+        return update(1,1,N,l,r,val);
     }
 
     /**
@@ -93,16 +153,19 @@ class segment_tree {
      * @param r The right side of the range.
      * @return value_t The sum queryed.
      */
-    value_t sum(unsigned l,unsigned r) const {
-        return query(1,1,N,l,r,0);
+    value_t sum(size_t l,size_t r) const {
+        return querySUM(1,1,N,l,r,0);
     }
 
-    segment_tree(unsigned length,value_t *src = nullptr) 
-        : N(length) {
-        // memset(data,0,sizeof(data));
-        build(src);
+    /**
+     * @brief Construct a new segment tree object.
+     * 
+     * @param __n The initial length.
+     * @param src The source of data.
+     */
+    segment_tree(size_t __n = 0,value_t *src = nullptr) {
+        if(bool(N = __n)) build(src);
     }
-
 };
 
 }

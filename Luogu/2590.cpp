@@ -55,7 +55,7 @@ struct segmentTree {
         t[id].val = t[ls].val + t[rs].val;
         t[id].mxn = max(t[ls].mxn,t[rs].mxn);
     }
-    //�ݹ齨��O(n)
+    //递归建树O(n)
     void build(int id,int l,int r){
         t[id].l = l;
         t[id].r = r;
@@ -67,7 +67,7 @@ struct segmentTree {
         build(rs,((l+r)>>1)+1,r);
         pushup(id);
     }
-    //�ǵݹ鵥��update
+    //非递归单点update
     inline void update(int id,int loc,int val) {
         while(t[id].l != t[id].r) {
            if(loc > mid) id = rs;
@@ -99,10 +99,11 @@ struct segmentTree {
 inline void change(int u,int t) {
     T.update(1,dfn[u],t);
 }
+
 inline void qmax(int u,int v) {
     int ans(-1919810);
     while(top[u] != top[v]) {
-        //��u
+        //让u depth 更大
         if(dep[top[u]] < dep[top[v]]) swap(u,v); 
         ans =max(ans,T.queryM(1,dfn[top[u]],dfn[u]));    
         u = fat[top[u]];
@@ -113,7 +114,7 @@ inline void qmax(int u,int v) {
 inline void qsum(int u,int v) {
     int ans(0);
     while(top[u] != top[v]) {
-        //��u
+        //让u depth 更大
         if(dep[top[u]] < dep[top[v]]) swap(u,v); 
         ans +=T.queryV(1,dfn[top[u]],dfn[u]);    
         u = fat[top[u]];

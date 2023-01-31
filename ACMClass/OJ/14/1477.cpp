@@ -1,8 +1,7 @@
-#ifndef _DARK_INOUT_H_
-#define _DARK_INOUT_H_
+#include<bits/stdc++.h>
+using namespace std;
 
-#include <locale>
-#include <stdio.h>
+using ull = unsigned long long;
 
 namespace dark {
 
@@ -85,7 +84,7 @@ void write(integer num) {
     while(top--) putchar(ch[top]);
 }
 
-/* Write a integer and change line with '\n' .*/
+/* Write a integer and change line with \n .*/
 template <class integer>
 void writeline(integer num) {
     if(!num) return (void) puts("0");
@@ -140,4 +139,59 @@ void writeline(const integer &arg,const integers &...args) {
 
 }
 
-#endif
+constexpr ull N = 1e6 + 10;   
+// constexpr ull M = 1090000361;
+constexpr ull P = (1LL << 31) - 1;
+// constexpr ull B = 137;
+constexpr ull C = 131;
+
+// ull hash0[N];
+ull hash1[N];
+// ull base0[N];
+ull base1[N];
+
+char ch[N];
+
+int len;
+//预处理出str的Hash值
+void prework(const char *str) {
+    hash1[0] = 
+    // hash0[0] = 
+    str[0];
+    base1[0] = 
+    // base0[0] = 
+    1;
+    int i = 0;
+    while(str[++i]) {
+        // base0[i] = (base0[i - 1] * B) % M;
+        // hash0[i] = (hash0[i - 1] * B + str[i]) % M;
+        base1[i] = (base1[i - 1] * C) & P;
+        hash1[i] = (hash1[i - 1] * C + str[i]) & P;
+    }
+    len = i;
+    return ;
+}
+
+// // Hash0 [l,r]
+// ull getHash0(int l,int r) {
+//     long long tmp = hash0[r] - hash0[l - 1] * base0[r - l + 1];
+//     return tmp >= 0 ? tmp % M : M - (-tmp) % M;
+// }
+
+// Hash1 [l,r]
+ull getHash1(int l,int r) {
+    static ull ans = hash1[r];
+    long long tmp = ans - hash1[l - 1] * base1[r - l + 1];
+    return tmp & P;
+}
+
+int main() {
+    scanf("%s",ch);
+    prework(ch);
+    for(int i = 0 ; i != len - 1 ; ++i)
+        if(getHash1(len - 1 - i,len - 1) == hash1[i]) {
+            printf("%d\n",i + 1);
+        }
+    printf("%d",len);
+    return 0;
+}

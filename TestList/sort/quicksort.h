@@ -1,7 +1,7 @@
 #ifndef _QUICKSORT_
 #define _QUICKSORT_
 
-#include "bubblesort.cpp"
+#include "bubblesort.h"
 #include <stdlib.h>
 
 

@@ -8,7 +8,7 @@ using ull = unsigned long long;
 using RandomIt = int *;
 using Compare  = std::less<int>;
 
-int a[100];
+int a[16];
 
 /* Guarantee that begin < end. */
 void scansort(RandomIt begin,RandomIt end,Compare comp) {
@@ -35,14 +35,11 @@ void timsort(RandomIt begin,RandomIt end,Compare comp) {
 }
 
 
-
-
 signed main() {
-    for(int i = 0 ; i < 16 ; ++i)
-        a[i] = rand();
+    dark::readRange(a);
     dark::writeRange(a,a+16);
     putchar('\n');
-    scansort(a,a+16,less<int>());
+    scansort(a,a + 16,less<int>());
     dark::writeRange(a,a+16);
     putchar('\n');
 
