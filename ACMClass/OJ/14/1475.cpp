@@ -1,8 +1,6 @@
-#ifndef _DARK_INOUT_H_
-#define _DARK_INOUT_H_
+#include <bits/stdc++.h>
+// #include <Dark/inout>
 
-#include <locale>
-#include <stdio.h>
 
 namespace dark {
 
@@ -11,6 +9,7 @@ char &read_char(char &ch) {
     do { ch = getchar(); } while(ch > 126 || ch < 33);
     return ch;
 }
+
 
 /* Read a signed integer. */
 template <class integer>
@@ -75,31 +74,15 @@ void read_u(integer &arg,integers &...args) { read_u(arg); read_u(args...); }
 template <class integer,class ...integers>
 void read(integer &arg,integers &...args)   { read(arg);   read(args...); }
 
-
-/* Paramless version. */
-
-
-/* Read a integer of given type. */
+/* Read one integer of given type. */
 template <class integer>
 integer read() { integer tmp; return read(tmp); }
-/* Read an unsigned integer of given type. */
-template <class integer>
-integer read_u() { integer tmp; return read_u(tmp); }
-/* Read a signed integer of given type. */
-template <class integer>
-integer read_s() { integer tmp; return read_s(tmp); }
-/* Read a visible char. */
-char read_char() { char tmp; return read_char(tmp); }
-
-
-/* Write function part. */
-
 
 /* Write a integer. */
 template <class integer>
 void write(integer num) {
     if(!num) return (void) putchar('0');
-    if(num < 0) num = -num , putchar('-');
+    if(num < 0) num = -num,putchar('-');
     static char ch[3 * sizeof(integer)];
     int top = 0;
     while(num) {
@@ -109,7 +92,7 @@ void write(integer num) {
     while(top--) putchar(ch[top]);
 }
 
-/* Write a integer and start a new line.*/
+/* Write a integer and change line with \n .*/
 template <class integer>
 void writeline(integer num) {
     if(!num) return (void) puts("0");
@@ -123,27 +106,10 @@ void writeline(integer num) {
     puts(ch + top);
 }
 
-/* Write a char. */
 template <>
 void write (char _ch) { putchar(_ch); }
-/* Write a char and start a new line. */
 template <>
 void writeline (char _ch) { putchar(_ch);putchar('\n'); }
-
-/* Write a string. */
-template <>
-void write(char *__s) { while(*__s) { putchar(*(__s++)); } }
-/* Write a string. */
-template <>
-void write(const char *__s) { while(*__s) { putchar(*(__s++)); } }
-
-/* Write a string and start a new line. */
-template <>
-void writeline(char *__s) { puts(__s); }
-/* Write a string. */
-template <>
-void writeline(const char *__s) { puts(__s); }
-
 
 template <>
 void write(float num)  { printf("%f" ,num); }
@@ -161,10 +127,6 @@ void write(long double num) { printf("%Lf",num); }
 template <>
 void writeline(long double num) { printf("%Lf\n",num); }
 #endif
-
-
-/* Following is multiple-variable case. */
-
 
 void write() {}
 void writeline() { putchar('\n'); }
@@ -223,19 +185,7 @@ void writeRange(Iterator iter,size_t __n) {
     write(*iter);
 }
 
-/* Write a range and start a new line. */
-template <class Iterator>
-void writelineRange(Iterator iter,size_t __n) {
-    if(!__n) return;
-    while(--__n) {
-        write(*iter);
-        putchar(' ');
-        ++iter;
-    }
-    writeline(*iter);
-}
-
-/* Write a range [first,last). */
+/* Write a range [first,last) . */
 template <class Iterator>
 void writeRange(Iterator first,Iterator last) {
     if(first == last) return;
@@ -248,35 +198,108 @@ void writeRange(Iterator first,Iterator last) {
     write(*last);
 }
 
-/* Write a range [first,last) and start a new line. */
-template <class Iterator>
-void writelineRange(Iterator first,Iterator last) {
-    if(first == last) return;
-    --last;
-    while(first != last) {
-        write(*first);
-        putchar(' ');
-        ++first;
-    }
-    writeline(*last);
-}
-
 /* Write an array. */
 template <class integer,size_t __N>
 void writeRange(integer (&__A)[__N]) {
     for(size_t i = 0 ; i < __N - 1; ++i)
-        write(__A[i]) , putchar(' ');
+        write(__A[i]),putchar(' ');
     write(__A[__N - 1]);
 }
 
-/* Write an array. */
-template <class integer,size_t __N>
-void writelineRange(integer (&__A)[__N]) {
-    for(size_t i = 0 ; i < __N - 1; ++i)
-        write(__A[i]) , putchar(' ');
-    writeline(__A[__N - 1]);
 }
 
-}
+const int N = 1e6 + 1;
+using ll = long long;
+ll pks = 0;
 
-#endif
+struct president_tree {
+    struct node {
+        int ls,rs;
+        ll val;
+    } t[N * 24] ;
+    int tot,maxn,i;
+    
+    struct history {
+        int l,r,root;
+    } h[N];
+
+    inline void clone(int &id) {
+        t[++tot] = t[id];
+        id = tot;
+    }
+
+    void build(int &id,int l,int r) {
+        id = ++tot;
+        if(l == r) return (void) (t[id].ls = t[id].rs = t[id].val = 0);        
+        int mid = (l + r) >> 1;
+        build(t[id].ls, l , mid );
+        build(t[id].rs,mid + 1,r);
+    }
+
+    void update(int *ptr,int l,int r,int loc,int val) {
+        clone(*ptr);
+        while(l != r) {
+            int mid = (l + r) >> 1;
+            if(loc <= mid) { // Go left
+                ptr = &(t[*ptr].ls);
+                r = mid;
+            } else { // Go right
+                ptr = &(t[*ptr].rs);
+                l = mid + 1;                
+            }
+            clone(*ptr);
+        }
+        t[*ptr].val = val;
+    }
+
+    ll query(int id,int l,int r,int loc) const {
+        while(l != r) {
+            int mid = (l + r) >> 1;
+            if(loc <= mid) { // Go left
+                id = t[id].ls;
+                r = mid;
+            } else { // Go right
+                id = t[id].rs;
+                l = mid + 1;                
+            }
+            return t[id].val;
+        }
+    }
+
+    inline void init(int n) { h[0].l = h[0].r = 0; return build(h[0].root,1,maxn = n); }
+    inline void add(int x,ll val) {
+        h[++i] = h[x]; // Move right side of i by 1.
+        return update(&(h[i].root),1,maxn,++h[i].r,val);
+    }
+    inline void remove(int x) {
+        h[++i] = h[x];  // Move left side of i by 1.
+        /* Remark: mod 2 ^ 32 = no need to do anything. */
+        pks = pks * 31 + query(h[i].root,1,maxn,++h[i].l);
+    }
+
+    president_tree() : tot(0),i(0) {}
+} p ;
+
+
+
+signed main() {
+    int n = dark::read(n);
+    int t = dark::read(t); // type
+    p.init(n);
+    char opt;
+    ll x,y;
+    while(n--) {
+        dark::read(opt);
+        if(opt == '1') {
+            dark::read(x,y);
+            if(t) x ^= pks, y ^= pks;
+            p.add(x,y);
+        } else {
+            dark::read(x);
+            if(t) x ^= pks;
+            p.remove(x);
+        }
+    }
+    dark::writeline <unsigned> (pks);
+    return 0;
+}

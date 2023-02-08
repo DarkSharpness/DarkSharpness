@@ -1,16 +1,7 @@
-#ifndef _DARK_INOUT_H_
-#define _DARK_INOUT_H_
-
-#include <locale>
-#include <stdio.h>
+#include <bits/stdc++.h>
+// #include <Dark/inout>
 
 namespace dark {
-
-/* Read a visible char. */
-char &read_char(char &ch) {
-    do { ch = getchar(); } while(ch > 126 || ch < 33);
-    return ch;
-}
 
 /* Read a signed integer. */
 template <class integer>
@@ -40,8 +31,6 @@ integer &read_u(integer &num) {
     return num;
 }
 
-/* Special case : read a visible char. */
-auto &read(char &ch) { return read_char(ch); }
 
 auto &read(signed char  &num)  { return read_s(num); }
 auto &read(signed short &num)  { return read_s(num); }
@@ -75,31 +64,15 @@ void read_u(integer &arg,integers &...args) { read_u(arg); read_u(args...); }
 template <class integer,class ...integers>
 void read(integer &arg,integers &...args)   { read(arg);   read(args...); }
 
-
-/* Paramless version. */
-
-
-/* Read a integer of given type. */
+/* Read one integer of given type. */
 template <class integer>
 integer read() { integer tmp; return read(tmp); }
-/* Read an unsigned integer of given type. */
-template <class integer>
-integer read_u() { integer tmp; return read_u(tmp); }
-/* Read a signed integer of given type. */
-template <class integer>
-integer read_s() { integer tmp; return read_s(tmp); }
-/* Read a visible char. */
-char read_char() { char tmp; return read_char(tmp); }
-
-
-/* Write function part. */
-
 
 /* Write a integer. */
 template <class integer>
 void write(integer num) {
     if(!num) return (void) putchar('0');
-    if(num < 0) num = -num , putchar('-');
+    if(num < 0) num = -num,putchar('-');
     static char ch[3 * sizeof(integer)];
     int top = 0;
     while(num) {
@@ -109,7 +82,7 @@ void write(integer num) {
     while(top--) putchar(ch[top]);
 }
 
-/* Write a integer and start a new line.*/
+/* Write a integer and change line with \n .*/
 template <class integer>
 void writeline(integer num) {
     if(!num) return (void) puts("0");
@@ -123,27 +96,10 @@ void writeline(integer num) {
     puts(ch + top);
 }
 
-/* Write a char. */
 template <>
 void write (char _ch) { putchar(_ch); }
-/* Write a char and start a new line. */
 template <>
 void writeline (char _ch) { putchar(_ch);putchar('\n'); }
-
-/* Write a string. */
-template <>
-void write(char *__s) { while(*__s) { putchar(*(__s++)); } }
-/* Write a string. */
-template <>
-void write(const char *__s) { while(*__s) { putchar(*(__s++)); } }
-
-/* Write a string and start a new line. */
-template <>
-void writeline(char *__s) { puts(__s); }
-/* Write a string. */
-template <>
-void writeline(const char *__s) { puts(__s); }
-
 
 template <>
 void write(float num)  { printf("%f" ,num); }
@@ -161,10 +117,6 @@ void write(long double num) { printf("%Lf",num); }
 template <>
 void writeline(long double num) { printf("%Lf\n",num); }
 #endif
-
-
-/* Following is multiple-variable case. */
-
 
 void write() {}
 void writeline() { putchar('\n'); }
@@ -223,19 +175,7 @@ void writeRange(Iterator iter,size_t __n) {
     write(*iter);
 }
 
-/* Write a range and start a new line. */
-template <class Iterator>
-void writelineRange(Iterator iter,size_t __n) {
-    if(!__n) return;
-    while(--__n) {
-        write(*iter);
-        putchar(' ');
-        ++iter;
-    }
-    writeline(*iter);
-}
-
-/* Write a range [first,last). */
+/* Write a range [first,last) . */
 template <class Iterator>
 void writeRange(Iterator first,Iterator last) {
     if(first == last) return;
@@ -248,35 +188,166 @@ void writeRange(Iterator first,Iterator last) {
     write(*last);
 }
 
-/* Write a range [first,last) and start a new line. */
-template <class Iterator>
-void writelineRange(Iterator first,Iterator last) {
-    if(first == last) return;
-    --last;
-    while(first != last) {
-        write(*first);
-        putchar(' ');
-        ++first;
-    }
-    writeline(*last);
-}
-
 /* Write an array. */
 template <class integer,size_t __N>
 void writeRange(integer (&__A)[__N]) {
     for(size_t i = 0 ; i < __N - 1; ++i)
-        write(__A[i]) , putchar(' ');
+        write(__A[i]),putchar(' ');
     write(__A[__N - 1]);
 }
 
-/* Write an array. */
-template <class integer,size_t __N>
-void writelineRange(integer (&__A)[__N]) {
-    for(size_t i = 0 ; i < __N - 1; ++i)
-        write(__A[i]) , putchar(' ');
-    writeline(__A[__N - 1]);
 }
 
+// #define int long long
+using ll = long long;
+// using ull = unsigned long long;
+// using namespace std;
+const int N = 2e5 + 3;
+
+class segment_tree {
+  private:
+    struct node {
+        ll sum; /* Sum */
+        ll tag; /* Forever tag. */
+        node() { sum = tag = 0; }
+    } t [N << 2];
+
+    #define ls id << 1
+    #define rs id << 1 | 1
+
+    void update(int id,int l,int r,int L,int R,ll val) {
+        t[id].sum += (R - L + 1) * val;
+        if(l == L && r == R) return (void) (t[id].tag += val);
+
+        int mid = (l + r) >> 1;
+        if(R <= mid)     update(ls, l , mid ,L,R,val);
+        else if(L > mid) update(rs,mid + 1,r,L,R,val);
+        else {
+            update(ls, l , mid , L , mid ,val);
+            update(rs,mid + 1,r,mid + 1,R,val);
+        }
+    }
+    ll query(int id,int l,int r,int L,int R,ll tag) {
+        if(l == L && r == R) return t[id].sum + (R - L + 1) * tag;
+
+        tag += t[id].tag;
+        int mid = (l + r) >> 1;
+        if(R <= mid)     return query(ls, l , mid ,L,R,tag);
+        else if(L > mid) return query(rs,mid + 1,r,L,R,tag);
+        else return query(ls, l , mid , L , mid ,tag)
+                  + query(rs,mid + 1,r,mid + 1,R,tag);
+    }
+
+    #undef ls
+    #undef rs
+
+  public:
+    int maxn;
+    void add(int l,int r,int val) { return update(1,1,maxn,l,r,val); }
+    auto sum(int l,int r) { return query(1,1,maxn,l,r,0); }
+
+} T;
+
+
+struct edge { int nxt,to; } e[N << 1];
+int head[N],cnt = 0;
+inline void adde(int fr,int to) {
+    e[++cnt] = (edge){ head[fr],to }; head[fr] = cnt;
 }
 
-#endif
+int son[N],fat[N],siz[N],dep[N];
+void dfs1(int u) {
+    int maxsiz = -(siz[u] = 1);
+    for(int i = head[u] ; i ; i = e[i].nxt) {
+        int v = e[i].to;
+        dep[v] = dep[u] + 1;
+        dfs1(v);
+        siz[u] += siz[v];
+        if(siz[v] > maxsiz) maxsiz = siz[son[u] = v];
+    }
+}
+
+int dfn[N],top[N],tot = 0;
+void dfs2(int u,int tp) {
+    dfn[u] = ++tot;
+    top[u] = tp;
+    if(!son[u]) return;
+    dfs2(son[u],tp);
+    for(int i = head[u] ; i ; i = e[i].nxt) {
+        int v = e[i].to;
+        if(v == son[u]) continue;
+        dfs2(v,v);
+    }
+}
+
+unsigned root = 1;
+
+void addPath(int x,int y,int val) {
+    while(top[x] != top[y]) {
+        if(dep[top[x]] < dep[top[y]]) std::swap(x,y);
+        T.add(dfn[top[x]],dfn[x],val);
+        x = fat[top[x]];
+    }
+    if(dep[x] > dep[y]) std::swap(x,y);
+    T.add(dfn[x],dfn[y],val);
+}
+
+ll sumPath(int x,int y) {
+    ll ans = 0;
+    while(top[x] != top[y]) {
+        if(dep[top[x]] < dep[top[y]]) std::swap(x,y);
+        ans += T.sum(dfn[top[x]],dfn[x]);
+        x = fat[top[x]];
+    }
+    if(dep[x] > dep[y]) std::swap(x,y);
+    return ans + T.sum(dfn[x],dfn[y]);
+}
+
+void addTree(int x,int val) {
+    if((unsigned)x == root) { return T.add(1,T.maxn,val); }
+    else if(dfn[root] > dfn[x] && dfn[root] < dfn[x] + siz[x]) {
+        /* root inside the subtree of x */
+        int y = root;
+        while(true) {
+            // y = fat[top[y]];
+            if(top[y] == top[x]) { y = son[x]; break; }
+            y = top[y];
+            if(fat[y] == x) break;
+            y = fat[y];
+        }
+        T.add(1,T.maxn,val);
+        T.add(dfn[y],dfn[y] + siz[y] - 1,-val); /* 逆天,忘记加-了还能过一半的点 */
+    } else T.add(dfn[x],dfn[x] + siz[x] - 1,val);
+}
+
+
+signed main() {
+    unsigned n;
+    T.maxn = dark::read_u(n);
+    for(unsigned i = 2,x ; i <= n ; ++i) adde(fat[i] = dark::read(x),i);
+
+    dfs1(root);
+    dfs2(root,root);
+
+    unsigned m = dark::read(m);
+    unsigned opt,u,v;
+    int x;
+    while(m--) {
+        opt = dark::read(opt);
+        if(opt == 1) {
+            dark::read(u,x);
+            addTree(u,x);
+        } else if(opt == 2) {
+            dark::read(u,v,x);
+            addPath(u,v,x);
+        } else if(opt == 3) {
+            dark::read(u,v);
+            dark::writeline(sumPath(u,v));
+        } else {
+            dark::read(root);
+        }
+    }
+
+
+    return 0;
+}

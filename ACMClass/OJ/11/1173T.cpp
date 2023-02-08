@@ -1,16 +1,7 @@
-#ifndef _DARK_INOUT_H_
-#define _DARK_INOUT_H_
-
-#include <locale>
-#include <stdio.h>
+#include <bits/stdc++.h>
+using ll = long long;
 
 namespace dark {
-
-/* Read a visible char. */
-char &read_char(char &ch) {
-    do { ch = getchar(); } while(ch > 126 || ch < 33);
-    return ch;
-}
 
 /* Read a signed integer. */
 template <class integer>
@@ -40,8 +31,6 @@ integer &read_u(integer &num) {
     return num;
 }
 
-/* Special case : read a visible char. */
-auto &read(char &ch) { return read_char(ch); }
 
 auto &read(signed char  &num)  { return read_s(num); }
 auto &read(signed short &num)  { return read_s(num); }
@@ -75,31 +64,15 @@ void read_u(integer &arg,integers &...args) { read_u(arg); read_u(args...); }
 template <class integer,class ...integers>
 void read(integer &arg,integers &...args)   { read(arg);   read(args...); }
 
-
-/* Paramless version. */
-
-
-/* Read a integer of given type. */
+/* Read one integer of given type. */
 template <class integer>
 integer read() { integer tmp; return read(tmp); }
-/* Read an unsigned integer of given type. */
-template <class integer>
-integer read_u() { integer tmp; return read_u(tmp); }
-/* Read a signed integer of given type. */
-template <class integer>
-integer read_s() { integer tmp; return read_s(tmp); }
-/* Read a visible char. */
-char read_char() { char tmp; return read_char(tmp); }
-
-
-/* Write function part. */
-
 
 /* Write a integer. */
 template <class integer>
 void write(integer num) {
     if(!num) return (void) putchar('0');
-    if(num < 0) num = -num , putchar('-');
+    if(num < 0) num = -num,putchar('-');
     static char ch[3 * sizeof(integer)];
     int top = 0;
     while(num) {
@@ -109,7 +82,7 @@ void write(integer num) {
     while(top--) putchar(ch[top]);
 }
 
-/* Write a integer and start a new line.*/
+/* Write a integer and change line with \n .*/
 template <class integer>
 void writeline(integer num) {
     if(!num) return (void) puts("0");
@@ -123,27 +96,10 @@ void writeline(integer num) {
     puts(ch + top);
 }
 
-/* Write a char. */
 template <>
 void write (char _ch) { putchar(_ch); }
-/* Write a char and start a new line. */
 template <>
 void writeline (char _ch) { putchar(_ch);putchar('\n'); }
-
-/* Write a string. */
-template <>
-void write(char *__s) { while(*__s) { putchar(*(__s++)); } }
-/* Write a string. */
-template <>
-void write(const char *__s) { while(*__s) { putchar(*(__s++)); } }
-
-/* Write a string and start a new line. */
-template <>
-void writeline(char *__s) { puts(__s); }
-/* Write a string. */
-template <>
-void writeline(const char *__s) { puts(__s); }
-
 
 template <>
 void write(float num)  { printf("%f" ,num); }
@@ -161,10 +117,6 @@ void write(long double num) { printf("%Lf",num); }
 template <>
 void writeline(long double num) { printf("%Lf\n",num); }
 #endif
-
-
-/* Following is multiple-variable case. */
-
 
 void write() {}
 void writeline() { putchar('\n'); }
@@ -223,19 +175,7 @@ void writeRange(Iterator iter,size_t __n) {
     write(*iter);
 }
 
-/* Write a range and start a new line. */
-template <class Iterator>
-void writelineRange(Iterator iter,size_t __n) {
-    if(!__n) return;
-    while(--__n) {
-        write(*iter);
-        putchar(' ');
-        ++iter;
-    }
-    writeline(*iter);
-}
-
-/* Write a range [first,last). */
+/* Write a range [first,last) . */
 template <class Iterator>
 void writeRange(Iterator first,Iterator last) {
     if(first == last) return;
@@ -248,35 +188,38 @@ void writeRange(Iterator first,Iterator last) {
     write(*last);
 }
 
-/* Write a range [first,last) and start a new line. */
-template <class Iterator>
-void writelineRange(Iterator first,Iterator last) {
-    if(first == last) return;
-    --last;
-    while(first != last) {
-        write(*first);
-        putchar(' ');
-        ++first;
-    }
-    writeline(*last);
-}
-
 /* Write an array. */
 template <class integer,size_t __N>
 void writeRange(integer (&__A)[__N]) {
     for(size_t i = 0 ; i < __N - 1; ++i)
-        write(__A[i]) , putchar(' ');
+        write(__A[i]),putchar(' ');
     write(__A[__N - 1]);
 }
 
-/* Write an array. */
-template <class integer,size_t __N>
-void writelineRange(integer (&__A)[__N]) {
-    for(size_t i = 0 ; i < __N - 1; ++i)
-        write(__A[i]) , putchar(' ');
-    writeline(__A[__N - 1]);
 }
 
-}
+constexpr int N = 1e5 + 2;
+int a[N],b[N];
 
-#endif
+signed main() {
+    int n = dark::read(n);
+    dark::readRange(a,n);
+    dark::readRange(b,n);
+    std::sort(a,a + n);
+    std::sort(b,b + n);
+    long long maxn = 0;
+    long long minn = 0;
+    for(int i = 0 ; i != (n >> 1) ; ++i) {
+        maxn += static_cast <ll> (a[i]) * b[i] 
+              + static_cast <ll> (b[n - 1 - i]) * a[n - 1 - i]; 
+        minn += static_cast <ll> (a[i]) * b[n - 1 - i] 
+              + static_cast <ll> (b[i]) * a[n - 1 - i];
+    }
+    if(n & 1) { /* Odd number case. */
+        ll tmp = static_cast <ll> (a[n >> 1]) * b[n >> 1];
+        maxn += tmp;
+        minn += tmp;
+    }
+    dark::write(maxn,minn);
+    return 0;
+}

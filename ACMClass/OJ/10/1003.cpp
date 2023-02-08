@@ -1,5 +1,5 @@
 #include<bits/stdc++.h>
-//¿ìËÙ¶ÁÈë
+//å¿«é€Ÿè¯»å…¥
 int read() {
     static int  tmp ;
     static char ch  ;
@@ -20,12 +20,14 @@ int a[N+4];
 
 int main() {
     int n,k,ans = 0;
-    n=read();
-    k=-read()-1+read();
+    n =  read();
+    k = -read() -1 +read();
     //write(k);
-    for(int i = 1; i <=n; ++i) 
+    for(int i = 1; i <= n; ++i) {
         ++a[read()];
-    for(int i = 0; i <=N; ++i){
+    
+    }
+    for(int i = 0; i <= N; ++i){
         if(!a[i]) continue;
         if(k >= a[i]*i) {
             k -= a[i]*i;

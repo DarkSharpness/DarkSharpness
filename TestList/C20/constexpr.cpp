@@ -30,6 +30,5 @@ string str("abc"); // No constexpr !
 
 signed main() {
     str[0] = 'a';
-
     return 0;
 }
