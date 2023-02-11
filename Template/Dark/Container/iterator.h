@@ -1,7 +1,6 @@
 #ifndef _DARK_ITERATOR_H_
 #define _DARK_ITERATOR_H_
 
-#include "../include/basic.h"
 
 namespace dark {
 

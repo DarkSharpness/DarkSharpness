@@ -48,7 +48,7 @@ class dynamic_array : private std::allocator <value_t> {
   public:
 
     /* Construct a new empty %array. */
-    dynamic_array() : head(nullptr),tail(nullptr),term(nullptr) {}
+    dynamic_array() noexcept : head(nullptr),tail(nullptr),term(nullptr) {}
     /* Destroy all the elements and deallocate the space. */
     ~dynamic_array() noexcept { this->destroy_n(head,size()); dealloc(); }
 

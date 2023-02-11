@@ -1,14 +1,7 @@
-#ifndef _DARK_INOUT_H_
-#define _DARK_INOUT_H_
-
-#include <locale>
-#include <stdio.h>
-
-/* Read function part. */
-
+#include <bits/stdc++.h>
 namespace dark {
 
-/* Read a visible char. (Using standard ASCII.) */
+/* Read a visible char. */
 char &read_char(char &ch) {
     do { ch = getchar(); } while(ch > 126 || ch < 33);
     return ch;
@@ -70,31 +63,18 @@ auto &read(double &num) { scanf("%lf",&num); return num; }
 auto &read(long double &num) { scanf("%Lf",&num); return num; }
 #endif
 
-/* Read a visible string. (Using standard ASCII.) */
-char *read(char *str) { 
-    do { *str   = getchar(); } while(*str > 126 || *str < 33); 
-    do { *++str = getchar(); } while(*str > 32 && *str < 127);
-    *str = '\0';
-    return str;
-}
-
-
-/* Read in a sequence of integers. */
 template <class integer,class ...integers>
 void read_s(integer &arg,integers &...args) { read_s(arg); read_s(args...); }
-/* Read in a sequence of integers. */
 template <class integer,class ...integers>
 void read_u(integer &arg,integers &...args) { read_u(arg); read_u(args...); }
-/* Read in a sequence of integers. */
 template <class integer,class ...integers>
 void read(integer &arg,integers &...args)   { read(arg);   read(args...); }
-
 
 
 /* Paramless version. */
 
 
-/* Read an integer any given type. */
+/* Read a integer of given type. */
 template <class integer>
 integer read() { integer tmp; return read(tmp); }
 /* Read an unsigned integer of given type. */
@@ -106,19 +86,13 @@ integer read_s() { integer tmp; return read_s(tmp); }
 /* Read a visible char. */
 char read_char() { char tmp; return read_char(tmp); }
 
-/* Avoid misusage. */
-template <class integer>
-void read(integer &arg) = delete;
-
-}
 
 /* Write function part. */
 
-namespace dark {
 
 /* Write a integer. */
 template <class integer>
-void writeInt(integer num) {
+void write(integer num) {
     if(!num) return (void) putchar('0');
     if(num < 0) num = -num , putchar('-');
     static char ch[3 * sizeof(integer)];
@@ -132,7 +106,7 @@ void writeInt(integer num) {
 
 /* Write a integer and start a new line.*/
 template <class integer>
-void writelineInt(integer num) {
+void writeline(integer num) {
     if(!num) return (void) puts("0");
     if(num < 0) num = -num,putchar('-');
     static char ch[3 * sizeof(integer) + 1] = {0};
@@ -144,68 +118,48 @@ void writelineInt(integer num) {
     puts(ch + top);
 }
 
-/* Write an integer */
-
-void write(signed char  num) { writeInt(num); } 
-void write(signed short num) { writeInt(num); } 
-void write(signed int   num) { writeInt(num); } 
-void write(signed long  num) { writeInt(num); } 
-
-void write(unsigned char  num) { writeInt(num); } 
-void write(unsigned short num) { writeInt(num); } 
-void write(unsigned int   num) { writeInt(num); } 
-void write(unsigned long  num) { writeInt(num); } 
-
-void write(signed long long   num) { writeInt(num); }
-void write(unsigned long long num) { writeInt(num); }
-
-
-void writeline(signed char  num) { writelineInt(num); } 
-void writeline(signed short num) { writelineInt(num); } 
-void writeline(signed int   num) { writelineInt(num); } 
-void writeline(signed long  num) { writelineInt(num); } 
-
-void writeline(unsigned char  num) { writelineInt(num); } 
-void writeline(unsigned short num) { writelineInt(num); } 
-void writeline(unsigned int   num) { writelineInt(num); } 
-void writeline(unsigned long  num) { writelineInt(num); } 
-
-void writeline(signed long long   num) { writelineInt(num); }
-void writeline(unsigned long long num) { writelineInt(num); }
-
-
-
 /* Write a char. */
+template <>
 void write (char _ch) { putchar(_ch); }
 /* Write a char and start a new line. */
+template <>
 void writeline (char _ch) { putchar(_ch);putchar('\n'); }
 
 /* Write a string. */
+template <>
 void write(char *__s) { while(*__s) { putchar(*(__s++)); } }
 /* Write a string. */
+template <>
 void write(const char *__s) { while(*__s) { putchar(*(__s++)); } }
 
 /* Write a string and start a new line. */
+template <>
 void writeline(char *__s) { puts(__s); }
 /* Write a string. */
+template <>
 void writeline(const char *__s) { puts(__s); }
 
 
+template <>
 void write(float num)  { printf("%f" ,num); }
+template <>
 void writeline(float num)  { printf("%f\n" ,num); }
 
+template <>
 void write(double num) { printf("%lf",num); }
+template <>
 void writeline(double num) { printf("%lf\n",num); }
 
 #ifdef __SIZEOF_LONG_DOUBLE__
+template <>
 void write(long double num) { printf("%Lf",num); }
+template <>
 void writeline(long double num) { printf("%Lf\n",num); }
 #endif
 
 
 /* Following is multiple-variable case. */
 
-/* Special case. */
 
 void write() {}
 void writeline() { putchar('\n'); }
@@ -217,6 +171,7 @@ void write(const integer &arg,const integers &...args) {
     putchar(' ');
     write(args...);
 }
+
 /* Write a line of integers. */
 template <class integer,class ...integers>
 void writeline(const integer &arg,const integers &...args) {
@@ -225,18 +180,6 @@ void writeline(const integer &arg,const integers &...args) {
     writeline(args...);
 }
 
-/* Avoid misusage. */
-template <class integer>
-void write(const integer &) = delete;
-/* Avoid misusage. */
-template <class integer>
-void writeline(const integer &) = delete;
-
-}
-
-/* Range related part. */
-
-namespace dark {
 
 /* Read to a range. */
 template <class Iterator>
@@ -330,5 +273,21 @@ void writelineRange(integer (&__A)[__N]) {
 }
 
 }
+const int N = 1e5;
+std::vector <int> v;
 
-#endif
+signed main() {
+    int n,m;
+    dark::read_u(n,m);
+    v.reserve(n);
+    while(n--) v.push_back(dark::read <int> ());
+    while(m--) {
+        char opt;
+        unsigned x;
+        dark::read(opt,x);
+        if(opt == '1') v.insert(v.begin() + x,dark::read <int> ());
+        else           v.erase (v.begin() + x - 1);
+    }
+    dark::writelineRange(v.begin(),v.end());
+    return 0;
+}

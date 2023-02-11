@@ -1,5 +1,5 @@
 #include <iostream>
-#include <Dark/memory> // This is used to test memleak and storage info.
+#include <Dark/memleak> // This is used to test memleak and storage info.
 #include <vector>
 
 /**
@@ -61,7 +61,7 @@ class Any {
     Any(U &&val) : ptr( new Data <std::decay_t <U>> (std::forward <U> (val)) ) {}
 
     /* Move the content from rhs by swaping pointers. */
-    Any(Any &&rhs) : ptr(rhs.ptr) { rhs.ptr = nullptr; }
+    Any(Any &&rhs) noexcept : ptr(rhs.ptr)  { rhs.ptr = nullptr; }
     /* Copy the content from rhs if the inner class of rhs is copy-constructible.
      * Otherwise, this Any object will be set as nullptr.*/
     Any(const Any &rhs) : ptr(rhs.ptr->clone()) {}
@@ -221,7 +221,7 @@ signed main() {
     x = std::vector <int> {1,2,3};
     func(x = 0);
     (int)(x);
-    (const int)x;
+    (const int)(x);
     if(x.isNotNull()) {std::cout << "isNotNull\n";}
     return 0;
 }
