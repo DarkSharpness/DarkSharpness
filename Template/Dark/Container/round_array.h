@@ -31,6 +31,27 @@ class round_array : private std::allocator <value_t>  {
         while(ptr1 != ptr2) this->destroy(ptr1++);
     }
 
+    /* Expand elements to the back. */
+    void expand(size_t __n) {
+        value_t *temp = alloc(__n);
+        if(round) {
+            size_t i = 0;
+            while(prefix != tail)
+                this->construct(temp + i++,std::move(*(prefix++)));
+            prefix = head;
+            while(prefix != suffix)
+                this->construct(temp + i++,std::move(*(prefix++)));           
+            round = false;
+            suffix = temp + i;
+        } else {
+            for(size_t i = 0 ; i < suffix - prefix ; ++i)
+                this->construct(temp + i,std::move(prefix[i]));
+            suffix += temp - prefix;
+        }
+        this->dealloc();
+        tail = (head = prefix = temp) + __n;
+    }
+
   public:
      /* Construct a new empty %array. */
     round_array() noexcept : round(false),
@@ -41,12 +62,45 @@ class round_array : private std::allocator <value_t>  {
         else this->destroy_in(head,suffix),this->destroy_in(prefix,tail);
     }
 
-  public:
-    size_t size() const noexcept 
-    {    return suffix - prefix + round * (tail - head);  }
-    size_t capacity() const noexcept { return tail - head; }
+    /* Construct a new %array from an initializer_list. */
+    round_array(std::initializer_list <value_t> __l) 
+        : round_array(__l.size()) {
+        for(auto &iter : __l) { this->construct(suffix++,std::move(iter)); }
+    }
 
-    bool empty() const noexcept { return !(prefix || suffix); }
+    /* Construct a new %array with __n elements' space reserved. */
+    round_array(size_t __n) : round(false) {
+        tail = (head = prefix = suffix = alloc(__n)) + __n;
+    }
+
+    /**
+     * @brief Construct a new %array filled with given length and element.
+     * 
+     * @param __n The initial length of the %array.
+     * @param obj The element to fill the %array.
+     */
+    round_array(size_t __n,const value_t &obj) 
+        : round_array(__n) {
+        while(suffix != tail) { this->construct(tail++,obj); }
+    }
+
+
+  public:
+    /* Return count of elements in the %array. */
+    size_t size() const noexcept 
+    {    return suffix - prefix + round * (tail - head); }
+    /**
+     * @brief Return count of elements the %array can hold 
+     * before the next allocation.
+     */
+    size_t capacity() const noexcept 
+    { return tail - head; }
+    /* Test whether the %array is empty。 */
+    bool empty() const noexcept 
+    { return prefix == suffix && round == false; }
+
+    /* Doing nothing to the %array. */
+    void push_back() noexcept {}
 
     /**
      * @brief Push one element to the back of the %array.
@@ -57,8 +111,13 @@ class round_array : private std::allocator <value_t>  {
      */
     template <class U>
     void push_back(U &&obj) {
-        if(size() == capacity()) { reserve(size() << 1 | empty()); } 
-        this->construct(head + (prefix++),std::forward <U> (obj));
+        if(size() == capacity()) {
+            expand(size() << 1 | empty()); 
+            this->construct(suffix,std::forward <U> (obj));
+        } else {
+
+
+        }
     }
 
     /**
@@ -99,7 +158,6 @@ class round_array : private std::allocator <value_t>  {
         if(size() == capacity()) { reserve(size() << 1 | empty()); }
         this->construct(tail - (++suffix),std::forward <Args> (objs)...);
     }
-
 
 
 
