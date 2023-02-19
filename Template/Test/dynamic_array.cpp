@@ -2,7 +2,7 @@
 #include <Dark/dynamic_array>
 #include <Dark/any>
 #include <iostream>
-
+#include <vector>
 using dark::dynamic_array;
 using dark::Any;
 
@@ -13,6 +13,8 @@ void test(Any &a) {
 }
 
 signed main() {
+    std::vector <int> v;
+    v.emplace(v.begin(),1);
     dynamic_array <std::string> d,t;
     t.push_back("1","2","3");
     d.push_back("2");
