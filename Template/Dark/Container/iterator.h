@@ -1,11 +1,16 @@
 #ifndef _DARK_ITERATOR_H_
 #define _DARK_ITERATOR_H_
 
+#include <version>
 
 namespace dark {
 
+/* Difference Type */
+using diff_t = std::ptrdiff_t;
+
 /* Reverse iterators. */
 namespace ReverseRandomAccess {
+
 
 template <class T>
 class iterator {
@@ -26,15 +31,15 @@ class iterator {
     iterator operator -- (int) noexcept { return iterator(pointer++); }
 
 
-    iterator &operator += (size_t __n) noexcept { pointer -= __n; return *this; }
-    iterator &operator -= (size_t __n) noexcept { pointer += __n; return *this; }
-    friend iterator operator + (size_t __n,iterator rhs) noexcept 
+    iterator &operator += (diff_t __n) noexcept { pointer -= __n; return *this; }
+    iterator &operator -= (diff_t __n) noexcept { pointer += __n; return *this; }
+    friend iterator operator + (diff_t __n,iterator rhs) noexcept 
     { return iterator(rhs.pointer - __n); }
-    friend iterator operator + (iterator lhs,size_t __n) noexcept 
+    friend iterator operator + (iterator lhs,diff_t __n) noexcept 
     { return iterator(lhs.pointer - __n); }
-    friend iterator operator - (iterator lhs,size_t __n) noexcept 
+    friend iterator operator - (iterator lhs,diff_t __n) noexcept 
     { return iterator(lhs.pointer + __n); }
-    friend size_t operator - (iterator lhs,iterator rhs) noexcept 
+    friend diff_t operator - (iterator lhs,iterator rhs) noexcept 
     { return rhs.pointer - lhs.pointer; }
 
 
@@ -46,7 +51,7 @@ class iterator {
 
     T &operator * (void) const noexcept { return *pointer; } 
     T *operator ->(void) const noexcept { return  pointer; }
-    T &operator [] (size_t __n) const noexcept { return pointer[-__n]; }
+    T &operator [] (diff_t __n) const noexcept { return pointer[-__n]; }
 };
 
 
@@ -71,22 +76,22 @@ class const_iterator {
     const_iterator operator ++ (int) noexcept { return const_iterator(pointer--); }
     const_iterator operator -- (int) noexcept { return const_iterator(pointer++); }
 
-    const_iterator &operator += (size_t __n) noexcept
+    const_iterator &operator += (diff_t __n) noexcept
     { pointer -= __n; return *this; }
-    const_iterator &operator -= (size_t __n) noexcept
+    const_iterator &operator -= (diff_t __n) noexcept
     { pointer += __n; return *this; }
-    friend const_iterator operator + (const_iterator lhs,size_t __n) noexcept
+    friend const_iterator operator + (const_iterator lhs,diff_t __n) noexcept
     { return const_iterator(lhs.pointer - __n); }
-    friend const_iterator operator + (size_t __n,const_iterator rhs) noexcept
+    friend const_iterator operator + (diff_t __n,const_iterator rhs) noexcept
     { return const_iterator(rhs.pointer - __n); }
-    friend const_iterator operator - (const_iterator lhs,size_t __n) noexcept
+    friend const_iterator operator - (const_iterator lhs,diff_t __n) noexcept
     { return const_iterator(lhs.pointer + __n); }
 
-    friend size_t operator - (const_iterator lhs,const_iterator rhs) noexcept
+    friend diff_t operator - (const_iterator lhs,const_iterator rhs) noexcept
     { return rhs.base() - lhs.base(); }
-    friend size_t operator - (const_iterator lhs,iterator rhs) noexcept
+    friend diff_t operator - (const_iterator lhs,iterator rhs) noexcept
     { return rhs.base() - lhs.base(); }
-    friend size_t operator - (iterator lhs,const_iterator rhs) noexcept
+    friend diff_t operator - (iterator lhs,const_iterator rhs) noexcept
     { return rhs.base() - lhs.base; }
 
     friend bool operator == (const_iterator lhs,const_iterator rhs) noexcept 
@@ -105,7 +110,7 @@ class const_iterator {
 
     const T &operator * (void) const { return *pointer; } 
     const T *operator ->(void) const { return  pointer; }
-    const T &operator [] (size_t __n) const { return pointer[-__n]; }
+    const T &operator [] (diff_t __n) const { return pointer[-__n]; }
 };
 
 
@@ -141,15 +146,15 @@ class iterator {
     iterator operator -- (int) noexcept { return iterator(pointer--); }
 
 
-    iterator &operator += (size_t __n) noexcept { pointer += __n; return *this; }
-    iterator &operator -= (size_t __n) noexcept { pointer -= __n; return *this; }
-    friend iterator operator + (size_t __n,iterator rhs) noexcept 
+    iterator &operator += (diff_t __n) noexcept { pointer += __n; return *this; }
+    iterator &operator -= (diff_t __n) noexcept { pointer -= __n; return *this; }
+    friend iterator operator + (diff_t __n,iterator rhs) noexcept 
     { return iterator(rhs.pointer + __n); }
-    friend iterator operator + (iterator lhs,size_t __n) noexcept 
+    friend iterator operator + (iterator lhs,diff_t __n) noexcept 
     { return iterator(lhs.pointer + __n); }
-    friend iterator operator - (iterator lhs,size_t __n) noexcept 
+    friend iterator operator - (iterator lhs,diff_t __n) noexcept 
     { return iterator(lhs.pointer - __n); }
-    friend size_t operator - (iterator lhs,iterator rhs) noexcept 
+    friend diff_t operator - (iterator lhs,iterator rhs) noexcept 
     { return lhs.pointer - rhs.pointer; }
 
 
@@ -161,7 +166,7 @@ class iterator {
 
     T &operator * (void) const noexcept { return *pointer; } 
     T *operator ->(void) const noexcept { return  pointer; }
-    T &operator [] (size_t __n) const noexcept { return pointer[__n]; }
+    T &operator [] (diff_t __n) const noexcept { return pointer[__n]; }
 };
 
 
@@ -186,21 +191,21 @@ class const_iterator {
     const_iterator operator ++ (int) noexcept { return const_iterator(pointer++); }
     const_iterator operator -- (int) noexcept { return const_iterator(pointer--); }
 
-    const_iterator &operator += (size_t __n) noexcept
+    const_iterator &operator += (diff_t __n) noexcept
     { pointer += __n; return *this; }
-    const_iterator &operator -= (size_t __n) noexcept
+    const_iterator &operator -= (diff_t __n) noexcept
     { pointer -= __n; return *this; }
-    friend const_iterator operator + (const_iterator lhs,size_t __n) noexcept
+    friend const_iterator operator + (const_iterator lhs,diff_t __n) noexcept
     { return const_iterator(lhs.pointer + __n); }
-    friend const_iterator operator + (size_t __n,const_iterator rhs) noexcept
+    friend const_iterator operator + (diff_t __n,const_iterator rhs) noexcept
     { return const_iterator(rhs.pointer + __n); }
-    friend const_iterator operator - (const_iterator lhs,size_t __n) noexcept
+    friend const_iterator operator - (const_iterator lhs,diff_t __n) noexcept
     { return const_iterator(lhs.pointer - __n); }
-    friend size_t operator - (const_iterator lhs,const_iterator rhs) noexcept
+    friend diff_t operator - (const_iterator lhs,const_iterator rhs) noexcept
     { return lhs.base() - rhs.base(); }
-    friend size_t operator - (const_iterator lhs,iterator rhs) noexcept
+    friend diff_t operator - (const_iterator lhs,iterator rhs) noexcept
     { return lhs.base() - rhs.base(); }
-    friend size_t operator - (iterator lhs,const_iterator rhs) noexcept
+    friend diff_t operator - (iterator lhs,const_iterator rhs) noexcept
     { return lhs.base() - rhs.base(); }
 
     friend bool operator == (const_iterator lhs,const_iterator rhs) noexcept 
@@ -219,7 +224,7 @@ class const_iterator {
 
     const T &operator * (void) const { return *pointer; } 
     const T *operator ->(void) const { return  pointer; }
-    const T &operator [] (size_t __n) const { return pointer[__n]; }
+    const T &operator [] (diff_t __n) const { return pointer[__n]; }
 };
 
 }
