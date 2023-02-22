@@ -253,20 +253,57 @@ struct heap_node {
 
 using value_t = size_t;
 
-struct heap_allocator {
+struct heap_allocator :
+    public std::allocator <heap_node <value_t>>,
+    protected std::vector <heap_node <value_t>*> 
+{
+    using node   = heap_node <value_t>;
+    using vector = std::vector <node *>;
+    using _Alloc = std::allocator <node> ;
+
+    heap_allocator() = default;
+    heap_allocator(heap_allocator &&) noexcept = default;
+    heap_allocator(const heap_allocator &) noexcept {}
+
+    /* Reserve the one with bigger memory. */
+    heap_allocator &operator = (heap_allocator &&rhs) noexcept {
+        if(this != &rhs && vector::size() < rhs.vector::size()) {
+            vector::operator = (std::move(rhs));
+        }
+        return *this;
+    }
+    /* Do nothing */
+    heap_allocator &operator = (const heap_allocator &) noexcept { return *this; }
 
 
+    /* Allocate only one node. */
+    node *allocate(size_t __n) {
+        if(empty()) return _Alloc::allocate(1);
+        else {
+            node *ptr = vector::back();
+            vector::pop_back();
+            return ptr;
+        }
+    }
 
+    /* Deallocate only one node. */
+    void deallocate(node *ptr,size_t __n) {
+        vector::push_back(ptr);
+    }
 
+    ~heap_allocator() {
+        for(auto ptr : *this) _Alloc::deallocate(ptr,1);   
+    }
 };
 
+constexpr size_t __N = sizeof(heap_allocator);
 
-class heap : protected std::allocator <heap_node <value_t> > {
+class heap : protected heap_allocator {
   public:
     using node = heap_node <value_t>;
-  
-  protected:
+    using allocator = heap_allocator;
 
+  protected:
 
     /* Special node with its distance as exactly 0. */
     static node *const null;
@@ -324,13 +361,17 @@ class heap : protected std::allocator <heap_node <value_t> > {
   public:
     /* Emptized. */
     heap() noexcept : root(null),count(0) {}
+
     /* Move content. */
-    heap(heap &&rhs) noexcept : root(rhs.root) , count(rhs.count) {
+    heap(heap &&rhs) noexcept : allocator(std::move(rhs)) {
+        root      = rhs.root;
+        count     = rhs.count;
         rhs.root  = null;
         rhs.count = 0;
     }
+
     /* Copy content. */
-    heap(const heap &rhs) {
+    heap(const heap &rhs) : allocator(rhs) {
         root  = copy(rhs.root);
         count = rhs.count; 
     }
