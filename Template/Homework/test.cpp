@@ -11,7 +11,9 @@ signed main() {
     pair <int,node> t[2];
     t[0].first = 1;
     t[1].first = 2;
-    std::cout << (t[0] < t[1]);
-
+    // std::cout << (t[0] < t[1]);
+    map <int,int> mmp;
+    auto tmp = mmp.insert(make_pair(1,1));
+    mmp [1];
     return 0;
 }
