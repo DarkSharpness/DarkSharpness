@@ -8,7 +8,7 @@
 #include <climits>
 #include <cstddef>
 
-
+/* Third party function for mutliple push_back. */
 namespace dark {
 
 inline unsigned int LOG2(unsigned x){
@@ -20,131 +20,6 @@ inline unsigned int LOG2(unsigned x){
 }
 
 
-namespace dark {
-
-using diff_t = std::ptrdiff_t; /* Global Variable. */
-
-/* Namespace for Random Access Iterators.  */
-namespace RandomAccess {
-
-template <class T>
-class iterator {
-  public:
-    using difference_type = std::ptrdiff_t;
-    using value_type = T;
-    using pointer = T*;
-    using reference = T&;
-    using iterator_category = std::output_iterator_tag;
-
-
-  protected:
-    T *ptr;
-
-   
-
-  public:
-    ~iterator() noexcept = default;
-    iterator(T *rhs = nullptr) noexcept : ptr(rhs)  {}
-    iterator &operator = (const iterator &rhs) noexcept = default;
-    /* Return the inner ptr. */
-    T *base() const noexcept { return ptr; }
-
-
-    iterator &operator ++ (void) noexcept { ++ptr; return *this; }
-    iterator &operator -- (void) noexcept { --ptr; return *this; }
-    iterator operator ++ (int) noexcept { return iterator(ptr++); }
-    iterator operator -- (int) noexcept { return iterator(ptr--); }
-
-
-    iterator &operator += (diff_t __n) noexcept { ptr += __n; return *this; }
-    iterator &operator -= (diff_t __n) noexcept { ptr -= __n; return *this; }
-    friend iterator operator + (diff_t __n,iterator rhs) noexcept 
-    { return iterator(rhs.ptr + __n); }
-    friend iterator operator + (iterator lhs,diff_t __n) noexcept 
-    { return iterator(lhs.ptr + __n); }
-    friend iterator operator - (iterator lhs,diff_t __n) noexcept 
-    { return iterator(lhs.ptr - __n); }
-    friend diff_t operator - (iterator lhs,iterator rhs) noexcept 
-    { return lhs.ptr - rhs.ptr; }
-
-
-    friend bool operator == (iterator lhs,iterator rhs) noexcept 
-    { return lhs.ptr == rhs.ptr; }
-    friend bool operator != (iterator lhs,iterator rhs) noexcept 
-    { return lhs.ptr != rhs.ptr; }
-
-
-    T &operator * (void) const noexcept { return *ptr; } 
-    T *operator ->(void) const noexcept { return  ptr; }
-    T &operator [] (diff_t __n) const noexcept { return ptr[__n]; }
-};
-
-
-template <class T>
-class const_iterator {
-  protected:
-    const T *ptr;
-    using difference_type = std::ptrdiff_t;
-    using value_type = T;
-    using pointer = T*;
-    using reference = T&;
-    using iterator_category = std::output_iterator_tag;
-    using Iterator = iterator <T> ;
-  public:
-    ~const_iterator() = default;
-    const_iterator(const T *rhs = nullptr)  noexcept : ptr(rhs) {}
-    const_iterator(Iterator rhs) noexcept : ptr(rhs.base()) {}
-    const_iterator &operator = (const const_iterator &rhs) noexcept = default;
-    const_iterator &operator = (Iterator rhs) 
-    { ptr = rhs.base(); return *this; }
-    /* Return the inner ptr. */
-    const T *base() const noexcept { return ptr; }
-
-    const_iterator &operator ++ (void) noexcept { ++ptr; return *this; }
-    const_iterator &operator -- (void) noexcept { --ptr; return *this; }
-    const_iterator operator ++ (int) noexcept { return const_iterator(ptr++); }
-    const_iterator operator -- (int) noexcept { return const_iterator(ptr--); }
-
-    const_iterator &operator += (diff_t __n) noexcept
-    { ptr += __n; return *this; }
-    const_iterator &operator -= (diff_t __n) noexcept
-    { ptr -= __n; return *this; }
-    friend const_iterator operator + (const_iterator lhs,diff_t __n) noexcept
-    { return const_iterator(lhs.ptr + __n); }
-    friend const_iterator operator + (diff_t __n,const_iterator rhs) noexcept
-    { return const_iterator(rhs.ptr + __n); }
-    friend const_iterator operator - (const_iterator lhs,diff_t __n) noexcept
-    { return const_iterator(lhs.ptr - __n); }
-    friend diff_t operator - (const_iterator lhs,const_iterator rhs) noexcept
-    { return lhs.base() - rhs.base(); }
-    friend diff_t operator - (const_iterator lhs,Iterator rhs) noexcept
-    { return lhs.base() - rhs.base(); }
-    friend diff_t operator - (Iterator lhs,const_iterator rhs) noexcept
-    { return lhs.base() - rhs.base(); }
-
-    friend bool operator == (const_iterator lhs,const_iterator rhs) noexcept 
-    { return lhs.base() == rhs.base(); }
-    friend bool operator == (Iterator lhs,const_iterator rhs) noexcept 
-    { return lhs.base() == rhs.base(); }
-    friend bool operator == (const_iterator lhs,Iterator rhs) noexcept 
-    { return lhs.base() == rhs.base(); }
-    friend bool operator != (const_iterator lhs,const_iterator rhs) noexcept 
-    { return lhs.base() != rhs.base(); }
-    friend bool operator != (Iterator lhs,const_iterator rhs) noexcept 
-    { return lhs.base() != rhs.base(); }
-    friend bool operator != (const_iterator lhs,Iterator rhs) noexcept 
-    { return lhs.base() != rhs.base(); }
-
-
-    const T &operator * (void) const { return *ptr; } 
-    const T *operator ->(void) const { return  ptr; }
-    const T &operator [] (diff_t __n) const { return ptr[__n]; }
-};
-
-}
-
-
-}
 
 
 namespace dark {
@@ -161,8 +36,133 @@ namespace dark {
 template <class value_t>
 class dynamic_array : private std::allocator <value_t> {
   public:
-    using iterator               = RandomAccess::iterator       <value_t>;
-    using const_iterator         = RandomAccess::const_iterator <value_t>;
+    class const_iterator;
+    class iterator {
+      public:
+        using T = value_t;
+        using difference_type = std::ptrdiff_t;
+        using value_type = T;
+        using pointer = T*;
+        using reference = T&;
+        using iterator_category = std::output_iterator_tag;
+
+      protected:
+        friend class const_iterator;
+        using diff_t = std::ptrdiff_t;
+        T *ptr;
+        const void *v;
+
+      public:
+        ~iterator() noexcept = default;
+        iterator(T *rhs = nullptr,const void *__v = nullptr) 
+            noexcept : ptr(rhs),v(__v) {}
+        iterator &operator = (const iterator &rhs) noexcept = default;
+        /* Return the inner ptr. */
+        T *base() const noexcept { return ptr; }
+
+
+        iterator &operator ++ (void) noexcept { ++ptr; return *this; }
+        iterator &operator -- (void) noexcept { --ptr; return *this; }
+        iterator operator ++ (int) noexcept { return iterator(ptr++,v); }
+        iterator operator -- (int) noexcept { return iterator(ptr--,v); }
+
+
+        iterator &operator += (diff_t __n) noexcept { ptr += __n; return *this; }
+        iterator &operator -= (diff_t __n) noexcept { ptr -= __n; return *this; }
+        friend iterator operator + (diff_t __n,iterator rhs) noexcept 
+        { return iterator(rhs.ptr + __n,rhs.v); }
+        friend iterator operator + (iterator lhs,diff_t __n) 
+        { return iterator(lhs.ptr + __n,lhs.v); }
+        friend iterator operator - (iterator lhs,diff_t __n) noexcept 
+        { return iterator(lhs.ptr - __n,lhs.v); }
+
+        friend diff_t operator - (iterator lhs,iterator rhs) {
+            if(lhs.v != rhs.v) throw sjtu::invalid_iterator(); 
+            return lhs.ptr - rhs.ptr; 
+        }
+
+        friend bool operator == (iterator lhs,iterator rhs) noexcept 
+        { return lhs.ptr == rhs.ptr; }
+        friend bool operator != (iterator lhs,iterator rhs) noexcept 
+        { return lhs.ptr != rhs.ptr; }
+
+        T &operator * (void) const noexcept { return *ptr; } 
+        T *operator ->(void) const noexcept { return  ptr; }
+        T &operator [] (diff_t __n) const noexcept { return ptr[__n]; }
+    };
+
+    class const_iterator {
+      public:
+        using T = value_t;
+        using difference_type = std::ptrdiff_t;
+		using value_type = T;
+		using pointer = T*;
+		using reference = T&;
+		using iterator_category = std::output_iterator_tag;
+
+      protected:
+        const T *ptr;
+        using diff_t = std::ptrdiff_t;
+        const void *v;
+
+      public:
+        ~const_iterator() = default;
+        const_iterator(const T *rhs = nullptr,const void *__v = nullptr)  
+            noexcept : ptr(rhs),v(__v) {}
+        const_iterator(iterator rhs) noexcept : ptr(rhs.ptr),v(rhs.v) {}
+        const_iterator &operator = (const const_iterator &rhs) noexcept = default;
+        const_iterator &operator = (iterator rhs) 
+        { ptr = rhs.ptr; return *this; }
+        /* Return the inner ptr. */
+        const T *base() const noexcept { return ptr; }
+
+        const_iterator &operator ++ (void) noexcept { ++ptr; return *this; }
+        const_iterator &operator -- (void) noexcept { --ptr; return *this; }
+        const_iterator operator ++ (int) noexcept { return const_iterator(ptr++,v); }
+        const_iterator operator -- (int) noexcept { return const_iterator(ptr--,v); }
+
+        const_iterator &operator += (diff_t __n) noexcept
+        { ptr += __n; return *this; }
+        const_iterator &operator -= (diff_t __n) noexcept
+        { ptr -= __n; return *this; }
+        friend const_iterator operator + (const_iterator lhs,diff_t __n) noexcept
+        { return const_iterator(lhs.ptr + __n,lhs.v); }
+        friend const_iterator operator + (diff_t __n,const_iterator rhs) noexcept
+        { return const_iterator(rhs.ptr + __n,rhs.v); }
+        friend const_iterator operator - (const_iterator lhs,diff_t __n) noexcept
+        { return const_iterator(lhs.ptr - __n,lhs.v); }
+
+        friend diff_t operator - (const_iterator lhs,const_iterator rhs) { 
+            if(lhs.v != rhs.v) throw sjtu::invalid_iterator(); 
+            return lhs.ptr - rhs.ptr;
+        }
+        friend diff_t operator - (const_iterator lhs,iterator rhs){
+            if(lhs.v != rhs.v) throw sjtu::invalid_iterator(); 
+            return lhs.ptr - rhs.ptr;
+        }
+        friend diff_t operator - (iterator lhs,const_iterator rhs) {
+            if(lhs.v != rhs.v) throw sjtu::invalid_iterator(); 
+            return lhs.ptr - rhs.ptr;
+        }
+
+        friend bool operator == (const_iterator lhs,const_iterator rhs) noexcept 
+        { return lhs.ptr == rhs.ptr; }
+        friend bool operator == (iterator lhs,const_iterator rhs) noexcept 
+        { return lhs.ptr == rhs.ptr; }
+        friend bool operator == (const_iterator lhs,iterator rhs) noexcept 
+        { return lhs.ptr == rhs.ptr; }
+
+        friend bool operator != (const_iterator lhs,const_iterator rhs) noexcept 
+        { return lhs.ptr != rhs.ptr; }
+        friend bool operator != (iterator lhs,const_iterator rhs) noexcept 
+        { return lhs.ptr != rhs.ptr; }
+        friend bool operator != (const_iterator lhs,iterator rhs) noexcept 
+        { return lhs.ptr != rhs.ptr; }
+
+        const T &operator * (void) const { return *ptr; } 
+        const T *operator ->(void) const { return  ptr; }
+        const T &operator [] (diff_t __n) const { return ptr[__n]; }
+    };
 
   protected:
     value_t *head; /* Head pointer to first element. */
@@ -188,7 +188,7 @@ class dynamic_array : private std::allocator <value_t> {
         this->construct(tail++,std::forward <U> (obj));
         reserve_push_back(std::forward <Args> (objs)...);
     }
-    
+
     /* Check whether index is out of range. */
     bool out_of_range(size_t __n) const { return __n >= size(); }
 
@@ -235,13 +235,14 @@ class dynamic_array : private std::allocator <value_t> {
         
         // Direct assignment.
         *temp = value_t(std::forward <Args> (objs)...);
+        
+        // Following is another attempt.
+
         // this->destroy(temp);
         // this->construct(temp,std::forward <Args> (objs)...);
 
         return __i;
     }
-
-
 
   public:
 
@@ -767,19 +768,18 @@ class dynamic_array : private std::allocator <value_t> {
     }
 
     /* Iterator to the first element. */
-    iterator begin()  { return head; }
+    iterator begin() noexcept  { return {head,this}; }
     /* Iterator to one past the last element. */
-    iterator end()    { return tail; }
+    iterator end()   noexcept  { return {tail,this}; }
 
     /* Const_iterator to the first element. */
-    const_iterator begin()  const { return head; }
+    const_iterator begin()  const noexcept { return {head,this}; }
     /* Const_iterator to one past the last element. */
-    const_iterator end()    const { return tail; }
+    const_iterator end()    const noexcept { return {tail,this}; }
     /* Const_iterator to the first element. */
-    const_iterator cbegin() const { return head; }
+    const_iterator cbegin() const noexcept { return {head,this}; }
     /* Const_iterator to one past the last element. */
-    const_iterator cend()   const { return tail; }
-
+    const_iterator cend()   const noexcept { return {tail,this}; }
 
 };
 

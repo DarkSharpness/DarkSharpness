@@ -16,10 +16,12 @@ signed main() {
     // d.resize(10);
     d.insert(d.end(),-2);
     d.insert(d.begin(),-1);
-    d.erase(d.begin());
-    d.pop_back();
+    d.erase(--d.end());
+    // d.pop_back();
     // while(!d.empty()) d.erase(d.begin());
     print(d);
+    // dark::dynamic_array <int> f;
+    // std::cout << f.begin() - d.end() << '\n';
 
     sjtu::vector <int> v;
     v.push_back(1,2,3);
