@@ -5,15 +5,19 @@
 // using ull = unsigned long long;
 using namespace std;
 
-struct node { int x; };
+class node {
+    int x,y;
+  public:
+    node(int a,int b) : x(a),y(b) {}
+    int values() { return x + y; }
+};
+
+node func() {
+    return {1,2};
+}
 
 signed main() {
-    pair <int,node> t[2];
-    t[0].first = 1;
-    t[1].first = 2;
-    // std::cout << (t[0] < t[1]);
-    map <int,int> mmp;
-    auto tmp = mmp.insert(make_pair(1,1));
-    mmp [1];
+    cout << func().values();
+
     return 0;
 }
