@@ -2,6 +2,9 @@
 #define _DARK_HEAP_H_
 
 
+#include "allocator.h"
+
+
 #include <cstddef>
 #include <memory>
 
@@ -9,36 +12,20 @@
 namespace dark {
 
 
-template <class value_t>
-struct heap_node {
-    heap_node *ls;
-    heap_node *rs;
-    size_t dist;
-    value_t val;
-    template <class ...Args>
-    heap_node(heap_node *_l,heap_node *_r,size_t _d,Args &&...objs):
-        ls(_l),rs(_r),dist(_d),
-        val(std::forward <Args> (objs)...) {}
-    ~heap_node() = default;
-};
 
 
 template <class value_t>
-class heap : protected std::allocator <heap_node <value_t> > {
-  protected:
+class heap {
+  private:
 
-    using node = heap_node <value_t>;
+    struct node;
+    using pointer = node *;
 
-
-    /* Special node with its distance as exactly 0. */
-    node * root;    /* Root node of the tree. */
-    node * head;    /* Head of linked list of available elements. */
-    node * tail;    /* Tail of linked list of available elements. */
-    size_t count;   /* Count of all the elements. */
-
+    dark::single_allocator <node> _Alloc; /* Allocator. */
+    pointer root;    /* Root node of the tree. */
 
     /* Merge 2 nodes x and y. */
-    static node *merge(node *x,node *y) {
+    static pointer merge(pointer x,pointer y) {
         if(!x) return y;
         if(!y) return x;
         /* Now x and y are not empty. */
@@ -53,7 +40,6 @@ class heap : protected std::allocator <heap_node <value_t> > {
         return x;
     }
 
-
     /**
      * @brief Allocate one element and construct it.
      * 
@@ -64,160 +50,102 @@ class heap : protected std::allocator <heap_node <value_t> > {
      * @return node* The address of newly-allocated and constructed node.
      */
     template <class ...Args>
-    inline node *alloc(node *ls,node *rs,size_t dist,Args &&...objs) {
-        node *temp; /* Node to be constructed on. */
-        if(head) {
-            temp = head;
-            head = head->rs;
-            if(!head) tail = nullptr; /* Empty list case. */
-
-            temp->ls   = ls;
-            temp->rs   = rs;
-            temp->dist = dist;
-            temp->val  = value_t(std::forward <Args> (objs)...);
-
-        } else {
-            temp = this->allocate(1);
-            this->construct(temp,ls,rs,dist,std::forward <Args> (objs)...);
-        }
+    inline pointer alloc(pointer ls,pointer rs,size_t dist,Args &&...objs) {
+        pointer temp = _Alloc.allocate();
+        _Alloc.construct(temp,ls,rs,dist,std::forward <Args> (objs)...);
         return temp;
     }
 
+    /* Deallocate one element. */
+    void dealloc(pointer cur) noexcept { _Alloc.deallocate(cur); }
 
-    /* Deallocate one element without destruction!. */
-    void dealloc(node *target) {
-        target->ls = nullptr;
-        target->rs = head;
-        if(head) head->ls = target;
-        else         tail = target;
-        head = target;
+    /* Copy node info from cur node. */
+    pointer copy(pointer cur) {
+        if(!cur) return nullptr;
+        return alloc(copy(cur->ls),copy(cur->rs),cur->dist,cur->val);
     }
 
-
-    /* Copy node info from target node. */
-    node *copy(node *target) {
-        if(!target) return nullptr;
-        return alloc(copy(target->ls),copy(target->rs),target->dist,target->val);
-    }
-
-
-    /* Remove target node with its sub-tree.(No destruction.) */
-    void remove(node *target) {
-        if(!target) return;
-        remove(target->ls);
-        remove(target->rs);
-        this->dealloc(target);
+    /* Remove current node with its sub-tree */
+    void remove(pointer cur) {
+        if(!cur) return;
+        remove(cur->ls);
+        remove(cur->rs);
+        this->dealloc(cur);
     }
 
   public:
 
     /* Emptized. */
-    heap() noexcept :
-        root(nullptr),head(nullptr),tail(nullptr),count(0) {}
+    heap() noexcept : _Alloc(),root(nullptr) {}
     /* Copy content. */
-    heap(const heap &rhs) :
-        head(nullptr),tail(nullptr),count(rhs.count) {
-        root = copy(rhs.root);
-    }
+    heap(const heap &rhs) : _Alloc(rhs._Alloc),root(copy(rhs.root)) {}
     /* Move content. */
-    heap(heap &&rhs) noexcept : heap() {
-        std::swap(root,rhs.root);
-        std::swap(head,rhs.head);
-        std::swap(tail,rhs.tail);
-        std::swap(count,rhs.count);
-    }
-
+    heap(heap &&rhs) noexcept : _Alloc(rhs._Alloc),root(rhs.root) 
+    { rhs.root = nullptr; }
 
     /* Now heap is re-initialized to empty. */
-    ~heap() noexcept {
-        clear();
-        shrink();
-    }
-
+    ~heap() noexcept { clear(); }
 
     /* Copy content. */
     heap &operator = (const heap &rhs) {
         if(this != &rhs) {
             remove(root);
-            root  = copy(rhs.root);
-            count = rhs.count;
+            root = copy(rhs.root);
+            _Alloc = rhs._Alloc;
         }
         return *this;
     }
 
-
     /* Move content. */
     heap &operator = (heap &&rhs) noexcept {
         if(this != &rhs) {
-            clear(); /* Recycle nodes. */
-
-            /* Link 2 list. */
-            if(!tail) { /* LHS list empty. */
-                std::swap(head,rhs.head);
-                std::swap(tail,rhs.tail);
-            } else if(rhs.head) { /* Both list not empty.*/
-                rhs.head->ls = tail;
-                tail     = rhs.tail;
-                rhs.head = rhs.tail = nullptr;
-            } /* RHS list empty only case. */
-
-            /* Swap data. */
+            this->~heap();
             std::swap(root,rhs.root);
-            std::swap(count,rhs.count);
+            _Alloc = rhs._Alloc;
         }
         return *this;
     }
 
     /* Clean all the elements. */
-    void clear() {
-        remove(root);
-        root  = nullptr;
-        count = 0;
-    }
-
-    /* Clean the link-listed nodes.(With destruction) */
-    void shrink() {
-        while(head) {
-            tail = head->rs;
-            this->destroy(head);
-            this->deallocate(head,1);
-            head = tail;
-        }
-        /* Now head = tail = nullptr */
-    }
-
+    void clear() noexcept { remove(root); root = nullptr; }
 
     /* Return const reference to the smallest element. */
     const value_t &top() const { return root->val; }
 
     /* Push one element to the heap. */
     template <class ...Args>
-    void emplace(Args &&...objs) {
-        ++count;
-        root = merge(root,alloc(nullptr,nullptr,1,std::forward <Args> (objs)...));
-    }
+    void emplace(Args &&...objs) 
+    { root = merge(root,alloc(nullptr,nullptr,1,std::forward <Args> (objs)...)); }
 
-    void push(value_t &&obj) {
-        ++count;
-        root = merge(root,alloc(nullptr,nullptr,1,std::move(obj)));
-    }
+    void push(value_t &&obj) 
+    { root = merge(root,alloc(nullptr,nullptr,1,std::move(obj))); }
 
-    void push(const value_t &obj) {
-        ++count;
-        root = merge(root,alloc(nullptr,nullptr,1,obj));
-    }
+    void push(const value_t &obj) 
+    { root = merge(root,alloc(nullptr,nullptr,1,obj)); }
 
     /* Pop out the top element. */
     void pop() {
         if(!root) return; /* Empty tree. */
-        --count;
         node *temp = root;
         root = merge(root->ls,root->rs);
         dealloc(temp);
     }
 
     bool empty()  const noexcept { return !root; }
-    size_t size() const noexcept { return count; }
+    size_t size() const noexcept { return _Alloc.size(); }
+
+  private:
+    struct node {
+        pointer ls;
+        pointer rs;
+        size_t dist;
+        value_t val;
+        template <class ...Args>
+        node(pointer _l,pointer _r,size_t _d,Args &&...objs):
+            ls(_l),rs(_r),dist(_d),
+            val(std::forward <Args> (objs)...) {}
+        ~node() = default;
+    };
 
 };
 

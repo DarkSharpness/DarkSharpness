@@ -1,23 +1,16 @@
-#include <bits/stdc++.h>
-// #include <Dark/inout>
+// #include <bits/stdc++.h>
+#include <Dark/Container/allocator.h>
+#include <Dark/inout>
 // #define int long long
 // using ll = long long;
 // using ull = unsigned long long;
-using namespace std;
 
-class node {
-    int x,y;
-  public:
-    node(int a,int b) : x(a),y(b) {}
-    int values() { return x + y; }
-};
-
-node func() {
-    return {1,2};
-}
+dark::allocator <int> a;
 
 signed main() {
-    cout << func().values();
-
+    auto p = a.alloc();
+    dark::writeline(*p);
+    a.construct(p,2);
+    dark::writeline(*p);
     return 0;
 }
