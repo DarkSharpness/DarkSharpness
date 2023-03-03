@@ -3,6 +3,177 @@
 
 
 #include "exceptions.hpp"
+// #include "iterator.h"
+#ifndef _DARK_ITERATOR_H_
+#define _DARK_ITERATOR_H_
+
+#include "exceptions.hpp"
+#include <version>
+#include <type_traits>
+#include <cstddef>
+
+/* Function part. */
+namespace dark::RandomAccess {
+
+/* Difference Type */
+using diff_t = std::ptrdiff_t;
+
+/* Advance forward. */
+template <class T>
+inline void advance_ptr(T *&__p,std::true_type)
+noexcept { ++__p; }
+
+/* Advance backward. */
+template <class T>
+inline void advance_ptr(T *&__p,std::false_type)
+noexcept { --__p; }
+
+/* Advance forward __n steps. */
+template <class T>
+inline void advance_ptr(T *&__p,diff_t __n,std::true_type)
+noexcept { __p += __n; }
+
+/* Advance backward __n steps. */
+template <class T>
+inline void advance_ptr(T *&__p,diff_t __n,std::false_type)
+noexcept { __p -= __n; }
+
+/* Normal distancing 2 pointers. */
+template <class T>
+inline diff_t distance_ptr(const T *lhs,const T *rhs,std::true_type) 
+noexcept { return lhs - rhs; }
+
+/* Reverse distancing 2 pointers. */
+template <class T>
+inline diff_t distance_ptr(const T *lhs,const T *rhs,std::false_type) 
+noexcept { return rhs - lhs; }
+
+
+
+/**
+ * @brief Advance toward given diretion.
+ * 
+ * @tparam dir || 0 if backward || 1 if forward ||
+ * @param __p Pointer to advance.
+ * @return The new pointer.
+ */
+template <bool dir,class T>
+inline void advance(T *&__p) noexcept
+{ return advance_ptr(__p,std::bool_constant <dir>()); }
+
+/**
+ * @brief Advance toward diretion by __n steps.
+ * 
+ * @tparam dir || 0 if backward || 1 if forward ||
+ * @param __p Pointer to advance.
+ * @param __n The distance to advance.
+ * @return The new pointer.
+ */
+template <bool dir,class T>
+inline void advance(T *&__p,diff_t __n) noexcept
+{ return advance_ptr(__p,__n,std::bool_constant <dir>()); }
+
+template <bool dir,class T>
+inline diff_t distance(const T *lhs,const T *rhs) noexcept
+{ return distance_ptr(lhs,rhs,std::bool_constant <dir>()); }
+
+
+
+}
+
+/* Class part. */
+namespace dark::RandomAccess {
+
+template <class T,bool is_const,bool dir>
+class iterator_base {
+  private:
+    using U = std::conditional_t <is_const,const T,T>; 
+    using pointer = U *;
+    pointer ptr;
+    const void *src;
+  public:
+    iterator_base(pointer __p = nullptr,const void *__s = nullptr) 
+    noexcept : ptr(__p) , src(__s) {}
+
+    iterator_base(const iterator_base <T,false,dir> &rhs)
+    noexcept : ptr(rhs.ptr) , src(rhs.src) {}
+    
+    iterator_base &operator = (const iterator_base <T,false,dir> &rhs) 
+    noexcept { ptr = rhs.ptr , src = rhs.src; return *this; }
+
+    pointer base()       const noexcept { return ptr; }
+    const void *source() const noexcept { return src; }
+
+    iterator_base &operator ++ (void) noexcept
+    { advance <dir> (ptr);  return *this; }
+
+    iterator_base &operator -- (void) noexcept 
+    { advance <!dir> (ptr); return *this; }
+
+    iterator_base &operator += (diff_t __n) noexcept 
+    { advance <dir> (ptr,__n);  return *this; }
+
+    iterator_base &operator -= (diff_t __n) noexcept
+    { advance <!dir> (ptr,__n); return *this; }
+
+    /* Non-memeber function part.*/
+
+    friend iterator_base operator ++ (iterator_base &lhs,int)  
+    noexcept { iterator_base tmp = lhs; ++lhs; return tmp; }
+    friend iterator_base operator -- (iterator_base &lhs,int)  
+    noexcept { iterator_base tmp = lhs; --lhs; return tmp; }
+
+    friend iterator_base operator + (iterator_base lhs,diff_t __n) 
+    noexcept { return lhs += __n; }
+
+    friend iterator_base operator + (diff_t __n,iterator_base rhs) 
+    noexcept { return rhs += __n; }
+
+    friend iterator_base operator - (iterator_base lhs,diff_t __n)
+    noexcept { return lhs -= __n; }
+
+    U &operator * (void) const { return *ptr; }
+    U *operator ->(void) const { return  ptr; }
+
+    /**
+     * @brief Return reference to element __n steps in the direction.
+     * 
+     * @param __n The distance of targeted element.
+     */
+    U &operator [](diff_t __n) const {
+        pointer tmp = ptr;
+        advance <dir> (tmp,__n);
+        return *tmp;
+    }
+};
+
+/* Some other global functions. */
+
+template <class T,bool k1,bool k2,bool dir>
+diff_t operator - (const iterator_base <T,k1,dir> &lhs,
+                   const iterator_base <T,k2,dir> &rhs) {
+    if(lhs.source() != rhs.source) throw sjtu::invalid_iterator();
+    return distance <dir> (lhs.base(),rhs.base());
+}
+
+template <class T,bool k1,bool k2,bool dir>
+bool operator == (const iterator_base <T,k1,dir> &lhs,
+                  const iterator_base <T,k2,dir> &rhs) {
+    return lhs.base() == rhs.base();
+}
+
+template <class T,bool k1,bool k2,bool dir>
+bool operator != (const iterator_base <T,k1,dir> &lhs,
+                  const iterator_base <T,k2,dir> &rhs) {
+    return lhs.base() != rhs.base();
+}
+
+/* Namespace for Random Access Iterators.  */
+
+}
+
+#endif
+
 
 #include <iostream>
 #include <climits>
@@ -36,134 +207,10 @@ namespace dark {
 template <class value_t>
 class dynamic_array : private std::allocator <value_t> {
   public:
-    class const_iterator;
-    class iterator {
-      public:
-        using T = value_t;
-        using difference_type = std::ptrdiff_t;
-        using value_type = T;
-        using pointer = T*;
-        using reference = T&;
-        using iterator_category = std::output_iterator_tag;
-
-      protected:
-        friend class const_iterator;
-        using diff_t = std::ptrdiff_t;
-        T *ptr;
-        const void *v;
-
-      public:
-        ~iterator() noexcept = default;
-        iterator(T *rhs = nullptr,const void *__v = nullptr) 
-            noexcept : ptr(rhs),v(__v) {}
-        iterator &operator = (const iterator &rhs) noexcept = default;
-        /* Return the inner ptr. */
-        T *base() const noexcept { return ptr; }
-
-
-        iterator &operator ++ (void) noexcept { ++ptr; return *this; }
-        iterator &operator -- (void) noexcept { --ptr; return *this; }
-        iterator operator ++ (int) noexcept { return iterator(ptr++,v); }
-        iterator operator -- (int) noexcept { return iterator(ptr--,v); }
-
-
-        iterator &operator += (diff_t __n) noexcept { ptr += __n; return *this; }
-        iterator &operator -= (diff_t __n) noexcept { ptr -= __n; return *this; }
-        friend iterator operator + (diff_t __n,iterator rhs) noexcept 
-        { return iterator(rhs.ptr + __n,rhs.v); }
-        friend iterator operator + (iterator lhs,diff_t __n) 
-        { return iterator(lhs.ptr + __n,lhs.v); }
-        friend iterator operator - (iterator lhs,diff_t __n) noexcept 
-        { return iterator(lhs.ptr - __n,lhs.v); }
-
-        friend diff_t operator - (iterator lhs,iterator rhs) {
-            if(lhs.v != rhs.v) throw sjtu::invalid_iterator(); 
-            return lhs.ptr - rhs.ptr; 
-        }
-
-        friend bool operator == (iterator lhs,iterator rhs) noexcept 
-        { return lhs.ptr == rhs.ptr; }
-        friend bool operator != (iterator lhs,iterator rhs) noexcept 
-        { return lhs.ptr != rhs.ptr; }
-
-        T &operator * (void) const noexcept { return *ptr; } 
-        T *operator ->(void) const noexcept { return  ptr; }
-        T &operator [] (diff_t __n) const noexcept { return ptr[__n]; }
-    };
-
-    class const_iterator {
-      public:
-        using T = value_t;
-        using difference_type = std::ptrdiff_t;
-		using value_type = T;
-		using pointer = T*;
-		using reference = T&;
-		using iterator_category = std::output_iterator_tag;
-
-      protected:
-        const T *ptr;
-        using diff_t = std::ptrdiff_t;
-        const void *v;
-
-      public:
-        ~const_iterator() = default;
-        const_iterator(const T *rhs = nullptr,const void *__v = nullptr)  
-            noexcept : ptr(rhs),v(__v) {}
-        const_iterator(iterator rhs) noexcept : ptr(rhs.ptr),v(rhs.v) {}
-        const_iterator &operator = (const const_iterator &rhs) noexcept = default;
-        const_iterator &operator = (iterator rhs) 
-        { ptr = rhs.ptr; return *this; }
-        /* Return the inner ptr. */
-        const T *base() const noexcept { return ptr; }
-
-        const_iterator &operator ++ (void) noexcept { ++ptr; return *this; }
-        const_iterator &operator -- (void) noexcept { --ptr; return *this; }
-        const_iterator operator ++ (int) noexcept { return const_iterator(ptr++,v); }
-        const_iterator operator -- (int) noexcept { return const_iterator(ptr--,v); }
-
-        const_iterator &operator += (diff_t __n) noexcept
-        { ptr += __n; return *this; }
-        const_iterator &operator -= (diff_t __n) noexcept
-        { ptr -= __n; return *this; }
-        friend const_iterator operator + (const_iterator lhs,diff_t __n) noexcept
-        { return const_iterator(lhs.ptr + __n,lhs.v); }
-        friend const_iterator operator + (diff_t __n,const_iterator rhs) noexcept
-        { return const_iterator(rhs.ptr + __n,rhs.v); }
-        friend const_iterator operator - (const_iterator lhs,diff_t __n) noexcept
-        { return const_iterator(lhs.ptr - __n,lhs.v); }
-
-        friend diff_t operator - (const_iterator lhs,const_iterator rhs) { 
-            if(lhs.v != rhs.v) throw sjtu::invalid_iterator(); 
-            return lhs.ptr - rhs.ptr;
-        }
-        friend diff_t operator - (const_iterator lhs,iterator rhs){
-            if(lhs.v != rhs.v) throw sjtu::invalid_iterator(); 
-            return lhs.ptr - rhs.ptr;
-        }
-        friend diff_t operator - (iterator lhs,const_iterator rhs) {
-            if(lhs.v != rhs.v) throw sjtu::invalid_iterator(); 
-            return lhs.ptr - rhs.ptr;
-        }
-
-        friend bool operator == (const_iterator lhs,const_iterator rhs) noexcept 
-        { return lhs.ptr == rhs.ptr; }
-        friend bool operator == (iterator lhs,const_iterator rhs) noexcept 
-        { return lhs.ptr == rhs.ptr; }
-        friend bool operator == (const_iterator lhs,iterator rhs) noexcept 
-        { return lhs.ptr == rhs.ptr; }
-
-        friend bool operator != (const_iterator lhs,const_iterator rhs) noexcept 
-        { return lhs.ptr != rhs.ptr; }
-        friend bool operator != (iterator lhs,const_iterator rhs) noexcept 
-        { return lhs.ptr != rhs.ptr; }
-        friend bool operator != (const_iterator lhs,iterator rhs) noexcept 
-        { return lhs.ptr != rhs.ptr; }
-
-        const T &operator * (void) const { return *ptr; } 
-        const T *operator ->(void) const { return  ptr; }
-        const T &operator [] (diff_t __n) const { return ptr[__n]; }
-    };
-
+    using iterator               = RandomAccess::iterator_base <value_t,0,1>;
+    using const_iterator         = RandomAccess::iterator_base <value_t,1,1>;
+    using reverse_iterator       = RandomAccess::iterator_base <value_t,0,0>;
+    using const_reverse_iterator = RandomAccess::iterator_base <value_t,1,0>;
   protected:
     value_t *head; /* Head pointer to first element. */
     value_t *tail; /* Tail pointer to one past the last element. */
@@ -766,7 +813,7 @@ class dynamic_array : private std::allocator <value_t> {
         if(empty()) throw sjtu::container_is_empty();
         return *--end();
     }
-
+    
     /* Iterator to the first element. */
     iterator begin() noexcept  { return {head,this}; }
     /* Iterator to one past the last element. */
@@ -786,7 +833,7 @@ class dynamic_array : private std::allocator <value_t> {
 
 }
 
-
+/* WTF is that ??? */
 namespace sjtu {
 
 template <class T>

@@ -2,7 +2,7 @@
 #define _DARK_DYNAMIC_ARRAY_H_
 
 #include "../include/basic.h"
-#include "../iterator"
+#include "iterator.h"
 
 #include <memory>
 #include <initializer_list>
@@ -484,10 +484,11 @@ class dynamic_array : private std::allocator <value_t> {
     /* Const reference to the  last element. */
     const value_t &back()  const {return *--cend();}
 
-    using iterator       = RandomAccess::iterator       <value_t>;
-    using const_iterator = RandomAccess::const_iterator <value_t>;
-    using reverse_iterator = RandomAccess::reverse_iterator <value_t>;
-    using const_reverse_iterator = RandomAccess::const_reverse_iterator <value_t>;
+
+    using iterator               = RandomAccess::iterator_base <value_t,0,1>;
+    using const_iterator         = RandomAccess::iterator_base <value_t,1,1>;
+    using reverse_iterator       = RandomAccess::iterator_base <value_t,0,0>;
+    using const_reverse_iterator = RandomAccess::iterator_base <value_t,1,0>;
 
     /* Iterator to the first element. */
     iterator begin()  { return head; }

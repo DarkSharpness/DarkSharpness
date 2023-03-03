@@ -1,6 +1,7 @@
 #ifndef _DARK_ITERATOR_H_
 #define _DARK_ITERATOR_H_
 
+#include "exceptions.hpp"
 #include <version>
 #include <type_traits>
 #include <cstddef>
@@ -83,15 +84,19 @@ class iterator_base {
     using U = std::conditional_t <is_const,const T,T>; 
     using pointer = U *;
     pointer ptr;
+    const void *src;
   public:
-    iterator_base(pointer __p = nullptr) noexcept : ptr(__p) {}
+    iterator_base(pointer __p = nullptr,const void *__s = nullptr) 
+    noexcept : ptr(__p) , src(__s) {}
+
     iterator_base(const iterator_base <T,false,dir> &rhs)
-    noexcept : ptr(rhs.ptr) {}
+    noexcept : ptr(rhs.ptr) , src(rhs.src) {}
     
     iterator_base &operator = (const iterator_base <T,false,dir> &rhs) 
-    noexcept { ptr = rhs.ptr; return *this; }
+    noexcept { ptr = rhs.ptr , src = rhs.src; return *this; }
 
-    pointer base() const noexcept { return ptr; }
+    pointer base()       const noexcept { return ptr; }
+    const void *source() const noexcept { return src; }
 
     iterator_base &operator ++ (void) noexcept
     { advance <dir> (ptr);  return *this; }
@@ -141,6 +146,7 @@ class iterator_base {
 template <class T,bool k1,bool k2,bool dir>
 diff_t operator - (const iterator_base <T,k1,dir> &lhs,
                    const iterator_base <T,k2,dir> &rhs) {
+    if(lhs.source() != rhs.source) throw sjtu::invalid_iterator();
     return distance <dir> (lhs.base(),rhs.base());
 }
 

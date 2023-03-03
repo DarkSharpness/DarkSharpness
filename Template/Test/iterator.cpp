@@ -1,40 +1,22 @@
-#include <iostream>
-#include <Dark/memleak>
-#include <Dark/iterator>
-
-using dark::RandomAccess::iterator;
-using dark::RandomAccess::const_iterator;
-using dark::RandomAccess::reverse_iterator;
-using dark::RandomAccess::const_reverse_iterator;
-
-struct foo {
-    int x;
-    char name[4];
-    double y;
-};
+#include <Dark/Container/iterator.h>
+#include <Dark/inout>
+#include <vector>
+// #define int long long
+// using ll = long long;
+// using ull = unsigned long long;
+using namespace dark::RandomAccess;
 
 signed main() {
-    iterator <foo> x(new foo {1,"ab",1.3});
-    const_iterator <foo> y = x;
-    --x;
-    --x;
-    std::cout << y - x << '\n';
-    x = x + -2;
-    x += 4;
-    y = x;
-    x->name[0] = 'c';
-    std::cout << y->name << '\n';
-    delete y.base();
-    if(x == y) std::cout << "true\n";
-    if(x != y) std::cout << "false\n";
+    iterator_base <int,0,0> iter(new int[2] {3,2});
+    --iter;
+    dark::writeline(*iter);
+    iterator_base <int,1,0> temp = iter++;
+    dark::writeline(*iter,*(iter - 1),iter - temp);
+    if(iter != temp) puts("6");
+    if(--iter == temp) puts("7");
+    dark::writeline(iter[1]);
 
-    reverse_iterator <foo> tmp((new foo[2] {1,"AC",1.3}) + 1);
-    const_reverse_iterator <foo> ttt = tmp + 1;
-
-    std::cout << ttt->name << '\n';
-
-    ++tmp;
-
-    delete[] tmp.base();
+    std::vector <int> v = {1,2,3};
+    dark::writeline((++v.rbegin())[1]);
     return 0;
 }
