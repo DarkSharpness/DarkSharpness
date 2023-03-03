@@ -86,9 +86,14 @@ namespace dark::RandomAccess {
 
 template <class T,bool is_const,bool dir>
 class iterator_base {
-  private:
+    using difference_type = std::ptrdiff_t;
     using U = std::conditional_t <is_const,const T,T>; 
-    using pointer = U *;
+    using value_type = U;
+    using pointer    = U *;
+    using reference  = U &;
+    using iterator_category = std::output_iterator_tag;
+
+  private:
     pointer ptr;
     const void *src;
   public:
