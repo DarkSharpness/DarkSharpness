@@ -5,7 +5,7 @@
 #include <utility>
 
 /* Easy wrapping. */
-namespace dark {
+namespace dark::abandoned {
 
 template <class T>
 class single_allocator {
@@ -37,7 +37,7 @@ class single_allocator {
 }
 
 /* Abandoned part. */
-namespace dark {
+namespace dark::abandoned {
 
 
 namespace ALLOCATOR {

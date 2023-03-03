@@ -14,14 +14,15 @@ namespace dark {
 
 
 
-template <class value_t>
+// template <class value_t>
+using value_t = int;
+
 class heap {
   private:
 
     struct node;
     using pointer = node *;
 
-    dark::single_allocator <node> _Alloc; /* Allocator. */
     pointer root;    /* Root node of the tree. */
 
     /* Merge 2 nodes x and y. */
