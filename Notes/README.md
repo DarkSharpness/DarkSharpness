@@ -1,0 +1,1 @@
+Notes that darksharpness take down in the form of markdown.
