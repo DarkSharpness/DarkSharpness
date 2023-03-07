@@ -87,7 +87,7 @@ class iterator_base {
     iterator_base(pointer __p = nullptr) noexcept : ptr(__p) {}
     iterator_base(const iterator_base <T,false,dir> &rhs)
     noexcept : ptr(rhs.ptr) {}
-    
+
     iterator_base &operator = (const iterator_base <T,false,dir> &rhs) 
     noexcept { ptr = rhs.ptr; return *this; }
 
