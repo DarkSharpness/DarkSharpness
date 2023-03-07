@@ -491,33 +491,33 @@ class dynamic_array : private std::allocator <value_t> {
     using const_reverse_iterator = RandomAccess::iterator_base <value_t,1,0>;
 
     /* Iterator to the first element. */
-    iterator begin()  { return head; }
+    iterator begin() noexcept { return head; }
     /* Iterator to one past the last element. */
-    iterator end()    { return tail; }
+    iterator end()   noexcept { return tail; }
 
     /* Const_iterator to the first element. */
-    const_iterator begin()  const {return head;}
+    const_iterator begin()  const noexcept {return head;}
     /* Const_iterator to one past the last element. */
-    const_iterator end()    const {return tail;}
+    const_iterator end()    const noexcept {return tail;}
     /* Const_iterator to the first element. */
-    const_iterator cbegin() const {return head;}
+    const_iterator cbegin() const noexcept {return head;}
     /* Const_iterator to one past the last element. */
-    const_iterator cend()   const {return tail;}
+    const_iterator cend()   const noexcept {return tail;}
 
 
     /* Reverse iterator to the last element. */
-    reverse_iterator rbegin() { return tail - 1; }
+    reverse_iterator rbegin() noexcept { return tail - 1; }
     /* Reverse iterator to one before the first element. */
-    reverse_iterator rend()   { return head - 1; }
+    reverse_iterator rend()   noexcept { return head - 1; }
 
     /* Const_reverse_iterator to the last element. */
-    const_reverse_iterator rbegin()  const {return tail - 1;}
+    const_reverse_iterator rbegin()  const noexcept {return tail - 1;}
     /* Const_reverse_iterator to one before the first element. */
-    const_reverse_iterator rend()    const {return head - 1;}
+    const_reverse_iterator rend()    const noexcept {return head - 1;}
     /* Const_reverse_iterator to the last element. */
-    const_reverse_iterator crbegin() const {return tail - 1;}
+    const_reverse_iterator crbegin() const noexcept {return tail - 1;}
     /* Const_reverse_iterator to one before the first element. */
-    const_reverse_iterator crend()   const {return head - 1;}
+    const_reverse_iterator crend()   const noexcept {return head - 1;}
 
 };
 
