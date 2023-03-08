@@ -16,8 +16,8 @@ class pair {
 	pair(pair &&other) = default;
 	pair(const pair &other) = default;
 
-    pair(T1 &&x) : first(x), second() {}
-    pair(const T1 &x) : first(x), second() {}
+    pair(T1 &&x) : first(std::move(x)) , second() {}
+    pair(const T1 &x) : first(x) , second() {}
 
     /* Directly copy. */
 	pair(const T1 &x, const T2 &y) : first(x), second(y) {}
@@ -36,6 +36,7 @@ class pair {
         first(std::move(other.first)), second(std::move(other.second)) {}
     ~pair() noexcept = default;
 
+    
 };
 
 }
