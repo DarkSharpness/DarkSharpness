@@ -1,8 +1,6 @@
 #ifndef _DARK_MAP_H_
 #define _DARK_MAP_H_
 
-#include "allocator.h"
-
 #include <cstddef>
 #include <cstdlib>
 #include <functional>
@@ -46,7 +44,7 @@ struct node_base {
 
     /* Initialize by setting to null or given pointer. */
     node_base(baseptr __p = nullptr) noexcept
-        : color(Color::WHITE),parent(__p),son({__p,__p}) {}
+        : color(Color::WHITE),parent(__p) { son[0] = son[1] = __p; }
 };
 
 
@@ -363,10 +361,10 @@ void erase_at(baseptr __p) {
 
 }
 
-using key_t   = int;
-using T       = std::string;
-using Compare = std::less <key_t>;
 
+template <class key_t,
+          class T,
+          class Compare = std::less <key_t> >
 class map {
   public:
 
@@ -383,6 +381,9 @@ class map {
     using pointer   = tree::node <value_t> *;
     using node_base = tree::node_base;
     using baseptr   = tree::node_base *;
+
+    using pair_t    = std::pair <const key_t,T>;
+    using pairptr   = std::pair <const key_t,T> *;
 
 
     struct implement : std::allocator <node> , Compare {  
@@ -404,30 +405,31 @@ class map {
 
     };
 
+
     struct iterator : public tree::iterator_base <0,1> {
         iterator(baseptr __p = nullptr) noexcept : iterator_base(__p) {}
-        value_t &operator * (void) const { return  pointer(ptr)->data; }
-        value_t *operator ->(void) const { return &pointer(ptr)->data; }
+        pair_t &operator * (void) const { return  cast(pointer(ptr)->data); }
+        pair_t *operator ->(void) const { return &cast(pointer(ptr)->data); }
     };
 
     struct const_iterator : public tree::iterator_base <1,1> {
         const_iterator(baseptr __p = nullptr) noexcept : iterator_base(__p) {}
-        const value_t &operator * (void) const { return  pointer(ptr)->data; }
-        const value_t *operator ->(void) const { return &pointer(ptr)->data; }
+        const pair_t &operator * (void) const { return  cast(pointer(ptr)->data); }
+        const pair_t *operator ->(void) const { return &cast(pointer(ptr)->data); }
     };
 
     struct reverse_iterator : public tree::iterator_base <0,0> {
         reverse_iterator(baseptr __p = nullptr)
             noexcept : iterator_base(__p) {}
-        value_t &operator * (void) const { return  pointer(ptr)->data; }
-        value_t *operator ->(void) const { return &pointer(ptr)->data; }
+        pair_t &operator * (void) const { return  cast(pointer(ptr)->data); }
+        pair_t *operator ->(void) const { return &cast(pointer(ptr)->data); }
     };
 
     struct const_reverse_iterator : public tree::iterator_base <1,0> {
         const_reverse_iterator(baseptr __p = nullptr)
             noexcept : iterator_base(__p) {}
-        const value_t &operator * (void) const { return  pointer(ptr)->data; }
-        const value_t *operator ->(void) const { return &pointer(ptr)->data; }
+        const pair_t &operator * (void) const { return  cast(pointer(ptr)->data); }
+        const pair_t *operator ->(void) const { return &cast(pointer(ptr)->data); }
     };
 
   private:
@@ -436,6 +438,11 @@ class map {
     node_base header; /* Parent as root node || son[0] as largest || son[1] as smallest. */
 
     baseptr root() const noexcept { return header.parent; }
+
+    /* Cast value_t to pair_t */
+    static inline pair_t & cast(value_t &__v) 
+    {  return reinterpret_cast <pair_t &> (__v) ;}
+
 
     /* Special case : insert at root node. */
     return_t insert_root(baseptr __n) {
@@ -512,36 +519,36 @@ class map {
             I'm fed up . So you see such a function as below , like a piece of SHIT.
         */
 
-        /* To avoid misusage. */
-        static_assert( std::is_same_v < std::decay_t <value_t>,
-                                        std::decay_t <U> >, "Misusage!" );
-
         if(empty()) /* Just empty , so insert at root node. */
             return insert_root(impl.alloc(std::forward <U> (__v)));
 
-        baseptr *__p = &header.parent , last;
+        baseptr __p = header.parent;
 
-        while(*__p) {
-            last = *__p;
-            if(impl (__v.first,pointer(*__p)->data.first) )
-                __p = &(*__p)->son[0];
-            else if(impl (pointer(*__p)->data.first,__v.first) )
-                __p = &(*__p)->son[1];
-            else {
-                return {*__p,false};
+        // int dir = insert_locate(__p,__v.first);
+        // if(dir < 0) return {__p,false};
+
+        bool dir;
+        while(true) {
+            if(impl (__v.first,pointer(__p)->data.first) ) {
+                if(__p->son[0]) __p = __p->son[0];
+                else {dir = 0;break;}
             }
+            else if(impl (pointer(__p)->data.first,__v.first) )
+                if(__p->son[1]) __p = __p->son[1];
+                else {dir = 1;break;}
+            else return {__p,false};
         }
 
         ++impl.count;
-        (*__p = impl.alloc(std::forward <U> (__v)))->parent = last;
+        __p->son[dir] = impl.alloc(std::forward <U> (__v));
+        __p->son[dir]->parent = __p;
 
-        if((*__p)->parent == header.son[0]) header.son[0] = (*__p); // Maximum node.
-        if((*__p)->parent == header.son[1]) header.son[1] = (*__p); // Minimum node.
+        if(__p == header.son[!dir]) header.son[!dir] = __p->son[dir];
 
-        tree::insert_at(*__p);
-        return {*__p,true};
+        tree::insert_at(__p = __p->son[dir]);
+        return {__p,true};
     }
-    
+
     /**
      * @brief Inner function to erase given node.
      * 
@@ -562,6 +569,17 @@ class map {
         return 1;
     }
 
+    /**
+     * @brief Access the the value tied with given key.
+     * 
+     * @param __k Key to locate.
+     * @return Reference to the value. 
+     */
+    T *access(const key_t & __k) const noexcept {
+        baseptr iter = locate(__k);
+        if(!iter) throw nullptr;
+        else return &pointer(iter)->data.second;
+    }
 
   public:
     /* Initialize from empty. */
@@ -629,7 +647,6 @@ class map {
      * @return Count of key-value pairs erased. (0 or 1)
      */
     size_t erase(const key_t &__k) {
-        if(empty()) return 0;
         baseptr __p = locate(__k);
         if(!__p) return 0;
         else return erase_pair(__p);
@@ -681,11 +698,12 @@ class map {
     void clear() noexcept { if(impl.count) { clean(root()) , impl.count = 0; } }
 
     T &operator [] (const key_t &__k) {
+        /// TODO:
         
 
     }
 
-    // void check() { check(root(),tree::Color::WHITE); }
+    void check() { check(root(),tree::Color::WHITE); }
 
   public:
     /* Iterator Part. */
@@ -706,7 +724,6 @@ class map {
     const_reverse_iterator crend()   const noexcept { return   &header;     }
 };
 
-constexpr size_t csize = sizeof(map);
 
 
 }
