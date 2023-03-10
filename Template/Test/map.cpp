@@ -1,5 +1,5 @@
 // #include <bits/stdc++.h>
-// #pragma GCC optimize(3)
+#pragma GCC optimize(3)
 
 #include <Dark/memleak>
 #include <Dark/inout>
@@ -15,9 +15,8 @@ inline void func() {
 
     std::pair <int,test> p(3,{});
 
-    dark::map <int,test> map;
-    // std::map <int,std::string> t;
-    // std::map <int,std::string> map = std::map <int,std::string>(t);
+    // dark::map <int,test> map;
+    std::map <int,test> map;
     srand(time(NULL));
 
     t1 = clock();
