@@ -20,5 +20,14 @@ The notion of consciousness most commonly addressed by philosopher rea the follo
 <!-- 的确有一个 Real(physical) things 存在，但是 -->
 
 一阶: belief -> consciousness
+高阶: Require a metacognitive representational state in order for consciousness to emerge.
 
+Peter Carruthers have argued that most animals are not conscious because they lack the coginitive mechanisms necessary for metacognition.
 
+动物意识研究的前提: 意识可以被自然化
+
+PANIC theory of consciousness
+1. Poised
+2. Abstract
+3. Nonconceptual
+4. (and 5)Intentional-Content
