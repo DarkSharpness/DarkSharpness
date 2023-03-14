@@ -35,12 +35,12 @@ class pair {
 	template<class U1, class U2>
 	pair(const pair <U1, U2> &other) : 
         first(other.first), second(other.second) {}
-	template<class U1, class U2>
     /* Move content. */
+	template<class U1, class U2>
 	pair(pair <U1, U2> &&other) : 
         first(std::move(other.first)), second(std::move(other.second)) {}
+    
     ~pair() noexcept = default;
-
     
 };
 
@@ -545,29 +545,8 @@ class map {
         return __p;
     }
 
-    // /**
-    //  * @brief Advance the pointer to target location.
-    //  * 
-    //  * @param __p Pointer to advance to target location.
-    //  * @param __k Key to locate.
-    //  * @return || -1 if exactly the node || 0 / 1 as direction.
-    //  */
-    // inline int insert_locate(baseptr &__p,const key_t &__k) {
-    //     while(true) {
-    //         if(impl (__k,pointer(__p)->data.first) ) {
-    //             if(__p->son[0]) __p = __p->son[0];
-    //             else return 0;
-    //         }
-    //         else if(impl (pointer(__p)->data.first,__k) )
-    //             if(__p->son[1]) __p = __p->son[1];
-    //             else return 1;
-    //         else return -1;
-    //     }
-    // }
-
     /**
-     * @brief Insert a key-value pair into the map.
-     * If __key
+     * @brief Insert a key and value arguments into the map.
      * 
      * @param __n Pointer to new memory block or nullptr.
      * @param __v Key-value to be inserted.
@@ -591,9 +570,6 @@ class map {
                                           std::forward <V> (__v)...));
 
         baseptr __p = header.parent;
-
-        // int dir = insert_locate(__p,__v.first);
-        // if(dir < 0) return {__p,false};
 
         bool dir;
         while(true) {
@@ -651,22 +627,28 @@ class map {
         else return pointer(iter)->data.second;
     }
 
+    /* Manually initialize the header and count of nodes. */
+    void initialize() noexcept { ::new (&header) node_base(); impl.count = 0; }
+
   public:
     /* Initialize from empty. */
     map() noexcept : impl(),header(&header) {}
 
     /* Initialize by copying another map. */
-    map(const map &rhs) noexcept : impl(rhs.impl),header(&header) {
+    map(const map &rhs) : impl(rhs.impl),header(&header) {
         if(rhs.empty()) return;
-        header.parent = copy((pointer)rhs.root());
 
-        baseptr __p; /* Find out the smallest and largest node. */
+        header.parent  = copy(pointer(rhs.root()));
+        root()->parent = &header;
 
-        __p = root();
+        /* Find out the smallest and largest node. */
+        baseptr __p;
+
+        __p = root(); /* Smallest */
         while(__p->son[0]) __p = __p->son[0];
         header.son[1] = __p;
 
-        __p = root();
+        __p = root(); /* Largest  */
         while(__p->son[1]) __p = __p->son[1];
         header.son[0] = __p;
     }
@@ -674,11 +656,30 @@ class map {
     /* Initialize by moving another map.  */
     map(map &&rhs) noexcept : impl(std::move(rhs.impl)),header(&header) {
         if(rhs.empty()) return;
+
         header = rhs.header;
+        root()->parent = &header;
+
         /* Clean the data of rhs map. */
-        rhs.impl.count = 0;
-        rhs.header.son[0] = rhs.header.son[1] 
-                          = rhs.header.parent = &rhs.header;
+        rhs.initialize();
+    }
+
+    /* Too lazy to overload. */
+    map &operator = (const map &rhs) {
+        if(this != &rhs) {
+            this->~map();
+            ::new (this) map(rhs);
+        }
+        return *this;
+    }
+
+    /* Too lazy to overload. */
+    map &operator = (map &&rhs) {
+        if(this != &rhs) {
+            this->~map();
+            ::new (this) map(std::move(rhs));
+        }
+        return *this;
     }
 
     /* Clean the storage. */
@@ -710,6 +711,32 @@ class map {
      */
     return_t insert(value_t &&__v) { return insert_pair(std::move(__v.first),
                                                         std::move(__v.second)); }
+
+    /**
+     * @brief Insert a key-value pair to the map.
+     * If there exists indentical key, insertion will fail.
+     *  
+     * @param __k Key to insert.
+     * @param __v Arguments to construct the value.
+     * @return return_t A pair of an iterator of the element and
+     * a boolean of whether the insertion has been successful.
+     */
+    template <class ...V>
+    return_t insert(const key_t &__k,V &&...__v) 
+    { return insert_pair(__k,std::forward <V> (__v)...); }
+    /**
+     * @brief Insert a key-value pair to the map.
+     * If there exists indentical key, insertion will fail.
+     *  
+     * @param __k Key to insert.
+     * @param __v Arguments to construct the value.
+     * @return return_t A pair of an iterator of the element and
+     * a boolean of whether the insertion has been successful.
+     */
+    template <class ...V>
+    return_t insert(key_t &&__k,V &&...__v) 
+    { return insert_pair(std::move(__k),std::forward <V> (__v)...); }
+
 
     /**
      * @brief Erase all key-value pair with given key from the map.
@@ -777,7 +804,7 @@ class map {
 
     const T &at (const key_t &__k) const { return access(__k); }
 
-    void check() { check(root(),tree::Color::WHITE); }
+    // void check() { check(root(),tree::Color::WHITE); }
 
   public:
     /* Iterator Part. */

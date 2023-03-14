@@ -15,8 +15,8 @@ inline void func() {
 
     std::pair <int,test> p(3,{});
 
-    // dark::map <int,test> map;
-    std::map <int,test> map;
+    dark::map <int,test> map;
+    // std::map <int,test> map;
     srand(time(NULL));
 
     t1 = clock();

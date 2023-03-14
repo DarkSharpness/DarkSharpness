@@ -10,7 +10,6 @@
 namespace dark {
 
 
-
 template <class key_t,
           class T,
           class Compare = std::less <key_t> >
@@ -86,12 +85,13 @@ class map {
     implement impl;   /* Implement of compare and memory function. */
     node_base header; /* Parent as root node || son[0] as largest || son[1] as smallest. */
 
-    baseptr root() const noexcept { return header.parent; }
 
     /* Cast value_t to pair_t */
     static inline pair_t & cast(value_t &__v) 
     {  return reinterpret_cast <pair_t &> (__v) ;}
 
+    /* Return the root node of the tree. */
+    baseptr root() const noexcept { return header.parent; }
 
     /* Special case : insert at root node. */
     return_t insert_root(baseptr __n) {
@@ -110,23 +110,17 @@ class map {
         impl.dealloc(__p);
     }
 
-    /* Debug use only!!! */
-    int check(baseptr __p,tree::Color C) {
-        if(!__p) return 0;
-        if(__p->color == tree::Color::WHITE && __p->color == C) throw "Double red!";
-        int t = check(__p->son[0],__p->color);
-        if(t != check(__p->son[1],__p->color)) throw "Different length!";
-        return t + (__p->color == tree::Color::BLACK);
-    }
-
-    /* Copy sub_tree information. */
+    /* Copy sub_tree information. Note that __p can't be null! */
     pointer copy(pointer __p) {
-        if(!__p) return nullptr;
-        pointer __c = impl.alloc(__p->data); /* Current node. */  
-        __c->son[0] = copy((pointer)__p->son[0]);
-        if(__c->son[0]) __c->son[0]->parent = __c;
-        __c->son[1] = copy((pointer)__p->son[1]);
-        if(__c->son[1]) __c->son[1]->parent = __c;
+        pointer __c = impl.alloc(__p->data); /* Current node. */
+        if(__p->son[0]) {
+            __c->son[0] = copy((pointer)__p->son[0]);
+            __c->son[0]->parent = __c;
+        }
+        if(__p->son[0]) {
+            __c->son[1] = copy((pointer)__p->son[1]);
+            __c->son[1]->parent = __c;
+        }
         return __c;
     }
 
@@ -153,7 +147,6 @@ class map {
 
     /**
      * @brief Insert a key-value pair into the map.
-     * If __key
      * 
      * @param __n Pointer to new memory block or nullptr.
      * @param __v Key-value to be inserted.
@@ -173,18 +166,18 @@ class map {
 
         baseptr __p = header.parent;
 
-        // int dir = insert_locate(__p,__v.first);
+        // int dir = insert_locate(__p,__v.first); // A failed attempt.
         // if(dir < 0) return {__p,false};
 
         bool dir;
         while(true) {
             if(impl (__v.first,pointer(__p)->data.first) ) {
                 if(__p->son[0]) __p = __p->son[0];
-                else {dir = 0;break;}
+                else { dir = 0; break; }
             }
             else if(impl (pointer(__p)->data.first,__v.first) )
                 if(__p->son[1]) __p = __p->son[1];
-                else {dir = 1;break;}
+                else { dir = 1 ;break; }
             else return {__p,false};
         }
 
@@ -192,6 +185,7 @@ class map {
         __p->son[dir] = impl.alloc(std::forward <U> (__v));
         __p->son[dir]->parent = __p;
 
+        /* May update the largest / smallest. */
         if(__p == header.son[!dir]) header.son[!dir] = __p->son[dir];
 
         tree::insert_at(__p = __p->son[dir]);
@@ -222,30 +216,36 @@ class map {
      * @brief Access the the value tied with given key.
      * 
      * @param __k Key to locate.
-     * @return Reference to the value. 
+     * @return Pointer to the value. If not found return nullptr. 
      */
     T *access(const key_t & __k) const noexcept {
         baseptr iter = locate(__k);
-        if(!iter) throw nullptr;
+        if(!iter) return nullptr;
         else return &pointer(iter)->data.second;
     }
+
+    /* Manually initialize the header and count of nodes. */
+    void initialize() noexcept { ::new (&header) node_base(); impl.count = 0; }
 
   public:
     /* Initialize from empty. */
     map() noexcept : impl(),header(&header) {}
 
     /* Initialize by copying another map. */
-    map(const map &rhs) noexcept : impl(rhs.impl),header(&header) {
+    map(const map &rhs) : impl(rhs.impl),header(&header) {
         if(rhs.empty()) return;
-        header.parent = copy((pointer)rhs.root());
 
-        baseptr __p; /* Find out the smallest and largest node. */
+        header.parent  = copy(pointer(rhs.root()));
+        root()->parent = &header;
 
-        __p = root();
+        /* Find out the smallest and largest node. */
+        baseptr __p;
+
+        __p = root(); /* Smallest */
         while(__p->son[0]) __p = __p->son[0];
         header.son[1] = __p;
 
-        __p = root();
+        __p = root(); /* Largest  */
         while(__p->son[1]) __p = __p->son[1];
         header.son[0] = __p;
     }
@@ -253,11 +253,30 @@ class map {
     /* Initialize by moving another map.  */
     map(map &&rhs) noexcept : impl(std::move(rhs.impl)),header(&header) {
         if(rhs.empty()) return;
+
         header = rhs.header;
+        root()->parent = &header;
+
         /* Clean the data of rhs map. */
-        rhs.impl.count = 0;
-        rhs.header.son[0] = rhs.header.son[1] 
-                          = rhs.header.parent = &rhs.header;
+        rhs.initialize();
+    }
+
+    /* Too lazy to overload. */
+    map &operator = (const map &rhs) {
+        if(this != &rhs) {
+            this->~map();
+            ::new (this) map(rhs);
+        }
+        return *this;
+    }
+
+    /* Too lazy to overload. */
+    map &operator = (map &&rhs) {
+        if(this != &rhs) {
+            this->~map();
+            ::new (this) map(std::move(rhs));
+        }
+        return *this;
     }
 
     /* Clean the storage. */
@@ -344,15 +363,18 @@ class map {
     { return locate(__k) != nullptr; }
 
     /* Clear the memory storage. */
-    void clear() noexcept { if(impl.count) { clean(root()) , impl.count = 0; } }
+    void clear() noexcept {
+        if(impl.count) {
+            clean(root());
+            initialize();
+        }
+    }
 
     T &operator [] (const key_t &__k) {
-        /// TODO:
+        /// TODO: Reduce the expansion of code as much as possible.
         
 
     }
-
-    void check() { check(root(),tree::Color::WHITE); }
 
   public:
     /* Iterator Part. */

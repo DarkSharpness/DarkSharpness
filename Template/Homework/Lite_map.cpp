@@ -1,5 +1,4 @@
-// #include <bits/stdc++.h>
-// #pragma GCC optimize(3)
+#pragma GCC optimize(3)
 
 #include <Dark/memleak>
 #include <Dark/inout>
@@ -57,9 +56,12 @@ signed main() {
     // map[2] = 1;
     sjtu::pair <int,int> p = {1,2};
     map.insert(p);
-    p.first = 2;
+    map.insert(2,3);
     map.at(2) = 1;
     // map.insert(p);
     for(auto &iter : map) dark::writeline(iter.first,iter.second);
+
+    for(auto iter = map.rbegin() ; iter != map.rend() ; ++iter)
+        dark::writeline(iter->first,iter->second);
     return 0;
 }
