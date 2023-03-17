@@ -1,10 +1,7 @@
-#include <iostream>
+#include <bits/stdc++.h>
 using namespace std;
 
-
-signed main() {
-    int n;
-    cin >> n;
+signed __std(int n) {
     int y = n / 10; // 第一行
     if(y > 0) {
         if(y == 1) {
@@ -233,6 +230,20 @@ signed main() {
         cout << "*****";
     } else {
         cout << "****-";
+    }
+    return 0;
+}
+
+
+signed main() {
+    for(int i = 1 ; i <= 100 ; ++i) {
+        string in = to_string(i) + ".in";
+        string out = to_string(i) + ".out";
+
+        freopen(in.c_str(),"w",stdout);
+        cout << i - 1;
+        freopen(out.c_str(),"w",stdout);
+        __std(i - 1);
     }
     return 0;
 }
