@@ -18,8 +18,10 @@ using baseptr = node_base *;
 
 
 inline bool is_root(const node_base *__p) noexcept;
+
 template <bool dir>
-inline bool is_dir (const node_base *__p) noexcept;
+[[deprecated]] inline bool is_dir (const node_base *__p) noexcept;
+
 template <bool dir>
 void advance(baseptr &__p) noexcept;
 
@@ -73,7 +75,7 @@ struct iterator_base {
     { advance <!dir> (ptr); return *this; }
 
     iterator_base operator ++ (int) noexcept
-    { auto temp = *this; advance <dir> (ptr); return temp; }
+    { auto temp = *this; advance <dir>  (ptr); return temp; }
 
     iterator_base operator -- (int) noexcept
     { auto temp = *this; advance <!dir> (ptr); return temp; }
@@ -126,7 +128,7 @@ inline bool is_header(const node_base *__p) noexcept
  * @return || 0 if root or on different branch || 1 otherwise ||
  */
 template <bool dir>
-inline bool is_dir(const node_base *__p) noexcept
+[[deprecated]] inline bool is_dir(const node_base *__p) noexcept
 { return !is_root(__p) && __p->dir(dir); }
 
 
@@ -136,7 +138,7 @@ inline bool is_white(const node_base *__p) noexcept
 
 
 /* Judge whether a node is black safely. */
-inline bool is_black(const node_base *__p) noexcept
+[[deprecated]] inline bool is_black(const node_base *__p) noexcept
 { return !__p || __p->color == Color::BLACK; }
 
 
@@ -154,10 +156,10 @@ void advance(baseptr &__p) noexcept {
         __p = __p->son[dir];
         while(__p->son[!dir]) __p = __p->son[!dir];
     } else { /* Upward. */
-        while(is_dir <dir> (__p)) __p = __p->parent;
+        baseptr __f = __p->parent;
+        while(__f->parent != __p && __f->son[dir] == __p) __p = __p->parent;
         __p = __p->parent;
     }
-
 }
 
 
@@ -256,7 +258,7 @@ void insert_at(baseptr __p) {
     while(!tree::is_root(__p) && __p->parent->color == Color::WHITE) {
         /* Because parent is white , parent can't be root.  */
         baseptr uncle = __p->parent->bro();
-        if(is_black(uncle)) break;
+        if(!is_white(uncle)) break;
         uncle->color = __p->parent->color  = Color::BLACK;
         (__p = __p->parent->parent)->color = Color::WHITE;
     }
