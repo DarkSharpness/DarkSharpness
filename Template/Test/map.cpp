@@ -4,6 +4,7 @@
 #include <Dark/memleak>
 #include <Dark/inout>
 #include <Dark/Container/map.h>
+// #include "../Homework/Lite_map.h"
 #include <map>
 
 struct test {};
@@ -52,13 +53,13 @@ inline void func() {
 }
 
 signed main() {
-    int n = 0;
+    int n = 1;
     // freopen("map0.txt","a",stdout);
     while(n--) func();
     using map = dark::map <int,int>;
     map m;
     m.insert({0,1});
-    m[0] = 2;
+    // m [0] = 2;
     // m[0] = 1;
     // m[1] = 2;
     // m[3] = 5;

@@ -2,6 +2,7 @@
 #ifndef _DARK_MAP_H_
 #define _DARK_MAP_H_
 
+
 // #include "utility.hpp"
 
 #include "exceptions.hpp"
@@ -189,6 +190,7 @@ void advance(baseptr &__p) noexcept {
     if(!__p) return ; /* Error ? */
 
     if(__p->son[dir]) { /* Downward */
+        if(__p == __p->son[dir]) return;
         __p = __p->son[dir];
         while(__p->son[!dir]) __p = __p->son[!dir];
     } else { /* Upward. */
@@ -211,6 +213,7 @@ void advance(const node_base *&__p) noexcept {
     if(!__p) return ; /* Error ? */
 
     if(__p->son[dir]) { /* Downward */
+        if(__p == __p->son[dir]) return;
         __p = __p->son[dir];
         while(__p->son[!dir]) __p = __p->son[!dir];
     } else { /* Upward. */
@@ -420,13 +423,14 @@ void erase_at(baseptr __p) {
 }
 
 void check(const node_base *__p) { 
-    // if(!__p || is_header(__p)) throw sjtu::index_out_of_bound(); 
+    if(!__p || is_header(__p)) throw sjtu::index_out_of_bound(); 
 }
 
 }
 
 
 }
+
 
 namespace dark {
 
@@ -455,6 +459,8 @@ class map {
     using baseptr   = tree::node_base *;
 
     using pair_t    = sjtu::pair <const key_t,T>;
+
+    using value_type = value_t;
 
     struct implement : std::allocator <node> , Compare {  
         size_t count;
@@ -511,11 +517,8 @@ class map {
         const_iterator(baseptr __p = nullptr,const void *__m = nullptr) 
         noexcept : iterator_base(__p),map(__m) {}
 
-        const_iterator(const iterator &rhs) noexcept : 
-            iterator_base(rhs.base()),map(rhs.source()) {}
-
-        const_iterator operator = (const iterator &rhs) noexcept
-        { ptr = rhs.base(); map = rhs.source(); }
+        const_iterator &operator = (const iterator &rhs) noexcept
+        { ptr = rhs.base(); map = rhs.source(); return *this; }
 
         const_iterator & operator ++(void) 
         { Base::operator++(); return *this; }
@@ -565,11 +568,12 @@ class map {
     /* Copy sub_tree information. Note that __p can't be null! */
     pointer copy(pointer __p) {
         pointer __c = impl.alloc(__p->data); /* Current node. */
+        __c->color  = __p->color;
         if(__p->son[0]) {
             __c->son[0] = copy((pointer)__p->son[0]);
             __c->son[0]->parent = __c;
         }
-        if(__p->son[0]) {
+        if(__p->son[1]) {
             __c->son[1] = copy((pointer)__p->son[1]);
             __c->son[1]->parent = __c;
         }
@@ -674,7 +678,7 @@ class map {
     }
 
     /* Manually initialize the header and count of nodes. */
-    void initialize() noexcept { ::new (&header) node_base(); impl.count = 0; }
+    void initialize() noexcept { ::new (&header) node_base(&header); impl.count = 0; }
 
   public:
     /* Initialize from empty. */
@@ -755,8 +759,8 @@ class map {
      * @return A pair of an iterator of the element and
      * a boolean of whether the insertion has been successful.
      */
-    return_t insert(value_t &&__v) 
-    { return insert_pair(std::move(__v.first),std::move(__v.second)); }
+    // return_t insert(value_t &&__v) 
+    // { return insert_pair(std::move(__v.first),std::move(__v.second)); }
 
     /**
      * @brief Erase all key-value pair with given key from the map.
@@ -828,7 +832,23 @@ class map {
 
     const T &at(const key_t &__k) const { return access(__k); }
 
-    void check()  { if(!empty()) check(root(),header.color); }
+    void check()  { 
+        if(!empty()) {
+            check(root(),header.color);
+            baseptr __p;
+        
+            __p = root();
+            while(__p->son[1]) __p = __p->son[1];
+            if(__p != header.son[0]) throw sjtu::invalid_iterator();
+
+            __p = root();
+            while(__p->son[0]) __p = __p->son[0];
+            if(__p != header.son[1]) throw sjtu::container_is_empty();
+        } else {
+            if(header.parent != &header || header.son[0] != &header || header.son[1] != &header)
+                throw "abcd";
+        }
+    }
 
     size_t check(baseptr __p,tree::Color __c) {
         if(!__p) return 0;

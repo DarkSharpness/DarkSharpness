@@ -20,13 +20,13 @@ signed main() {
     using map = dark::map <int,int>;
     map m;
     // m.insert({0,1});
-    for(int i = 0 ; i < 1e5 ; ++i) {
-        m.insert({rand(),rand()});
+    for(int i = 0 ; i < 2 ; ++i) {
+        m.insert({i,i});
         // m.check();
         // size_t cnt = 0;
         // for(auto &&iter : m) { cnt += iter.first * 0 + 1; }
         // if(cnt != m.size()) dark::writeline("Wrong!\n");
-        if(m.begin() == m.end()) dark::writeline(i);
+        // if(m.begin() == m.end()) dark::writeline(i);
     }
 
     size_t count = m.size();
@@ -34,15 +34,49 @@ signed main() {
     dark::writeline("Rest in peace");
     system("pause");
 
-    for(int i = 0 ; i < count ; ++i) {
-        // dark::writeline(i);
-        // dark::writeline(m.begin() == m.end() ? "True" : "False");
-        m.erase(m.begin());
-        // m.check();
-        // size_t cnt = 0;
-        // for(auto &&iter : m) { cnt += iter.first * 0 + 1; }
-        // if(cnt != m.size()) dark::writeline("Wrong!\n",cnt,m.size());
-    }
+    auto copy = map(m);
+    copy.check();
+    m.clear();
+
+    size_t tot = 0;
+    for(auto &&iter : copy)
+        if(iter.first != iter.second) throw;
+        else ++tot;
+    dark::writeline(tot);
+
+    m = copy;
+    m.check();
+    size_t cnt = 0;
+
+    for(auto &&iter : m)
+        if(iter.first != iter.second) throw;
+        else ++cnt;
+
+    dark::writeline(cnt);
+
+    map empty;
+    empty.check();
+
+    --empty.begin();
+    // --m.begin();
+    // m.check();
+    // m.clear();
+
+    // while(m.begin() != m.end()) m.erase(m.begin());
+
+    // for(int i = 0 ; i < count ; ++i) {
+    //     // dark::writeline(i);
+    //     // dark::writeline(m.begin() == m.end() ? "True" : "False");
+    //     m.erase(m.begin());
+    //     // m.check();
+    //     // size_t cnt = 0;
+    //     // for(auto &&iter : m) { cnt += iter.first * 0 + 1; }
+    //     // if(cnt != m.size()) dark::writeline("Wrong!\n",cnt,m.size());
+    // }
+
+    // dark::writeline(m.size(),int(m.empty()));
+
+
 
     // m[0] = 3;
     // m[1] = 2;

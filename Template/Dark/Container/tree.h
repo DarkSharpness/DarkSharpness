@@ -25,6 +25,9 @@ template <bool dir>
 template <bool dir>
 void advance(baseptr &__p) noexcept;
 
+template <bool dir>
+void advance(const node_base *&__p) noexcept;
+
 
 /* BW_Tree node base */
 struct node_base {
@@ -150,15 +153,37 @@ inline bool is_white(const node_base *__p) noexcept
  */
 template <bool dir>
 void advance(baseptr &__p) noexcept { 
-    // if(!__p) return ; /* Error ? */
+    if(!__p || __p == __p->son[dir]) return; /* Null or empty case. */
 
     if(__p->son[dir]) { /* Downward */
         __p = __p->son[dir];
         while(__p->son[!dir]) __p = __p->son[!dir];
     } else { /* Upward. */
         baseptr __f = __p->parent;
-        while(__f->parent != __p && __f->son[dir] == __p) __p = __p->parent;
-        __p = __p->parent;
+        while(__f->parent != __p && __f->son[dir] == __p)
+            __f = (__p = __f)->parent;
+        __p = __f;
+    }
+}
+
+/**
+ * @brief Advance toward target direcition by one step.
+ * 
+ * @tparam dir Target direction.
+ * @param __p The pointer to advance.
+ */
+template <bool dir>
+void advance(const node_base *&__p) noexcept { 
+    if(!__p || __p == __p->son[dir]) return; /* Null or empty case. */
+
+    if(__p->son[dir]) { /* Downward */
+        __p = __p->son[dir];
+        while(__p->son[!dir]) __p = __p->son[!dir];
+    } else { /* Upward. */
+        baseptr __f = __p->parent;
+        while(__f->parent != __p && __f->son[dir] == __p) 
+            __f = (__p = __f)->parent;
+        __p = __f;
     }
 }
 

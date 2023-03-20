@@ -55,27 +55,90 @@ class map {
 
 
     struct iterator : public tree::iterator_base <0,1> {
+        using Base = iterator_base;
+
         iterator(baseptr __p = nullptr) noexcept : iterator_base(__p) {}
+
+        iterator & operator ++(void) noexcept
+        { Base::operator++(); return *this; }
+
+        iterator & operator --(void) noexcept
+        { Base::operator--(); return *this; }
+
+        iterator operator ++ (int) noexcept
+        { auto temp = *this; Base::operator++(); return temp; }
+
+        iterator operator -- (int) noexcept
+        { auto temp = *this; Base::operator--(); return temp; }
+
         pair_t &operator * (void) const { return  cast(pointer(ptr)->data); }
         pair_t *operator ->(void) const { return &cast(pointer(ptr)->data); }
     };
 
     struct const_iterator : public tree::iterator_base <1,1> {
+        using Base = iterator_base;
+
         const_iterator(baseptr __p = nullptr) noexcept : iterator_base(__p) {}
+        const_iterator(const iterator &rhs) : iterator_base(rhs) {}
+
+        const_iterator & operator ++(void) noexcept
+        { Base::operator++(); return *this; }
+
+        const_iterator & operator --(void) noexcept
+        { Base::operator--(); return *this; }
+
+        const_iterator operator ++ (int) noexcept
+        { auto temp = *this; Base::operator++(); return temp; }
+
+        const_iterator operator -- (int) noexcept
+        { auto temp = *this; Base::operator--(); return temp; }
+
         const pair_t &operator * (void) const { return  cast(pointer(ptr)->data); }
         const pair_t *operator ->(void) const { return &cast(pointer(ptr)->data); }
     };
 
     struct reverse_iterator : public tree::iterator_base <0,0> {
+        using Base = iterator_base;
+
         reverse_iterator(baseptr __p = nullptr)
-            noexcept : iterator_base(__p) {}
+        noexcept : iterator_base(__p) {}
+
+        reverse_iterator & operator ++(void) noexcept
+        { Base::operator++(); return *this; }
+
+        reverse_iterator & operator --(void) noexcept
+        { Base::operator--(); return *this; }
+
+        reverse_iterator operator ++ (int) noexcept
+        { auto temp = *this; Base::operator++(); return temp; }
+
+        reverse_iterator operator -- (int) noexcept
+        { auto temp = *this; Base::operator--(); return temp; }
+
         pair_t &operator * (void) const { return  cast(pointer(ptr)->data); }
         pair_t *operator ->(void) const { return &cast(pointer(ptr)->data); }
     };
 
     struct const_reverse_iterator : public tree::iterator_base <1,0> {
+        using Base = iterator_base;
+
         const_reverse_iterator(baseptr __p = nullptr)
-            noexcept : iterator_base(__p) {}
+        noexcept : iterator_base(__p) {}
+        const_reverse_iterator(const reverse_iterator &rhs)
+        noexcept : iterator_base(rhs) {}
+
+        const_reverse_iterator & operator ++(void) noexcept
+        { Base::operator++(); return *this; }
+
+        const_reverse_iterator & operator --(void) noexcept
+        { Base::operator--(); return *this; }
+
+        const_reverse_iterator operator ++ (int) noexcept
+        { auto temp = *this; Base::operator++(); return temp; }
+
+        const_reverse_iterator operator -- (int) noexcept
+        { auto temp = *this; Base::operator--(); return temp; }
+
         const pair_t &operator * (void) const { return  cast(pointer(ptr)->data); }
         const pair_t *operator ->(void) const { return &cast(pointer(ptr)->data); }
     };
@@ -84,7 +147,6 @@ class map {
 
     implement impl;   /* Implement of compare and memory function. */
     node_base header; /* Parent as root node || son[0] as largest || son[1] as smallest. */
-
 
     /* Cast value_t to pair_t */
     static inline pair_t & cast(value_t &__v) 
@@ -113,11 +175,12 @@ class map {
     /* Copy sub_tree information. Note that __p can't be null! */
     pointer copy(pointer __p) {
         pointer __c = impl.alloc(__p->data); /* Current node. */
+        __c->color  = __p->color;
         if(__p->son[0]) {
             __c->son[0] = copy((pointer)__p->son[0]);
             __c->son[0]->parent = __c;
         }
-        if(__p->son[0]) {
+        if(__p->son[1]) {
             __c->son[1] = copy((pointer)__p->son[1]);
             __c->son[1]->parent = __c;
         }
@@ -200,7 +263,7 @@ class map {
             header.son[0] = __p->son[0] ? __p->son[0] : __p->parent;
         /* Update smallest in constant time. */
         if(__p == header.son[1])
-        header.son[1] = __p->son[1] ? __p->son[1] : __p->parent;
+            header.son[1] = __p->son[1] ? __p->son[1] : __p->parent;
 
         tree::erase_at(__p);
         --impl.count;
@@ -221,7 +284,7 @@ class map {
     }
 
     /* Manually initialize the header and count of nodes. */
-    void initialize() noexcept { ::new (&header) node_base(); impl.count = 0; }
+    void initialize() noexcept { ::new (&header) node_base(&header); impl.count = 0; }
 
   public:
     /* Initialize from empty. */
@@ -368,8 +431,7 @@ class map {
 
     T &operator [] (const key_t &__k) {
         /// TODO: Reduce the expansion of code as much as possible.
-        
-
+        throw ;
     }
 
   public:
