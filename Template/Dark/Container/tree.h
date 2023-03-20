@@ -237,6 +237,7 @@ void swap_next(baseptr __p) {
     std::swap(__n->color,__p->color);
 }
 
+
 /* Special case when __p and its parent are both red.  */
 void insert_fix(baseptr __p) {
     /* Now parent is white , so parent can't be root.  */
@@ -253,6 +254,7 @@ void insert_fix(baseptr __p) {
     }
 }
 
+
 /* Adjust the node color after inserting a new node. */
 void insert_at(baseptr __p) {
     while(!tree::is_root(__p) && __p->parent->color == Color::WHITE) {
@@ -266,6 +268,7 @@ void insert_at(baseptr __p) {
     if(is_root(__p)) return (void) (__p->color = Color::BLACK);
     if(__p->parent->color == Color::WHITE) insert_fix(__p);
 }
+
 
 /* Replace current node another node in erasion. */
 inline void erase_replace(baseptr __p,baseptr __n) {
@@ -281,6 +284,7 @@ inline void erase_branch(baseptr __p) {
     if(is_root(__p)) __p->parent->parent = __p->parent;
     else    __p->parent->son[__p->dir()] = nullptr;
 }
+
 
 /* Fix black leaf case. */
 void erase_fix(baseptr __p) {
@@ -333,6 +337,7 @@ void erase_fix(baseptr __p) {
     }
 }
 
+
 /**
  * @brief Erase at given node. No memory is touched.
  * Deconstruction and deallocation function should be 
@@ -350,9 +355,6 @@ void erase_at(baseptr __p) {
     if(__p->son[0]) return erase_replace(__p,__p->son[0]);
 
     /* Now __p has no son. */
-
-
-    /* __p has no son. */
     if(__p->color == Color::BLACK) erase_fix(__p);
 
     erase_branch(__p);

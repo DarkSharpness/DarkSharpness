@@ -165,10 +165,6 @@ class map {
             return insert_root(impl.alloc(std::forward <U> (__v)));
 
         baseptr __p = header.parent;
-
-        // int dir = insert_locate(__p,__v.first); // A failed attempt.
-        // if(dir < 0) return {__p,false};
-
         bool dir;
         while(true) {
             if(impl (__v.first,pointer(__p)->data.first) ) {

@@ -1,3 +1,4 @@
+// For a better version,see https://github.com/DarkSharpness/DarkSharpness/blob/main/Template/Dark/Container/map.h
 #ifndef _DARK_MAP_H_
 #define _DARK_MAP_H_
 
@@ -16,32 +17,24 @@ class pair {
 	T1 first;
 	T2 second;
 
-    /* Empty construction. */
-	constexpr pair() : first() , second() {}
-	pair(pair &&other) = default;
+	constexpr pair() : first(), second() {}
 	pair(const pair &other) = default;
+	pair(pair &&other) = default;
 
-    pair(T1 &&x) : first(std::move(x)) , second() {}
-    pair(const T1 &x) : first(x) , second() {}
+    pair(T1 &&x) : first(std::move(x)) {}
 
-    /* Directly copy. */
+    pair(const T1 &x) : first(x) {}
 	pair(const T1 &x, const T2 &y) : first(x), second(y) {}
-    /* Perfect forwarding. */
-	template<class U1, class U2>
-	pair(U1 &&x, U2 &&y) :
-        first(std::forward <U1> (x)), second(std::forward <U2> (y)) {}
 
-    /* Copy content. */
 	template<class U1, class U2>
-	pair(const pair <U1, U2> &other) : 
-        first(other.first), second(other.second) {}
-    /* Move content. */
+	pair(U1 &&x, U2 &&y) : first(std::move(x)), second(std::move(y)) {}
+
 	template<class U1, class U2>
-	pair(pair <U1, U2> &&other) : 
-        first(std::move(other.first)), second(std::move(other.second)) {}
-    
-    ~pair() noexcept = default;
-    
+	pair(const pair<U1, U2> &other) : first(other.first), second(other.second) {}
+
+	template<class U1, class U2>
+	pair(pair<U1, U2> &&other) : first (std::move(other.first)),
+                                 second(std::move(other.second)) {}
 };
 
 }
@@ -62,11 +55,17 @@ using baseptr = node_base *;
 
 
 inline bool is_root(const node_base *__p) noexcept;
+
 template <bool dir>
-inline bool is_dir (const node_base *__p) noexcept;
+[[deprecated]] inline bool is_dir (const node_base *__p) noexcept;
+
 template <bool dir>
 void advance(baseptr &__p) noexcept;
 
+template <bool dir>
+void advance(const node_base *&__p) noexcept;
+
+void check(const node_base *__p);
 
 /* BW_Tree node base */
 struct node_base {
@@ -105,22 +104,17 @@ struct iterator_base {
     /* Force to pass a pointer. */
     iterator_base(baseptr __p) noexcept : ptr(__p) {}
 
-    iterator_base(const iterator_base <false,dir> &rhs) noexcept : ptr(rhs.ptr) {}
+    iterator_base &operator ++ ()
+    { check(ptr); advance <dir> (ptr); return *this; }
 
-    iterator_base & operator = (const iterator_base <false,dir> &rhs) 
-    noexcept { ptr = rhs.ptr; return *this; }
+    iterator_base &operator -- ()
+    { advance <!dir> (ptr); check(ptr); return *this; }
 
-    iterator_base &operator ++ () noexcept
-    { advance <dir> (ptr); return *this; }
+    iterator_base operator ++ (int)
+    { auto temp = *this; operator++(); return temp; }
 
-    iterator_base &operator -- () noexcept
-    { advance <!dir> (ptr); return *this; }
-
-    iterator_base operator ++ (int) noexcept
-    { auto temp = *this; advance <dir> (ptr); return temp; }
-
-    iterator_base operator -- (int) noexcept
-    { auto temp = *this; advance <!dir> (ptr); return temp; }
+    iterator_base operator -- (int)
+    { auto temp = *this; operator--(); return temp; }
 
     baseptr base() const { return ptr; }
 
@@ -170,7 +164,7 @@ inline bool is_header(const node_base *__p) noexcept
  * @return || 0 if root or on different branch || 1 otherwise ||
  */
 template <bool dir>
-inline bool is_dir(const node_base *__p) noexcept
+[[deprecated]] inline bool is_dir(const node_base *__p) noexcept
 { return !is_root(__p) && __p->dir(dir); }
 
 
@@ -180,7 +174,7 @@ inline bool is_white(const node_base *__p) noexcept
 
 
 /* Judge whether a node is black safely. */
-inline bool is_black(const node_base *__p) noexcept
+[[deprecated]] inline bool is_black(const node_base *__p) noexcept
 { return !__p || __p->color == Color::BLACK; }
 
 
@@ -192,16 +186,39 @@ inline bool is_black(const node_base *__p) noexcept
  */
 template <bool dir>
 void advance(baseptr &__p) noexcept { 
-    // if(!__p) return ; /* Error ? */
+    if(!__p) return ; /* Error ? */
 
     if(__p->son[dir]) { /* Downward */
         __p = __p->son[dir];
         while(__p->son[!dir]) __p = __p->son[!dir];
     } else { /* Upward. */
-        while(is_dir <dir> (__p)) __p = __p->parent;
-        __p = __p->parent;
+        baseptr __f = __p->parent;
+        while(__f->parent != __p && __f->son[dir] == __p)
+        { __p = __f ; __f = __p->parent; }
+        __p = __f;
     }
+}
 
+
+/**
+ * @brief Advance toward target direcition by one step.
+ * 
+ * @tparam dir Target direction.
+ * @param __p The pointer to advance.
+ */
+template <bool dir>
+void advance(const node_base *&__p) noexcept { 
+    if(!__p) return ; /* Error ? */
+
+    if(__p->son[dir]) { /* Downward */
+        __p = __p->son[dir];
+        while(__p->son[!dir]) __p = __p->son[!dir];
+    } else { /* Upward. */
+        baseptr __f = __p->parent;
+        while(__f->parent != __p && __f->son[dir] == __p)
+        { __p = __f ; __f = __p->parent; }
+        __p = __f;
+    }
 }
 
 
@@ -279,6 +296,7 @@ void swap_next(baseptr __p) {
     std::swap(__n->color,__p->color);
 }
 
+
 /* Special case when __p and its parent are both red.  */
 void insert_fix(baseptr __p) {
     /* Now parent is white , so parent can't be root.  */
@@ -295,12 +313,13 @@ void insert_fix(baseptr __p) {
     }
 }
 
+
 /* Adjust the node color after inserting a new node. */
 void insert_at(baseptr __p) {
-    while(!tree::is_root(__p) && __p->parent->color == Color::WHITE) {
+    while(!is_root(__p) && __p->parent->color == Color::WHITE) {
         /* Because parent is white , parent can't be root.  */
         baseptr uncle = __p->parent->bro();
-        if(is_black(uncle)) break;
+        if(!is_white(uncle)) break;
         uncle->color = __p->parent->color  = Color::BLACK;
         (__p = __p->parent->parent)->color = Color::WHITE;
     }
@@ -308,6 +327,7 @@ void insert_at(baseptr __p) {
     if(is_root(__p)) return (void) (__p->color = Color::BLACK);
     if(__p->parent->color == Color::WHITE) insert_fix(__p);
 }
+
 
 /* Replace current node another node in erasion. */
 inline void erase_replace(baseptr __p,baseptr __n) {
@@ -323,6 +343,7 @@ inline void erase_branch(baseptr __p) {
     if(is_root(__p)) __p->parent->parent = __p->parent;
     else    __p->parent->son[__p->dir()] = nullptr;
 }
+
 
 /* Fix black leaf case. */
 void erase_fix(baseptr __p) {
@@ -375,6 +396,7 @@ void erase_fix(baseptr __p) {
     }
 }
 
+
 /**
  * @brief Erase at given node. No memory is touched.
  * Deconstruction and deallocation function should be 
@@ -392,19 +414,25 @@ void erase_at(baseptr __p) {
     if(__p->son[0]) return erase_replace(__p,__p->son[0]);
 
     /* Now __p has no son. */
-
-
-    /* __p has no son. */
     if(__p->color == Color::BLACK) erase_fix(__p);
 
     erase_branch(__p);
 }
 
+void check(const node_base *__p) { 
+    // if(!__p || is_header(__p)) throw sjtu::index_out_of_bound(); 
 }
 
-// using key_t   = int;
-// using T       = int;
-// using Compare = std::less <key_t>;
+}
+
+
+}
+
+namespace dark {
+
+using key_t = long long;
+using T = double;
+using Compare = std::less <key_t>;
 
 template <class key_t,
           class T,
@@ -413,10 +441,10 @@ class map {
   public:
 
     struct implement;
-    struct iterator;
-    struct const_iterator;
-    struct reverse_iterator;
-    struct const_reverse_iterator;
+    class iterator;
+    class const_iterator;
+    // struct reverse_iterator;
+    // struct const_reverse_iterator;
 
     using value_t   = sjtu::pair <key_t,T>;
     using return_t  = sjtu::pair <iterator,bool>;
@@ -427,7 +455,6 @@ class map {
     using baseptr   = tree::node_base *;
 
     using pair_t    = sjtu::pair <const key_t,T>;
-    using pairptr   = pair_t *;
 
     struct implement : std::allocator <node> , Compare {  
         size_t count;
@@ -449,28 +476,59 @@ class map {
     };
 
 
-    struct iterator : public tree::iterator_base <0,1> {
-        iterator(baseptr __p = nullptr) noexcept : iterator_base(__p) {}
+    class iterator : public tree::iterator_base <0,1> {
+      private:
+        using Base = tree::iterator_base <0,1>;
+        const void *map;
+      public:
+        iterator(baseptr __p = nullptr,const void *__m = nullptr) 
+        noexcept : iterator_base(__p),map(__m) {}
+
+        iterator & operator ++(void) 
+        { Base::operator++(); return *this; }
+
+        iterator & operator --(void) 
+        { Base::operator--(); return *this; }
+
+        iterator operator ++ (int)
+        { auto temp = *this; Base::operator++(); return temp; }
+
+        iterator operator --(int)
+        { auto temp = *this; Base::operator--(); return temp; }
+
         pair_t &operator * (void) const { return  cast(pointer(ptr)->data); }
         pair_t *operator ->(void) const { return &cast(pointer(ptr)->data); }
+
+        const void *source() const { return map; }
     };
 
-    struct const_iterator : public tree::iterator_base <1,1> {
-        const_iterator(baseptr __p = nullptr) noexcept : iterator_base(__p) {}
-        const pair_t &operator * (void) const { return  cast(pointer(ptr)->data); }
-        const pair_t *operator ->(void) const { return &cast(pointer(ptr)->data); }
-    };
 
-    struct reverse_iterator : public tree::iterator_base <0,0> {
-        reverse_iterator(baseptr __p = nullptr)
-            noexcept : iterator_base(__p) {}
-        pair_t &operator * (void) const { return  cast(pointer(ptr)->data); }
-        pair_t *operator ->(void) const { return &cast(pointer(ptr)->data); }
-    };
+    class const_iterator : public tree::iterator_base <1,1> {
+      private:
+        using Base = tree::iterator_base <1,1>;
+        const void *map;
+      public:
+        const_iterator(baseptr __p = nullptr,const void *__m = nullptr) 
+        noexcept : iterator_base(__p),map(__m) {}
 
-    struct const_reverse_iterator : public tree::iterator_base <1,0> {
-        const_reverse_iterator(baseptr __p = nullptr)
-            noexcept : iterator_base(__p) {}
+        const_iterator(const iterator &rhs) noexcept : 
+            iterator_base(rhs.base()),map(rhs.source()) {}
+
+        const_iterator operator = (const iterator &rhs) noexcept
+        { ptr = rhs.base(); map = rhs.source(); }
+
+        const_iterator & operator ++(void) 
+        { Base::operator++(); return *this; }
+
+        const_iterator & operator --(void) 
+        { Base::operator--(); return *this; }
+
+        const_iterator operator ++ (int)
+        { auto temp = *this; Base::operator++(); return temp; }
+
+        const_iterator operator --(int)
+        { auto temp = *this; Base::operator--(); return temp; }
+
         const pair_t &operator * (void) const { return  cast(pointer(ptr)->data); }
         const pair_t *operator ->(void) const { return &cast(pointer(ptr)->data); }
     };
@@ -480,12 +538,12 @@ class map {
     implement impl;   /* Implement of compare and memory function. */
     node_base header; /* Parent as root node || son[0] as largest || son[1] as smallest. */
 
-    baseptr root() const noexcept { return header.parent; }
-
     /* Cast value_t to pair_t */
     static inline pair_t & cast(value_t &__v) 
     {  return reinterpret_cast <pair_t &> (__v) ;}
 
+    /* Return the root node of the tree. */
+    baseptr root() const noexcept { return header.parent; }
 
     /* Special case : insert at root node. */
     return_t insert_root(baseptr __n) {
@@ -493,7 +551,7 @@ class map {
         header.parent = header.son[0] = header.son[1] = __n;
         __n->parent   = &header;
         __n->color    = tree::Color::BLACK;
-        return {__n,true};
+        return {{__n,this},true};
     }
 
     /* Clean subtree info without modifying tree size. */
@@ -504,23 +562,17 @@ class map {
         impl.dealloc(__p);
     }
 
-    /* Debug use only!!! */
-    int check(baseptr __p,tree::Color C) {
-        if(!__p) return 0;
-        if(__p->color == tree::Color::WHITE && __p->color == C) throw "Double red!";
-        int t = check(__p->son[0],__p->color);
-        if(t != check(__p->son[1],__p->color)) throw "Different length!";
-        return t + (__p->color == tree::Color::BLACK);
-    }
-
-    /* Copy sub_tree information. */
+    /* Copy sub_tree information. Note that __p can't be null! */
     pointer copy(pointer __p) {
-        if(!__p) return nullptr;
-        pointer __c = impl.alloc(__p->data); /* Current node. */  
-        __c->son[0] = copy((pointer)__p->son[0]);
-        if(__c->son[0]) __c->son[0]->parent = __c;
-        __c->son[1] = copy((pointer)__p->son[1]);
-        if(__c->son[1]) __c->son[1]->parent = __c;
+        pointer __c = impl.alloc(__p->data); /* Current node. */
+        if(__p->son[0]) {
+            __c->son[0] = copy((pointer)__p->son[0]);
+            __c->son[0]->parent = __c;
+        }
+        if(__p->son[0]) {
+            __c->son[1] = copy((pointer)__p->son[1]);
+            __c->son[1]->parent = __c;
+        }
         return __c;
     }
 
@@ -546,7 +598,7 @@ class map {
     }
 
     /**
-     * @brief Insert a key and value arguments into the map.
+     * @brief Insert a key-value pair into the map.
      * 
      * @param __n Pointer to new memory block or nullptr.
      * @param __v Key-value to be inserted.
@@ -561,25 +613,19 @@ class map {
             I'm fed up . So you see such a function as below , like a piece of SHIT.
         */
 
-        /* Avoid misusage. */
-        static_assert (std::is_same_v <std::decay_t <key_t>,
-                                       std::decay_t <U>   >,"Misusage");
-
         if(empty()) /* Just empty , so insert at root node. */
-            return insert_root(impl.alloc(std::forward <U> (__k),
-                                          std::forward <V> (__v)...));
+            return insert_root( impl.alloc(std::forward <U> (__k),
+                                           std::forward <V> (__v)...) );
 
-        baseptr __p = header.parent;
-
+        baseptr __p = root();
         bool dir;
         while(true) {
             if(impl (__k,pointer(__p)->data.first) ) {
                 if(__p->son[0]) __p = __p->son[0];
-                else {dir = 0;break;}
-            }
-            else if(impl (pointer(__p)->data.first,__k) )
+                else { dir = 0; break; }
+            } else if(impl (pointer(__p)->data.first,__k) )
                 if(__p->son[1]) __p = __p->son[1];
-                else {dir = 1;break;}
+                else { dir = 1 ;break; }
             else return {__p,false};
         }
 
@@ -588,10 +634,11 @@ class map {
                                    std::forward <V> (__v)...);
         __p->son[dir]->parent = __p;
 
+        /* May update the largest / smallest. */
         if(__p == header.son[!dir]) header.son[!dir] = __p->son[dir];
 
         tree::insert_at(__p = __p->son[dir]);
-        return {__p,true};
+        return {{__p,this},true};
     }
 
     /**
@@ -606,7 +653,7 @@ class map {
             header.son[0] = __p->son[0] ? __p->son[0] : __p->parent;
         /* Update smallest in constant time. */
         if(__p == header.son[1])
-        header.son[1] = __p->son[1] ? __p->son[1] : __p->parent;
+            header.son[1] = __p->son[1] ? __p->son[1] : __p->parent;
 
         tree::erase_at(__p);
         --impl.count;
@@ -618,13 +665,12 @@ class map {
      * @brief Access the the value tied with given key.
      * 
      * @param __k Key to locate.
-     * @return Reference to the value. 
-     * @throw sjtu::index_out_of_bound() if __k not in map.
+     * @return Pointer to the value. If not found throw. 
      */
-    T & access(const key_t & __k) const {
+    T &access(const key_t & __k) const {
         baseptr iter = locate(__k);
         if(!iter) throw sjtu::index_out_of_bound();
-        else return pointer(iter)->data.second;
+        return pointer(iter)->data.second;
     }
 
     /* Manually initialize the header and count of nodes. */
@@ -699,8 +745,8 @@ class map {
      * @return A pair of an iterator of the element and
      * a boolean of whether the insertion has been successful.
      */
-    return_t insert(const value_t &__v) { return insert_pair(__v.first,
-                                                             __v.second); }
+    return_t insert(const value_t &__v) 
+    { return insert_pair(__v.first,__v.second); }
     /**
      * @brief Insert a key-value pair to the map.
      * If there exists indentical key, insertion will fail.
@@ -709,34 +755,8 @@ class map {
      * @return A pair of an iterator of the element and
      * a boolean of whether the insertion has been successful.
      */
-    return_t insert(value_t &&__v) { return insert_pair(std::move(__v.first),
-                                                        std::move(__v.second)); }
-
-    /**
-     * @brief Insert a key-value pair to the map.
-     * If there exists indentical key, insertion will fail.
-     *  
-     * @param __k Key to insert.
-     * @param __v Arguments to construct the value.
-     * @return return_t A pair of an iterator of the element and
-     * a boolean of whether the insertion has been successful.
-     */
-    template <class ...V>
-    return_t insert(const key_t &__k,V &&...__v) 
-    { return insert_pair(__k,std::forward <V> (__v)...); }
-    /**
-     * @brief Insert a key-value pair to the map.
-     * If there exists indentical key, insertion will fail.
-     *  
-     * @param __k Key to insert.
-     * @param __v Arguments to construct the value.
-     * @return return_t A pair of an iterator of the element and
-     * a boolean of whether the insertion has been successful.
-     */
-    template <class ...V>
-    return_t insert(key_t &&__k,V &&...__v) 
-    { return insert_pair(std::move(__k),std::forward <V> (__v)...); }
-
+    return_t insert(value_t &&__v) 
+    { return insert_pair(std::move(__v.first),std::move(__v.second)); }
 
     /**
      * @brief Erase all key-value pair with given key from the map.
@@ -754,12 +774,11 @@ class map {
     /**
      * @brief Erase one key-value pair with given iterator from the map.
      * 
-     * @param __i Non-const (reverse) iterator to a key-value pair.
+     * @param __i Non-const iterator to a key-value pair.
      * @return Count of key-value pairs erased. (0 or 1)
      */
-    template <bool dir>
-    size_t erase(tree::iterator_base <0,dir> __i) {
-        if(is_header(__i.base())) return 0;
+    size_t erase(iterator __i) {
+        if(__i.source() != this || __i.base() == &header) throw sjtu::runtime_error();
         else return erase_pair(__i.base());
     }
 
@@ -773,7 +792,7 @@ class map {
     iterator find(const key_t &__k) noexcept {
         baseptr __p = locate(__k);
         if(!__p)    return end();
-        else        return {__p};
+        else        return {__p,this};
     }
 
     /**
@@ -786,7 +805,7 @@ class map {
     const_iterator find(const key_t &__k) const noexcept {
         baseptr __p = locate(__k);
         if(!__p)    return end();
-        else        return {__p};
+        else        return {__p,this};
     }
 
     /* Return counts of node with given key. (0 or 1) */
@@ -794,7 +813,12 @@ class map {
     { return locate(__k) != nullptr; }
 
     /* Clear the memory storage. */
-    void clear() noexcept { if(impl.count) { clean(root()) , impl.count = 0; } }
+    void clear() noexcept {
+        if(impl.count) {
+            clean(root());
+            initialize();
+        }
+    }
 
     T &operator [] (const key_t &__k) { return insert_pair(__k).first->second; }
 
@@ -802,30 +826,43 @@ class map {
 
     T &at(const key_t &__k) { return access(__k); }
 
-    const T &at (const key_t &__k) const { return access(__k); }
+    const T &at(const key_t &__k) const { return access(__k); }
 
-    // void check() { check(root(),tree::Color::WHITE); }
+    void check()  { if(!empty()) check(root(),header.color); }
+
+    size_t check(baseptr __p,tree::Color __c) {
+        if(!__p) return 0;
+        if(__c == tree::Color::WHITE && __c == __p->color) throw sjtu::exception();
+        size_t x = check(__p->son[0],__p->color);
+        if(x != check(__p->son[1],__p->color)) throw sjtu::exception();
+        return x + (__p->color == tree::Color::BLACK);
+    }
 
   public:
     /* Iterator Part. */
 
-    iterator begin() noexcept { return header.son[1]; }
-    iterator end()   noexcept { return   &header;     }
+    iterator begin() noexcept { return {header.son[1],this}; }
+    iterator end()   noexcept { return    {&header,this};    }
 
-    const_iterator begin() const noexcept  { return header.son[1]; }
-    const_iterator end()   const noexcept  { return   &header;     }
-    const_iterator cbegin() const noexcept { return header.son[1]; }
-    const_iterator cend()   const noexcept { return   &header;     }
+    const_iterator begin() const noexcept  { return {header.son[1],this}; }
+    const_iterator end()   const noexcept  { return   {&header,this};     }
+    const_iterator cbegin() const noexcept { return {header.son[1],this}; }
+    const_iterator cend()   const noexcept { return   {&header,this};     }
 
-    reverse_iterator rbegin() { return header.son[0]; }
-    reverse_iterator rend()   { return   &header;     }
-    const_reverse_iterator rbegin() const noexcept  { return header.son[0]; }
-    const_reverse_iterator rend()   const noexcept  { return   &header;     }
-    const_reverse_iterator crbegin() const noexcept { return header.son[0]; }
-    const_reverse_iterator crend()   const noexcept { return   &header;     }
 };
 
 
+
+}
+
+
+
+
+
+namespace sjtu {
+
+template <class key_t,class T,class Compare = std::less <key_t>>
+using map = dark::map <key_t,T,Compare>;
 
 }
 
