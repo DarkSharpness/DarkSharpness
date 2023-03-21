@@ -1,1 +1,3 @@
-Template library of DarkSharpness.
+# Template library of DarkSharpness.
+
+# No warranty.
