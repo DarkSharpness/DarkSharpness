@@ -460,7 +460,7 @@ class map {
 
     using pair_t    = sjtu::pair <const key_t,T>;
 
-    using value_type = value_t;
+    using value_type = pair_t;
 
     struct implement : std::allocator <node> , Compare {  
         size_t count;
@@ -516,6 +516,9 @@ class map {
       public:
         const_iterator(baseptr __p = nullptr,const void *__m = nullptr) 
         noexcept : iterator_base(__p),map(__m) {}
+
+        const_iterator(const iterator &rhs) noexcept : 
+            iterator_base(rhs.base()),map(rhs.source()) {}
 
         const_iterator &operator = (const iterator &rhs) noexcept
         { ptr = rhs.base(); map = rhs.source(); return *this; }
@@ -759,8 +762,8 @@ class map {
      * @return A pair of an iterator of the element and
      * a boolean of whether the insertion has been successful.
      */
-    // return_t insert(value_t &&__v) 
-    // { return insert_pair(std::move(__v.first),std::move(__v.second)); }
+    return_t insert(value_t &&__v) 
+    { return insert_pair(std::move(__v.first),std::move(__v.second)); }
 
     /**
      * @brief Erase all key-value pair with given key from the map.
@@ -824,6 +827,7 @@ class map {
         }
     }
 
+    T &operator [] (key_t &&__k) { return insert_pair(std::move(__k)).first->second; }
     T &operator [] (const key_t &__k) { return insert_pair(__k).first->second; }
 
     const T &operator [] (const key_t &__k) const { return access(__k); }
@@ -831,32 +835,6 @@ class map {
     T &at(const key_t &__k) { return access(__k); }
 
     const T &at(const key_t &__k) const { return access(__k); }
-
-    void check()  { 
-        if(!empty()) {
-            check(root(),header.color);
-            baseptr __p;
-        
-            __p = root();
-            while(__p->son[1]) __p = __p->son[1];
-            if(__p != header.son[0]) throw sjtu::invalid_iterator();
-
-            __p = root();
-            while(__p->son[0]) __p = __p->son[0];
-            if(__p != header.son[1]) throw sjtu::container_is_empty();
-        } else {
-            if(header.parent != &header || header.son[0] != &header || header.son[1] != &header)
-                throw "abcd";
-        }
-    }
-
-    size_t check(baseptr __p,tree::Color __c) {
-        if(!__p) return 0;
-        if(__c == tree::Color::WHITE && __c == __p->color) throw sjtu::exception();
-        size_t x = check(__p->son[0],__p->color);
-        if(x != check(__p->son[1],__p->color)) throw sjtu::exception();
-        return x + (__p->color == tree::Color::BLACK);
-    }
 
   public:
     /* Iterator Part. */
@@ -874,8 +852,6 @@ class map {
 
 
 }
-
-
 
 
 

@@ -25,10 +25,10 @@ class map {
     using value_t   = std::pair <key_t,T>;
     using return_t  = std::pair <iterator,bool>;
 
-    using node      = tree::node <value_t>;
-    using pointer   = tree::node <value_t> *;
     using node_base = tree::node_base;
     using baseptr   = tree::node_base *;
+    using node      = tree::node <value_t>;
+    using pointer   = tree::node <value_t> *;
 
     using pair_t    = std::pair <const key_t,T>;
     using pairptr   = std::pair <const key_t,T> *;

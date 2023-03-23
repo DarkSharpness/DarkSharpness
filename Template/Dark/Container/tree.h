@@ -23,7 +23,7 @@ template <bool dir>
 [[deprecated]] inline bool is_dir (const node_base *__p) noexcept;
 
 template <bool dir>
-void advance(baseptr &__p) noexcept;
+void advance(node_base *&__p) noexcept;
 
 template <bool dir>
 void advance(const node_base *&__p) noexcept;
@@ -152,7 +152,7 @@ inline bool is_white(const node_base *__p) noexcept
  * @param __p The pointer to advance.
  */
 template <bool dir>
-void advance(baseptr &__p) noexcept { 
+void advance(node_base *&__p) noexcept { 
     if(!__p || __p == __p->son[dir]) return; /* Null or empty case. */
 
     if(__p->son[dir]) { /* Downward */
