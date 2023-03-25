@@ -1,7 +1,7 @@
 #ifndef _DARK_DYNAMIC_ARRAY_H_
 #define _DARK_DYNAMIC_ARRAY_H_
 
-#include "../include/basic.h"
+#include "../third_party/basic.h"
 #include "iterator.h"
 
 #include <memory>
