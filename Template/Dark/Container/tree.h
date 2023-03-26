@@ -12,10 +12,7 @@ namespace tree {
 /* BW_Tree color */
 enum struct Color : bool { BLACK = 0 , WHITE = 1 };
 
-
 struct node_base;
-using baseptr = node_base *;
-
 
 inline bool is_root(const node_base *__p) noexcept;
 
@@ -31,6 +28,7 @@ void advance(const node_base *&__p) noexcept;
 
 /* BW_Tree node base */
 struct node_base {
+    using baseptr = node_base *;
     Color   color;
     baseptr parent;
     baseptr son[2];
@@ -50,6 +48,43 @@ struct node_base {
 };
 
 
+/* A tag marking perfect forwarding. */
+struct forward_tag {};
+
+/* BW_Tree node for given value_t(pair <key_t,T>). */
+template <class value_t>
+struct node : public node_base {
+    value_t data;
+    node() = default;
+
+    template <class ...Args>
+    node(forward_tag,Args &&...objs) : data(std::forward <Args> (objs)...) {} 
+
+};
+
+
+/* An implement for node allocator. */
+template <class value_t,
+          class allocator_t = std::allocator <value_t>,
+          class ...Ts>
+struct implement : allocator_t , Ts ... {
+    using pointer = value_t *;
+    size_t count = 0;
+
+    template <class ...Args>
+    inline pointer alloc(Args &&...objs) {
+        pointer __p = this->allocate(1);
+        this->construct(__p,std::forward <Args> (objs)...);
+        return __p;
+    }
+
+    inline void dealloc(void *__p) {
+        this->destroy((pointer)__p);
+        this->deallocate((pointer)__p,1);
+    }
+
+};
+
 /**
  * @brief The base for iterator of BW_Tree.
  * 
@@ -65,8 +100,6 @@ struct iterator_base {
   public:
     /* Force to pass a pointer. */
     iterator_base(baseptr __p) noexcept : ptr(__p) {}
-
-    iterator_base(const iterator_base <false,dir> &rhs) noexcept : ptr(rhs.ptr) {}
 
     iterator_base & operator = (const iterator_base <false,dir> &rhs) 
     noexcept { ptr = rhs.ptr; return *this; }
@@ -88,21 +121,26 @@ struct iterator_base {
 };
 
 
-/* BW_Tree node for given value_t(pair <key_t,T>). */
-template <class value_t>
-struct node : public node_base {
-    value_t data;
-    node() noexcept = default;
 
-    node(value_t  &__d)          : data(__d)            {}
-    node(const value_t &__d)     : data(__d)            {}
-    node(value_t &&__d) noexcept : data(std::move(__d)) {}
-    node(const value_t &&__d) noexcept : data(__d)      {}
+template <bool is_const,bool dir>
+struct index_iterator : iterator_base <is_const,dir> {
+  protected:
+    size_t rank;
+    using Base    = iterator_base <is_const,dir>;
+    using baseptr = typename Base::baseptr;
+  public:
 
-    template <class ...Args>
-    node(Args &&...objs) noexcept : data(std::forward <Args> (objs)...) {} 
+    index_iterator(baseptr __p,size_t __n) noexcept : Base(__p),rank(__n) {}
 
+    index_iterator & operator++(void) noexcept
+    { ++rank, Base::operator++(); }
+
+
+
+    size_t index() const { return rank; }
 };
+
+
 
 
 }
@@ -159,7 +197,7 @@ void advance(node_base *&__p) noexcept {
         __p = __p->son[dir];
         while(__p->son[!dir]) __p = __p->son[!dir];
     } else { /* Upward. */
-        baseptr __f = __p->parent;
+        node_base * __f = __p->parent;
         while(__f->parent != __p && __f->son[dir] == __p)
             __f = (__p = __f)->parent;
         __p = __f;
@@ -180,7 +218,7 @@ void advance(const node_base *&__p) noexcept {
         __p = __p->son[dir];
         while(__p->son[!dir]) __p = __p->son[!dir];
     } else { /* Upward. */
-        baseptr __f = __p->parent;
+        const node_base * __f = __p->parent;
         while(__f->parent != __p && __f->son[dir] == __p) 
             __f = (__p = __f)->parent;
         __p = __f;
@@ -201,6 +239,14 @@ bool operator != (const iterator_base <k1,dir> &lhs,
                   const iterator_base <k2,dir> &rhs)
 noexcept { return lhs.base() != rhs.base(); }
 
+template <bool k1,bool k2,bool dir>
+size_t operator - (const index_iterator <k1,dir> &lhs,
+                   const index_iterator <k2,dir> &rhs)
+noexcept { return lhs.index() - rhs.index(); }
+
+
+
+using baseptr = node_base *;
 
 /**
  * @brief Rotate current node with its father.

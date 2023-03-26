@@ -16,7 +16,6 @@ template <class key_t,
 class map {
   public:
 
-    struct implement;
     struct iterator;
     struct const_iterator;
     struct reverse_iterator;
@@ -24,38 +23,25 @@ class map {
 
     using value_t   = std::pair <key_t,T>;
     using return_t  = std::pair <iterator,bool>;
+  
+  private:
 
     using node_base = tree::node_base;
     using baseptr   = tree::node_base *;
     using node      = tree::node <value_t>;
     using pointer   = tree::node <value_t> *;
-
     using pair_t    = std::pair <const key_t,T>;
     using pairptr   = std::pair <const key_t,T> *;
 
+    using implement = tree::implement <node,std::allocator <node>,Compare>;
 
-    struct implement : std::allocator <node> , Compare {  
-        size_t count;
-
-        implement() noexcept : count(0) {}
-
-        template <class ...Args>
-        pointer alloc(Args &&...objs) {
-            pointer __p = this->allocate(1);
-            this->construct(__p,std::forward <Args> (objs)...);
-            return __p;
-        }
-
-        void dealloc(baseptr __p) {
-            this->destroy((pointer)__p);
-            this->deallocate((pointer)__p,1);
-        }
-
-    };
-
+  public:
 
     struct iterator : public tree::iterator_base <0,1> {
-        using Base = iterator_base;
+      protected:
+        using Base    = iterator_base;
+        using baseptr = typename Base::baseptr; 
+      public:
 
         iterator(baseptr __p = nullptr) noexcept : iterator_base(__p) {}
 
@@ -76,7 +62,10 @@ class map {
     };
 
     struct const_iterator : public tree::iterator_base <1,1> {
-        using Base = iterator_base;
+      protected:
+        using Base    = iterator_base;
+        using baseptr = typename Base::baseptr; 
+      public:
 
         const_iterator(baseptr __p = nullptr) noexcept : iterator_base(__p) {}
         const_iterator(const iterator &rhs) : iterator_base(rhs) {}
@@ -98,7 +87,10 @@ class map {
     };
 
     struct reverse_iterator : public tree::iterator_base <0,0> {
-        using Base = iterator_base;
+      protected:
+        using Base    = iterator_base;
+        using baseptr = typename Base::baseptr; 
+      public:
 
         reverse_iterator(baseptr __p = nullptr)
         noexcept : iterator_base(__p) {}
@@ -120,7 +112,10 @@ class map {
     };
 
     struct const_reverse_iterator : public tree::iterator_base <1,0> {
-        using Base = iterator_base;
+      protected:
+        using Base    = iterator_base;
+        using baseptr = typename Base::baseptr; 
+      public:
 
         const_reverse_iterator(baseptr __p = nullptr)
         noexcept : iterator_base(__p) {}
@@ -174,13 +169,12 @@ class map {
 
     /* Copy sub_tree information. Note that __p can't be null! */
     pointer copy(pointer __p) {
-        pointer __c = impl.alloc(__p->data); /* Current node. */
-        __c->color  = __p->color;
-        if(__p->son[0]) {
+        pointer __c = impl.alloc(*__p); /* Current node. */
+        if(__c->son[0]) {
             __c->son[0] = copy((pointer)__p->son[0]);
             __c->son[0]->parent = __c;
         }
-        if(__p->son[1]) {
+        if(__c->son[1]) {
             __c->son[1] = copy((pointer)__p->son[1]);
             __c->son[1]->parent = __c;
         }
@@ -225,7 +219,8 @@ class map {
         */
 
         if(empty()) /* Just empty , so insert at root node. */
-            return insert_root(impl.alloc(std::forward <U> (__v)));
+            return insert_root(impl.alloc(dark::tree::forward_tag(),
+                                          std::forward <U> (__v)));
 
         baseptr __p = header.parent;
         bool dir;
@@ -241,7 +236,8 @@ class map {
         }
 
         ++impl.count;
-        __p->son[dir] = impl.alloc(std::forward <U> (__v));
+        __p->son[dir] = impl.alloc(dark::tree::forward_tag(),
+                                   std::forward <U> (__v));
         __p->son[dir]->parent = __p;
 
         /* May update the largest / smallest. */
