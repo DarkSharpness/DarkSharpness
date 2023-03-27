@@ -210,19 +210,42 @@ void writeline(long double num) { printf("%Lf\n",num); }
 void write() {}
 void writeline() { putchar('\n'); }
 
-/* Write a sequence of integers. */
+
+/* Write a sequence of integers , separated by ' '. */
 template <class integer,class ...integers>
 void write(const integer &arg,const integers &...args) {
     write(arg);
     putchar(' ');
     write(args...);
 }
-/* Write a line of integers. */
+/* Write a line of integers , separated by ' '. */
 template <class integer,class ...integers>
 void writeline(const integer &arg,const integers &...args) {
     write(arg);
     putchar(' ');
     writeline(args...);
+}
+
+/* Print just one integer. */
+template <class integer>
+void print(const integer &arg) { write(arg); }
+
+/* Print a sequence of integers without no separation. */
+template <class integer,class ...integers>
+void print(const integer &arg,const integers &...args) {
+    write(arg);
+    print(args...);
+}
+
+/* Print just one integer and start a new line. */
+template <class integer>
+void printline(const integer &arg) { writeline(arg); }
+
+/* Print a line of integers without no separation. */
+template <class integer,class ...integers>
+void printline(const integer &arg,const integers &...args) {
+    write(arg);
+    printline(args...);
 }
 
 /* Avoid misusage. */
@@ -231,6 +254,8 @@ void write(const integer &) = delete;
 /* Avoid misusage. */
 template <class integer>
 void writeline(const integer &) = delete;
+
+
 
 }
 
