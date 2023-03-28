@@ -33,7 +33,7 @@ class map {
     using pair_t    = std::pair <const key_t,T>;
     using pairptr   = std::pair <const key_t,T> *;
 
-    using implement = tree::implement <node,std::allocator <node>,Compare>;
+    using implement = tree::implement <node , std::allocator <node> , Compare>;
 
   public:
 

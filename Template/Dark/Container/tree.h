@@ -133,14 +133,20 @@ struct index_iterator : iterator_base <is_const,dir> {
 
     index_iterator(baseptr __p,size_t __n) noexcept : Base(__p),rank(__n) {}
 
-    index_iterator & operator++(void) noexcept
+    index_iterator & operator ++(void) noexcept
     { ++rank, Base::operator++(); }
 
+    index_iterator & operator --(void) noexcept
+    { --rank, Base::operator--(); }
 
+    index_iterator operator ++(int) noexcept
+    { auto temp = *this; this->operator++(); return temp; }
+
+    index_iterator operator --(int) noexcept
+    { auto temp = *this; this->operator--(); return temp; }
 
     size_t index() const { return rank; }
 };
-
 
 
 
@@ -149,6 +155,24 @@ struct index_iterator : iterator_base <is_const,dir> {
 
 /* Function part. */
 namespace tree {
+
+/* Compare 2 iterator. */
+template <bool k1,bool k2,bool dir>
+bool operator == (const iterator_base <k1,dir> &lhs,
+                  const iterator_base <k2,dir> &rhs)
+noexcept { return lhs.base() == rhs.base(); }
+
+
+/* Compare 2 iterator. */
+template <bool k1,bool k2,bool dir>
+bool operator != (const iterator_base <k1,dir> &lhs,
+                  const iterator_base <k2,dir> &rhs)
+noexcept { return lhs.base() != rhs.base(); }
+
+template <bool k1,bool k2,bool dir>
+size_t operator - (const index_iterator <k1,dir> &lhs,
+                   const index_iterator <k2,dir> &rhs)
+noexcept { return lhs.index() - rhs.index(); }
 
 
 /* Whether the node is root/header node or not. */
@@ -225,27 +249,6 @@ void advance(const node_base *&__p) noexcept {
         __p = __f;
     }
 }
-
-
-/* Compare 2 iterator. */
-template <bool k1,bool k2,bool dir>
-bool operator == (const iterator_base <k1,dir> &lhs,
-                  const iterator_base <k2,dir> &rhs)
-noexcept { return lhs.base() == rhs.base(); }
-
-
-/* Compare 2 iterator. */
-template <bool k1,bool k2,bool dir>
-bool operator != (const iterator_base <k1,dir> &lhs,
-                  const iterator_base <k2,dir> &rhs)
-noexcept { return lhs.base() != rhs.base(); }
-
-template <bool k1,bool k2,bool dir>
-size_t operator - (const index_iterator <k1,dir> &lhs,
-                   const index_iterator <k2,dir> &rhs)
-noexcept { return lhs.index() - rhs.index(); }
-
-
 
 using baseptr = node_base *;
 
