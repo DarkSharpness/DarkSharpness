@@ -2,6 +2,7 @@
 #define _DARK_TREE_H_
 
 #include <utility>
+#include <memory>
 
 namespace dark {
 
