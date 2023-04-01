@@ -23,17 +23,6 @@ class deque {
     using implement = tree::implement <node>;
 
   public:
-    struct iterator : tree::index_iterator <0,1> {
-      protected:
-        using Base    = tree::index_iterator <0,1>;
-        using baseptr = typename iterator_base <0,1> ::baseptr;
-      public:
-        iterator(baseptr __p = nullptr,size_t __n = 0)
-        noexcept : index_iterator(__p,__n) {}
-        
-        
-
-    };
 
   private:
 
@@ -43,14 +32,6 @@ class deque {
     /* Return the root node of the tree. */
     baseptr root() const noexcept { return header.parent; }
 
-     /* Special case : insert at root node. */
-    iterator insert_root(baseptr __n) {
-        ++impl.count;
-        header.parent = header.son[0] = header.son[1] = __n;
-        __n->parent   = &header;
-        __n->color    = tree::Color::BLACK;
-        return iterator(__n,0);
-    }
 
 
   public:

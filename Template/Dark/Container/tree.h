@@ -6,25 +6,63 @@
 
 namespace dark {
 
-/* Struct part. */
+/* Header part for BW-Tree. */
 namespace tree {
 
 
 /* BW_Tree color */
 enum struct Color : bool { BLACK = 0 , WHITE = 1 };
 
+
 struct node_base;
+
 
 inline bool is_root(const node_base *__p) noexcept;
 
+
 template <bool dir>
 [[deprecated]] inline bool is_dir (const node_base *__p) noexcept;
+
 
 template <bool dir>
 void advance(node_base *&__p) noexcept;
 
 template <bool dir>
 void advance(const node_base *&__p) noexcept;
+
+
+/* A tag marking perfect forwarding. */
+struct forward_tag {};
+
+
+/* An implement for node allocator. */
+template <class value_t,
+          class allocator_t = std::allocator <value_t>,
+          class ...Ts>
+struct implement : allocator_t , Ts ... {
+    using pointer = value_t *;
+    size_t count = 0;
+
+    template <class ...Args>
+    inline pointer alloc(Args &&...objs) {
+        pointer __p = this->allocate(1);
+        this->construct(__p,std::forward <Args> (objs)...);
+        return __p;
+    }
+
+    inline void dealloc(void *__p) {
+        this->destroy((pointer)__p);
+        this->deallocate((pointer)__p,1);
+    }
+
+};
+
+
+}
+
+
+/* Node-related part. */
+namespace tree {
 
 
 /* BW_Tree node base */
@@ -49,9 +87,6 @@ struct node_base {
 };
 
 
-/* A tag marking perfect forwarding. */
-struct forward_tag {};
-
 /* BW_Tree node for given value_t(pair <key_t,T>). */
 template <class value_t>
 struct node : public node_base {
@@ -63,28 +98,6 @@ struct node : public node_base {
 
 };
 
-
-/* An implement for node allocator. */
-template <class value_t,
-          class allocator_t = std::allocator <value_t>,
-          class ...Ts>
-struct implement : allocator_t , Ts ... {
-    using pointer = value_t *;
-    size_t count = 0;
-
-    template <class ...Args>
-    inline pointer alloc(Args &&...objs) {
-        pointer __p = this->allocate(1);
-        this->construct(__p,std::forward <Args> (objs)...);
-        return __p;
-    }
-
-    inline void dealloc(void *__p) {
-        this->destroy((pointer)__p);
-        this->deallocate((pointer)__p,1);
-    }
-
-};
 
 /**
  * @brief The base for iterator of BW_Tree.
@@ -122,39 +135,12 @@ struct iterator_base {
 };
 
 
-
-template <bool is_const,bool dir>
-struct index_iterator : iterator_base <is_const,dir> {
-  protected:
-    size_t rank;
-    using Base    = iterator_base <is_const,dir>;
-    using baseptr = typename Base::baseptr;
-  public:
-
-    index_iterator(baseptr __p,size_t __n) noexcept : Base(__p),rank(__n) {}
-
-    index_iterator & operator ++(void) noexcept
-    { ++rank, Base::operator++(); }
-
-    index_iterator & operator --(void) noexcept
-    { --rank, Base::operator--(); }
-
-    index_iterator operator ++(int) noexcept
-    { auto temp = *this; this->operator++(); return temp; }
-
-    index_iterator operator --(int) noexcept
-    { auto temp = *this; this->operator--(); return temp; }
-
-    size_t index() const { return rank; }
-};
-
-
-
 }
 
 
-/* Function part. */
+/* Function part for BW-Tree. */
 namespace tree {
+
 
 /* Compare 2 iterator. */
 template <bool k1,bool k2,bool dir>
@@ -162,17 +148,11 @@ bool operator == (const iterator_base <k1,dir> &lhs,
                   const iterator_base <k2,dir> &rhs)
 noexcept { return lhs.base() == rhs.base(); }
 
-
 /* Compare 2 iterator. */
 template <bool k1,bool k2,bool dir>
 bool operator != (const iterator_base <k1,dir> &lhs,
                   const iterator_base <k2,dir> &rhs)
 noexcept { return lhs.base() != rhs.base(); }
-
-template <bool k1,bool k2,bool dir>
-size_t operator - (const index_iterator <k1,dir> &lhs,
-                   const index_iterator <k2,dir> &rhs)
-noexcept { return lhs.index() - rhs.index(); }
 
 
 /* Whether the node is root/header node or not. */
@@ -250,7 +230,9 @@ void advance(const node_base *&__p) noexcept {
     }
 }
 
+
 using baseptr = node_base *;
+
 
 /**
  * @brief Rotate current node with its father.
@@ -435,10 +417,16 @@ void erase_at(baseptr __p) {
     erase_branch(__p);
 }
 
+
 }
 
 
+
+
 }
+
+
+
 
 
 #endif
