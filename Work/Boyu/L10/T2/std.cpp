@@ -1,13 +1,19 @@
 #include <iostream>
-#include <cstring>
 using namespace std;
-
+const int M = 101;
+int cnt[M];
 
 signed main() {
-    char name[100 + 1]; // 注意，有一位留给 '\0'
-    cin >> name;
-    int len = strlen(name);
-    for(int i = len - 1 ; i >= 0 ; --i)
-        cout << name[i];
+    int n;
+    cin >> n;
+    for(int i = 0,x ; i < n ; ++i) {
+        cin >> x;
+        ++cnt[x];
+    }
+    int loc = 0;
+    cnt[0] = 0;
+    for(int i = 1 ; i <= 100 ; ++i)
+        if(cnt[i] >= cnt[loc]) loc = i;
+    cout << loc;
     return 0;
 }

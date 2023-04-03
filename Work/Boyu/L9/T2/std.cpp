@@ -1,19 +1,22 @@
 #include <iostream>
 using namespace std;
-const int M = 101;
-int cnt[M];
+
+int middle(int x,int y,int z) {
+    int maxn;
+    if(x > y)    maxn = x;
+    else         maxn = y;
+    if(z > maxn) maxn = z;
+    int minn;
+    if(x < y) minn = x;
+    else      minn = y;
+    if(z < minn) minn = z;
+    return x + y + z - maxn - minn;
+}
+
 
 signed main() {
-    int n;
-    cin >> n;
-    for(int i = 0,x ; i < n ; ++i) {
-        cin >> x;
-        ++cnt[x];
-    }
-    int loc = 0;
-    cnt[0] = 0;
-    for(int i = 1 ; i <= 100 ; ++i)
-        if(cnt[i] >= cnt[loc]) loc = i;
-    cout << loc;
+    int x,y,z;
+    cin >> x >> y >> z;
+    cout << middle(x,y,z);
     return 0;
 }

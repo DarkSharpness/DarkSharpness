@@ -2,33 +2,30 @@
 #include <Dark/inout>
 using namespace std;
 
-const char charmap[] = {
-'a','b','c','d','e','f','g','h','i','j','k','l','m','n','o','p','q','r','s','t','u','v','w','x','y','z',
-'A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z',
-'0','1','2','3','4','5','6','7','8','9','_','|','?'
-};
+inline int rand_in(int a,int b) {
+    return abs(rand() << 16 | rand()) % (b - a + 1) + a;
+}
 
+int a[] = {1,2,3,4,5,
+           10,100,1000,1000,5000};
+int b[] = {10,10,10,10,100,
+           100,1000,5000,10000,10000};
 
 signed main() {
+    srand(time(NULL));
+    vector <int> vec;
     for(int i = 1 ; i <= 10 ; ++i) {
-        string in = to_string(i) + ".in";
+        string in  = to_string(i) + ".in";
         string out = to_string(i) + ".out";
+        vec.clear();
+        int n = rand_in(a[i - 1],b[i - 1]); 
+        for(int i = 0 ; i < n ; ++i)
+            vec.push_back(rand() * rand() * rand());
         freopen(in.c_str(),"w",stdout);
-
-        int n = rand() % 10000 + 5 + rand() % 1000;
         dark::writeline(n);
-        int a = 0,b = 0;
-
-        for(int i = 0 ; i < n ; ++i) {
-            char c = charmap[rand() % sizeof(charmap)];
-            if(c >= 'a' && c <= 'z') ++a;
-            if(c >= 'A' && c <= 'Z') ++b;
-            putchar(c);
-        }
+        dark::writeRange(vec.begin(),vec.end());
         freopen(out.c_str(),"w",stdout);
-
-        dark::writeline(a);
-        dark::write(b);
+        dark::writeRange(vec.rbegin(),vec.rend());
     }
     return 0;
 }
