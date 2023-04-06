@@ -65,7 +65,9 @@ signed main() {
     // m[3] = 5;
     // m[2] = 1;
     for(auto && iter : m) dark::writeline(iter.first,iter.second);
-
+    auto i = m.begin();
+    auto j = m.cbegin();
+    j = i;
     // dark::map <int,int>::iterator a;
     return 0;
 }

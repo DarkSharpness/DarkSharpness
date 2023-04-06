@@ -35,7 +35,6 @@ signed main() {
     system("pause");
 
     auto copy = map(m);
-    copy.check();
     m.clear();
 
     size_t tot = 0;
@@ -45,19 +44,17 @@ signed main() {
     dark::writeline(tot);
 
     m = copy;
-    m.check();
     size_t cnt = 0;
 
     for(auto &&iter : m)
         if(iter.first != iter.second) throw;
         else ++cnt;
-
+    
     dark::writeline(cnt);
 
     map empty;
-    empty.check();
-
-    --empty.begin();
+    auto iter = empty.begin();
+    // --empty.begin();
     // --m.begin();
     // m.check();
     // m.clear();

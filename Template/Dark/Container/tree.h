@@ -104,22 +104,29 @@ struct node : public node_base {
  * 
  * @tparam is_const Whether it's a const iterator. 
  */
-template <bool is_const,bool dir>
+template <class value_t,bool is_const,bool dir>
 struct iterator_base {
   protected:
     using U = std::conditional_t <is_const,const node_base,node_base>;
-    using baseptr = U *;
-    baseptr ptr;
+    using V = std::conditional_t <is_const,const node <value_t>,node <value_t>>;
+  public:
+    using pointer = U *;
+
+  protected:
+    pointer ptr;
 
   public:
-    /* Force to pass a pointer. */
-    iterator_base(baseptr __p) noexcept : ptr(__p) {}
 
-    iterator_base & operator = (const iterator_base <false,dir> &rhs) 
-    noexcept { ptr = rhs.ptr; return *this; }
+    iterator_base(pointer __p = nullptr) noexcept : ptr(__p) {}
+
+    iterator_base(const iterator_base <value_t,false,dir> &rhs) 
+    noexcept : ptr(rhs.base()) {}
+
+    iterator_base & operator = (iterator_base <value_t,false,dir> rhs) 
+    noexcept { ptr = rhs.base(); return *this; }
 
     iterator_base &operator ++ () noexcept
-    { advance <dir> (ptr); return *this; }
+    { advance <dir>  (ptr); return *this; }
 
     iterator_base &operator -- () noexcept
     { advance <!dir> (ptr); return *this; }
@@ -130,8 +137,10 @@ struct iterator_base {
     iterator_base operator -- (int) noexcept
     { auto temp = *this; advance <!dir> (ptr); return temp; }
 
-    baseptr base() const { return ptr; }
+    value_t &operator * (void) const { return  ((V *)ptr)->data; }
+    value_t *operator ->(void) const { return &((V *)ptr)->data; }
 
+    pointer base() const noexcept { return ptr; }
 };
 
 
@@ -143,15 +152,15 @@ namespace tree {
 
 
 /* Compare 2 iterator. */
-template <bool k1,bool k2,bool dir>
-bool operator == (const iterator_base <k1,dir> &lhs,
-                  const iterator_base <k2,dir> &rhs)
+template <class T,bool k1,bool k2,bool dir>
+bool operator == (const iterator_base <T,k1,dir> &lhs,
+                  const iterator_base <T,k2,dir> &rhs)
 noexcept { return lhs.base() == rhs.base(); }
 
 /* Compare 2 iterator. */
-template <bool k1,bool k2,bool dir>
-bool operator != (const iterator_base <k1,dir> &lhs,
-                  const iterator_base <k2,dir> &rhs)
+template <class T,bool k1,bool k2,bool dir>
+bool operator != (const iterator_base <T,k1,dir> &lhs,
+                  const iterator_base <T,k2,dir> &rhs)
 noexcept { return lhs.base() != rhs.base(); }
 
 

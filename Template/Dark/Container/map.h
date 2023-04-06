@@ -16,12 +16,13 @@ template <class key_t,
 class map {
   public:
 
-    struct iterator;
-    struct const_iterator;
-    struct reverse_iterator;
-    struct const_reverse_iterator;
+    using value_t   = std::pair <const key_t,T>;
 
-    using value_t   = std::pair <key_t,T>;
+    using iterator               = tree::iterator_base <value_t,0,1>;
+    using const_iterator         = tree::iterator_base <value_t,1,1>;
+    using reverse_iterator       = tree::iterator_base <value_t,0,0>;
+    using const_reverse_iterator = tree::iterator_base <value_t,1,0>;
+
     using return_t  = std::pair <iterator,bool>;
   
   private:
@@ -30,122 +31,12 @@ class map {
     using baseptr   = tree::node_base *;
     using node      = tree::node <value_t>;
     using pointer   = tree::node <value_t> *;
-    using pair_t    = std::pair <const key_t,T>;
-    using pairptr   = std::pair <const key_t,T> *;
-
-    using implement = tree::implement <node , std::allocator <node> , Compare>;
-
-  public:
-
-    struct iterator : public tree::iterator_base <0,1> {
-      protected:
-        using Base    = iterator_base;
-        using baseptr = typename Base::baseptr; 
-      public:
-
-        iterator(baseptr __p = nullptr) noexcept : iterator_base(__p) {}
-
-        iterator & operator ++(void) noexcept
-        { Base::operator++(); return *this; }
-
-        iterator & operator --(void) noexcept
-        { Base::operator--(); return *this; }
-
-        iterator operator ++ (int) noexcept
-        { auto temp = *this; Base::operator++(); return temp; }
-
-        iterator operator -- (int) noexcept
-        { auto temp = *this; Base::operator--(); return temp; }
-
-        pair_t &operator * (void) const { return  cast(pointer(ptr)->data); }
-        pair_t *operator ->(void) const { return &cast(pointer(ptr)->data); }
-    };
-
-    struct const_iterator : public tree::iterator_base <1,1> {
-      protected:
-        using Base    = iterator_base;
-        using baseptr = typename Base::baseptr; 
-      public:
-
-        const_iterator(baseptr __p = nullptr) noexcept : iterator_base(__p) {}
-        const_iterator(const iterator &rhs) : iterator_base(rhs) {}
-
-        const_iterator & operator ++(void) noexcept
-        { Base::operator++(); return *this; }
-
-        const_iterator & operator --(void) noexcept
-        { Base::operator--(); return *this; }
-
-        const_iterator operator ++ (int) noexcept
-        { auto temp = *this; Base::operator++(); return temp; }
-
-        const_iterator operator -- (int) noexcept
-        { auto temp = *this; Base::operator--(); return temp; }
-
-        const pair_t &operator * (void) const { return  cast(pointer(ptr)->data); }
-        const pair_t *operator ->(void) const { return &cast(pointer(ptr)->data); }
-    };
-
-    struct reverse_iterator : public tree::iterator_base <0,0> {
-      protected:
-        using Base    = iterator_base;
-        using baseptr = typename Base::baseptr; 
-      public:
-
-        reverse_iterator(baseptr __p = nullptr)
-        noexcept : iterator_base(__p) {}
-
-        reverse_iterator & operator ++(void) noexcept
-        { Base::operator++(); return *this; }
-
-        reverse_iterator & operator --(void) noexcept
-        { Base::operator--(); return *this; }
-
-        reverse_iterator operator ++ (int) noexcept
-        { auto temp = *this; Base::operator++(); return temp; }
-
-        reverse_iterator operator -- (int) noexcept
-        { auto temp = *this; Base::operator--(); return temp; }
-
-        pair_t &operator * (void) const { return  cast(pointer(ptr)->data); }
-        pair_t *operator ->(void) const { return &cast(pointer(ptr)->data); }
-    };
-
-    struct const_reverse_iterator : public tree::iterator_base <1,0> {
-      protected:
-        using Base    = iterator_base;
-        using baseptr = typename Base::baseptr; 
-      public:
-
-        const_reverse_iterator(baseptr __p = nullptr)
-        noexcept : iterator_base(__p) {}
-        const_reverse_iterator(const reverse_iterator &rhs)
-        noexcept : iterator_base(rhs) {}
-
-        const_reverse_iterator & operator ++(void) noexcept
-        { Base::operator++(); return *this; }
-
-        const_reverse_iterator & operator --(void) noexcept
-        { Base::operator--(); return *this; }
-
-        const_reverse_iterator operator ++ (int) noexcept
-        { auto temp = *this; Base::operator++(); return temp; }
-
-        const_reverse_iterator operator -- (int) noexcept
-        { auto temp = *this; Base::operator--(); return temp; }
-
-        const pair_t &operator * (void) const { return  cast(pointer(ptr)->data); }
-        const pair_t *operator ->(void) const { return &cast(pointer(ptr)->data); }
-    };
+    using implement = tree::implement <node,std::allocator <node>,Compare>;
 
   private:
 
     implement impl;   /* Implement of compare and memory function. */
     node_base header; /* Parent as root node || son[0] as largest || son[1] as smallest. */
-
-    /* Cast value_t to pair_t */
-    static inline pair_t & cast(value_t &__v) 
-    {  return reinterpret_cast <pair_t &> (__v) ;}
 
     /* Return the root node of the tree. */
     baseptr root() const noexcept { return header.parent; }
@@ -382,7 +273,7 @@ class map {
      * @return Count of key-value pairs erased. (0 or 1)
      */
     template <bool dir>
-    size_t erase(tree::iterator_base <0,dir> __i) {
+    size_t erase(tree::iterator_base <value_t,0,dir> __i) {
         if(is_header(__i.base())) return 0;
         else return erase_pair(__i.base());
     }
@@ -444,7 +335,7 @@ class map {
     reverse_iterator rbegin() { return header.son[0]; }
     reverse_iterator rend()   { return   &header;     }
     const_reverse_iterator rbegin() const noexcept  { return header.son[0]; }
-    const_reverse_iterator rend()   const noexcept  { return   &header;     }
+    const_reverse_iterator rend()    const noexcept { return   &header;     }
     const_reverse_iterator crbegin() const noexcept { return header.son[0]; }
     const_reverse_iterator crend()   const noexcept { return   &header;     }
 };

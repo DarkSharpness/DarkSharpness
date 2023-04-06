@@ -88,40 +88,6 @@ struct node_base {
         : color(Color::WHITE),parent(__p) { son[0] = son[1] = __p; }
 };
 
-
-/**
- * @brief The base for iterator of BW_Tree.
- * 
- * @tparam is_const Whether it's a const iterator. 
- */
-template <bool is_const,bool dir>
-struct iterator_base {
-  protected:
-    using U = std::conditional_t <is_const,const node_base,node_base>;
-    using baseptr = U *;
-    baseptr ptr;
-
-  public:
-    /* Force to pass a pointer. */
-    iterator_base(baseptr __p) noexcept : ptr(__p) {}
-
-    iterator_base &operator ++ ()
-    { check(ptr); advance <dir> (ptr); return *this; }
-
-    iterator_base &operator -- ()
-    { advance <!dir> (ptr); check(ptr); return *this; }
-
-    iterator_base operator ++ (int)
-    { auto temp = *this; operator++(); return temp; }
-
-    iterator_base operator -- (int)
-    { auto temp = *this; operator--(); return temp; }
-
-    baseptr base() const { return ptr; }
-
-};
-
-
 /* BW_Tree node for given value_t(pair <key_t,T>). */
 template <class value_t>
 struct node : public node_base {
@@ -136,6 +102,60 @@ struct node : public node_base {
     template <class ...Args>
     node(Args &&...objs) noexcept : data(std::forward <Args> (objs)...) {} 
 
+};
+
+
+/**
+ * @brief The base for iterator of BW_Tree.
+ * 
+ * @tparam is_const Whether it's a const iterator. 
+ */
+template <class value_t,bool is_const,bool dir>
+struct iterator_base {
+  protected:
+    using U = std::conditional_t <is_const,const node_base,node_base>;
+    using V = std::conditional_t <is_const,const node <value_t>,node <value_t>>;
+
+  public:
+    /* iterator_trait */
+    using iterator_assignable = std::integral_constant <bool,is_const>;
+    using iterator_category   = std::bidirectional_iterator_tag;
+    using value_type = value_t;
+    using reference  = value_t &;
+    using pointer    = U *;
+ 
+  protected:
+    /* Data part */
+    pointer     ptr; /* Data pointer */
+    const void *map; /* Map  pointer */
+
+  public:
+
+    /* Force to pass a pointer. */
+    iterator_base(pointer __p = nullptr,const void *__m = nullptr) 
+    noexcept : ptr(__p),map(__m) {}
+
+    /* Const one construct from non-const one. */
+    iterator_base(const iterator_base <value_t,false,dir> &rhs) 
+    noexcept : ptr(rhs.base()),map(rhs.source()) {}
+
+    iterator_base &operator ++ ()
+    { check(ptr); advance <dir> (ptr); return *this; }
+
+    iterator_base &operator -- ()
+    { advance <!dir> (ptr); check(ptr); return *this; }
+
+    iterator_base operator ++ (int)
+    { auto temp = *this; operator++(); return temp; }
+
+    iterator_base operator -- (int)
+    { auto temp = *this; operator--(); return temp; }
+
+    auto &operator * (void) const { return  ((V *)(ptr))->data; }
+    auto *operator ->(void) const { return &((V *)(ptr))->data; }
+
+    pointer base()       const { return ptr; }
+    const void *source() const { return map; }
 };
 
 
@@ -226,16 +246,16 @@ void advance(const node_base *&__p) noexcept {
 
 
 /* Compare 2 iterator. */
-template <bool k1,bool k2,bool dir>
-bool operator == (const iterator_base <k1,dir> &lhs,
-                  const iterator_base <k2,dir> &rhs)
+template <class T,bool k1,bool k2,bool dir>
+bool operator == (const iterator_base <T,k1,dir> &lhs,
+                  const iterator_base <T,k2,dir> &rhs)
 noexcept { return lhs.base() == rhs.base(); }
 
 
 /* Compare 2 iterator. */
-template <bool k1,bool k2,bool dir>
-bool operator != (const iterator_base <k1,dir> &lhs,
-                  const iterator_base <k2,dir> &rhs)
+template <class T,bool k1,bool k2,bool dir>
+bool operator != (const iterator_base <T,k1,dir> &lhs,
+                  const iterator_base <T,k2,dir> &rhs)
 noexcept { return lhs.base() != rhs.base(); }
 
 
@@ -442,25 +462,23 @@ template <class key_t,
           class T,
           class Compare = std::less <key_t> >
 class map {
-  public:
-
+  private:
     struct implement;
-    class iterator;
-    class const_iterator;
-    // struct reverse_iterator;
-    // struct const_reverse_iterator;
 
-    using value_t   = sjtu::pair <key_t,T>;
-    using return_t  = sjtu::pair <iterator,bool>;
-
+    using value_t   = sjtu::pair <const key_t,T>;
     using node      = tree::node <value_t>;
     using pointer   = tree::node <value_t> *;
     using node_base = tree::node_base;
     using baseptr   = tree::node_base *;
 
-    using pair_t    = sjtu::pair <const key_t,T>;
+  public:
 
-    using value_type = pair_t;
+    using iterator       = tree::iterator_base <value_t,0,1>;
+    using const_iterator = tree::iterator_base <value_t,1,1>;
+    using return_t       = sjtu::pair <iterator,bool>;
+    using value_type     = value_t;
+    
+  private:
 
     struct implement : std::allocator <node> , Compare {  
         size_t count;
@@ -481,72 +499,8 @@ class map {
 
     };
 
-
-    class iterator : public tree::iterator_base <0,1> {
-      private:
-        using Base = tree::iterator_base <0,1>;
-        const void *map;
-      public:
-        iterator(baseptr __p = nullptr,const void *__m = nullptr) 
-        noexcept : iterator_base(__p),map(__m) {}
-
-        iterator & operator ++(void) 
-        { Base::operator++(); return *this; }
-
-        iterator & operator --(void) 
-        { Base::operator--(); return *this; }
-
-        iterator operator ++ (int)
-        { auto temp = *this; Base::operator++(); return temp; }
-
-        iterator operator --(int)
-        { auto temp = *this; Base::operator--(); return temp; }
-
-        pair_t &operator * (void) const { return  cast(pointer(ptr)->data); }
-        pair_t *operator ->(void) const { return &cast(pointer(ptr)->data); }
-
-        const void *source() const { return map; }
-    };
-
-
-    class const_iterator : public tree::iterator_base <1,1> {
-      private:
-        using Base = tree::iterator_base <1,1>;
-        const void *map;
-      public:
-        const_iterator(baseptr __p = nullptr,const void *__m = nullptr) 
-        noexcept : iterator_base(__p),map(__m) {}
-
-        const_iterator(const iterator &rhs) noexcept : 
-            iterator_base(rhs.base()),map(rhs.source()) {}
-
-        const_iterator &operator = (const iterator &rhs) noexcept
-        { ptr = rhs.base(); map = rhs.source(); return *this; }
-
-        const_iterator & operator ++(void) 
-        { Base::operator++(); return *this; }
-
-        const_iterator & operator --(void) 
-        { Base::operator--(); return *this; }
-
-        const_iterator operator ++ (int)
-        { auto temp = *this; Base::operator++(); return temp; }
-
-        const_iterator operator --(int)
-        { auto temp = *this; Base::operator--(); return temp; }
-
-        const pair_t &operator * (void) const { return  cast(pointer(ptr)->data); }
-        const pair_t *operator ->(void) const { return &cast(pointer(ptr)->data); }
-    };
-
-  private:
-
     implement impl;   /* Implement of compare and memory function. */
     node_base header; /* Parent as root node || son[0] as largest || son[1] as smallest. */
-
-    /* Cast value_t to pair_t */
-    static inline pair_t & cast(value_t &__v) 
-    {  return reinterpret_cast <pair_t &> (__v) ;}
 
     /* Return the root node of the tree. */
     baseptr root() const noexcept { return header.parent; }
@@ -852,8 +806,6 @@ class map {
 
 
 }
-
-
 
 namespace sjtu {
 
