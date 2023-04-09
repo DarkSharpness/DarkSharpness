@@ -248,7 +248,7 @@ using baseptr = node_base *;
  * Note that father can't be node on tree.
  * 
  * @param __p Pointer to current node.
- * @param dir It must equal __p->dir()
+ * @param dir It must equal __p->dir().
  */
 void rotate(baseptr __p,bool dir) {
     baseptr __f = __p->parent; /* Father */
@@ -327,7 +327,7 @@ void insert_at(baseptr __p) {
         /* Because parent is white , parent can't be root.  */
         baseptr uncle = __p->parent->bro();
         if(!is_white(uncle)) break;
-        uncle->color = __p->parent->color  = Color::BLACK;
+        uncle->color = __p->parent ->color = Color::BLACK;
         (__p = __p->parent->parent)->color = Color::WHITE;
     }
 
@@ -352,6 +352,7 @@ inline void erase_branch(baseptr __p) {
 }
 
 
+
 /* Fix black leaf case. */
 void erase_fix(baseptr __p) {
     while(true) { /* __p side is shorter in black length by 1.  */
@@ -372,7 +373,7 @@ void erase_fix(baseptr __p) {
 
         /* Now __b is black. */
 
-        /* Not in a line case. */
+        /* Not-in-a-line case, which will be transformed to in-a-line case */
         if(is_white(__b->son[dir])) { 
             rotate(__b->son[dir],dir);
             __b->color = Color::WHITE;
@@ -380,7 +381,7 @@ void erase_fix(baseptr __p) {
             __b->color = Color::BLACK;
         }
 
-        /* In a line case. */
+        /* In-a-line case. */
         if(is_white(__b->son[!dir])) {
             rotate(__b,!dir); /* Now __b is the root. */
             __b->color = __f->color; /* Father color not changed. */
