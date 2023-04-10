@@ -12,8 +12,6 @@
 namespace dark {
 
 
-
-
 template <class value_t>
 class heap {
   private:
