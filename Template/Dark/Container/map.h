@@ -31,7 +31,7 @@ class map {
     using baseptr   = tree::node_base *;
     using node      = tree::node <value_t>;
     using pointer   = tree::node <value_t> *;
-    using implement = tree::implement <node,std::allocator <node>,Compare>;
+    using implement = implement <node,std::allocator <node>,Compare>;
 
   private:
 
