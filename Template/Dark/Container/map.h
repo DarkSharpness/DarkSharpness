@@ -55,7 +55,7 @@ class map {
         if(!__p) return;
         clean(__p->son[0]);
         clean(__p->son[1]);
-        impl.dealloc(__p);
+        impl.dealloc(static_cast <pointer> (__p));
     }
 
     /* Copy sub_tree information. Note that __p can't be null! */
@@ -110,8 +110,8 @@ class map {
         */
 
         if(empty()) /* Just empty , so insert at root node. */
-            return insert_root(impl.alloc(dark::tree::forward_tag(),
-                                          std::forward <U> (__v)));
+            return insert_root(impl.alloc(tree::forward_tag(),
+                                           std::forward <U> (__v)));
 
         baseptr __p = header.parent;
         bool dir;
@@ -127,8 +127,8 @@ class map {
         }
 
         ++impl.count;
-        __p->son[dir] = impl.alloc(dark::tree::forward_tag(),
-                                   std::forward <U> (__v));
+        __p->son[dir] = impl.alloc(tree::forward_tag(),
+                                    std::forward <U> (__v));
         __p->son[dir]->parent = __p;
 
         /* May update the largest / smallest. */
@@ -154,7 +154,7 @@ class map {
 
         tree::erase_at(__p);
         --impl.count;
-        impl.dealloc(__p);
+        impl.dealloc(static_cast <pointer> (__p));
         return 1;
     }
 
