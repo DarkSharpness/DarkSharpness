@@ -17,13 +17,19 @@ using Compare = std::equal_to <key_t>;
 constexpr size_t kTABLESIZE = 1019;
 constexpr size_t kMAPSIZE   = 5;
 
-class hash_map {
+template <
+    class key_t,
+    class   T,
+    class Hash = std::hash <key_t>,
+    class Compare = std::equal_to <key_t>
+> 
+class LRU_map {
   public:
     using value_t = std::pair <key_t,T>;
+    struct iterator;
 
   private:
 
-    struct iterator;
 
     using node_base = hash::node_base;
     using list_node = list::node_base;
@@ -37,7 +43,7 @@ class hash_map {
 
     implement impl;
     list_node header;
-    node_base table[kTABLESIZE] = {};
+    node_base table[kTABLESIZE];
 
 
   private:
@@ -64,16 +70,17 @@ class hash_map {
     }
 
     /* Erase the oldest pair and modify it to the new one. */
-    baseptr erase_back(const value_t &__v) {
-        const key_t &__k = pointer(header.next)->data.first;
-        baseptr __p = find_index(__k);
+    baseptr erase_back(const key_t &__k,const T &__t) {
+        const key_t &__n = pointer(header.next)->data.first;
+        baseptr __p = find_index(__n);
         --impl.count;
         while(__p->real) {
-            if(Compare(impl)(__k,pointer(__p->real)->data.first)) {
+            if(Compare(impl)(__n,pointer(__p->real)->data.first)) {
                 list::delink(static_cast <pointer> (__p->real));
                 baseptr __tmp = __p->real;
                 __p->real = __tmp->real;
-                static_cast <pointer> (__tmp)->data = __v;
+                static_cast <pointer> (__tmp)->data.first  = __k;
+                static_cast <pointer> (__tmp)->data.second = __t;
                 __tmp->real = nullptr;
                 return __tmp;
             }
@@ -82,24 +89,49 @@ class hash_map {
     }
 
     /* Insert after given node in the hash map. */
-    void insert_after(const value_t &__v,baseptr __p) {
+    void insert_after(const key_t &__k,const T &__t,baseptr __p) {
         if(__p->real) return;
-        baseptr __n = impl.count++ == kMAPSIZE ?
-                      erase_back(__v) : impl.alloc(hash::forward_tag(),__v);
+        baseptr __n = full() ? erase_back(__k,__t) : 
+                               impl.alloc(hash::forward_tag(),__k,__t);
+        ++impl.count;
         __p->real = __n;
         list::link_before(&header,static_cast <pointer> (__n));
     }
 
   public:
 
-    hash_map() noexcept { header.next = header.prev = &header; }
+    LRU_map() noexcept : header({&header,&header}) {}
 
-    void insert(const value_t &__v)    { return insert_after(__v,find_pre(__v.first)); }
+    ~LRU_map() {
+        listptr __p = header.next;
+        while(__p != &header) {
+            listptr __n = __p->next; /* Next node. */
+            impl.dealloc(static_cast <pointer> (__p));
+            __p = __n;
+        }
+    }
 
-    void insert(const value_t &__v,iterator iter) { return insert_after(__v,iter.__p); }
+    /* Insert after given iterator. */
+    void insert(const key_t &__k,const T &__t,iterator iter)
+    { return insert_after(__k,__t,iter.__p); }
 
+    /* Try to find an element. */
     iterator try_find(const key_t &__k) { return {find_pre(__k)}; }
 
+    /* Return reference to last node. */
+    value_t *last() { return & static_cast <pointer> (header.next) ->data; }
+
+    /* Judge whether the map is full. */
+    bool full() const noexcept { return impl.count == kMAPSIZE; }
+
+    /* Return count of elements in the map. */
+    size_t size() const noexcept { return impl.count; }
+
+    /* DEBUG USE ONLY! */
+    void insert(const key_t &__k,const T &__t)
+    { return insert_after(__k,__t,find_pre(__k)); }
+
+    /* DEBUG USE ONLY! */
     void print() const noexcept {
         listptr __p = header.next;
         while(__p != &header) {
@@ -110,16 +142,7 @@ class hash_map {
         std::cout << '\n';
     }
 
-    ~hash_map() {
-        listptr __p = header.next;
-        while(__p != &header) {
-            listptr __n = __p->next; /* Next node. */
-            impl.dealloc(static_cast <pointer> (__p));
-            __p = __n;
-        }
-    }
-
- private:
+ public:
 
     /* Simple iterator implement. */
     struct iterator {

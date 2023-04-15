@@ -7,9 +7,11 @@ int a[] = {
 };
 
 signed main() {
-    dark::hash_map m;
+    dark::LRU_map <int,int> m;
     for(auto iter : a) {
-        m.insert({iter,""});
+        auto tmp = m.try_find(iter);
+        if(!tmp.base()) m.insert(iter,0,tmp);
+        std::cout << m.full() << ':';
         m.print();
     }
     return 0;
