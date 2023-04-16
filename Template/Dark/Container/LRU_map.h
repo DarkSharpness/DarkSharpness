@@ -9,8 +9,6 @@
 
 namespace dark {
 
-constexpr size_t kTABLESIZE = 1019;
-
 
 /**
  * @brief Map for homework only. Do not use it!
@@ -19,6 +17,7 @@ constexpr size_t kTABLESIZE = 1019;
 template <
     class key_t,
     class   T,
+    size_t kTABLESIZE,
     class Hash    = std::hash <key_t>,
     class Compare = std::equal_to <key_t>
 > 
@@ -28,7 +27,6 @@ class LRU_map {
     struct iterator;
 
   private:
-
 
     using node_base = hash::node_base;
     using list_node = list::node_base;
@@ -57,17 +55,6 @@ class LRU_map {
     baseptr find_index(const key_t &__k) noexcept
     { return &table[Hash(impl)(__k) % kTABLESIZE]; }
 
-    /* Find the previous node in hash-map and access it.  */
-    baseptr find_pre(const key_t &__k) {
-        baseptr __p = find_index(__k);
-        while(__p->real) {
-            if(Compare(impl) (__k,static_cast <pointer> (__p->real) -> data.first)) 
-            { access(__p->real); return __p; }
-            __p = __p->real;
-        }
-        return __p;
-    }
-
     /* Erase the oldest pair and modify it to the new one. */
     baseptr erase_back(const key_t &__k,const T &__t) {
         const key_t &__n = pointer(header.next)->data.first;
@@ -89,16 +76,6 @@ class LRU_map {
         throw 114514; /* This case won't happen. */
     }
 
-    /* Insert after given node in the hash map. */
-    void insert_after(const key_t &__k,const T &__t,baseptr __p,bool flag) {
-        if(__p->real) return;
-        baseptr __n = flag ? erase_back(__k,__t) : 
-                             impl.alloc(hash::forward_tag(),__k,__t);
-        ++impl.count;
-        __p->real = __n;
-        list::link_before(&header,static_cast <pointer> (__n));
-    }
-
   public:
 
     LRU_map() noexcept : header({&header,&header}) {}
@@ -112,22 +89,50 @@ class LRU_map {
         }
     }
 
-    /* Insert after given iterator. Flag to determine whether to recycle. */
-    void insert(const key_t &__k,const T &__t,iterator iter,bool flag = false)
-    { return insert_after(__k,__t,iter.__p,flag); }
+    /* Tries to insert key-value pair to hash_map. */
+    void insert(const key_t &__k,const T &__t,bool flag = false)
+    { return insert(__k,__t,find_pre(__k),flag); }
 
-    /* Try to find an element. */
-    iterator try_find(const key_t &__k) { return {find_pre(__k)}; }
+    /* Insert after given iterator. Flag to determine whether to recycle. */
+    void insert_after(const key_t &__k,const T &__t,iterator iter,bool flag = false) {
+        baseptr __p = iter.__p;
+        if(__p->real) return;
+        baseptr __n = flag ? erase_back(__k,__t) : 
+                             impl.alloc(hash::forward_tag(),__k,__t);
+        ++impl.count;
+        __p->real = __n;
+        list::link_before(&header,static_cast <pointer> (__n));
+    }
+
+    /* Find the previous node in hash_map and access it.  */
+    iterator find_pre(const key_t &__k) {
+        baseptr __p = find_index(__k);
+        while(__p->real) {
+            if(Compare(impl) (__k,static_cast <pointer> (__p->real) -> data.first)) 
+            { access(__p->real); break; }
+            __p = __p->real;
+        } return {__p};
+    }
+
+    /* Tries to erase certain element from hash_map. */
+    void erase(const key_t &__k) { return erase(find_pre(__k)); }
+
+    /* Erase element after given iterator in hash_map.  */
+    void erase_after(iterator iter) {
+        baseptr __p = iter.__p;
+        if(!__p->real) return;
+        --impl.count;
+        baseptr __t = __p->real;
+        __p->real   = __t->real;
+        list::delink(static_cast <pointer> (__t));
+        impl.dealloc(static_cast <pointer> (__t));
+    }
 
     /* Return pointer to last node's value. */
     value_t *last() { return & static_cast <pointer> (header.next) ->data; }
 
     /* Return count of elements in the map. */
     size_t size() const noexcept { return impl.count; }
-
-    /* DEBUG USE ONLY! */
-    void insert(const key_t &__k,const T &__t,bool flag = false)
-    { return insert_after(__k,__t,find_pre(__k),flag); }
 
     /* DEBUG USE ONLY! */
     void print() const noexcept {
@@ -138,17 +143,6 @@ class LRU_map {
             __p = __n;
         }
         std::cout << '\n';
-    }
-
-    /* Erase certain element. */
-    void erase(const key_t &__k) {
-        baseptr __p = find_pre(__k);
-        if(!__p->real) return;
-        --impl.count;
-        baseptr __t = __p->real;
-        __p->real   = __t->real;
-        list::delink(static_cast <pointer> (__t));
-        impl.dealloc(static_cast <pointer> (__t));
     }
 
  public:
