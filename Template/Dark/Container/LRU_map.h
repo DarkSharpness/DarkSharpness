@@ -9,18 +9,17 @@
 
 namespace dark {
 
-using key_t   = long;
-using   T     = std::string;
-using Hash    = std::hash <key_t>; 
-using Compare = std::equal_to <key_t>;
-
 constexpr size_t kTABLESIZE = 1019;
-constexpr size_t kMAPSIZE   = 5;
 
+
+/**
+ * @brief Map for homework only. Do not use it!
+ * 
+ */
 template <
     class key_t,
     class   T,
-    class Hash = std::hash <key_t>,
+    class Hash    = std::hash <key_t>,
     class Compare = std::equal_to <key_t>
 > 
 class LRU_map {
@@ -80,7 +79,9 @@ class LRU_map {
                 baseptr __tmp = __p->real;
                 __p->real = __tmp->real;
                 static_cast <pointer> (__tmp)->data.first  = __k;
-                static_cast <pointer> (__tmp)->data.second = __t;
+                memcpy(&static_cast <pointer> (__tmp)->data.second,
+                       &__t,
+                       sizeof(T));
                 __tmp->real = nullptr;
                 return __tmp;
             }
@@ -89,10 +90,10 @@ class LRU_map {
     }
 
     /* Insert after given node in the hash map. */
-    void insert_after(const key_t &__k,const T &__t,baseptr __p) {
+    void insert_after(const key_t &__k,const T &__t,baseptr __p,bool flag) {
         if(__p->real) return;
-        baseptr __n = full() ? erase_back(__k,__t) : 
-                               impl.alloc(hash::forward_tag(),__k,__t);
+        baseptr __n = flag ? erase_back(__k,__t) : 
+                             impl.alloc(hash::forward_tag(),__k,__t);
         ++impl.count;
         __p->real = __n;
         list::link_before(&header,static_cast <pointer> (__n));
@@ -111,18 +112,15 @@ class LRU_map {
         }
     }
 
-    /* Insert after given iterator. */
-    void insert(const key_t &__k,const T &__t,iterator iter)
-    { return insert_after(__k,__t,iter.__p); }
+    /* Insert after given iterator. Flag to determine whether to recycle. */
+    void insert(const key_t &__k,const T &__t,iterator iter,bool flag = false)
+    { return insert_after(__k,__t,iter.__p,flag); }
 
     /* Try to find an element. */
     iterator try_find(const key_t &__k) { return {find_pre(__k)}; }
 
-    /* Return reference to last node. */
+    /* Return pointer to last node's value. */
     value_t *last() { return & static_cast <pointer> (header.next) ->data; }
-
-    /* Judge whether the map is full. */
-    bool full() const noexcept { return impl.count == kMAPSIZE; }
 
     /* Return count of elements in the map. */
     size_t size() const noexcept { return impl.count; }
@@ -142,16 +140,48 @@ class LRU_map {
         std::cout << '\n';
     }
 
+    /* Erase certain element. */
+    void erase(const key_t &__k) {
+        baseptr __p = find_pre(__k);
+        if(!__p->real) return;
+        --impl.count;
+        baseptr __t = __p->real;
+        __p->real = __t->real;
+        list::delink(static_cast <pointer> (__p));
+        impl.dealloc(__t);
+    }
+
  public:
 
     /* Simple iterator implement. */
     struct iterator {
         baseptr __p; /* Pointer to node_base before the real data. */
-        value_t *base() const noexcept
+        /* Return pointer to real data in next node in hash_map. */
+        value_t *next_data() const noexcept
         { return __p->real ? &static_cast <pointer> (__p->real)->data : nullptr; }
+
+        iterator &operator ++(void) noexcept { 
+            __p = static_cast <pointer> (static_cast <pointer> (__p)->next);
+            return *this;
+        }
+
+        value_t &operator * (void) const noexcept
+        { return  static_cast <pointer> (__p)->data; }
+
+        value_t *operator ->(void) const noexcept
+        { return &static_cast <pointer> (__p)->data; }
+
+        void *base() const noexcept { return __p; }
     };
 
+    iterator begin() { return { static_cast <pointer> (header.next) }; }
+    iterator end()   { return { static_cast <pointer> (&header) }; }
+
+    friend bool operator != (const iterator &lhs,const iterator &rhs) 
+    noexcept { return lhs.base() != rhs.base(); }
+
 };
+
 
 }
 

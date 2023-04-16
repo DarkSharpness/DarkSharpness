@@ -1,6 +1,0 @@
-#ifndef _DARK_ALGOS_
-#define _DARK_ALGOS_
-
-#include "Algorithm/algorithm.hpp"
-
-#endif

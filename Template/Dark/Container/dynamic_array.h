@@ -20,7 +20,7 @@ namespace dark {
  */
 template <class value_t>
 class dynamic_array : private std::allocator <value_t> {
-  protected:
+  private:
     value_t *head; /* Head pointer to first element. */
     value_t *tail; /* Tail pointer to one past the last element. */
     value_t *term; /* Terminal pointer to the end of storage. */

@@ -1,8 +1,6 @@
 #ifndef _DARK_ANY_H_
 #define _DARK_ANY_H_
 
-#include "../include/basic.h"
-
 #include <utility>
 #include <typeinfo>
 
