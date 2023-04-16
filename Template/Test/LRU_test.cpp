@@ -15,5 +15,9 @@ signed main() {
         for(auto &&iter : m) std::cout << iter.first << ' ';
         std::cout << '\n';
     }
+    m.erase(1);
+    m.print();
+    m.insert(3,2);
+    m.print();
     return 0;
 }

@@ -126,8 +126,8 @@ class LRU_map {
     size_t size() const noexcept { return impl.count; }
 
     /* DEBUG USE ONLY! */
-    void insert(const key_t &__k,const T &__t)
-    { return insert_after(__k,__t,find_pre(__k)); }
+    void insert(const key_t &__k,const T &__t,bool flag = false)
+    { return insert_after(__k,__t,find_pre(__k),flag); }
 
     /* DEBUG USE ONLY! */
     void print() const noexcept {
@@ -146,9 +146,9 @@ class LRU_map {
         if(!__p->real) return;
         --impl.count;
         baseptr __t = __p->real;
-        __p->real = __t->real;
-        list::delink(static_cast <pointer> (__p));
-        impl.dealloc(__t);
+        __p->real   = __t->real;
+        list::delink(static_cast <pointer> (__t));
+        impl.dealloc(static_cast <pointer> (__t));
     }
 
  public:
