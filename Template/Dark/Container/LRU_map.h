@@ -56,7 +56,7 @@ class LRU_map {
     { return &table[Hash(impl)(__k) % kTABLESIZE]; }
 
     /* Erase the oldest pair and modify it to the new one. */
-    baseptr erase_back(const key_t &__k,const T &__t) {
+    baseptr erase_back(const key_t &__k,const T &__t,baseptr &__i) {
         const key_t &__n = pointer(header.next)->data.first;
         baseptr __p = find_index(__n);
         --impl.count;
@@ -64,7 +64,10 @@ class LRU_map {
             if(Compare(impl)(__n,pointer(__p->real)->data.first)) {
                 list::delink(static_cast <pointer> (__p->real));
                 baseptr __tmp = __p->real;
-                __p->real = __tmp->real;
+                
+                if(__i == __p->real) __i = __p;
+                else  __p->real = __tmp->real;
+
                 static_cast <pointer> (__tmp)->data.first  = __k;
                 memcpy(&static_cast <pointer> (__tmp)->data.second,
                        &__t,
@@ -93,15 +96,16 @@ class LRU_map {
     void insert(const key_t &__k,const T &__t,bool flag = false)
     { return insert(__k,__t,find_pre(__k),flag); }
 
-    /* Insert after given iterator. Flag to determine whether to recycle. */
-    void insert_after(const key_t &__k,const T &__t,iterator iter,bool flag = false) {
+    /* Insert after given iterator. Flag to determine whether to erase_back. */
+    iterator insert_after(const key_t &__k,const T &__t,iterator iter,bool flag = false) {
         baseptr __p = iter.__p;
-        if(__p->real) return;
-        baseptr __n = flag ? erase_back(__k,__t) : 
+        if(__p->real) return iter;
+        baseptr __n = flag ? erase_back(__k,__t,__p) : 
                              impl.alloc(hash::forward_tag(),__k,__t);
         ++impl.count;
         __p->real = __n;
         list::link_before(&header,static_cast <pointer> (__n));
+        return {__p};
     }
 
     /* Find the previous node in hash_map and access it.  */
@@ -133,17 +137,6 @@ class LRU_map {
 
     /* Return count of elements in the map. */
     size_t size() const noexcept { return impl.count; }
-
-    /* DEBUG USE ONLY! */
-    void print() const noexcept {
-        listptr __p = header.next;
-        while(__p != &header) {
-            listptr __n = __p->next; /* Next node. */
-            std::cout << static_cast <pointer> (__p)->data.first << ' ';
-            __p = __n;
-        }
-        std::cout << '\n';
-    }
 
  public:
 
