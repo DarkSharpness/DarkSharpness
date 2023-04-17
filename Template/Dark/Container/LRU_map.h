@@ -55,28 +55,29 @@ class LRU_map {
     baseptr find_index(const key_t &__k) noexcept
     { return &table[Hash(impl)(__k) % kTABLESIZE]; }
 
-    /* Erase the oldest pair and modify it to the new one. */
-    baseptr erase_back(const key_t &__k,const T &__t,baseptr &__i) {
-        const key_t &__n = pointer(header.next)->data.first;
-        baseptr __p = find_index(__n);
-        --impl.count;
-        while(__p->real) {
-            if(Compare(impl)(__n,pointer(__p->real)->data.first)) {
-                list::delink(static_cast <pointer> (__p->real));
-                baseptr __tmp = __p->real;
-                
-                if(__i == __p->real) __i = __p;
-                else  __p->real = __tmp->real;
+    /**
+     * @brief Erase the oldest pair and modify it to the new one.
+     * 
+     * @param __k New key   to be inserted.
+     * @param __t New value to be inserted.
+     * @param __i Pointer before position to be inserted. __i->real == nullptr.
+     */
+    void erase_back(const key_t &__k,const T &__t,baseptr &__i) {
+        baseptr __p = find_pre(last()->first).__p;
 
-                static_cast <pointer> (__tmp)->data.first  = __k;
-                memcpy(&static_cast <pointer> (__tmp)->data.second,
-                       &__t,
-                       sizeof(T));
-                __tmp->real = nullptr;
-                return __tmp;
-            }
+        list::delink(static_cast <pointer> (__p->real));
+
+        if(__i == __p->real) __i = __p; /* Move __i backward. */
+        else  { /* Relink the __p->real in hash_map. */
+            __i->real = __p->real;
+            __p->real = __p->real->real;  
+            __i->real->real = nullptr;
         }
-        throw 114514; /* This case won't happen. */
+
+        static_cast <pointer> (__i->real)->data.first  = __k;
+        memcpy(&static_cast <pointer> (__i->real)->data.second,
+                &__t,
+                sizeof(T));
     }
 
   public:
@@ -93,18 +94,18 @@ class LRU_map {
     }
 
     /* Tries to insert key-value pair to hash_map. */
-    void insert(const key_t &__k,const T &__t,bool flag = false)
-    { return insert(__k,__t,find_pre(__k),flag); }
+    iterator insert(const key_t &__k,const T &__t,bool flag = false)
+    { return insert_after(__k,__t,find_pre(__k),flag); }
 
     /* Insert after given iterator. Flag to determine whether to erase_back. */
     iterator insert_after(const key_t &__k,const T &__t,iterator iter,bool flag = false) {
         baseptr __p = iter.__p;
         if(__p->real) return iter;
-        baseptr __n = flag ? erase_back(__k,__t,__p) : 
-                             impl.alloc(hash::forward_tag(),__k,__t);
-        ++impl.count;
-        __p->real = __n;
-        list::link_before(&header,static_cast <pointer> (__n));
+
+        if(flag) erase_back(__k,__t,__p);
+        else __p->real = impl.alloc(hash::forward_tag(),__k,__t) , ++impl.count;
+
+        list::link_before(&header,static_cast <pointer> (__p->real));
         return {__p};
     }
 
@@ -119,7 +120,7 @@ class LRU_map {
     }
 
     /* Tries to erase certain element from hash_map. */
-    void erase(const key_t &__k) { return erase(find_pre(__k)); }
+    void erase(const key_t &__k) { return erase_after(find_pre(__k)); }
 
     /* Erase element after given iterator in hash_map.  */
     void erase_after(iterator iter) {
