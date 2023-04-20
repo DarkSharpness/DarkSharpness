@@ -34,14 +34,14 @@ class LRU_map {
     using listptr   = list::baseptr;
     using node      = hash::node <value_t>;
     using pointer   = hash::node <value_t> *;
-    using implement = implement <node,std::allocator <node>,Compare,Hash>;
+    using Implement = implement <node,std::allocator <node>,Compare,Hash>;
 
   private:
 
-    implement impl;
-    list_node header;
-    node_base table[kTABLESIZE];
-
+    Implement impl;     /* Implement of the map. */ 
+    list_node header;   /* Header of list. */
+    node_base cache;    /* Custom memory pool. */
+    node_base table[kTABLESIZE]; /* Hash table. */
 
   private:
 
@@ -80,6 +80,15 @@ class LRU_map {
                 sizeof(T));
     }
 
+    baseptr allocate(const key_t &__k,const T &__v) {
+        ++impl.count;
+        if(cache.real) { /* Allocate from cache. */
+            baseptr temp = cache.real; 
+            cache.real   = cache.real->real;
+            return temp;
+        } else return impl.alloc(hash::forward_tag(),__k,__v);
+    }
+
   public:
 
     LRU_map() noexcept : header({&header,&header}) {}
@@ -90,6 +99,11 @@ class LRU_map {
             listptr __n = __p->next; /* Next node. */
             impl.dealloc(static_cast <pointer> (__p));
             __p = __n;
+        }
+        while(cache.real) {
+            baseptr __p = cache.real;
+            cache.real  = __p->real;
+            impl.dealloc(static_cast <pointer> (__p));
         }
     }
 
@@ -103,7 +117,7 @@ class LRU_map {
         if(__p->real) return iter;
 
         if(flag) erase_back(__k,__t,__p);
-        else __p->real = impl.alloc(hash::forward_tag(),__k,__t) , ++impl.count;
+        else __p->real = allocate(__k,__t);
 
         list::link_before(&header,static_cast <pointer> (__p->real));
         return {__p};
@@ -130,7 +144,8 @@ class LRU_map {
         baseptr __t = __p->real;
         __p->real   = __t->real;
         list::delink(static_cast <pointer> (__t));
-        impl.dealloc(static_cast <pointer> (__t));
+        __t->real   = cache.real;
+        cache.real  = __t;
     }
 
     /* Return pointer to last node's value. */
