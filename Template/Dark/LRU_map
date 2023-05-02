@@ -1,5 +1,5 @@
-#ifndef _DARK_LIST_ARRAY_
-#define _DARK_LIST_ARRAY_
+#ifndef _DARK_LRU_MAP_
+#define _DARK_LRU_MAP_
 
 
 #include "Container/LRU_map.h"

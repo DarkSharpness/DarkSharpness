@@ -29,6 +29,15 @@ struct node : node_base , list::node_base {
     node(forward_tag,Args &&...objs) : data(std::forward <Args> (objs)...) {} 
 };
 
+
+struct iterator_base {
+  protected:
+    using value_t = int;
+    constexpr static bool is_const = true;
+
+};
+
+
 }
 
 }
