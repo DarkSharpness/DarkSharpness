@@ -18,8 +18,8 @@ signed main() {
         for(int i = 1 ; i <= n ; ++i) {
             for(int j = 1 ; j <= m ; ++j) {
                 s[i][j] = rand() % N + 1;
-                s[i][j] += s[i - 1][j] + s[i][j - 1] - s[i - 1][j - 1];
                 dark::print(s[i][j],' ');
+                s[i][j] += s[i - 1][j] + s[i][j - 1] - s[i - 1][j - 1];
             }
             dark::writeline();
         }
@@ -29,7 +29,7 @@ signed main() {
         int d = rand() % (m - b + 1) + b;
         dark::writeline(a,b,c,d);
         freopen(out.c_str(),"w",stdout);
-        dark::writeline(s[c][d] - s[a - 1][b - 1]);
+        dark::writeline(s[c][d] - s[c][b - 1] - s[a - 1][d] + s[a - 1][b - 1]);
     }
     return 0;
 }

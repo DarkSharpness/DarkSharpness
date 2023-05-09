@@ -15,6 +15,6 @@ signed main() {
         }
     int a,b,c,d;
     cin >> a >> b >> c >> d;
-    cout << s[c][d] - s[a - 1][b - 1];
+    cout << s[c][d] - s[c][b - 1] - s[a - 1][d] + s[a - 1][b - 1];
     return 0;
 }
