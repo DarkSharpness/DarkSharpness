@@ -5,7 +5,7 @@
 #include "allocator.h"
 
 #include <iostream>
-#include <string>
+#include <cstring>
 
 namespace dark {
 
@@ -51,46 +51,40 @@ class LRU_map {
         list::link_before(&header,static_cast <pointer> (__p));
     }
 
-    /* Return the index of the real node. */
+    /* Return the first pointer by given key. */
     baseptr find_index(const key_t &__k) noexcept
     { return &table[Hash(impl)(__k) % kTABLESIZE]; }
 
-    /**
-     * @brief Erase the oldest pair and modify it to the new one.
-     * 
-     * @param __k New key   to be inserted.
-     * @param __t New value to be inserted.
-     * @param __i Pointer before position to be inserted. __i->real == nullptr.
-     */
-    void erase_back(const key_t &__k,const T &__t,baseptr &__i,bool useless) {
-        baseptr __p = find_pre(last()->first).__p;
-
-        list::delink(static_cast <pointer> (__p->real));
-
-        if(__i == __p->real) __i = __p; /* Move __i backward. */
-        else  { /* Relink the __p->real in hash_map. */
-            __i->real = __p->real;
-            __p->real = __p->real->real;  
-            __i->real->real = nullptr;
-        }
-
-        static_cast <pointer> (__i->real)->data.first = __k;
-        if(!useless) memcpy(&static_cast <pointer> (__i->real)->data.second,
-                            &__t,
-                            sizeof(T));
-    }
-
+    /* Allocate one node with given key and value. */
     baseptr allocate(const key_t &__k,const T &__v,bool useless) {
-        ++impl.count;
-        if(cache.real) { /* Allocate from cache. */
+        if(cache.real) { /* Allocate from cache if available. */
             baseptr temp = cache.real; 
-            cache.real   = cache.real->real;
+            cache.real   = temp->real;
             static_cast <pointer> (temp)->data.first = __k;
             if(!useless) memcpy(&static_cast <pointer> (temp)->data.second,
                                 &__v,
                                 sizeof(T));
             return temp;
         } else return impl.alloc(hash::forward_tag(),__k,__v);
+    }
+
+    /* Deallocate one node after given pointer. */
+    void deallocate(baseptr __p) {
+        __p->real  = cache.real;
+        cache.real = __p;
+    }
+
+    /* Find the previous baseptr in the map.  */
+    baseptr find(const key_t &__k) {
+        baseptr __p = find_index(__k);
+        while(__p->real) {
+            if( /* Given key equal to the key of current node. */
+                Compare(impl) (
+                __k,
+                static_cast <pointer> (__p->real) -> data.first)
+            ) break;
+            __p = __p->real;
+        } return __p;
     }
 
   public:
@@ -111,59 +105,67 @@ class LRU_map {
         }
     }
 
-    /* Tries to insert key-value pair to hash_map. */
-    iterator insert(const key_t &__k,const T &__t,bool flag = false)
-    { return insert_after(__k,__t,find_pre(__k),flag); }
+    /* Force to insert a key-value pair. */
+    iterator insert(const key_t &__k,const T &__t,bool useless = false) {
+        baseptr __p = find_index(__k);
 
-    /* Insert after given iterator. Flag to determine whether to erase_back. */
-    iterator insert_after(const key_t &__k,const T &__t,iterator iter,
-                          bool flag = false,bool useless = false) {
-        baseptr __p = iter.__p;
-        if(__p->real) return iter;
+        /* Allocate. */
+        ++impl.count;
+        baseptr __n = allocate(__k,__t,useless);
 
-        if(flag) erase_back(__k,__t,__p,useless);
-        else __p->real = allocate(__k,__t,useless);
-
+        /* Relinking. */
+        __n->real   = __p->real;
+        __p->real   = __n;
         list::link_before(&header,static_cast <pointer> (__p->real));
-        return {__p};
+
+        return {__p}; /* Return iterator to previous hash node. */
+    }
+
+    /* Tries to erase a key from hash_map. */
+    void erase(const key_t &__k) {
+        baseptr __p = find(__k);
+        if(!__p->real) return; /* Case: Not found. */
+
+        /* Relinking. */
+        baseptr __n = __p->real;
+        __p->real   = __n->real;
+        list::delink(static_cast <pointer> (__n));
+
+        /* Deallocate. */
+        --impl.count;
+        deallocate(__n);
     }
 
     /* Find the previous node in hash_map and access it.  */
     iterator find_pre(const key_t &__k) {
-        baseptr __p = find_index(__k);
-        while(__p->real) {
-            if(Compare(impl) (__k,static_cast <pointer> (__p->real) -> data.first)) 
-            { access(__p->real); break; }
-            __p = __p->real;
-        } return {__p};
-    }
-
-    /* Tries to erase certain element from hash_map. */
-    void erase(const key_t &__k) { return erase_after(find_pre(__k)); }
-
-    /* Erase element after given iterator in hash_map.  */
-    void erase_after(iterator iter) {
-        baseptr __p = iter.__p;
-        if(!__p->real) return;
-        --impl.count;
-        baseptr __t = __p->real;
-        __p->real   = __t->real;
-        list::delink(static_cast <pointer> (__t));
-        __t->real   = cache.real;
-        cache.real  = __t;
+        baseptr __p = find(__k);
+        if(__p->real) access(__p->real);
+        return {__p};
     }
 
     /* Return pointer to last node's value. */
-    value_t *last() { return & static_cast <pointer> (header.next) ->data; }
+    value_t *last() { return &static_cast <pointer> (header.next)->data; }
 
     /* Return count of elements in the map. */
     size_t size() const noexcept { return impl.count; }
+
+    void clear() {
+        listptr __p = header.next;
+        while(__p != &header) {
+            find_index(static_cast <pointer> (__p)->data.first)
+                ->real = nullptr; /* Clear hash table. */
+            deallocate(static_cast <pointer> (__p));
+            __p = __p->next;
+        } /* Now the list is cleared empty.  */
+        header.next = header.prev = &header;
+    }
 
  public:
 
     /* Simple iterator implement. */
     struct iterator {
         baseptr __p; /* Pointer to node_base before the real data. */
+
         /* Return pointer to real data in next node in hash_map. */
         value_t *next_data() const noexcept
         { return __p->real ? &static_cast <pointer> (__p->real)->data : nullptr; }
@@ -182,12 +184,13 @@ class LRU_map {
         void *base() const noexcept { return __p; }
     };
 
+    /* DEBUG USE iterator part. */
+
     iterator begin() { return { static_cast <pointer> (header.next) }; }
     iterator end()   { return { static_cast <pointer> (&header) }; }
 
     friend bool operator != (const iterator &lhs,const iterator &rhs) 
     noexcept { return lhs.base() != rhs.base(); }
-
 };
 
 
