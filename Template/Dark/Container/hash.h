@@ -22,21 +22,21 @@ struct node_base {
     baseptr real = nullptr; /* pointer to real data in the hash-map. */
 };
 
+/* Node linked by list. */
 template <class value_t>
-struct node : node_base , list::node_base {
+struct linked_node : node_base , list::node_base {
+    value_t data; /* Real data. */
+    template <class ...Args>
+    linked_node(forward_tag,Args &&...objs) : data(std::forward <Args> (objs)...) {} 
+};
+
+/* Node not linked by list. */
+template <class value_t>
+struct node : node_base {
     value_t data; /* Real data. */
     template <class ...Args>
     node(forward_tag,Args &&...objs) : data(std::forward <Args> (objs)...) {} 
 };
-
-
-struct iterator_base {
-  protected:
-    using value_t = int;
-    constexpr static bool is_const = true;
-
-};
-
 
 }
 

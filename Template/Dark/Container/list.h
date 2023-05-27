@@ -64,14 +64,14 @@ void link_after(baseptr __p,baseptr __c) {
 /**
  * @brief Link a node into the list after certain node. 
  * 
- * @param __s The node to be linked before.
+ * @param __p The node to be linked before.
  * @param __c The node to be linked into.
  */
 void link_before(baseptr __s,baseptr __c) {
     __s->prev->next = __c;
     __c->prev = __s->prev;
     __c->next = __s;
-    __s->prev = __c;
+    __s->prev =__c;
 }
 
 }
