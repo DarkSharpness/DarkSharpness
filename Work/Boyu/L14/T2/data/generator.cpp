@@ -2,9 +2,7 @@
 #include <Dark/inout>
 using namespace std;
 
-const int N = 10;
-const int M = 5;
-int a[2][120][120];
+int a[1001];
 
 signed main() {
     srand(time(NULL));
@@ -12,42 +10,17 @@ signed main() {
         string in  = to_string(tt) + ".in";
         string out = to_string(tt) + ".out";
         freopen(in.c_str(),"w",stdout);
-        memset(a,0,sizeof(a));
-        int n = rand() % N + 1;
-        int m = rand() % N + 1;
-        int k = rand() % M + 1;
-        dark::writeline(n,m,k);
+        int n = rand() % (tt * tt * tt) + 1;
         for(int i = 1 ; i <= n ; ++i)
-            for(int j = 1 ; j <= m ; ++j)
-                a[0][i][j] = rand() % N;
-        for(int i = 1 ; i <= n ; ++i) {
-            for(int j = 1 ; j <= m ; ++j)
-                dark::print(a[0][i][j],' ');
-            dark::writeline();
-        }
-        bool t = false;
-        while(k--) {
-            for(int i = 1 ; i <= n ; ++i)
-                for(int j = 1 ; j <= m ; ++j) {
-                    a[!t][i][j] = 0;
-                    for(int x = -1 ; x <= 1 ; ++x)
-                        for(int y = -1; y <= 1 ; ++y)
-                            a[!t][i][j] += a[t][i + x][j + y];
-                    int x = 3,y = 3;
-                    if(i == 1) --x;
-                    if(i == n) --x;
-                    if(j == 1) --y;
-                    if(j == m) --y;
-                    a[!t][i][j] /= x * y;
-                }
-            t = !t;
-        }
+            a[i] = rand() % min(1000,2 * n) + 1;
+        sort(a + 1,a + n + 1);
+        n = unique(a + 1,a + n + 1) - a - 1;
+        dark::writeline(n);
+        dark::writelineRange(a + 1,a + n + 1);
+        int ans = rand() % n + 1;
+        dark::writeline(a[ans]);
         freopen(out.c_str(),"w",stdout);
-        for(int i = 1 ; i <= n ; ++i) {
-            for(int j = 1 ; j <= m ; ++j)
-                dark::print(a[t][i][j],' ');
-            dark::writeline();
-        }
+        dark::writeline(ans);
     }
     return 0;
 }

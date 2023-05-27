@@ -14,25 +14,26 @@ signed main() {
         memset(a,0,sizeof(a));
         memset(d,0,sizeof(d));
         freopen(in.c_str(),"w",stdout);
-        int n = rand() % N + 1;
-        int m = rand() % N + 1;
-        dark::writeline(n,m);
-        for(int j = 1 ; j <= n ; ++j) a[j] = (rand() % 2001) - 1000;
-        dark::writelineRange(a + 1,a + n + 1);
-        while(m--) {
-            int x = rand() % n + 1;
-            int y = (rand() % 2001) - 1000;
-            dark::writeline(x,y);
-            d[x] += y;
+        int n = rand() % 15 + 1;
+        int m = rand() % 20 + 1;
+        for(int j = 1 ; j <= m ; ++j) {
+            a[j] = rand() % n + 1;
+            if(rand() % 8 == 0) a[j] = rand() % 15 + 1;
+            if(rand() % n == 0) a[j] = 1;
         }
-        int t = 0;
-        for(int j = n ; j >= 1 ; --j) {
-            t += d[j];
-            a[j] += t;
+        sort(a + 1,a + m + 1);
+        m = unique(a + 1,a + m + 1) - a - 1;
+        dark::writeline(n,m);
+        dark::writelineRange(a + 1,a + m + 1);
+        d[0] = 1;
+        for(int i = 1 ; i <= n ; ++i) {
+            for(int j = 1 ; j <= m ; ++j) {
+                if(i < a[j]) continue;
+                else d[i] += d[i - a[j]];
+            }
         }
         freopen(out.c_str(),"w",stdout);
-        for(int j = 1 ; j <= n ; ++j)
-            cout << a[j] << '\n';
+        dark::writeline(d[n]);
     }
     return 0;
 }

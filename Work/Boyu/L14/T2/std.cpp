@@ -1,37 +1,22 @@
-#include <bits/stdc++.h>
+/* 说了不要抄袭标程!!! */
+#include <iostream>
 using namespace std;
 
-const int N = 102;
+const int N = 1001;
+int a[N];
 
-int a[2][N][N]; // 不滚动数组也能做哦
+int search(int l,int r,int q) {
+    int mid = (l + r) / 2;
+    if(a[mid] == q) return mid;
+    if(a[mid] > q)  return search(l,mid - 1,q);
+    else            return search(mid + 1,r,q);
+}
 
-signed main() {
-    int n,m,k;
-    cin >> n >> m >> k;
-    for(int i = 1 ; i <= n ; ++i)
-        for(int j = 1 ; j <= m ; ++j)
-            cin >> a[0][i][j];
-    bool t = false;
-    while(k--) {
-        for(int i = 1 ; i <= n ; ++i)
-            for(int j = 1 ; j <= m ; ++j) {
-                a[!t][i][j] = 0;
-                for(int x = -1 ; x <= 1 ; ++x)
-                    for(int y = -1; y <= 1 ; ++y)
-                        a[!t][i][j] += a[t][i + x][j + y];
-                int x = 3,y = 3;
-                if(i == 1) --x;
-                if(i == n) --x;
-                if(j == 1) --y;
-                if(j == m) --y;
-                a[!t][i][j] /= x * y;
-            }
-        t = !t;
-    }
-    for(int i = 1 ; i <= n ; ++i) {
-        for(int j = 1 ; j <= m ; ++j)
-            cout << a[t][i][j] << ' ';
-        cout << '\n';
-    }
+int main() {
+    int n,q;
+    cin >> n;
+    for(int i = 1 ; i <= n ; ++i) cin >> a[i];
+    cin >> q;
+    cout << search(1,n,q);
     return 0;
 }
