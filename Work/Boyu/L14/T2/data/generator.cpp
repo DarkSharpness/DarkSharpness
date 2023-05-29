@@ -20,7 +20,7 @@ signed main() {
         int ans = rand() % n + 1;
         dark::writeline(a[ans]);
         freopen(out.c_str(),"w",stdout);
-        dark::writeline(ans);
+        dark::write(ans);
     }
     return 0;
 }
