@@ -45,9 +45,9 @@ class trivial_array : private std::allocator <value_t>  {
     : trivial_array(__n) { memset(head,0,__n * sizeof(value_t)); tail = term; }
 
     /* Construct a new %array from an initializer_list. */
-    trivial_array(std::initializer_list <value_t> __l) 
+    trivial_array(std::initializer_list <value_t> &&__l) 
         : trivial_array(__l.size()) {
-        memcpy(head,__l.begin(),size() * sizeof(value_t));
+        memcpy(head,__l.begin(),__l.size() * sizeof(value_t));
         tail = term;
     }
 
@@ -65,10 +65,12 @@ class trivial_array : private std::allocator <value_t>  {
         memcpy(head,rhs.head,size() * sizeof(value_t));
     }
 
+
     /**
      * @brief Construct a new %array with identical elements with another %array.
      * It will just take away the pointers from another %array.
      * 
+     * @tparam T  The source type of the trivial_array.
      * @param rhs The %array to move from.
      * @attention Constant time complexity in any case.
      */
@@ -81,21 +83,16 @@ class trivial_array : private std::allocator <value_t>  {
         rhs.head = rhs.tail = rhs.term = nullptr;
     }
 
-
     /* Swap the content of two %array in constant time. */
-    trivial_array &swap(trivial_array &rhs) noexcept {
-        std::swap(head,rhs.head);
-        std::swap(tail,rhs.tail);
-        std::swap(term,rhs.term);
+    template <class T>
+    trivial_array &swap(trivial_array <T> &rhs) noexcept {
+        static_assert(sizeof(value_t) == sizeof(T),"Size dismatch!");
+        std::swap((T *&)head,rhs.head);
+        std::swap((T *&)tail,rhs.tail);
+        std::swap((T *&)term,rhs.term);
         return *this;
     }
 
-    /* Swap the content of two %array in constant time. */
-    friend void swap(trivial_array &lhs,trivial_array &rhs) noexcept {
-        std::swap(lhs.head,rhs.head);
-        std::swap(lhs.tail,rhs.tail);
-        std::swap(lhs.term,rhs.term);
-    }
 
   public:
 
@@ -181,6 +178,7 @@ class trivial_array : private std::allocator <value_t>  {
     using reverse_iterator       = RandomAccess::iterator_base <value_t,0,0>;
     using const_reverse_iterator = RandomAccess::iterator_base <value_t,1,0>;
 
+
     /* Iterator to the first element. */
     iterator begin() noexcept { return head; }
     /* Iterator to one past the last element. */
@@ -211,6 +209,11 @@ class trivial_array : private std::allocator <value_t>  {
     const_reverse_iterator crend()   const noexcept {return head - 1;}
 
 };
+
+
+template <class T1,class T2>
+void swap(trivial_array <T1> &lhs,trivial_array <T2> &rhs)
+noexcept { lhs.swap(rhs); }
 
 
 }
