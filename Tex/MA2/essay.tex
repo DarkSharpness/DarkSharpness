@@ -1,0 +1,226 @@
+\documentclass[fontset=windows]{article}
+\usepackage[margin=1in]{geometry}%设置边距，符合Word设定
+\usepackage{ctex}
+\usepackage{amsmath, xparse}
+\usepackage{amssymb}
+\usepackage{setspace}
+\usepackage{lipsum}
+\usepackage{graphicx}%插入图片
+\graphicspath{{Figures/}}%文章所用图片在当前目录下的 Figures目录
+\usepackage{hyperref} % 对目录生成链接，注：该宏包可能与其他宏包冲突，故放在所有引用的宏包之后
+\hypersetup{
+    colorlinks        = true,  % 将链接文字带颜色
+	bookmarksopen     = true, % 展开书签
+	bookmarksnumbered = true, % 书签带章节编号
+	pdftitle          = 标题, % 标题
+	pdfauthor         = DarkSharpness, % 作者
+    citecolor         = green,
+    linkcolor         = red,
+    urlcolor          = blue}
+\bibliographystyle{plain}% 参考文献引用格式
+\newcommand{\upcite}[1]{\textsuperscript{\cite{#1}}}
+
+\renewcommand{\contentsname}{\centerline{Contents}} %经过设置word格式后，将目录标题居中
+
+% Keywords command
+\providecommand{\keywords}[1]
+{
+  \textbf{\text{Keywords: }} #1
+}
+
+
+\title{\heiti\zihao{2} 场论的运用}
+\author{DarkSharpness}
+\date{2023.06.06}
+
+\begin{document}
+	\maketitle
+	% \thispagestyle{empty}
+
+% 摘要
+\begin{abstract} 
+    这是摘要
+\end{abstract}
+
+\keywords{ 场论 , 流体力学 }
+
+\tableofcontents
+
+% 这是图片
+% Hello world! Hello Ali! As shown in figure \ref{1}
+% \begin{figure}[htbp]
+% 	\centering
+% 	\includegraphics[scale=0.2]{Ali.jpg}
+% 	\caption{this is Ali}
+% 	\label{1}
+% \end{figure}
+
+
+\section{引言}
+
+这是引言。
+
+
+\section{流体运动的基本表述}
+
+在流体力学中，一个重要而基本的问题就是如何描述流体的运动。
+
+\subsection{拉格朗日表述}
+
+该表述的基本思想是，在流体中某一个位置 $\vec{r}_0$ 放置一个标记的试探粒子，其不影响且跟随原来流体运动。此时，通过该粒子的运动的位置矢量 $\vec{r}$ 关于时间的变化关系，即可反映流体运动的特性。因此，我们只需求出 $\vec{r} = \vec{r}(\vec{r}_0,t)$ 即可表征物体的运动。特别地，$\vec{r}(\vec{r}_0,0) = \vec{r}_0$
+
+\subsection{欧拉表述}
+
+该表述的基本思想是，对于某个空间中某个固定的位置 $ \vec{r}_0 $ ，我们去研究该固定点的气体微元的运动状态 $\vec{v} = \vec{v}(\vec{r}_0,t)$，即可。需要特别注意的是，在固定研究空间某一点 $ \vec{r}_0 $ 后，如果为空间中每个流体粒子都打上标记，那么处于 $ \vec{r}_0 $ 的气体微粒的标记可能会随时间而变化。
+
+\subsection{两种表述的差异与联系}
+
+前者给出方程
+
+$$\vec{r} = \vec{r}(\vec{r}_0,t)$$
+
+而后者则是
+
+$$\vec{v} = \vec{v}(\vec{r},t)$$
+
+由物理含义，我们不难得出关系:
+
+$$\vec{v}(\vec{r},t) = \frac{\partial}{\partial t} \vec{r}(\vec{r}_0,t) $$
+
+其中 $\vec{r}_0$ 可以由 $ \vec{r} = \vec{r}(\vec{r}_0,t) $ 反解得到。
+
+由于流体粒子数量众多，且难以区分分辨，在流体力学中，我们往往更多地去用欧拉表述。而拉格朗日表述更加适合于粒子可以辨认，位矢信息比较重要的固体物理中。
+
+值得关注的是，在欧拉表述中，状态量描述的是场的属性，并不直接是粒子的属性。例如关于 $\vec{r}$ 处的气体微元，我们可能用 $f = f(\vec{r},t)$ 的物理量去描述气体。此时， $(\frac{\partial f}{\partial t})_r$ 描述的是在这一点的 f 场的变化，而不是物理量 f 如何随着特定的试探粒子(气体微元)的运动而变化。事实上，在大多物理方程中，例如动量方程 $\vec{F} = \frac{\mathrm{d}\vec{p}}{\mathrm{d}t}$，外界(本例子中为外力)作用的对象是那个运动的气体微元，而不是场。
+
+实际上，常见物理方程中的的 $\frac{\mathrm{d}}{\mathrm{d}t}$ 记号，其是作用于具体粒子。因此其在欧拉表述下，应该是 $(\frac{\partial}{\partial t})_{\vec{r}_0}$ ，即是同一团粒子，而不是简单的 $(\frac{\partial}{\partial t})_{\vec{r}}$ 。为了避免歧义，后文我们将用 $\frac{\mathrm{D}}{\mathrm{D}t}$ 来代替，即:
+
+$$
+\frac{\mathrm{D}}{\mathrm{D}t} 
+\equiv \frac{\mathrm{d}}{\mathrm{d}t} 
+= (\frac{\partial}{\partial t})_{\vec{r}_0}
+$$
+
+由链式法则，我们不难求出:
+
+$$
+\frac{\mathrm{D}f(\vec{r},t)}{\mathrm{D}t}
+= (\frac{\partial f(\vec{r},t)}{\partial t})_{\vec{r}_0}
+= (\frac{\partial f}{\partial t})_{\vec{r}}
++ (\frac{\partial f}{\partial r})_t \cdot (\frac{\partial r}{\partial t})_{\vec{r}_0}
+$$
+
+在欧拉表述下，我们可以得出，在某一点某一时刻:
+
+$$
+\frac{\mathrm{D}}{\mathrm{D}t}
+= \frac{\partial}{\partial t} + \vec{v} \cdot \nabla
+$$
+
+
+\section{Reynolds 输运定理}
+
+在流体力学中，物理学家们常常会考察某些特定区域 $ V(t) $ 内的流体状态。
+
+对于一个区域 $ V(t) $ ，边界为 $ \partial V(t) $ ，流体具有某个广度量 $f$ ，很多物理方程中，会出现这部分流体粒子该物理量的总和对于时间的导数。即
+
+$$
+\frac{\mathrm{d}}{\mathrm{d}t} \int_{V(t)} f \mathrm{d}V
+$$
+
+注意到我们在分析这个式子的时候，我们是对于特定的粒子在分析，并不是背后的场，$\frac{\mathrm{d}}{\mathrm{d}x}$ 必须作用在粒子上。因此， $V$ 会随着时间而改变。
+
+为了避免过多的讨论，这里假设 $ f $ 的性质足够的好，满足函数本身和偏导数都连续，且积分区域为紧集(即有界闭区域)。那么在积分区域上，则有:
+
+$$
+\frac{\mathrm{d}}{\mathrm{d}t} \int_{V(t)} f \mathrm{d}V
+= \int_{V(t)} \frac{\partial f}{\partial t} \mathrm{d}V +
+  \int_{\partial V(t)} {f \vec{v} \cdot \mathrm{d}\vec{S}}
+= \int_{V(t)} (\frac{\partial f}{\partial t} + \nabla (f \vec{v})) \mathrm{d}V
+$$
+
+\subsection*{物理直观}
+
+从直观上去理解，上述式子的物理含义是在某时刻和某体积内，全部流体某个广度量的总和的变化量。根据物理直观，我们可以猜测: 该变化量等于内部的广度量变化量，以及从边界流出的量。
+
+内部的广度量变化量即等于: 
+
+$$
+\int_V \frac{\partial f}{\partial t} \mathrm{d}V
+$$
+
+边界流出的量需要定义流。由物理直观，流即为量乘上速度，即: $ \vec{j} \equiv f \cdot \vec{v} $
+
+直观上，边界流出的量等于从所有面积流出的量积分，等于:
+
+$$
+\int_{\partial V} \vec{j} \mathrm{d} \vec{S}
+$$
+
+因此，合并两项，完全借助物理直观，我们可以得到:
+
+$$
+\begin{aligned}
+    \int_V \frac{\mathrm{D}f}{\mathrm{D}t} \mathrm{d}V
+        &= \int_V \frac{\partial f}{\partial t} \mathrm{d}V +
+            \int_{\partial V} \vec{j} \mathrm{d} \vec{S}      \\
+        &= \int_V (\frac{\partial f}{\partial t} + \nabla (\rho \vec{v})) \mathrm{d}V
+\end{aligned}
+$$
+
+其中，最后一步用到了高斯定理。
+
+\subsection*{数学推导}
+
+我们假设体积 $V(t)$ 足够好，其表面方程为 $ F(\vec{r},t) = 0 $ 满足有界性，且 $f$ 在区域内连续且有连续的偏导数。简单起见，我们暂时只证明其一维时候的形式。
+
+$$
+\frac{\mathrm{d}}{\mathrm{d}y} \int_{a(y)}^{b(y)}f(x,y) \mathrm{d}x = 
+\int_{a(y)}^{b(y)}\frac{\partial f(x,y)}{\partial y} \mathrm{d}x
++ f(b,y) \cdot \frac{\mathrm{d}b}{\mathrm{d}y}
+- f(a,y) \cdot \frac{\mathrm{d}a}{\mathrm{d}y}
+$$
+
+记 : $ \phi(y) = \int_{a(y)}^{b(y)}f(x,y) \mathrm{d}x $
+
+$$
+\phi(y + h) - \phi(y) = \int_{a(y)}^{b(y)}(f(x,y + h) - f(x,y))\mathrm{d}x
+                        - \int_{a(y)}^{a(y + h)}f(x,y + h)\mathrm{d}x
+                        + \int_{b(y)}^{b(y + h)}f(x,y + h)\mathrm{d}x
+$$
+
+由微分中值定理:
+
+$$
+\int_{a}^{b}(f(x,y + h) - f(x,y))\mathrm{d}x 
+    = h \cdot \int_{a}^{b} \frac{\partial}{\partial y}f(x,y + \theta h) \mathrm{d}x (\theta \in [0,1])
+$$
+
+因为连续且有界，所以 $f$ 一致连续，所以
+
+$$
+\lim_{h \rightarrow 0} \int_{a}^{b}\frac{f(x,y + h) - f(x,y)}{h}\mathrm{d}x 
+    = \int_{a}^{b} \frac{\partial}{\partial y}f(x,y) \mathrm{d}x
+$$
+
+所以结合牛顿莱布尼兹公式，可得:
+
+$$
+\frac{\mathrm{d}}{\mathrm{d}y} \int_{a(y)}^{b(y)}f(x,y) \mathrm{d}x = 
+\int_{a(y)}^{b(y)}\frac{\partial f(x,y)}{\partial y} \mathrm{d}x
++ f(b,y) \cdot \frac{\mathrm{d}b}{\mathrm{d}y}
+- f(a,y) \cdot \frac{\mathrm{d}a}{\mathrm{d}y}
+$$
+
+对于高维的情况，我们可以类似地证明 \upcite{ref1} ，下式依然成立:
+
+
+% \section*{这个标题没有数字}
+
+\begin{thebibliography}{30}
+
+    \bibitem{ref1} 维基百科:曲线 \url{https://zh.wikipedia.org/wiki/%E6%9B%B2%E7%BA%BF}
+
+\end{thebibliography}
+
+\end{document}

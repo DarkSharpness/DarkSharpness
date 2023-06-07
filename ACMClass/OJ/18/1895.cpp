@@ -393,6 +393,16 @@ void sort(RandomIt first, RandomIt last, Compare comp) {
 }
 
 
+void mersort(int *a,int l,int r) {
+    if (l == r) return;
+    int mid = (l + r) >> 1;
+    mersort(  l  ,mid);
+    mersort(mid + 1,r);
+    for(int i = l,j = mid + 1,k = l; i <= mid && j <= r ; ++k)
+        if(j > r && (i<=mid && cmp(a[i],a[j]))) 
+            tmp[k]=a[i++];else tmp[k]=a[j++];
+    for (int i=l;i<=r;i++) a[i]=tmp[i];
+}
 }
 
 
