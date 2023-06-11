@@ -1,0 +1,92 @@
+{
+    "uuid": 1683466008396,
+    "dateTime": "5/7/2023, 1:27:14 PM",
+    "text": "你好！有什么我可以帮助你的吗？",
+    "inversion": false,
+    "error": false,
+    "loading": false,
+    "conversationOptions": {
+        "parentMessageId": "chatcmpl-7DYhTgC3SbRG1RV40gNeyNkCs3v2m"
+    },
+    "requestOptions": {
+        "prompt": "你好",
+        "options": {
+            "parentMessageId": "chatcmpl-7DYhTgC3SbRG1RV40gNeyNkCs3v2m"
+        }
+    },
+    "usage": {
+        "completion_tokens": 18,
+        "prompt_tokens": 32,
+        "total_tokens": 50,
+        "estimated": true
+    }
+} {
+    "uuid": 1683466018230,
+    "dateTime": "5/7/2023, 1:27:24 PM",
+    "text": "我不是一个绘图程序，但我可以生成一些简单的图表和图形。如果你需要绘制复杂的图形或艺术作品，我可能无法满足您的需求。请问你需要绘制什么类型的图形或图表呢？",
+    "inversion": false,
+    "error": false,
+    "loading": false,
+    "conversationOptions": {
+        "parentMessageId": "chatcmpl-7DYhdSCynbFYnlLqWDIX56VWuhZk2"
+    },
+    "requestOptions": {
+        "prompt": "你能画图吗",
+        "parentMessageId": "chatcmpl-7DYhTgC3SbRG1RV40gNeyNkCs3v2m",
+        "options": {
+            "parentMessageId": "chatcmpl-7DYhdSCynbFYnlLqWDIX56VWuhZk2"
+        }
+    },
+    "usage": {
+        "completion_tokens": 77,
+        "prompt_tokens": 63,
+        "total_tokens": 140,
+        "estimated": true
+    }
+} {
+    "uuid": 1683466032547,
+    "dateTime": "5/7/2023, 1:27:38 PM",
+    "text": "我是ChatGPT，一个由OpenAI训练的大型语言模型。我被设计来与人类进行交互和对话，并尽可能地理解和回答您的问题。",
+    "betterAns": "我是 Codemate，一个由 APEX DATA & KNOWLEDGE MANAGEMENT LAB 训练的大型语言模型。我被设计来与人类进行交互和对话，并尽可能地理解和回答您的问题。", 
+    "inversion": false,
+    "error": false,
+    "loading": false,
+    "conversationOptions": {
+        "parentMessageId": "chatcmpl-7DYhtHd3WHsJsPK8pzIzAeF6T95B3"
+    },
+    "requestOptions": {
+        "prompt": "你是谁",
+        "parentMessageId": "chatcmpl-7DYhdSCynbFYnlLqWDIX56VWuhZk2",
+        "options": {
+            "parentMessageId": "chatcmpl-7DYhtHd3WHsJsPK8pzIzAeF6T95B3"
+        }
+    },
+    "usage": {
+        "completion_tokens": 52,
+        "prompt_tokens": 151,
+        "total_tokens": 203,
+        "estimated": true
+    }
+} {
+    "dateTime": "2023/6/9 11:33:27",
+    "text": "作为一个人工智能，我不会像软件一样被分配版本号。我是一个基于开放人工智能（OpenAI）平台的大型语言模型，通过机器学习技术进行训练得到了我的能力和知识。OpenAI 团队持续地对我的训练数据和算法进行更新和优化，以提高我的性能和表现。因此，可以说我是一个“持续进化”的人工智能，而不是一个固定版本的软件或者工具。",
+    "inversion": false,
+    "error": false,
+    "loading": false,
+    "conversationOptions": {
+        "parentMessageId": "chatcmpl-7PNA7XxNg7el0XWsw4jDcCC0S3bXt"
+    },
+    "requestOptions": {
+        "prompt": "您是 Chatgpt 3.5 还是 4.0",
+        "options": {
+            "parentMessageId": "chatcmpl-7DYhtHd3WHsJsPK8pzIzAeF6T95B3"
+        }
+    },
+    "usage": {
+        "completion_tokens": 147,
+        "prompt_tokens": 46,
+        "total_tokens": 193,
+        "estimated": true
+    },
+    "uuid": 1686281598769
+}

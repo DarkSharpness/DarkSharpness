@@ -1,0 +1,65 @@
+{
+    "dateTime": "2023/6/9 16:02:09",
+    "text": "在数据结构中，堆（Heap）通常指的是二叉堆（Binary Heap），是一种特殊的树形数据结构，其中每个父节点的值都大于或小于其所有子节点的值。堆可以用数组实现，并且具有以下性质：\n\n- 完全二叉树：除了最后一层，其他所有层必须填满。\n- 最大堆（Max Heap）：每个父节点的值都大于或等于其子节点的值。\n- 最小堆（Min Heap）：每个父节点的值都小于或等于其子节点的值。\n\n因为堆具有这些性质，所以它们通常用于实现优先队列、排序算法（如堆排序）和图形算法（如 Dijkstra 算法）。",
+    "inversion": false,
+    "error": false,
+    "loading": false,
+    "conversationOptions": {
+        "parentMessageId": "chatcmpl-7PRM6veUExPKbTSA4tfhanc3IjyiO"
+    },
+    "requestOptions": {
+        "prompt": "数据机构中，堆是什么？",
+        "options": {}
+    },
+    "usage": {
+        "completion_tokens": 215,
+        "prompt_tokens": 42,
+        "total_tokens": 257,
+        "estimated": true
+    },
+    "uuid": 1686297705664
+} {
+    "dateTime": "2023/6/9 16:02:41",
+    "text": "除了二叉堆，还有以下几种常见的堆：\n\n1. 斐波那契堆（Fibonacci Heap）：由斐波那契树构成的堆，可以在某些操作上比二叉堆更高效。\n\n2. 二项堆（Binomial Heap）：由二项树构成的堆，也可以在某些操作上比二叉堆更高效。\n\n3. 左偏树堆（Leftist Heap）：一种具有性质的二叉堆，能够支持合并操作，即把两个堆合并成一个堆。\n\n4. 严格斜堆（Skew Heap）：一种具有性质的二叉堆，能够支持合并操作，同时合并的时间复杂度是 $O(n)$ 级别的。\n\n这些堆虽然不如二叉堆广泛应用，但在某些特定场景下可以发挥出更好的性能。",
+    "inversion": false,
+    "error": false,
+    "loading": false,
+    "conversationOptions": {
+        "parentMessageId": "chatcmpl-7PRMZ0BHtkO4Rb0f9Nq2e0fbxGwwO"
+    },
+    "requestOptions": {
+        "prompt": "除了二叉堆，还有什么堆",
+        "options": {
+            "parentMessageId": "chatcmpl-7PRM6veUExPKbTSA4tfhanc3IjyiO"
+        }
+    },
+    "usage": {
+        "completion_tokens": 268,
+        "prompt_tokens": 279,
+        "total_tokens": 547,
+        "estimated": true
+    },
+    "uuid": 1686297746012
+} {
+    "dateTime": "2023/6/9 16:03:29",
+    "text": "堆排序是一种基于堆数据结构的排序算法，它利用了堆这种数据结构的一些特性，能够进行高效的排序操作。\n\n堆排序的实现步骤如下：\n\n1. 构建一个初始堆：将待排序的数组构建成一个二叉堆，同时保证堆中每个父节点都比其子节点大（或小）。\n\n2. 将堆顶元素与最后一个元素交换：将堆顶元素与堆中最后一个元素交换位置，并将堆的大小减 1。\n\n3. 对堆顶元素进行堆化：从新的堆顶元素开始堆化，即将该元素沿着树向下移动，直到满足堆的性质为止。\n\n4. 重复步骤 2 和步骤 3，直到所有元素都有序。\n\n堆排序的时间复杂度为 $O(n \\log n)$，其中 $n$ 表示待排序数组的长度。由于堆排序需要维护一个堆，所以空间复杂度为 $O(1)$。堆排序相对于其他常见的排序算法而言，有着更好的平均和最坏时间复杂度，因此被广泛应用于实际工程中。",
+    "inversion": false,
+    "error": false,
+    "loading": false,
+    "conversationOptions": {
+        "parentMessageId": "chatcmpl-7PRNGWGuOI3zCkwPb5o26l8PwM5ZN"
+    },
+    "requestOptions": {
+        "prompt": "什么是堆排序?",
+        "options": {
+            "parentMessageId": "chatcmpl-7PRMZ0BHtkO4Rb0f9Nq2e0fbxGwwO"
+        }
+    },
+    "usage": {
+        "completion_tokens": 355,
+        "prompt_tokens": 562,
+        "total_tokens": 917,
+        "estimated": true
+    },
+    "uuid": 1686297789444
+}
