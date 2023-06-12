@@ -14,9 +14,10 @@
 	bookmarksnumbered = true, % 书签带章节编号
 	pdftitle          = 标题, % 标题
 	pdfauthor         = DarkSharpness, % 作者
-    citecolor         = green,
-    linkcolor         = red,
-    urlcolor          = blue}
+    citecolor         = red,
+    linkcolor         = black,
+    urlcolor          = blue
+}
 \bibliographystyle{plain}% 参考文献引用格式
 \newcommand{\upcite}[1]{\textsuperscript{\cite{#1}}}
 
@@ -29,8 +30,8 @@
 }
 
 
-\title{\heiti\zihao{2} 场论的运用}
-\author{DarkSharpness}
+\title{\heiti\zihao{2} 流体力学与场论}
+\author{\href{https://darksharpness.github.io/}{DarkSharpness}}
 \date{2023.06.06}
 
 \begin{document}
@@ -39,27 +40,20 @@
 
 % 摘要
 \begin{abstract} 
-    这是摘要
+    场论是数学中研究函数的一个有力的工具。本文借助场论的知识，以及物理学中基本的质量、动量、能量守恒和一些本构关系，推导出了流体力学中的重要定理、守恒定律，以及某些特殊流体满足的基本方程。
 \end{abstract}
 
 \keywords{ 场论 , 流体力学 }
 
 \tableofcontents
 
-% 这是图片
-% Hello world! Hello Ali! As shown in figure \ref{1}
-% \begin{figure}[htbp]
-% 	\centering
-% 	\includegraphics[scale=0.2]{Ali.jpg}
-% 	\caption{this is Ali}
-% 	\label{1}
-% \end{figure}
-
-
 \section{引言}
 
-这是引言。
+流体力学，是物理学重要的分支，是研究流体运动和力学性质的学科，涵盖了广泛的领域，包括天气预报、空气动力学、海洋学等等。在生活中，我们也常常能见到各种流体，例如水龙头里面流动的水，我们呼吸的空气。而流体也存在许多有趣的现象，例如层流与湍流。在过去，人们一直在不断深化对流体力学的理解，并发展了一系列数学模型和理论框架，来解释这些独特的流体现象。
 
+场论是现代物理学的一个重要分支，它为描述自然界中的基本相互作用提供了强大的数学工具。
+
+本文旨在借助场论的知识，以及物理学中基本的质量、动量、能量守恒和一些本构关系，推导出了流体力学中的重要定理、守恒定律。本文也将讨论，满足特殊条件的流体流体，其基本动力学方程。
 
 \section{流体运动的基本表述}
 
@@ -71,15 +65,15 @@
 
 \subsection{欧拉表述}
 
-该表述的基本思想是，对于某个空间中某个固定的位置 $ \vec{r}_0 $ ，我们去研究该固定点的气体微元的运动状态 $\vec{v} = \vec{v}(\vec{r}_0,t)$，即可。需要特别注意的是，在固定研究空间某一点 $ \vec{r}_0 $ 后，如果为空间中每个流体粒子都打上标记，那么处于 $ \vec{r}_0 $ 的气体微粒的标记可能会随时间而变化。
+该表述的基本思想是，对于某个空间中某个固定的位置 $ \vec{r}_0 $ ，我们去研究该固定点的流体微元的运动状态 $\vec{v} = \vec{v}(\vec{r}_0,t)$，即可。需要特别注意的是，在固定研究空间某一点 $ \vec{r}_0 $ 后，如果为空间中每个流体粒子都打上标记，那么处于 $ \vec{r}_0 $ 的流体微粒的标记可能会随时间而变化。
 
 \subsection{两种表述的差异与联系}
 
-前者给出方程
+前者表述为:
 
 $$\vec{r} = \vec{r}(\vec{r}_0,t)$$
 
-而后者则是
+而后者则是:
 
 $$\vec{v} = \vec{v}(\vec{r},t)$$
 
@@ -91,14 +85,13 @@ $$\vec{v}(\vec{r},t) = \frac{\partial}{\partial t} \vec{r}(\vec{r}_0,t) $$
 
 由于流体粒子数量众多，且难以区分分辨，在流体力学中，我们往往更多地去用欧拉表述。而拉格朗日表述更加适合于粒子可以辨认，位矢信息比较重要的固体物理中。
 
-值得关注的是，在欧拉表述中，状态量描述的是场的属性，并不直接是粒子的属性。例如关于 $\vec{r}$ 处的气体微元，我们可能用 $f = f(\vec{r},t)$ 的物理量去描述气体。此时， $(\frac{\partial f}{\partial t})_r$ 描述的是在这一点的 f 场的变化，而不是物理量 f 如何随着特定的试探粒子(气体微元)的运动而变化。事实上，在大多物理方程中，例如动量方程 $\vec{F} = \frac{\mathrm{d}\vec{p}}{\mathrm{d}t}$，外界(本例子中为外力)作用的对象是那个运动的气体微元，而不是场。
+值得关注的是，在欧拉表述中，状态量描述的是场的属性，并不直接是粒子的属性。例如关于 $\vec{r}$ 处的流体微元，我们可能用 $f = f(\vec{r},t)$ 的物理量去描述流体。此时， $(\frac{\partial f}{\partial t})_r$ 描述的是在这一点的 f 场的变化，而不是物理量 f 如何随着特定的试探粒子(流体微元)的运动而变化。事实上，在大多物理方程中，例如动量方程 $\vec{F} = \frac{\mathrm{d}\vec{p}}{\mathrm{d}t}$，外界 (本例子中为外力 $\vec{F}$ ) 作用的对象是那个运动的流体微元，而不是场。
 
-实际上，常见物理方程中的的 $\frac{\mathrm{d}}{\mathrm{d}t}$ 记号，其是作用于具体粒子。因此其在欧拉表述下，应该是 $(\frac{\partial}{\partial t})_{\vec{r}_0}$ ，即是同一团粒子，而不是简单的 $(\frac{\partial}{\partial t})_{\vec{r}}$ 。为了避免歧义，后文我们将用 $\frac{\mathrm{D}}{\mathrm{D}t}$ 来代替，即:
+实际上，常见物理方程中的的 $\frac{\mathrm{d}}{\mathrm{d}t}$ 记号，其是作用于具体粒子。因此其在欧拉表述下，应该是 $(\frac{\partial}{\partial t})_{\vec{r}_0}$ ，即是同一团粒子，而不是简单的 $(\frac{\partial}{\partial t})_{\vec{r}}$ 。为避免歧义，后文我们将用 $\frac{\mathrm{D}}{\mathrm{D}t}$ 来代替，称为物质导数\upcite{ref0}，即:
 
 $$
 \frac{\mathrm{D}}{\mathrm{D}t} 
-\equiv \frac{\mathrm{d}}{\mathrm{d}t} 
-= (\frac{\partial}{\partial t})_{\vec{r}_0}
+\equiv (\frac{\partial}{\partial t})_{\vec{r}_0}
 $$
 
 由链式法则，我们不难求出:
@@ -117,12 +110,11 @@ $$
 = \frac{\partial}{\partial t} + \vec{v} \cdot \nabla
 $$
 
-
 \section{Reynolds 输运定理}
 
 在流体力学中，物理学家们常常会考察某些特定区域 $ V(t) $ 内的流体状态。
 
-对于一个区域 $ V(t) $ ，边界为 $ \partial V(t) $ ，流体具有某个广度量 $f$ ，很多物理方程中，会出现这部分流体粒子该物理量的总和对于时间的导数。即
+对于一个区域 $ V(t) $ ，边界为 $ \partial V(t) $ ，流体具有某个广度量 $f$ ，很多物理方程中，会出现这部分流体粒子该物理量的总和对于时间的导数。即:
 
 $$
 \frac{\mathrm{d}}{\mathrm{d}t} \int_{V(t)} f \mathrm{d}V
@@ -130,7 +122,7 @@ $$
 
 注意到我们在分析这个式子的时候，我们是对于特定的粒子在分析，并不是背后的场，$\frac{\mathrm{d}}{\mathrm{d}x}$ 必须作用在粒子上。因此， $V$ 会随着时间而改变。
 
-为了避免过多的讨论，这里假设 $ f $ 的性质足够的好，满足函数本身和偏导数都连续，且积分区域为紧集(即有界闭区域)。那么在积分区域上，则有:
+为了避免过多的讨论，这里假设 $ f $ 的性质足够的好，满足函数本身和偏导数都连续，且积分区域为紧集(即有界闭区域)。那么在积分区域上，则:
 
 $$
 \frac{\mathrm{d}}{\mathrm{d}t} \int_{V(t)} f \mathrm{d}V
@@ -139,7 +131,9 @@ $$
 = \int_{V(t)} (\frac{\partial f}{\partial t} + \nabla (f \vec{v})) \mathrm{d}V
 $$
 
-\subsection*{物理直观}
+该式即为 Reynolds 输运定理 \upcite{ref1}。
+
+\subsection{物理直观}
 
 从直观上去理解，上述式子的物理含义是在某时刻和某体积内，全部流体某个广度量的总和的变化量。根据物理直观，我们可以猜测: 该变化量等于内部的广度量变化量，以及从边界流出的量。
 
@@ -161,18 +155,27 @@ $$
 
 $$
 \begin{aligned}
-    \int_V \frac{\mathrm{D}f}{\mathrm{D}t} \mathrm{d}V
+    \frac{\mathrm{d}}{\mathrm{d}t} \int_{V(t)} f \mathrm{d}V
         &= \int_V \frac{\partial f}{\partial t} \mathrm{d}V +
             \int_{\partial V} \vec{j} \mathrm{d} \vec{S}      \\
         &= \int_V (\frac{\partial f}{\partial t} + \nabla (\rho \vec{v})) \mathrm{d}V
 \end{aligned}
 $$
 
-其中，最后一步用到了高斯定理。
+其中，最后一步用到了高斯定理，以及 $\vec{j}$ 的定义。
 
-\subsection*{数学推导}
+\subsection{数学推导}
 
-我们假设体积 $V(t)$ 足够好，其表面方程为 $ F(\vec{r},t) = 0 $ 满足有界性，且 $f$ 在区域内连续且有连续的偏导数。简单起见，我们暂时只证明其一维时候的形式。
+我们假设体积 $V(t)$ 足够好，满足有界性，由分段光滑的闭曲面围成，且 $f$ 在区域内有连续的偏导数，则需证:
+
+$$
+\frac{\mathrm{d}}{\mathrm{d}t} \int_{V(t)} f \mathrm{d}V
+= \int_{V(t)} \frac{\partial f}{\partial t} \mathrm{d}V +
+  \int_{\partial V(t)} {f \vec{v} \cdot \mathrm{d}\vec{S}}
+= \int_{V(t)} (\frac{\partial f}{\partial t} + \nabla (f \vec{v})) \mathrm{d}V
+$$
+
+简单起见，我们暂时只证明其一维时候的形式。
 
 $$
 \frac{\mathrm{d}}{\mathrm{d}y} \int_{a(y)}^{b(y)}f(x,y) \mathrm{d}x = 
@@ -203,23 +206,329 @@ $$
     = \int_{a}^{b} \frac{\partial}{\partial y}f(x,y) \mathrm{d}x
 $$
 
-所以结合牛顿莱布尼兹公式，可得:
+由牛顿莱布尼兹公式，可得:
 
 $$
-\frac{\mathrm{d}}{\mathrm{d}y} \int_{a(y)}^{b(y)}f(x,y) \mathrm{d}x = 
-\int_{a(y)}^{b(y)}\frac{\partial f(x,y)}{\partial y} \mathrm{d}x
+\lim_{h \rightarrow 0} \int_{b(y)}^{b(y + h)} \frac{f(x,y + h)}{h}\mathrm{d}x 
+    = f(b,y) \cdot \frac{\mathrm{d}b}{\mathrm{d}y}
+$$
+
+所以当 $h$ 趋向于 $0$ 的时候，有:
+
+$$
+\begin{aligned}
+\frac{\mathrm{d}}{\mathrm{d}y} \int_{a(y)}^{b(y)}f(x,y) \mathrm{d}x 
+    &= \lim_{h \rightarrow 0} \frac{\phi(y + h) - \phi(y)}{h} \\
+    &= \lim_{h \rightarrow 0} \int_{a}^{b}\frac{f(x,y + h) - f(x,y)}{h}\mathrm{d}x +
+       \lim_{h \rightarrow 0} \int_{b(y)}^{b(y + h)} \frac{f(x,y + h)}{h}\mathrm{d}x -
+       \lim_{h \rightarrow 0} \int_{a(y)}^{a(y + h)} \frac{f(x,y + h)}{h}\mathrm{d}x \\
+    &= \int_{a(y)}^{b(y)}\frac{\partial f(x,y)}{\partial y} \mathrm{d}x
 + f(b,y) \cdot \frac{\mathrm{d}b}{\mathrm{d}y}
 - f(a,y) \cdot \frac{\mathrm{d}a}{\mathrm{d}y}
+\end{aligned}
 $$
 
-对于高维的情况，我们可以类似地证明 \upcite{ref1} ，下式依然成立:
+对于高维的情况，我们可以类似地证明 \upcite{ref2} ，下式依然成立:
+
+$$
+\frac{\mathrm{d}}{\mathrm{d}t} \int_{V(t)} f \mathrm{d}V
+= \int_{V(t)} \frac{\partial f}{\partial t} \mathrm{d}V +
+  \int_{\partial V(t)} {f \vec{v} \cdot \mathrm{d}\vec{S}}
+= \int_{V(t)} (\frac{\partial f}{\partial t} + \nabla (f \vec{v})) \mathrm{d}V
+$$
+
+在这里，物理直观与数学理论达成了一致。
+
+\section{流体力学的守恒定律}
+
+\subsection{质量守恒定理}
+
+对于固定的一个流体微元，其质量一定是保持不变的，即对任意一些固定的粒子构成的体积:
+
+$$
+\frac{\mathrm{d}}{\mathrm{d}t} \int_{V(t)} \rho \mathrm{d}V = 0
+$$
+
+由 Reynolds 输运定理，可以得:
+
+$$
+\frac{\mathrm{d}}{\mathrm{d}t} \int_{V(t)} 
+    (\frac{\partial \rho}{\partial t} + \nabla (\rho \vec{v})) \mathrm{d}V = 0
+$$
+
+$$
+\frac{\partial \rho}{\partial t} + \nabla (\rho \vec{v}) = 0
+$$
+
+其物理含义是: 某一点处的密度增加量，加上该点净流出的所有流体，为零。有时可写作:
+
+$$
+\frac{\mathrm{D} \rho}{\mathrm{D} t} + \rho \nabla \cdot \vec{v} = 0
+$$
 
 
-% \section*{这个标题没有数字}
+事实上，很多时候，许多的物理量往往正比于流体密度，例如单位体积势能 $\phi(\vec{r},t) = \rho(\vec{r},t) \cdot U(\vec{r},t) $ ，即为密度乘以该点的势(电势/重力势等等)。借助 Reynolds 输运定理，可知:
+
+$$
+\begin{aligned}
+\frac{\mathrm{d}}{\mathrm{d}t} \int_{V(t)} \phi \mathrm{d}V
+    &= \int_{V(t)} (\frac{\partial \phi}{\partial t} + \nabla (\phi \vec{v})) \mathrm{d}V \\
+    &= \int_{V(t)} (\frac{\partial \rho}{\partial t} U + \rho \frac{\partial U}{\partial t} 
+        + \rho U \nabla \vec{v} + \rho (\nabla U) \vec {v} +  (\nabla \rho) U  \vec{v} ) \mathrm{d}V \\
+    &= \int_{V(t)} (U (\frac{\partial \rho}{\partial t} + \nabla (\rho \vec{v}))
+        + \rho (\frac{\partial U}{\partial t} + \vec {v} \nabla U ) )\mathrm{d}V \\
+    &= \int_{V(t)} \rho \frac{\mathrm{D}U}{\mathrm{D}t} \mathrm{d}V
+\end{aligned}
+$$
+
+\subsection{动量守恒定理}
+
+由动量守恒定律，作用在一些流体位元的力的大小乘以作用时间，即为动量变化量，因此:
+
+$$
+\frac{\mathrm{d}}{\mathrm{d}t} \int_{V(t)} \rho \vec{v} \mathrm{d}V
+= \vec{F}
+$$
+
+而作用在物体上的外力往往由两部分构成: 一部分是作用在单位质量流体微元上的力，单位体积力大小 $\vec{f}$ 。另一部分是该流体微元表面受到的应力，应力张量为 $\sigma$ 。
+
+因此，由动量守恒定律 :
+
+$$
+\frac{\mathrm{d}}{\mathrm{d}t} \int_{V(t)} \rho \vec{v} \mathrm{d}V
+= \int_{V(t)} \rho \vec {f} \mathrm{d}V + \int_{\partial V(t)} \sigma \mathrm{d}\vec{S}
+$$
+
+由质量守恒定律的推论，以及高斯定理，可得:
+
+$$
+\frac{\mathrm{D}\vec{v}}{\mathrm{D}t} = \frac{1}{\rho} \nabla {\sigma} + \vec{f}
+$$
+
+$$
+\frac{\partial \vec{v}}{\partial t} + (\vec{v} \cdot \nabla) \vec{v} = \frac{1}{\rho} \nabla {\sigma} + \vec{f}
+$$
+
+\subsection{能量守恒定理}
+
+流体的总内能由两项组成: 流体的宏观运动动能，流体的微观内能(包含热运动动能，以及分子间势能之和)。一定体积内的总内能即为: $E = \int_V \rho(\frac{v ^ 2}{2} + \epsilon)$ ，其中 $\epsilon$ 为单位体积的微观内能。
+
+特别地，为了简单起见，我们认为热量仅仅通过热传导传递，即热流 $ \vec{j_q} = -\kappa \nabla T$ ，且假设 $\kappa$ 为常数。此时，由热力学第一定律 $\mathrm{d}E = \partial W +  \partial Q$ :
+
+$$
+\frac{\mathrm{d}E}{\mathrm{d}t}
+= \int_{V(t)} \rho \vec {f} \cdot \vec{v} \mathrm{d}V + \int_{\partial V(t)} \sigma \vec{v} \mathrm{d}\vec{S} + \int_{\partial V(t)} \vec{j_q} \mathrm{d}\vec{S} 
+$$
+
+由质量守恒定律、动量守恒定理的推论，以及高斯定理，可得:
+
+$$
+\rho(\frac{\partial \epsilon}{\partial t} + (\vec{v} \cdot \nabla) \epsilon) = \nabla (\sigma \vec {v}) - \nabla{\sigma} \cdot \vec{v} - \kappa \nabla^2{T}
+$$
+
+\section{流体力学的基本方程}
+
+为了简单起见，在之后的讨论中，我们认为物理过程进行的很快，以至于流体之间完全来不及进行热传导，因此忽略流体之间的热传导，即可以认为 $\kappa = 0$ 。
+
+\subsection{不可压缩黏性流体}
+
+由于不可压缩，因此，任何流体微元在流动过程中，体积不变，只和初始密度有关，即 $\frac{\mathrm{D}\rho}{\mathrm{D}t} = 0$ 。代入质量守恒定律，可得 
+
+$$
+\nabla \cdot \vec{v} = 0
+$$
+
+同时，我们假设流体性质较好，即满足流体均匀各向同性。由不可压缩流体的本构关系方程 \upcite{ref3} :
+
+$$
+\sigma_{i,j} = -p\delta_{i,j} + \mu(\frac{\partial v_i}{\partial x_j} + \frac{\partial v_j}{\partial x_i})
+$$
+
+其中 $\delta_{i,j}$ 当且仅当 $i = j$ 的时候为 1 ， 否则为 0 。而 $\mu$ 是流体的第一黏性系数。
+
+将本构关系代入动量守恒方程。可得:
+
+$$ 
+\frac{\mathrm{D}\vec{v}}{\mathrm{D}t} = -\frac{1}{\rho}\nabla{p} + \frac{\mu}{\rho}\nabla^2{\vec{v}} + \vec{f}
+$$
+
+$$ 
+\frac{\partial \vec{v}}{\partial t} + (\vec{v} \cdot \nabla) \vec{v}  = -\frac{1}{\rho}\nabla{p} + \frac{\mu}{\rho}\nabla^2{\vec{v}} + \vec{f}
+$$
+
+\subsection{可压缩无黏性流体}
+
+当流体没有黏性，此时，应力张量仅仅由压强提供，即 $\sigma = -p I$ ，其中 $I$ 为单位矩阵。
+
+此时，满足:
+
+$$
+\begin{aligned}
+    \frac{\partial \rho}{\partial t} + \nabla (\rho \vec{v}) &= 0 \\
+    \frac{\partial \vec{v}}{\partial t} + (\vec{v} \cdot \nabla) \vec{v} &= - \frac{1}{\rho} \nabla {p} + \vec{f} \\
+    \rho(\frac{\partial \epsilon}{\partial t} + (\vec{v} \cdot \nabla) \epsilon) &= -p \nabla \cdot v
+\end{aligned}
+$$
+
+由 1,3 式:
+
+$$
+\frac{\mathrm{D}\epsilon}{\mathrm{D}t} = \frac{p}{\rho} \frac{\mathrm{D}\rho}{\mathrm{D}t}
+$$
+
+特别地，当流体为理想气体，满足 $p = \frac{\rho}{\mu} RT$ ， $\epsilon = \frac{1}{\mu} C_vT$ ，因此可得: 
+
+$$
+\frac{C_v}{R} \frac{\mathrm{D}(\rho T)}{\mathrm{D}t} = T \frac{\mathrm{D}\rho}{\mathrm{D}t}
+$$
+
+$$
+\frac{\mathrm{D}}{\mathrm{D}t}(\frac{T}{\rho ^ {\gamma - 1}}) = 0
+$$
+
+其中 $\gamma = 1 + \frac{R}{C_v} $ 。该式子对应的物理含义为，一个气流团在上升的过程中，保持绝热(即无热交换)。事实上，将 1,3 式直接得到的式子，乘以 $V$ (气流团体积微元的大小)，便可以得到:
+
+$$
+\frac{\mathrm{D}U}{\mathrm{D}t} = \frac{p}{\rho} \frac{\mathrm{D}\rho}{\mathrm{D}t} V
+$$
+
+对于同一团气体，质量始终不变，即 $\frac{\mathrm{D}(\rho V)}{\mathrm{D}t} = 0$，因此可得:
+
+$$
+\frac{\mathrm{D}U}{\mathrm{D}t} + p \frac{\mathrm{D}V}{\mathrm{D}t} = 0
+$$
+
+即绝热状态下的热力学第一定律 $\mathrm{d}U + p \mathrm{d}V = 0$ 。
+
+\subsection{不可压缩无黏性流体}
+
+由前面可知，此时 $\nabla \cdot \vec{v} = 0$ 且 $\sigma = -p I$ 。
+
+我们再考虑一个特殊的情况: $\vec{f}$ 完全由保守力提供，即 $\vec{f} = -\nabla \Phi$ 且流体密度恒为 $\rho$ 。此时，其方程满足:
+
+$$
+\frac{\mathrm{D} \vec{v}}{\mathrm{D} t} = -\frac{1}{\rho}\nabla{p} - \nabla \Phi
+$$
+
+将方程两边乘以 $\vec{v}$ ，可得:
+
+$$
+\frac{\mathrm{D}}{\mathrm{D}t}(\frac{1}{2}v^2) + \vec{v} \cdot \nabla(\frac{p}{\rho} + \Phi) = 0
+$$
+
+当流体满足定常条件，即 $\frac{\partial}{\partial t} = 0$ 。则:
+
+$$
+\vec{v} \cdot \nabla(\frac{1}{2} v^2 + \frac{p}{\rho} + \Phi) = 0
+$$
+
+因此，在同一条流线上:
+
+$$
+\frac{1}{2} \rho v^2 + p + \rho\Phi = const
+$$
+
+即为伯努利方程。需要注意的是，伯努利方程成立的条件是不可压缩无黏性流体，且流体满足定常条件，并且仅仅对同一条流线上的流体成立，不同流线的常数可能不同。而一般情况下，我们认为伯努利方程对于全部空间成立，此时需要额外添加无旋条件，即:
+
+$$
+\nabla \times \vec{v} = 0
+$$
+
+此时，有恒等式:
+
+$$
+\nabla(\frac{1}{2} v^2)= \vec{v} \times (\nabla \times \vec{v}) + (\vec{v} \times \nabla) \vec{v} = (\vec{v} \cdot \nabla) \vec{v}
+$$
+
+因此，在额外满足了无旋条件后，结合动量守恒方程，我们可以得出: 
+
+$$
+\nabla(\frac{1}{2} v^2) = -\frac{1}{\rho}\nabla{p} - \nabla \Phi
+$$
+
+$$
+\nabla(\frac{1}{2} v^2 + \frac{p}{\rho} + \Phi) = 0
+$$
+
+因此，此时，对于全空间，均有 $\frac{1}{2} \rho v^2 + p + \rho\Phi = const$ 。该形式即为我们熟知的伯努利方程。
+
+\section{小结}
+
+在流体力学中，我们往往用场的欧拉表述，来反映流体场的性质。而一般的力学定律中，我们研究的是粒子的属性。因此，我们需要将熟知的定律转化为欧拉表述。由此，我们推导出了物质导数的概念:
+
+$$
+\frac{\mathrm{D}}{\mathrm{D}t} = \frac{\partial}{\partial t} + \vec{v} \cdot \nabla
+$$
+
+在流体力学中，物理学家们常常会考察某些特定区域 $ V(t) $ 内的流体状态，即:
+
+$$
+\frac{\mathrm{d}}{\mathrm{d}t} \int_{V(t)} f \mathrm{d}V
+$$
+
+借助物理直观与数学推导，我们可以得出 Reynolds 输运定理:
+
+$$
+\frac{\mathrm{d}}{\mathrm{d}t} \int_{V(t)} f \mathrm{d}V
+= \int_{V(t)} (\frac{\partial f}{\partial t} + \nabla (f \vec{v})) \mathrm{d}V
+$$
+
+通过三大守恒(质量/动量/能量)定律，我们能推导出:
+
+$$
+\begin{aligned}
+    \frac{\partial \rho}{\partial t} + \nabla (\rho \vec{v}) &= 0 \\
+    \frac{\partial \vec{v}}{\partial t} + (\vec{v} \cdot \nabla) \vec{v} &= \frac{1}{\rho} \nabla {\sigma} + \vec{f} \\
+    \rho(\frac{\partial \epsilon}{\partial t} + (\vec{v} \cdot \nabla) \epsilon) &= \nabla (\sigma \vec {v}) - \nabla{\sigma} \cdot \vec{v} - \kappa \nabla^2{T}
+\end{aligned}
+$$
+
+最后，我们推导了绝热情况下，某些特殊流体的基本动力学方程。对于不可压缩黏性流体，其满足:
+
+$$
+\begin{aligned}
+    \nabla \cdot \vec{v} &= 0 \\
+    \frac{\mathrm{D} \vec{v}}{\mathrm{D}t} &= -\frac{1}{\rho}\nabla{p} + \frac{\mu}{\rho}\nabla^2{\vec{v}} + \vec{f}
+\end{aligned}
+$$
+
+对于可压缩无黏性流体，其满足:
+
+$$
+\begin{aligned}
+    \frac{\mathrm{D} \vec{v}}{\mathrm{D}t} &= - \frac{1}{\rho} \nabla {p} + \vec{f} \\
+    \frac{\mathrm{D}\epsilon}{\mathrm{D}t} &= \frac{p}{\rho} \frac{\mathrm{D}\rho}{\mathrm{D}t}
+\end{aligned}
+$$
+
+对于不可压缩无黏性流体，其若体积力 $\vec{f}$ 仅由保守力提供，且密度恒定为 $\rho$ ，且流体满足定常条件即 $\frac{\partial}{\partial t} = 0$ ，则:
+
+$$
+\vec{v} \cdot \nabla(\frac{1}{2} v^2 + \frac{p}{\rho} + \Phi) = 0
+$$
+
+因此，在同一条流线上:
+
+$$
+\frac{1}{2} \rho v^2 + p + \rho\Phi = const
+$$
+
+若流体额外满足无旋条件，即 $\nabla \times \vec{v} = 0$ ，则此时，上式(即伯努利方程)对空间任意一处成立。
+
+\section{后记}
+
+% 感谢王海涛老师一年以来的教导! 由于篇幅限制，这里就不多展开了，更多的话请\href{https://darksharpness.github.io/haitallica/}{点击这里}。
+
+感谢 \href{https://hastin-blog.cn/}{Hastin} 同学在百忙之中抽出时间来帮忙审稿。
 
 \begin{thebibliography}{30}
 
-    \bibitem{ref1} 维基百科:曲线 \url{https://zh.wikipedia.org/wiki/%E6%9B%B2%E7%BA%BF}
+    \bibitem{ref0} 维基百科:物质导数\url{https://zh.wikipedia.org/wiki/%E7%89%A9%E8%B3%AA%E5%B0%8E%E6%95%B8} 
+    \bibitem{ref1} 维基百科:雷诺传输定理\url{https://zh.wikipedia.org/wiki/%E9%9B%B7%E8%AB%BE%E5%82%B3%E8%BC%B8%E5%AE%9A%E7%90%86} 
+    \bibitem{ref2} 维基百科:积分符号内取微分\url{https://zh.wikipedia.org/wiki/%E7%A7%AF%E5%88%86%E7%AC%A6%E5%8F%B7%E5%86%85%E5%8F%96%E5%BE%AE%E5%88%86#%E9%AB%98%E7%BB%B4%E6%83%85%E5%86%B5}
+    \bibitem{ref3} 知乎:物理学家用流体力学 · 第二章：流体的应力与应变\url{https://zhuanlan.zhihu.com/p/554300210}
+    % \bibitem{ref4} 维基百科:纳维-斯托克斯方程 \url{https://zh.wikipedia.org/wiki/%E7%BA%B3%E7%BB%B4-%E6%96%AF%E6%89%98%E5%85%8B%E6%96%AF%E6%96%B9%E7%A8%8B}
+
 
 \end{thebibliography}
 
