@@ -313,7 +313,7 @@ $$
 
 流体的总内能由两项组成: 流体的宏观运动动能，流体的微观内能(包含热运动动能，以及分子间势能之和)。一定体积内的总内能即为: $E = \int_V \rho(\frac{v ^ 2}{2} + \epsilon)$ ，其中 $\epsilon$ 为单位体积的微观内能。
 
-特别地，为了简单起见，我们认为热量仅仅通过热传导传递，即热流 $ \vec{j_q} = -\kappa \nabla T$ ，且假设 $\kappa$ 为常数。此时，由热力学第一定律 $\mathrm{d}E = \partial W +  \partial Q$ :
+特别地，为了简单起见，我们认为热量仅仅通过热传导传递，即热流 $ \vec{j_q} = -\kappa \nabla T$ ，且假设 $\kappa$ 为常数。此时，由热力学第一定律 $\mathrm{d}E = \delta W +  \delta Q$ :
 
 $$
 \frac{\mathrm{d}E}{\mathrm{d}t}
@@ -389,16 +389,16 @@ $$
 其中 $\gamma = 1 + \frac{R}{C_v} $ 。该式子对应的物理含义为，一个气流团在上升的过程中，保持绝热(即无热交换)。事实上，将 1,3 式直接得到的式子，乘以 $V$ (气流团体积微元的大小)，便可以得到:
 
 $$
-\frac{\mathrm{D}U}{\mathrm{D}t} = \frac{p}{\rho} \frac{\mathrm{D}\rho}{\mathrm{D}t} V
+\frac{\mathrm{D}E}{\mathrm{D}t} = \frac{p}{\rho} \frac{\mathrm{D}\rho}{\mathrm{D}t} V
 $$
 
 对于同一团气体，质量始终不变，即 $\frac{\mathrm{D}(\rho V)}{\mathrm{D}t} = 0$，因此可得:
 
 $$
-\frac{\mathrm{D}U}{\mathrm{D}t} + p \frac{\mathrm{D}V}{\mathrm{D}t} = 0
+\frac{\mathrm{D}E}{\mathrm{D}t} + p \frac{\mathrm{D}V}{\mathrm{D}t} = 0
 $$
 
-即绝热状态下的热力学第一定律 $\mathrm{d}U + p \mathrm{d}V = 0$ 。
+即绝热状态下的热力学第一定律 $\mathrm{d}E + p \mathrm{d}V = 0$ 。
 
 \subsection{不可压缩无黏性流体}
 
@@ -517,9 +517,9 @@ $$
 
 \section{后记}
 
-% 感谢王海涛老师一年以来的教导! 由于篇幅限制，这里就不多展开了，更多的话请\href{https://darksharpness.github.io/haitallica/}{点击这里}。
+感谢王海涛老师一年以来的教导! 由于篇幅限制，这里就不多展开了，更多的话请\href{https://darksharpness.github.io/haitallica/}{点击这里}。
 
-感谢 \href{https://hastin-blog.cn/}{Hastin} 同学在百忙之中抽出时间来帮忙审稿。
+感谢 \href{https://hastin-blog.cn/}{Hastin} 和 \href{https://github.com/hsfzLZH1}{hsfzLZH1} 同学在百忙之中抽出时间来帮忙审稿。
 
 \begin{thebibliography}{30}
 
