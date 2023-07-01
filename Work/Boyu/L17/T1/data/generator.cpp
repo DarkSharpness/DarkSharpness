@@ -12,6 +12,9 @@ signed main() {
     for(int i = 1 ; i <= 10 ; ++i) {
         string in  = to_string(i) + ".in";
         string out = to_string(i) + ".out";
+        memset(a,0,sizeof(a));
+        memset(x,0,sizeof(x));
+
         int t = i * i * 50;
         int n = rand() % t + rand() % t + 2;
         int m = rand() % t + rand() % t + 2;

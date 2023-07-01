@@ -23,7 +23,7 @@ enum tmp {
     End
 };
 
-int reg[N]; /*  */
+int reg[N]; /* Registers */
 struct command {
     tmp type;
     int x,y,z;

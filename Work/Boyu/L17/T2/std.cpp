@@ -1,8 +1,8 @@
 #include <iostream>
 using namespace std;
 
-const int N = 100001;
-int s[N];
+const int N = 200003;
+long long s[N];
 
 signed main() {
     int n,q;
