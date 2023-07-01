@@ -1,0 +1,29 @@
+28 31 16
+jal 10 7
+end
+mv 3 1
+mv 1 2
+sub 2 3 0
+jr 10
+mv 9 10
+li 11 1
+li 12 2
+li 13 3
+li 14 4
+li 15 5
+mv 1 11
+mv 2 15
+jal 10 3
+mv 11 1
+mv 15 2
+mv 1 12
+mv 2 14
+jal 10 3
+mv 12 1
+mv 14 2
+out 11 0
+out 12 0
+out 13 0
+out 14 0
+out 15 0
+jr 9

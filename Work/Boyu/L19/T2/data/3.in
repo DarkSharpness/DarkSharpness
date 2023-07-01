@@ -1,0 +1,24 @@
+23 1000 16
+jal 10 8
+end
+li 3 1
+sra 2 1 3
+sll 2 2 3
+sub 1 1 2 
+jr 10
+mv 9 10
+li 11 99
+li 12 47
+beq 12 0 20
+mv 1 12
+jal 10 3
+beq 1 0 16
+add 13 11 13
+li 1 1
+sll 11 11 1
+sra 12 12 1
+jal 0 11
+add 1 0 1
+out 13 0
+put 0 10
+jr 9

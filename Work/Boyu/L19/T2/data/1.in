@@ -1,0 +1,11 @@
+10 100 8
+li 5 10
+li 1 1
+add 2 2 1
+add 4 4 2
+add 3 4 0
+bge 3 5 8
+jal 0 2
+put 2 48
+put 0 10
+end
