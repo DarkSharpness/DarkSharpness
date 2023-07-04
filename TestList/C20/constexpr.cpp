@@ -28,7 +28,13 @@ constexpr char ch = string("abcdef")[0];
 string str("abc"); // No constexpr ! 
 // Because constexpr memory should be retrieved in constexpr time.
 
+constexpr size_t length(const std::string &str) { return str.size(); }
+
+constexpr size_t temp = length("abc");
+
 signed main() {
     str[0] = 'a';
+    std::cout << temp << '\n';
+    static_assert(temp == 3);
     return 0;
 }
