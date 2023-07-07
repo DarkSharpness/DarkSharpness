@@ -10,6 +10,6 @@ signed main() {
               << sizeof(int *) << '\n';
     std::vector a{1,2,3,4,5};
     for(const auto &x : a)
-        std::cout<< std::format("Value: {}\n",x);
+        std::cout<< std::format("Value: {}\n",x); //
     return 0;
 }

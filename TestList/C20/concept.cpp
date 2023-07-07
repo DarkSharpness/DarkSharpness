@@ -51,15 +51,11 @@ bool is_min(T __arg) noexcept {
 
 /* 第三种是更加逆天的写法....... */
 
-template <class T>
-concept RRR = std::is_integral_v <T>;
-
-RRR auto add(RRR auto x,RRR auto y) { return x + y; }
+auto add(std::integral auto x,std::integral auto y) { return x + y; }
 
 
 /* 
     值得一提的是，貌似 concept 变量不支持重载其他 requires.......
-    这本质上是因为变量模板不能特化.......
     当然，函数是没有一点问题的 qwq
 */
 
@@ -125,6 +121,11 @@ concept has_decrement_iterator_type =
 //     typename T::iterator;
 // } && ;
 
+template <class T>
+concept has_size_type = requires (T x) {
+    {&x} -> std::convertible_to <void *>;
+};
+
 
 signed main() {
     std::cout << lowbit(10) << '\n';
@@ -146,6 +147,8 @@ signed main() {
     std::cout << has_decrement_iterator_type <int> << '\n'; 
     std::cout << has_decrement_iterator_type <std::unordered_set <int>> << '\n'; 
     std::cout << has_decrement_iterator_type <std::vector <int>> << '\n'; 
+
+    std::cout << has_size_type <std::list <int>> << '\n';
 
     /* require concept 有报错 */
     // std::cout << min_integer_value <double> << '\n';
