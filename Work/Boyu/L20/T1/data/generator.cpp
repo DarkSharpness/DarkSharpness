@@ -1,41 +1,28 @@
 #include <bits/stdc++.h>
 #include <Dark/inout>
-using namespace std;
 
-int w[20],v[20];
+int a[100];
 
 signed main() {
     srand(time(NULL));
-    for(int i = 2 ; i <= 8 ; ++i) {
-        string in  = to_string(i) + ".in";
-        string out = to_string(i) + ".out";
-
-        int n = i + 6;
-        int m = rand() % (10 + i * 6) + rand() % 10;
-
-        for(int i = 0 ; i < n ; ++i) {
-            w[i] = rand() % 6 + 1;
-            v[i] = rand() % 20 - 1;
-        }
-
-        std::array <int,100> f;
-        memset(&f,129,sizeof(f));
-        f[0] = 0;
+    for(int i = 1 ; i <= 10 ; ++i) {
+        std::string in  = std::to_string(i) + ".in";
+        std::string out = std::to_string(i) + ".out";
+        int n = rand() % (i * 10) + 1;
+        for(int j = 0 ; j < n ; ++j)
+            a[j] = rand() % (i * i * 10) + 1;
+        int ans = 0;
         for(int i = 0 ; i < n ; ++i)
-            for(int j = m ; j >= w[i] ; --j)
-                f[j] = std::max(f[j - w[i]] + v[i],f[j]);
+            for(int j = i + 1; j < n ; ++j)
+                for(int k = j + 1 ; k < n ; ++k)
+                    if (a[i] + a[j] > a[k] &&
+                        a[j] + a[k] > a[i] &&
+                        a[k] + a[i] > a[j]) ++ans;
         freopen(in.data(),"w",stdout);
-
-        dark::writeline(n,m);
-        for(int i = 0 ; i < n ; ++i)
-            dark::writeline(w[i],v[i]);
-
+        dark::writeline(n);
+        dark::writelineRange(a,a + n);
         freopen(out.data(),"w",stdout);
-        int ans = f[1];
-        for(int i = 1 ; i <= m ; ++i)
-            ans = std::max(ans,f[i]);
         dark::writeline(ans);
     }
-
     return 0;
 }

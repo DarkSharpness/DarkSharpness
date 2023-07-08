@@ -1,25 +1,22 @@
 #include <iostream>
-#include <cstring>
+#include <algorithm>
+using namespace std;
 
-int w[20],v[20];
-int f[100];
+const int N = 100;
+int a[N];
 
-/* 请不要抄袭! */
-signed main() {
-    int n,m;
-    std::cin >> n >> m;
+int main() {
+    int n;
+    cin >> n;
     for(int i = 0 ; i < n ; ++i)
-        std::cin >> w[i] >> v[i];
-
-    memset(f,129,sizeof(f));
-    f[0] = 0;
+        cin >> a[i];
+    int ans = 0;
     for(int i = 0 ; i < n ; ++i)
-        for(int j = m ; j >= w[i] ; --j)
-            f[j] = std::max(f[j - w[i]] + v[i],f[j]);
-
-    int ans = f[1]; // 至少拿一个物品
-    for(int i = 1 ; i <= m ; ++i)
-        ans = std::max(ans,f[i]);
+        for(int j = i + 1; j < n ; ++j)
+            for(int k = j + 1 ; k < n ; ++k)
+                if (a[i] + a[j] > a[k] &&
+                    a[j] + a[k] > a[i] &&
+                    a[k] + a[i] > a[j]) ++ans;
     std::cout << ans << '\n';
     return 0;
 }
