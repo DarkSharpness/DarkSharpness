@@ -6,9 +6,7 @@ struct tester {
     tester *operator &  (void) noexcept {
         return this + 1;
     }
-    tester *operator ->*(int x) noexcept {
-        return this + 1;
-    }
+
     
 };
 

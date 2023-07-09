@@ -2,7 +2,7 @@
 #include <cstring>
 
 int w[20],v[20];
-int f[100];
+int f[101];
 
 /* 请不要抄袭! */
 signed main() {
