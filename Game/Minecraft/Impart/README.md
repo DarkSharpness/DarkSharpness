@@ -5,19 +5,15 @@ Impart 企划是一款由一群大学生 Minecraft 玩家组织的 Minecraft 小
 qq 群号如下
 
 ```
-主群号: 164367530
-Impart: 808813297
+合作群(主群)群号: 164367530
 ServerVanilla: 839869932
 ```
 
-***
+---
 
 目前游戏项目主要有:
 
 - [EHC](EHC/rules.md)
-- [EHC 30min](EHC30/rules.md)
 - [bingo](https://www.bilibili.com/read/cv10050417)
 
-
-
-
+---
