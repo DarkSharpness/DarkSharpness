@@ -1,0 +1,52 @@
+51
+push 0
+push 1
+push 2
+print
+push 4
+push 5
+print
+push 7
+push 8
+pop
+revoke
+pop
+pop
+print
+revoke
+print
+revoke
+print
+pop
+pop
+pop
+push 21
+print
+revoke
+print
+pop
+push 26
+revoke
+revoke
+pop
+revoke
+pop
+print
+revoke
+pop
+revoke
+push 36
+revoke
+push 38
+pop
+print
+push 41
+revoke
+push 43
+push 44
+push 45
+pop
+print
+revoke
+push 49
+print

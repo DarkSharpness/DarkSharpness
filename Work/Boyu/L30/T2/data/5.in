@@ -1,0 +1,12452 @@
+12451
+push 0
+print
+pop
+revoke
+print
+pop
+revoke
+push 7
+push 8
+push 9
+print
+push 11
+print
+pop
+revoke
+push 15
+push 16
+pop
+print
+revoke
+push 20
+print
+pop
+pop
+push 24
+push 25
+pop
+pop
+revoke
+revoke
+print
+push 31
+print
+pop
+pop
+print
+push 36
+print
+pop
+print
+push 40
+revoke
+pop
+print
+pop
+print
+revoke
+push 47
+pop
+pop
+pop
+print
+revoke
+push 53
+push 54
+push 55
+revoke
+pop
+revoke
+pop
+pop
+revoke
+print
+revoke
+revoke
+push 65
+push 66
+revoke
+revoke
+print
+push 70
+revoke
+revoke
+push 73
+revoke
+push 75
+print
+push 77
+print
+pop
+revoke
+push 81
+push 82
+push 83
+pop
+print
+pop
+push 87
+push 88
+push 89
+pop
+print
+revoke
+push 93
+print
+pop
+revoke
+pop
+print
+pop
+pop
+pop
+print
+push 103
+pop
+print
+pop
+print
+push 108
+print
+revoke
+push 111
+revoke
+revoke
+revoke
+pop
+pop
+push 117
+revoke
+push 119
+push 120
+print
+pop
+revoke
+print
+pop
+push 126
+print
+pop
+revoke
+print
+revoke
+print
+revoke
+pop
+print
+revoke
+pop
+push 138
+print
+push 140
+push 141
+revoke
+print
+revoke
+revoke
+revoke
+print
+revoke
+pop
+push 150
+revoke
+pop
+print
+pop
+revoke
+push 156
+print
+pop
+pop
+revoke
+pop
+print
+push 163
+push 164
+revoke
+pop
+push 167
+revoke
+push 169
+push 170
+print
+push 172
+push 173
+pop
+revoke
+push 176
+print
+revoke
+push 179
+push 180
+revoke
+pop
+print
+pop
+print
+push 186
+push 187
+revoke
+push 189
+revoke
+pop
+revoke
+push 193
+push 194
+push 195
+push 196
+push 197
+print
+pop
+pop
+print
+revoke
+push 203
+pop
+push 205
+pop
+print
+pop
+revoke
+pop
+print
+revoke
+revoke
+push 214
+push 215
+print
+push 217
+print
+pop
+print
+push 221
+print
+revoke
+pop
+revoke
+push 226
+pop
+print
+revoke
+revoke
+pop
+pop
+pop
+pop
+push 235
+print
+pop
+revoke
+pop
+pop
+revoke
+revoke
+pop
+revoke
+push 245
+print
+revoke
+print
+pop
+print
+pop
+push 252
+push 253
+push 254
+revoke
+revoke
+revoke
+print
+push 259
+push 260
+pop
+revoke
+push 263
+pop
+pop
+revoke
+push 267
+push 268
+push 269
+pop
+revoke
+print
+pop
+pop
+revoke
+print
+push 277
+push 278
+revoke
+print
+revoke
+revoke
+print
+pop
+pop
+revoke
+push 287
+revoke
+pop
+push 290
+revoke
+revoke
+revoke
+push 294
+print
+pop
+push 297
+push 298
+revoke
+push 300
+print
+push 302
+pop
+revoke
+print
+pop
+push 307
+pop
+revoke
+print
+push 311
+pop
+print
+revoke
+push 315
+print
+push 317
+pop
+push 319
+pop
+pop
+print
+push 323
+revoke
+pop
+push 326
+push 327
+push 328
+push 329
+revoke
+print
+revoke
+push 333
+push 334
+pop
+print
+revoke
+push 338
+print
+push 340
+pop
+push 342
+push 343
+print
+pop
+push 346
+print
+revoke
+revoke
+pop
+pop
+print
+push 353
+push 354
+revoke
+pop
+pop
+revoke
+revoke
+pop
+push 361
+print
+pop
+push 364
+print
+push 366
+revoke
+push 368
+revoke
+revoke
+push 371
+pop
+pop
+print
+revoke
+pop
+pop
+print
+push 379
+print
+push 381
+pop
+revoke
+pop
+pop
+pop
+push 387
+print
+revoke
+push 390
+pop
+revoke
+pop
+print
+revoke
+push 396
+print
+revoke
+revoke
+print
+pop
+print
+push 403
+push 404
+print
+revoke
+push 407
+print
+pop
+revoke
+pop
+print
+pop
+pop
+pop
+pop
+push 417
+print
+push 419
+revoke
+pop
+pop
+print
+push 424
+push 425
+print
+pop
+print
+revoke
+print
+revoke
+print
+revoke
+print
+pop
+revoke
+push 437
+pop
+pop
+print
+pop
+print
+revoke
+revoke
+push 445
+revoke
+print
+pop
+pop
+revoke
+print
+push 452
+revoke
+pop
+push 455
+push 456
+push 457
+push 458
+revoke
+push 460
+revoke
+revoke
+print
+revoke
+revoke
+push 466
+pop
+pop
+push 469
+pop
+pop
+revoke
+revoke
+push 474
+pop
+print
+pop
+push 478
+print
+pop
+push 481
+push 482
+push 483
+print
+push 485
+print
+revoke
+print
+revoke
+pop
+print
+push 492
+print
+pop
+revoke
+pop
+revoke
+push 498
+pop
+revoke
+push 501
+pop
+pop
+pop
+pop
+pop
+revoke
+print
+pop
+push 510
+push 511
+pop
+revoke
+pop
+print
+pop
+revoke
+push 518
+push 519
+push 520
+revoke
+pop
+pop
+pop
+pop
+push 526
+revoke
+pop
+print
+revoke
+pop
+pop
+pop
+print
+push 535
+revoke
+push 537
+print
+revoke
+push 540
+revoke
+pop
+push 543
+push 544
+pop
+print
+push 547
+push 548
+revoke
+pop
+pop
+print
+revoke
+revoke
+push 555
+print
+pop
+pop
+print
+pop
+push 561
+pop
+revoke
+print
+push 565
+pop
+push 567
+pop
+push 569
+push 570
+print
+revoke
+print
+pop
+pop
+print
+pop
+revoke
+revoke
+push 580
+print
+revoke
+print
+push 584
+print
+push 586
+push 587
+revoke
+revoke
+revoke
+print
+push 592
+pop
+pop
+print
+push 596
+print
+pop
+print
+revoke
+revoke
+pop
+print
+push 604
+pop
+pop
+pop
+print
+push 609
+push 610
+push 611
+pop
+revoke
+revoke
+push 615
+revoke
+print
+pop
+pop
+revoke
+push 621
+revoke
+revoke
+print
+pop
+print
+revoke
+revoke
+push 629
+print
+push 631
+pop
+print
+revoke
+push 635
+pop
+print
+revoke
+print
+push 640
+push 641
+revoke
+push 643
+pop
+pop
+print
+revoke
+push 648
+pop
+print
+pop
+print
+push 653
+print
+pop
+push 656
+print
+revoke
+print
+push 660
+revoke
+print
+pop
+push 664
+revoke
+pop
+revoke
+push 668
+print
+revoke
+push 671
+push 672
+pop
+revoke
+print
+push 676
+print
+pop
+revoke
+revoke
+revoke
+revoke
+push 683
+pop
+pop
+pop
+print
+pop
+revoke
+pop
+push 691
+revoke
+push 693
+print
+push 695
+pop
+revoke
+push 698
+revoke
+print
+pop
+pop
+print
+revoke
+pop
+push 706
+push 707
+pop
+pop
+push 710
+revoke
+print
+push 713
+print
+revoke
+print
+revoke
+push 718
+push 719
+push 720
+print
+push 722
+pop
+print
+pop
+revoke
+print
+pop
+revoke
+print
+pop
+print
+revoke
+revoke
+revoke
+push 736
+revoke
+revoke
+push 739
+print
+pop
+pop
+revoke
+push 744
+revoke
+pop
+pop
+push 748
+push 749
+print
+push 751
+push 752
+pop
+revoke
+pop
+pop
+push 757
+pop
+print
+revoke
+print
+push 762
+print
+revoke
+revoke
+print
+push 767
+print
+revoke
+push 770
+pop
+push 772
+pop
+pop
+revoke
+revoke
+print
+push 778
+revoke
+push 780
+print
+push 782
+pop
+revoke
+pop
+print
+push 787
+revoke
+revoke
+print
+revoke
+pop
+revoke
+print
+push 795
+revoke
+revoke
+pop
+pop
+revoke
+pop
+revoke
+pop
+revoke
+push 805
+print
+push 807
+revoke
+pop
+pop
+pop
+print
+pop
+push 814
+revoke
+push 816
+push 817
+print
+revoke
+print
+revoke
+pop
+pop
+pop
+push 825
+push 826
+revoke
+pop
+print
+push 830
+print
+push 832
+push 833
+push 834
+push 835
+revoke
+pop
+push 838
+pop
+revoke
+pop
+pop
+revoke
+push 844
+print
+push 846
+push 847
+print
+pop
+print
+pop
+pop
+push 853
+push 854
+push 855
+push 856
+pop
+push 858
+revoke
+print
+pop
+push 862
+print
+revoke
+push 865
+revoke
+print
+push 868
+print
+pop
+pop
+push 872
+pop
+print
+pop
+print
+pop
+push 878
+pop
+print
+pop
+revoke
+push 883
+push 884
+pop
+print
+pop
+push 888
+pop
+revoke
+print
+push 892
+print
+revoke
+pop
+revoke
+print
+push 898
+revoke
+print
+revoke
+print
+push 903
+push 904
+pop
+revoke
+pop
+push 908
+push 909
+revoke
+pop
+push 912
+print
+revoke
+push 915
+print
+push 917
+print
+pop
+revoke
+push 921
+print
+push 923
+pop
+revoke
+push 926
+push 927
+revoke
+push 929
+push 930
+pop
+revoke
+pop
+revoke
+push 935
+print
+pop
+print
+revoke
+print
+pop
+push 942
+revoke
+print
+revoke
+push 946
+pop
+print
+pop
+print
+revoke
+pop
+pop
+pop
+revoke
+push 956
+pop
+revoke
+print
+revoke
+revoke
+push 962
+pop
+print
+revoke
+push 966
+revoke
+push 968
+print
+pop
+pop
+pop
+push 973
+print
+pop
+push 976
+push 977
+pop
+revoke
+push 980
+print
+pop
+push 983
+push 984
+revoke
+revoke
+print
+push 988
+push 989
+pop
+push 991
+revoke
+revoke
+revoke
+revoke
+print
+push 997
+print
+pop
+push 1000
+revoke
+print
+pop
+print
+pop
+pop
+push 1007
+revoke
+pop
+pop
+print
+pop
+push 1013
+revoke
+print
+revoke
+revoke
+pop
+revoke
+revoke
+print
+pop
+print
+pop
+push 1025
+revoke
+push 1027
+revoke
+print
+push 1030
+print
+push 1032
+revoke
+push 1034
+pop
+pop
+pop
+push 1038
+revoke
+push 1040
+revoke
+print
+revoke
+print
+revoke
+push 1046
+revoke
+print
+push 1049
+revoke
+revoke
+revoke
+revoke
+push 1054
+revoke
+pop
+revoke
+print
+push 1059
+push 1060
+print
+pop
+pop
+pop
+revoke
+push 1066
+pop
+pop
+push 1069
+push 1070
+revoke
+revoke
+push 1073
+pop
+pop
+revoke
+revoke
+pop
+push 1079
+revoke
+push 1081
+print
+pop
+revoke
+pop
+print
+pop
+print
+pop
+print
+push 1091
+push 1092
+push 1093
+push 1094
+print
+pop
+push 1097
+print
+pop
+print
+revoke
+print
+push 1103
+revoke
+push 1105
+print
+pop
+revoke
+pop
+revoke
+push 1111
+pop
+push 1113
+push 1114
+print
+push 1116
+revoke
+pop
+push 1119
+push 1120
+push 1121
+print
+revoke
+push 1124
+revoke
+print
+pop
+print
+revoke
+pop
+push 1131
+revoke
+revoke
+push 1134
+push 1135
+push 1136
+revoke
+pop
+revoke
+push 1140
+push 1141
+print
+push 1143
+revoke
+print
+pop
+print
+revoke
+print
+pop
+print
+pop
+pop
+print
+push 1155
+pop
+print
+push 1158
+push 1159
+pop
+pop
+print
+push 1163
+push 1164
+pop
+revoke
+push 1167
+pop
+push 1169
+pop
+pop
+push 1172
+push 1173
+revoke
+print
+pop
+print
+revoke
+push 1179
+revoke
+push 1181
+pop
+print
+revoke
+print
+revoke
+push 1187
+push 1188
+push 1189
+print
+push 1191
+revoke
+revoke
+push 1194
+revoke
+pop
+print
+pop
+pop
+push 1200
+print
+revoke
+push 1203
+pop
+push 1205
+push 1206
+print
+pop
+revoke
+revoke
+push 1211
+push 1212
+pop
+pop
+print
+pop
+pop
+revoke
+push 1219
+print
+pop
+print
+pop
+print
+pop
+pop
+pop
+print
+revoke
+pop
+print
+pop
+pop
+print
+revoke
+revoke
+push 1237
+pop
+revoke
+revoke
+revoke
+revoke
+push 1243
+push 1244
+push 1245
+push 1246
+push 1247
+revoke
+revoke
+pop
+revoke
+print
+pop
+pop
+pop
+print
+pop
+push 1258
+revoke
+revoke
+print
+push 1262
+pop
+print
+push 1265
+print
+pop
+pop
+revoke
+pop
+print
+pop
+push 1273
+print
+pop
+print
+revoke
+revoke
+print
+push 1280
+print
+push 1282
+pop
+print
+push 1285
+print
+revoke
+revoke
+print
+pop
+push 1291
+pop
+push 1293
+revoke
+print
+push 1296
+revoke
+push 1298
+pop
+revoke
+revoke
+revoke
+print
+pop
+print
+revoke
+push 1307
+push 1308
+revoke
+print
+push 1311
+print
+pop
+print
+pop
+print
+revoke
+print
+push 1319
+pop
+push 1321
+print
+pop
+print
+push 1325
+revoke
+push 1327
+push 1328
+print
+pop
+print
+pop
+print
+push 1334
+print
+push 1336
+revoke
+push 1338
+push 1339
+push 1340
+print
+push 1342
+revoke
+print
+revoke
+pop
+push 1347
+print
+push 1349
+push 1350
+revoke
+revoke
+pop
+print
+push 1355
+print
+revoke
+push 1358
+revoke
+pop
+pop
+push 1362
+revoke
+print
+revoke
+print
+push 1367
+print
+push 1369
+revoke
+pop
+pop
+push 1373
+print
+revoke
+push 1376
+pop
+print
+pop
+revoke
+print
+revoke
+push 1383
+revoke
+print
+pop
+revoke
+push 1388
+push 1389
+push 1390
+print
+revoke
+push 1393
+revoke
+pop
+push 1396
+pop
+pop
+revoke
+push 1400
+revoke
+push 1402
+revoke
+pop
+revoke
+pop
+pop
+pop
+print
+push 1410
+print
+pop
+revoke
+pop
+push 1415
+push 1416
+push 1417
+pop
+pop
+print
+pop
+pop
+print
+pop
+revoke
+pop
+revoke
+revoke
+push 1429
+push 1430
+revoke
+pop
+print
+push 1434
+revoke
+push 1436
+push 1437
+push 1438
+revoke
+print
+push 1441
+pop
+print
+push 1444
+pop
+print
+pop
+revoke
+revoke
+pop
+print
+pop
+push 1453
+revoke
+revoke
+print
+revoke
+revoke
+pop
+print
+revoke
+revoke
+revoke
+push 1464
+push 1465
+push 1466
+pop
+pop
+revoke
+print
+pop
+print
+push 1473
+pop
+print
+revoke
+push 1477
+print
+revoke
+pop
+push 1481
+push 1482
+revoke
+revoke
+push 1485
+revoke
+revoke
+push 1488
+print
+push 1490
+pop
+revoke
+print
+revoke
+revoke
+pop
+revoke
+print
+push 1499
+pop
+push 1501
+revoke
+pop
+print
+pop
+revoke
+print
+revoke
+print
+pop
+print
+revoke
+push 1513
+pop
+push 1515
+print
+push 1517
+revoke
+print
+revoke
+push 1521
+print
+revoke
+push 1524
+revoke
+revoke
+revoke
+push 1528
+push 1529
+print
+push 1531
+revoke
+pop
+push 1534
+push 1535
+revoke
+revoke
+revoke
+push 1539
+revoke
+revoke
+push 1542
+pop
+print
+push 1545
+pop
+push 1547
+push 1548
+push 1549
+pop
+pop
+revoke
+revoke
+pop
+revoke
+push 1556
+print
+push 1558
+revoke
+pop
+revoke
+print
+pop
+revoke
+revoke
+revoke
+print
+revoke
+push 1569
+print
+revoke
+print
+pop
+revoke
+push 1575
+push 1576
+revoke
+revoke
+pop
+print
+push 1581
+push 1582
+revoke
+revoke
+revoke
+push 1586
+pop
+push 1588
+push 1589
+revoke
+print
+revoke
+push 1593
+print
+push 1595
+push 1596
+revoke
+push 1598
+push 1599
+push 1600
+push 1601
+revoke
+print
+revoke
+pop
+pop
+print
+revoke
+revoke
+push 1610
+print
+push 1612
+pop
+push 1614
+push 1615
+pop
+push 1617
+print
+push 1619
+pop
+print
+pop
+revoke
+revoke
+push 1625
+print
+pop
+print
+push 1629
+revoke
+revoke
+pop
+print
+revoke
+revoke
+pop
+push 1637
+print
+push 1639
+push 1640
+pop
+print
+pop
+push 1644
+pop
+print
+push 1647
+revoke
+push 1649
+print
+push 1651
+print
+pop
+pop
+pop
+print
+pop
+revoke
+revoke
+print
+pop
+revoke
+print
+pop
+pop
+revoke
+push 1667
+revoke
+pop
+print
+revoke
+push 1672
+revoke
+push 1674
+print
+revoke
+revoke
+pop
+push 1679
+print
+pop
+pop
+pop
+revoke
+pop
+pop
+pop
+push 1688
+print
+pop
+push 1691
+revoke
+pop
+pop
+pop
+print
+revoke
+print
+revoke
+revoke
+pop
+revoke
+print
+pop
+push 1705
+push 1706
+revoke
+pop
+pop
+revoke
+print
+push 1712
+revoke
+push 1714
+pop
+push 1716
+print
+revoke
+print
+push 1720
+print
+pop
+revoke
+push 1724
+revoke
+pop
+pop
+pop
+pop
+revoke
+revoke
+push 1732
+pop
+push 1734
+revoke
+revoke
+print
+revoke
+print
+revoke
+revoke
+revoke
+print
+revoke
+print
+pop
+revoke
+revoke
+print
+revoke
+push 1751
+revoke
+push 1753
+push 1754
+push 1755
+print
+push 1757
+push 1758
+print
+push 1760
+push 1761
+push 1762
+push 1763
+pop
+print
+push 1766
+push 1767
+revoke
+pop
+pop
+push 1771
+pop
+print
+push 1774
+pop
+print
+revoke
+revoke
+push 1779
+pop
+pop
+revoke
+push 1783
+pop
+revoke
+push 1786
+push 1787
+push 1788
+print
+pop
+print
+pop
+push 1793
+print
+push 1795
+pop
+pop
+push 1798
+revoke
+push 1800
+pop
+print
+push 1803
+push 1804
+revoke
+pop
+print
+pop
+print
+revoke
+print
+revoke
+print
+pop
+print
+push 1816
+print
+push 1818
+push 1819
+print
+pop
+revoke
+push 1823
+revoke
+pop
+revoke
+revoke
+print
+push 1829
+push 1830
+print
+push 1832
+push 1833
+revoke
+push 1835
+push 1836
+print
+push 1838
+print
+pop
+push 1841
+print
+push 1843
+pop
+print
+pop
+revoke
+revoke
+revoke
+revoke
+pop
+push 1852
+pop
+push 1854
+pop
+revoke
+print
+pop
+revoke
+print
+pop
+push 1862
+push 1863
+print
+revoke
+print
+revoke
+pop
+push 1869
+print
+push 1871
+pop
+push 1873
+pop
+print
+pop
+revoke
+revoke
+pop
+pop
+push 1881
+print
+revoke
+revoke
+push 1885
+pop
+pop
+revoke
+print
+pop
+pop
+push 1892
+revoke
+revoke
+pop
+pop
+push 1897
+pop
+push 1899
+print
+revoke
+print
+push 1903
+revoke
+push 1905
+pop
+print
+pop
+push 1909
+push 1910
+print
+push 1912
+print
+pop
+push 1915
+print
+pop
+push 1918
+push 1919
+pop
+print
+pop
+push 1923
+push 1924
+revoke
+pop
+print
+pop
+push 1929
+pop
+pop
+print
+revoke
+revoke
+push 1935
+push 1936
+revoke
+print
+pop
+print
+push 1941
+push 1942
+pop
+pop
+push 1945
+push 1946
+pop
+pop
+revoke
+print
+push 1951
+push 1952
+print
+revoke
+push 1955
+push 1956
+revoke
+pop
+revoke
+revoke
+print
+push 1962
+print
+push 1964
+pop
+revoke
+push 1967
+push 1968
+pop
+pop
+print
+pop
+pop
+push 1974
+revoke
+print
+revoke
+pop
+push 1979
+push 1980
+revoke
+print
+pop
+pop
+revoke
+push 1986
+print
+push 1988
+print
+push 1990
+print
+push 1992
+print
+pop
+push 1995
+push 1996
+print
+push 1998
+push 1999
+revoke
+push 2001
+pop
+pop
+revoke
+pop
+push 2006
+push 2007
+pop
+push 2009
+push 2010
+print
+pop
+pop
+print
+pop
+revoke
+pop
+pop
+pop
+print
+pop
+revoke
+push 2023
+pop
+print
+pop
+push 2027
+revoke
+print
+pop
+push 2031
+print
+pop
+pop
+print
+revoke
+pop
+push 2038
+push 2039
+print
+push 2041
+revoke
+pop
+push 2044
+print
+revoke
+revoke
+push 2048
+print
+push 2050
+revoke
+print
+pop
+revoke
+push 2055
+print
+pop
+push 2058
+print
+pop
+print
+revoke
+push 2063
+pop
+print
+pop
+revoke
+push 2068
+pop
+push 2070
+push 2071
+push 2072
+push 2073
+pop
+pop
+pop
+pop
+pop
+revoke
+push 2080
+print
+push 2082
+push 2083
+revoke
+pop
+revoke
+pop
+print
+pop
+revoke
+print
+pop
+revoke
+push 2094
+push 2095
+revoke
+print
+revoke
+pop
+pop
+pop
+revoke
+revoke
+print
+push 2105
+revoke
+push 2107
+pop
+revoke
+print
+pop
+print
+revoke
+print
+pop
+pop
+revoke
+push 2118
+push 2119
+pop
+print
+pop
+revoke
+push 2124
+pop
+push 2126
+pop
+print
+revoke
+push 2130
+push 2131
+push 2132
+push 2133
+pop
+print
+pop
+revoke
+pop
+pop
+print
+pop
+revoke
+revoke
+push 2144
+push 2145
+revoke
+print
+push 2148
+push 2149
+print
+revoke
+pop
+print
+revoke
+push 2155
+push 2156
+revoke
+push 2158
+print
+revoke
+push 2161
+push 2162
+pop
+push 2164
+print
+push 2166
+print
+pop
+print
+revoke
+push 2171
+print
+pop
+revoke
+push 2175
+revoke
+pop
+print
+revoke
+print
+revoke
+push 2182
+push 2183
+pop
+pop
+push 2186
+push 2187
+print
+revoke
+revoke
+revoke
+push 2192
+push 2193
+pop
+push 2195
+pop
+pop
+revoke
+revoke
+pop
+revoke
+revoke
+revoke
+revoke
+print
+push 2206
+push 2207
+print
+revoke
+print
+pop
+pop
+print
+push 2214
+pop
+revoke
+print
+pop
+pop
+revoke
+pop
+revoke
+print
+revoke
+print
+revoke
+print
+pop
+print
+push 2230
+push 2231
+revoke
+push 2233
+pop
+pop
+push 2236
+push 2237
+push 2238
+revoke
+revoke
+push 2241
+push 2242
+push 2243
+revoke
+push 2245
+print
+pop
+pop
+print
+push 2250
+revoke
+revoke
+pop
+pop
+pop
+print
+push 2257
+revoke
+push 2259
+pop
+push 2261
+push 2262
+push 2263
+push 2264
+revoke
+push 2266
+push 2267
+revoke
+print
+revoke
+revoke
+revoke
+revoke
+print
+push 2275
+push 2276
+push 2277
+print
+revoke
+pop
+pop
+revoke
+pop
+push 2284
+pop
+pop
+print
+pop
+revoke
+revoke
+pop
+pop
+print
+push 2294
+push 2295
+push 2296
+revoke
+pop
+push 2299
+push 2300
+print
+push 2302
+pop
+push 2304
+push 2305
+revoke
+print
+pop
+revoke
+revoke
+revoke
+print
+revoke
+pop
+print
+push 2316
+revoke
+push 2318
+print
+push 2320
+pop
+print
+revoke
+push 2324
+revoke
+revoke
+push 2327
+revoke
+revoke
+push 2330
+push 2331
+print
+push 2333
+push 2334
+pop
+revoke
+push 2337
+push 2338
+print
+revoke
+pop
+revoke
+revoke
+pop
+print
+revoke
+pop
+pop
+pop
+push 2350
+print
+revoke
+pop
+pop
+print
+push 2356
+pop
+push 2358
+pop
+pop
+pop
+pop
+push 2363
+pop
+push 2365
+pop
+print
+push 2368
+push 2369
+push 2370
+pop
+push 2372
+pop
+print
+pop
+revoke
+revoke
+revoke
+push 2379
+pop
+push 2381
+push 2382
+pop
+push 2384
+push 2385
+pop
+revoke
+pop
+pop
+pop
+revoke
+print
+pop
+print
+pop
+print
+revoke
+push 2398
+push 2399
+push 2400
+revoke
+print
+push 2403
+print
+push 2405
+revoke
+print
+revoke
+push 2409
+revoke
+print
+push 2412
+push 2413
+pop
+print
+push 2416
+push 2417
+revoke
+push 2419
+revoke
+print
+revoke
+print
+revoke
+pop
+push 2426
+pop
+pop
+push 2429
+print
+push 2431
+print
+push 2433
+print
+revoke
+print
+push 2437
+revoke
+push 2439
+revoke
+pop
+push 2442
+print
+push 2444
+push 2445
+push 2446
+push 2447
+print
+pop
+pop
+print
+pop
+print
+push 2454
+push 2455
+pop
+push 2457
+pop
+pop
+push 2460
+revoke
+print
+push 2463
+push 2464
+print
+pop
+revoke
+revoke
+print
+pop
+push 2471
+revoke
+print
+pop
+push 2475
+pop
+revoke
+revoke
+print
+push 2480
+revoke
+revoke
+pop
+pop
+print
+pop
+revoke
+push 2488
+revoke
+print
+pop
+pop
+revoke
+push 2494
+pop
+print
+revoke
+pop
+pop
+print
+revoke
+revoke
+push 2503
+pop
+push 2505
+print
+revoke
+revoke
+revoke
+push 2510
+revoke
+push 2512
+print
+push 2514
+push 2515
+print
+revoke
+pop
+push 2519
+push 2520
+pop
+push 2522
+push 2523
+push 2524
+revoke
+push 2526
+revoke
+revoke
+print
+push 2530
+revoke
+push 2532
+print
+push 2534
+pop
+revoke
+revoke
+pop
+revoke
+print
+push 2541
+print
+push 2543
+pop
+revoke
+revoke
+revoke
+revoke
+pop
+print
+pop
+revoke
+revoke
+print
+push 2555
+pop
+pop
+push 2558
+push 2559
+pop
+print
+revoke
+push 2563
+print
+push 2565
+pop
+push 2567
+revoke
+push 2569
+print
+pop
+push 2572
+push 2573
+pop
+revoke
+push 2576
+print
+pop
+pop
+push 2580
+pop
+push 2582
+push 2583
+print
+revoke
+pop
+print
+pop
+pop
+print
+push 2591
+push 2592
+print
+push 2594
+print
+revoke
+revoke
+print
+pop
+pop
+pop
+pop
+print
+pop
+revoke
+revoke
+print
+push 2608
+revoke
+push 2610
+pop
+push 2612
+revoke
+revoke
+push 2615
+print
+pop
+pop
+pop
+pop
+print
+pop
+push 2623
+print
+push 2625
+print
+revoke
+pop
+push 2629
+revoke
+print
+revoke
+pop
+print
+push 2635
+revoke
+pop
+revoke
+revoke
+push 2640
+revoke
+print
+revoke
+print
+push 2645
+revoke
+push 2647
+pop
+push 2649
+push 2650
+push 2651
+push 2652
+pop
+push 2654
+print
+push 2656
+revoke
+push 2658
+pop
+print
+push 2661
+print
+pop
+pop
+revoke
+print
+revoke
+revoke
+revoke
+pop
+pop
+revoke
+revoke
+revoke
+push 2675
+pop
+revoke
+revoke
+push 2679
+print
+pop
+print
+push 2683
+print
+pop
+print
+push 2687
+revoke
+push 2689
+print
+pop
+print
+pop
+print
+revoke
+pop
+pop
+print
+revoke
+revoke
+pop
+revoke
+push 2703
+revoke
+revoke
+push 2706
+pop
+revoke
+pop
+print
+pop
+push 2712
+push 2713
+print
+revoke
+push 2716
+push 2717
+push 2718
+revoke
+print
+push 2721
+print
+push 2723
+pop
+revoke
+revoke
+push 2727
+push 2728
+push 2729
+pop
+pop
+push 2732
+revoke
+print
+pop
+print
+push 2737
+push 2738
+pop
+print
+revoke
+push 2742
+revoke
+print
+pop
+push 2746
+print
+pop
+push 2749
+print
+revoke
+print
+pop
+push 2754
+pop
+print
+push 2757
+revoke
+print
+push 2760
+pop
+print
+push 2763
+pop
+revoke
+print
+revoke
+revoke
+revoke
+pop
+push 2771
+revoke
+print
+push 2774
+pop
+pop
+print
+revoke
+pop
+revoke
+revoke
+push 2782
+pop
+push 2784
+revoke
+revoke
+pop
+revoke
+print
+revoke
+print
+push 2792
+revoke
+pop
+print
+pop
+print
+push 2798
+push 2799
+pop
+pop
+revoke
+revoke
+revoke
+pop
+revoke
+print
+revoke
+revoke
+revoke
+push 2811
+print
+revoke
+push 2814
+pop
+revoke
+push 2817
+push 2818
+revoke
+revoke
+print
+revoke
+revoke
+pop
+pop
+push 2826
+push 2827
+push 2828
+push 2829
+pop
+revoke
+print
+push 2833
+pop
+pop
+print
+push 2837
+print
+pop
+pop
+print
+revoke
+pop
+pop
+pop
+print
+push 2847
+pop
+pop
+pop
+print
+revoke
+revoke
+pop
+push 2855
+push 2856
+print
+revoke
+pop
+print
+revoke
+revoke
+push 2863
+pop
+push 2865
+push 2866
+print
+push 2868
+print
+push 2870
+print
+push 2872
+pop
+pop
+revoke
+pop
+revoke
+print
+revoke
+revoke
+print
+pop
+pop
+push 2884
+push 2885
+print
+push 2887
+push 2888
+revoke
+push 2890
+print
+pop
+revoke
+push 2894
+pop
+print
+push 2897
+print
+revoke
+pop
+revoke
+revoke
+pop
+push 2904
+push 2905
+print
+revoke
+push 2908
+revoke
+revoke
+print
+push 2912
+print
+revoke
+print
+revoke
+push 2917
+print
+pop
+push 2920
+pop
+push 2922
+pop
+print
+revoke
+push 2926
+revoke
+push 2928
+push 2929
+push 2930
+revoke
+print
+pop
+revoke
+revoke
+revoke
+pop
+print
+pop
+revoke
+pop
+push 2942
+print
+push 2944
+pop
+push 2946
+push 2947
+revoke
+pop
+print
+revoke
+pop
+pop
+print
+push 2955
+push 2956
+pop
+print
+push 2959
+revoke
+revoke
+push 2962
+push 2963
+print
+pop
+revoke
+push 2967
+pop
+print
+pop
+revoke
+push 2972
+print
+pop
+print
+push 2976
+print
+pop
+revoke
+revoke
+pop
+pop
+pop
+revoke
+print
+push 2986
+push 2987
+revoke
+revoke
+push 2990
+revoke
+print
+push 2993
+print
+push 2995
+revoke
+push 2997
+push 2998
+pop
+pop
+print
+pop
+revoke
+print
+revoke
+push 3006
+push 3007
+pop
+pop
+pop
+print
+pop
+revoke
+print
+pop
+push 3016
+revoke
+revoke
+pop
+print
+push 3021
+pop
+print
+revoke
+revoke
+revoke
+revoke
+print
+push 3029
+pop
+revoke
+print
+revoke
+pop
+revoke
+revoke
+push 3037
+push 3038
+push 3039
+pop
+pop
+revoke
+revoke
+print
+push 3045
+pop
+print
+push 3048
+pop
+pop
+pop
+print
+revoke
+print
+pop
+push 3056
+print
+pop
+revoke
+pop
+print
+pop
+print
+pop
+print
+pop
+print
+push 3068
+revoke
+push 3070
+print
+revoke
+print
+push 3074
+push 3075
+push 3076
+print
+pop
+push 3079
+print
+pop
+push 3082
+revoke
+pop
+pop
+pop
+print
+revoke
+revoke
+push 3090
+revoke
+pop
+revoke
+print
+push 3095
+revoke
+print
+push 3098
+pop
+print
+revoke
+revoke
+pop
+revoke
+push 3105
+push 3106
+revoke
+push 3108
+revoke
+revoke
+push 3111
+push 3112
+pop
+pop
+pop
+pop
+push 3117
+pop
+push 3119
+print
+push 3121
+revoke
+pop
+print
+pop
+print
+pop
+print
+push 3129
+push 3130
+revoke
+push 3132
+pop
+print
+pop
+pop
+push 3137
+pop
+push 3139
+revoke
+push 3141
+push 3142
+pop
+push 3144
+pop
+print
+push 3147
+revoke
+print
+push 3150
+revoke
+print
+push 3153
+revoke
+print
+pop
+revoke
+push 3158
+print
+pop
+push 3161
+pop
+pop
+print
+revoke
+push 3166
+push 3167
+print
+push 3169
+revoke
+pop
+pop
+print
+push 3174
+push 3175
+revoke
+push 3177
+print
+push 3179
+push 3180
+pop
+print
+push 3183
+revoke
+print
+push 3186
+pop
+print
+push 3189
+pop
+pop
+push 3192
+pop
+pop
+pop
+revoke
+print
+pop
+pop
+pop
+revoke
+pop
+push 3203
+print
+revoke
+push 3206
+print
+revoke
+push 3209
+pop
+print
+pop
+print
+pop
+pop
+push 3216
+push 3217
+pop
+pop
+print
+pop
+push 3222
+pop
+push 3224
+push 3225
+print
+push 3227
+print
+pop
+print
+revoke
+print
+pop
+push 3234
+print
+revoke
+push 3237
+print
+pop
+pop
+push 3241
+print
+pop
+pop
+print
+pop
+print
+pop
+pop
+pop
+revoke
+print
+pop
+push 3254
+revoke
+revoke
+pop
+pop
+revoke
+revoke
+print
+revoke
+pop
+revoke
+print
+push 3266
+revoke
+push 3268
+revoke
+revoke
+print
+pop
+push 3273
+print
+push 3275
+print
+revoke
+pop
+revoke
+print
+revoke
+revoke
+push 3283
+push 3284
+print
+pop
+push 3287
+pop
+print
+pop
+pop
+pop
+pop
+print
+revoke
+push 3296
+push 3297
+pop
+push 3299
+pop
+print
+push 3302
+pop
+revoke
+revoke
+push 3306
+push 3307
+print
+push 3309
+pop
+push 3311
+revoke
+push 3313
+push 3314
+pop
+revoke
+revoke
+push 3318
+revoke
+pop
+revoke
+print
+push 3323
+revoke
+push 3325
+revoke
+push 3327
+print
+revoke
+revoke
+revoke
+pop
+pop
+print
+pop
+pop
+push 3337
+print
+revoke
+revoke
+print
+revoke
+pop
+push 3344
+revoke
+print
+push 3347
+revoke
+push 3349
+print
+pop
+print
+revoke
+pop
+pop
+push 3356
+pop
+pop
+revoke
+push 3360
+push 3361
+pop
+print
+revoke
+push 3365
+push 3366
+push 3367
+push 3368
+pop
+revoke
+pop
+revoke
+print
+revoke
+print
+pop
+push 3377
+push 3378
+push 3379
+revoke
+revoke
+push 3382
+revoke
+print
+revoke
+push 3386
+pop
+pop
+revoke
+print
+push 3391
+push 3392
+revoke
+push 3394
+print
+push 3396
+revoke
+revoke
+revoke
+pop
+revoke
+print
+pop
+revoke
+push 3405
+print
+revoke
+revoke
+push 3409
+revoke
+pop
+revoke
+pop
+print
+revoke
+print
+pop
+print
+pop
+push 3420
+pop
+revoke
+print
+pop
+push 3425
+push 3426
+print
+push 3428
+print
+revoke
+print
+pop
+push 3433
+push 3434
+push 3435
+revoke
+push 3437
+push 3438
+print
+pop
+pop
+push 3442
+push 3443
+print
+push 3445
+pop
+pop
+revoke
+pop
+print
+pop
+print
+pop
+print
+revoke
+push 3456
+revoke
+print
+revoke
+print
+pop
+print
+revoke
+push 3464
+revoke
+push 3466
+pop
+push 3468
+push 3469
+revoke
+revoke
+print
+pop
+push 3474
+revoke
+print
+push 3477
+pop
+push 3479
+print
+push 3481
+pop
+push 3483
+pop
+push 3485
+revoke
+pop
+print
+pop
+print
+revoke
+print
+pop
+push 3494
+pop
+revoke
+print
+revoke
+pop
+pop
+revoke
+revoke
+print
+push 3504
+print
+push 3506
+push 3507
+push 3508
+print
+revoke
+print
+pop
+push 3513
+revoke
+pop
+revoke
+revoke
+pop
+print
+push 3520
+pop
+revoke
+push 3523
+revoke
+revoke
+print
+push 3527
+revoke
+revoke
+push 3530
+print
+pop
+print
+revoke
+print
+push 3536
+revoke
+revoke
+pop
+revoke
+pop
+pop
+revoke
+pop
+print
+pop
+revoke
+pop
+revoke
+pop
+pop
+print
+pop
+revoke
+pop
+print
+revoke
+revoke
+pop
+pop
+print
+revoke
+revoke
+push 3564
+push 3565
+print
+revoke
+push 3568
+print
+revoke
+print
+push 3572
+push 3573
+push 3574
+push 3575
+revoke
+push 3577
+print
+revoke
+revoke
+push 3581
+push 3582
+pop
+print
+pop
+pop
+push 3587
+push 3588
+print
+revoke
+pop
+print
+pop
+print
+revoke
+revoke
+pop
+pop
+print
+revoke
+revoke
+print
+pop
+revoke
+pop
+push 3606
+pop
+print
+push 3609
+print
+push 3611
+pop
+revoke
+push 3614
+print
+pop
+push 3617
+pop
+print
+revoke
+print
+revoke
+pop
+print
+revoke
+revoke
+pop
+revoke
+revoke
+push 3630
+push 3631
+pop
+push 3633
+push 3634
+revoke
+pop
+print
+revoke
+push 3639
+print
+pop
+print
+revoke
+print
+push 3645
+print
+revoke
+pop
+pop
+pop
+push 3651
+revoke
+revoke
+print
+push 3655
+pop
+print
+revoke
+revoke
+revoke
+push 3661
+pop
+pop
+pop
+push 3665
+push 3666
+pop
+pop
+print
+revoke
+pop
+push 3672
+print
+push 3674
+revoke
+push 3676
+push 3677
+pop
+revoke
+pop
+pop
+push 3682
+push 3683
+pop
+pop
+print
+revoke
+print
+pop
+push 3690
+print
+pop
+pop
+revoke
+revoke
+revoke
+pop
+pop
+pop
+push 3700
+revoke
+push 3702
+revoke
+print
+revoke
+push 3706
+print
+push 3708
+pop
+push 3710
+pop
+push 3712
+print
+push 3714
+print
+pop
+push 3717
+revoke
+pop
+pop
+push 3721
+pop
+pop
+print
+revoke
+push 3726
+pop
+pop
+print
+pop
+push 3731
+push 3732
+revoke
+pop
+revoke
+pop
+push 3737
+revoke
+print
+pop
+pop
+revoke
+push 3743
+revoke
+push 3745
+push 3746
+pop
+push 3748
+pop
+print
+pop
+pop
+push 3753
+pop
+push 3755
+revoke
+revoke
+push 3758
+revoke
+push 3760
+pop
+print
+push 3763
+push 3764
+revoke
+pop
+push 3767
+pop
+pop
+push 3770
+revoke
+push 3772
+print
+push 3774
+push 3775
+print
+push 3777
+revoke
+push 3779
+pop
+print
+revoke
+print
+push 3784
+pop
+print
+push 3787
+revoke
+push 3789
+revoke
+revoke
+revoke
+print
+pop
+pop
+print
+push 3797
+pop
+push 3799
+push 3800
+push 3801
+pop
+revoke
+pop
+push 3805
+revoke
+push 3807
+pop
+revoke
+push 3810
+push 3811
+push 3812
+print
+push 3814
+revoke
+revoke
+revoke
+print
+revoke
+pop
+push 3821
+push 3822
+push 3823
+push 3824
+push 3825
+push 3826
+print
+push 3828
+print
+revoke
+revoke
+pop
+push 3833
+print
+revoke
+push 3836
+print
+pop
+print
+push 3840
+pop
+push 3842
+push 3843
+print
+push 3845
+pop
+push 3847
+print
+push 3849
+revoke
+revoke
+revoke
+print
+push 3854
+print
+revoke
+pop
+push 3858
+push 3859
+revoke
+push 3861
+print
+push 3863
+print
+push 3865
+print
+revoke
+push 3868
+revoke
+print
+pop
+revoke
+print
+pop
+revoke
+push 3876
+pop
+revoke
+revoke
+print
+push 3881
+push 3882
+push 3883
+pop
+pop
+pop
+revoke
+push 3888
+revoke
+revoke
+pop
+print
+pop
+revoke
+print
+pop
+push 3897
+pop
+pop
+push 3900
+push 3901
+push 3902
+revoke
+pop
+pop
+print
+push 3907
+push 3908
+revoke
+push 3910
+print
+revoke
+pop
+revoke
+pop
+print
+revoke
+pop
+print
+push 3920
+pop
+push 3922
+print
+pop
+push 3925
+pop
+revoke
+print
+revoke
+print
+pop
+pop
+push 3933
+pop
+revoke
+print
+pop
+revoke
+push 3939
+push 3940
+push 3941
+print
+push 3943
+pop
+pop
+push 3946
+revoke
+print
+pop
+revoke
+push 3951
+print
+push 3953
+print
+pop
+print
+revoke
+revoke
+push 3959
+revoke
+pop
+pop
+print
+pop
+print
+push 3966
+print
+push 3968
+push 3969
+push 3970
+pop
+pop
+pop
+pop
+pop
+print
+push 3977
+push 3978
+pop
+revoke
+print
+push 3982
+print
+revoke
+print
+pop
+push 3987
+print
+revoke
+print
+revoke
+pop
+revoke
+print
+pop
+push 3996
+push 3997
+pop
+pop
+print
+push 4001
+revoke
+pop
+print
+push 4005
+push 4006
+print
+push 4008
+print
+revoke
+push 4011
+print
+revoke
+pop
+push 4015
+pop
+pop
+revoke
+print
+pop
+push 4021
+print
+revoke
+pop
+revoke
+revoke
+print
+revoke
+print
+push 4030
+revoke
+push 4032
+push 4033
+revoke
+pop
+revoke
+pop
+pop
+revoke
+revoke
+pop
+pop
+push 4043
+pop
+print
+revoke
+revoke
+revoke
+pop
+print
+revoke
+revoke
+pop
+pop
+print
+pop
+push 4057
+push 4058
+pop
+pop
+print
+pop
+print
+revoke
+revoke
+revoke
+push 4067
+revoke
+revoke
+pop
+push 4071
+revoke
+pop
+pop
+push 4075
+pop
+pop
+pop
+push 4079
+push 4080
+push 4081
+pop
+print
+push 4084
+push 4085
+push 4086
+revoke
+revoke
+revoke
+pop
+print
+push 4092
+pop
+push 4094
+push 4095
+push 4096
+print
+revoke
+print
+revoke
+push 4101
+pop
+print
+pop
+pop
+revoke
+push 4107
+print
+push 4109
+print
+revoke
+print
+revoke
+revoke
+print
+push 4116
+pop
+print
+push 4119
+print
+revoke
+print
+pop
+push 4124
+revoke
+print
+revoke
+print
+pop
+revoke
+push 4131
+revoke
+push 4133
+revoke
+pop
+revoke
+revoke
+push 4138
+revoke
+push 4140
+pop
+push 4142
+pop
+print
+pop
+pop
+push 4147
+pop
+revoke
+print
+push 4151
+revoke
+revoke
+push 4154
+revoke
+pop
+push 4157
+print
+revoke
+pop
+pop
+push 4162
+revoke
+revoke
+pop
+push 4166
+revoke
+push 4168
+revoke
+revoke
+pop
+revoke
+push 4173
+pop
+revoke
+pop
+push 4177
+pop
+pop
+print
+revoke
+revoke
+push 4183
+pop
+revoke
+pop
+pop
+pop
+revoke
+pop
+push 4191
+print
+revoke
+print
+revoke
+push 4196
+revoke
+pop
+revoke
+pop
+push 4201
+print
+push 4203
+push 4204
+push 4205
+revoke
+pop
+revoke
+revoke
+pop
+revoke
+pop
+revoke
+pop
+print
+push 4216
+revoke
+push 4218
+push 4219
+revoke
+pop
+push 4222
+print
+revoke
+push 4225
+print
+revoke
+print
+pop
+push 4230
+push 4231
+print
+revoke
+push 4234
+push 4235
+print
+pop
+pop
+push 4239
+print
+pop
+revoke
+push 4243
+print
+pop
+print
+pop
+pop
+pop
+pop
+revoke
+push 4252
+revoke
+pop
+print
+revoke
+pop
+revoke
+revoke
+print
+revoke
+pop
+print
+pop
+push 4265
+pop
+pop
+print
+pop
+print
+revoke
+print
+push 4273
+push 4274
+print
+revoke
+print
+revoke
+print
+revoke
+pop
+push 4282
+pop
+pop
+pop
+revoke
+revoke
+revoke
+push 4289
+pop
+revoke
+revoke
+print
+revoke
+push 4295
+print
+push 4297
+pop
+push 4299
+pop
+revoke
+pop
+pop
+push 4304
+print
+push 4306
+push 4307
+revoke
+print
+revoke
+revoke
+revoke
+pop
+print
+push 4315
+revoke
+push 4317
+push 4318
+print
+pop
+revoke
+push 4322
+revoke
+print
+push 4325
+pop
+push 4327
+pop
+revoke
+push 4330
+revoke
+push 4332
+pop
+print
+pop
+push 4336
+print
+revoke
+revoke
+push 4340
+revoke
+pop
+push 4343
+push 4344
+revoke
+push 4346
+push 4347
+pop
+revoke
+push 4350
+print
+revoke
+print
+pop
+print
+pop
+revoke
+pop
+pop
+print
+push 4361
+push 4362
+revoke
+pop
+print
+revoke
+push 4367
+pop
+push 4369
+push 4370
+pop
+revoke
+pop
+print
+push 4375
+print
+pop
+revoke
+push 4379
+pop
+revoke
+revoke
+revoke
+print
+revoke
+print
+pop
+push 4388
+pop
+print
+push 4391
+revoke
+revoke
+pop
+print
+revoke
+revoke
+revoke
+print
+pop
+print
+revoke
+print
+push 4404
+revoke
+pop
+print
+revoke
+print
+push 4410
+push 4411
+pop
+push 4413
+pop
+pop
+revoke
+revoke
+push 4418
+push 4419
+print
+pop
+push 4422
+pop
+print
+revoke
+push 4426
+print
+pop
+push 4429
+revoke
+pop
+push 4432
+pop
+push 4434
+push 4435
+print
+pop
+pop
+revoke
+push 4440
+print
+pop
+push 4443
+push 4444
+push 4445
+print
+pop
+revoke
+print
+pop
+pop
+print
+pop
+pop
+print
+revoke
+push 4457
+push 4458
+revoke
+revoke
+pop
+push 4462
+print
+revoke
+push 4465
+revoke
+revoke
+print
+pop
+push 4470
+print
+push 4472
+print
+push 4474
+print
+revoke
+pop
+pop
+print
+pop
+pop
+print
+revoke
+push 4484
+pop
+push 4486
+push 4487
+push 4488
+revoke
+revoke
+print
+pop
+pop
+pop
+push 4495
+revoke
+push 4497
+push 4498
+push 4499
+push 4500
+revoke
+push 4502
+revoke
+pop
+pop
+revoke
+revoke
+print
+revoke
+push 4510
+push 4511
+pop
+pop
+revoke
+print
+pop
+push 4517
+print
+pop
+pop
+pop
+print
+pop
+push 4524
+pop
+pop
+push 4527
+push 4528
+print
+pop
+revoke
+revoke
+print
+revoke
+push 4535
+pop
+revoke
+push 4538
+push 4539
+push 4540
+push 4541
+revoke
+push 4543
+revoke
+pop
+print
+pop
+print
+push 4549
+pop
+revoke
+print
+revoke
+push 4554
+revoke
+pop
+push 4557
+revoke
+push 4559
+pop
+push 4561
+print
+push 4563
+pop
+revoke
+push 4566
+revoke
+pop
+push 4569
+print
+push 4571
+print
+revoke
+revoke
+push 4575
+push 4576
+revoke
+pop
+revoke
+revoke
+pop
+print
+pop
+print
+pop
+print
+push 4587
+print
+pop
+print
+revoke
+pop
+print
+revoke
+push 4595
+revoke
+push 4597
+pop
+revoke
+pop
+pop
+pop
+pop
+pop
+push 4605
+push 4606
+revoke
+revoke
+push 4609
+revoke
+push 4611
+push 4612
+pop
+pop
+pop
+print
+revoke
+revoke
+print
+push 4620
+push 4621
+push 4622
+pop
+push 4624
+pop
+print
+push 4627
+push 4628
+print
+pop
+print
+revoke
+push 4633
+print
+pop
+push 4636
+pop
+pop
+print
+pop
+pop
+print
+push 4643
+revoke
+revoke
+push 4646
+push 4647
+pop
+push 4649
+print
+revoke
+pop
+revoke
+pop
+pop
+revoke
+pop
+revoke
+print
+push 4660
+revoke
+pop
+revoke
+pop
+push 4665
+print
+pop
+print
+revoke
+print
+pop
+pop
+push 4673
+push 4674
+revoke
+pop
+pop
+push 4678
+revoke
+revoke
+push 4681
+push 4682
+print
+push 4684
+revoke
+print
+push 4687
+push 4688
+push 4689
+pop
+push 4691
+revoke
+push 4693
+pop
+push 4695
+push 4696
+revoke
+revoke
+print
+revoke
+print
+push 4702
+pop
+revoke
+pop
+revoke
+revoke
+print
+pop
+print
+revoke
+revoke
+revoke
+pop
+revoke
+pop
+revoke
+revoke
+push 4719
+push 4720
+pop
+print
+pop
+push 4724
+print
+push 4726
+print
+revoke
+push 4729
+print
+revoke
+revoke
+revoke
+push 4734
+print
+pop
+push 4737
+push 4738
+print
+revoke
+print
+push 4742
+print
+revoke
+revoke
+pop
+pop
+print
+revoke
+pop
+revoke
+pop
+push 4753
+pop
+print
+revoke
+print
+revoke
+revoke
+revoke
+revoke
+push 4762
+revoke
+print
+push 4765
+pop
+print
+revoke
+print
+push 4770
+revoke
+print
+pop
+print
+revoke
+pop
+revoke
+push 4778
+pop
+print
+revoke
+push 4782
+push 4783
+push 4784
+push 4785
+push 4786
+revoke
+revoke
+push 4789
+pop
+push 4791
+push 4792
+push 4793
+print
+revoke
+pop
+pop
+pop
+push 4799
+pop
+revoke
+print
+revoke
+revoke
+pop
+revoke
+revoke
+revoke
+push 4809
+revoke
+print
+push 4812
+push 4813
+print
+push 4815
+push 4816
+push 4817
+pop
+revoke
+print
+push 4821
+push 4822
+print
+revoke
+push 4825
+push 4826
+pop
+push 4828
+print
+pop
+print
+revoke
+print
+pop
+push 4835
+push 4836
+revoke
+push 4838
+print
+pop
+pop
+pop
+print
+push 4844
+push 4845
+pop
+push 4847
+print
+revoke
+pop
+revoke
+push 4852
+revoke
+print
+revoke
+print
+pop
+print
+pop
+revoke
+push 4861
+print
+pop
+print
+revoke
+revoke
+push 4867
+revoke
+revoke
+push 4870
+push 4871
+pop
+revoke
+pop
+print
+revoke
+revoke
+revoke
+push 4879
+push 4880
+print
+revoke
+push 4883
+pop
+print
+push 4886
+revoke
+pop
+pop
+pop
+revoke
+pop
+pop
+push 4894
+pop
+revoke
+revoke
+revoke
+push 4899
+print
+revoke
+print
+push 4903
+push 4904
+pop
+push 4906
+revoke
+revoke
+revoke
+push 4910
+pop
+revoke
+print
+push 4914
+revoke
+pop
+revoke
+revoke
+push 4919
+revoke
+print
+revoke
+revoke
+print
+pop
+revoke
+pop
+revoke
+print
+push 4930
+revoke
+print
+revoke
+print
+push 4935
+pop
+print
+push 4938
+revoke
+print
+push 4941
+revoke
+pop
+pop
+print
+revoke
+pop
+revoke
+push 4949
+push 4950
+print
+revoke
+push 4953
+pop
+revoke
+push 4956
+revoke
+revoke
+pop
+revoke
+pop
+pop
+print
+pop
+revoke
+print
+pop
+push 4968
+push 4969
+pop
+print
+pop
+print
+revoke
+print
+push 4976
+push 4977
+push 4978
+revoke
+push 4980
+print
+pop
+pop
+push 4984
+pop
+pop
+print
+revoke
+pop
+revoke
+print
+revoke
+push 4993
+pop
+push 4995
+revoke
+push 4997
+print
+revoke
+print
+push 5001
+print
+push 5003
+push 5004
+pop
+push 5006
+push 5007
+print
+revoke
+revoke
+revoke
+revoke
+push 5013
+push 5014
+pop
+pop
+push 5017
+pop
+revoke
+push 5020
+print
+push 5022
+push 5023
+push 5024
+pop
+push 5026
+pop
+print
+pop
+push 5030
+push 5031
+revoke
+revoke
+push 5034
+print
+revoke
+pop
+revoke
+print
+push 5040
+print
+pop
+push 5043
+pop
+pop
+print
+pop
+print
+pop
+print
+push 5051
+print
+pop
+pop
+push 5055
+push 5056
+pop
+print
+push 5059
+print
+push 5061
+push 5062
+pop
+print
+revoke
+print
+pop
+push 5068
+revoke
+revoke
+revoke
+print
+push 5073
+pop
+push 5075
+revoke
+pop
+print
+push 5079
+push 5080
+print
+push 5082
+push 5083
+revoke
+pop
+revoke
+revoke
+revoke
+pop
+revoke
+push 5091
+push 5092
+print
+pop
+pop
+push 5096
+print
+push 5098
+push 5099
+push 5100
+revoke
+print
+push 5103
+print
+pop
+push 5106
+revoke
+pop
+print
+pop
+revoke
+print
+revoke
+print
+pop
+print
+pop
+print
+revoke
+print
+push 5121
+pop
+pop
+push 5124
+print
+revoke
+push 5127
+print
+pop
+revoke
+pop
+revoke
+pop
+pop
+print
+revoke
+print
+push 5138
+print
+push 5140
+revoke
+pop
+print
+revoke
+revoke
+print
+pop
+revoke
+revoke
+push 5150
+revoke
+pop
+pop
+push 5154
+print
+pop
+push 5157
+revoke
+revoke
+push 5160
+revoke
+pop
+revoke
+push 5164
+print
+push 5166
+revoke
+pop
+push 5169
+pop
+revoke
+revoke
+pop
+print
+push 5175
+push 5176
+revoke
+push 5178
+revoke
+push 5180
+pop
+print
+pop
+push 5184
+revoke
+print
+revoke
+push 5188
+revoke
+push 5190
+print
+pop
+pop
+revoke
+revoke
+print
+push 5197
+push 5198
+push 5199
+revoke
+revoke
+pop
+push 5203
+revoke
+revoke
+push 5206
+revoke
+print
+revoke
+print
+pop
+pop
+push 5213
+revoke
+revoke
+print
+push 5217
+revoke
+revoke
+pop
+print
+revoke
+push 5223
+print
+push 5225
+revoke
+pop
+print
+push 5229
+push 5230
+push 5231
+pop
+print
+pop
+pop
+revoke
+print
+pop
+print
+pop
+print
+push 5242
+push 5243
+revoke
+pop
+push 5246
+revoke
+pop
+print
+push 5250
+pop
+push 5252
+push 5253
+pop
+print
+push 5256
+revoke
+print
+push 5259
+revoke
+revoke
+pop
+push 5263
+pop
+push 5265
+push 5266
+pop
+print
+push 5269
+revoke
+push 5271
+pop
+revoke
+print
+pop
+revoke
+push 5277
+push 5278
+revoke
+print
+push 5281
+push 5282
+revoke
+pop
+pop
+revoke
+revoke
+push 5288
+print
+push 5290
+print
+revoke
+push 5293
+revoke
+revoke
+push 5296
+print
+pop
+revoke
+print
+revoke
+revoke
+revoke
+revoke
+revoke
+print
+revoke
+pop
+print
+pop
+revoke
+print
+push 5313
+revoke
+revoke
+revoke
+revoke
+pop
+pop
+pop
+revoke
+pop
+push 5323
+push 5324
+pop
+push 5326
+push 5327
+print
+push 5329
+push 5330
+print
+revoke
+pop
+pop
+push 5335
+print
+push 5337
+pop
+pop
+push 5340
+revoke
+pop
+revoke
+push 5344
+revoke
+pop
+pop
+revoke
+push 5349
+print
+push 5351
+push 5352
+pop
+revoke
+print
+push 5356
+print
+push 5358
+print
+pop
+revoke
+push 5362
+pop
+push 5364
+pop
+revoke
+print
+pop
+pop
+push 5370
+pop
+revoke
+push 5373
+pop
+pop
+pop
+push 5377
+revoke
+print
+pop
+revoke
+revoke
+print
+revoke
+pop
+push 5386
+push 5387
+pop
+push 5389
+revoke
+print
+push 5392
+print
+revoke
+revoke
+print
+push 5397
+push 5398
+push 5399
+print
+pop
+pop
+print
+pop
+pop
+pop
+revoke
+revoke
+revoke
+pop
+push 5411
+print
+revoke
+push 5414
+print
+pop
+push 5417
+push 5418
+revoke
+push 5420
+pop
+print
+revoke
+pop
+push 5425
+print
+pop
+print
+revoke
+print
+pop
+push 5432
+print
+push 5434
+print
+pop
+pop
+revoke
+pop
+print
+push 5441
+pop
+push 5443
+revoke
+print
+push 5446
+push 5447
+pop
+print
+revoke
+push 5451
+push 5452
+pop
+pop
+pop
+print
+revoke
+print
+revoke
+revoke
+push 5461
+print
+pop
+pop
+revoke
+push 5466
+push 5467
+pop
+revoke
+push 5470
+revoke
+pop
+push 5473
+push 5474
+revoke
+revoke
+revoke
+revoke
+print
+pop
+print
+push 5482
+print
+push 5484
+revoke
+push 5486
+push 5487
+revoke
+print
+push 5490
+revoke
+pop
+print
+push 5494
+revoke
+push 5496
+pop
+push 5498
+pop
+revoke
+print
+revoke
+push 5503
+push 5504
+print
+push 5506
+print
+push 5508
+pop
+push 5510
+pop
+push 5512
+push 5513
+print
+pop
+print
+push 5517
+print
+revoke
+revoke
+print
+pop
+revoke
+pop
+print
+pop
+revoke
+print
+revoke
+push 5530
+push 5531
+print
+pop
+print
+push 5535
+revoke
+push 5537
+pop
+print
+push 5540
+pop
+pop
+revoke
+revoke
+push 5545
+push 5546
+push 5547
+push 5548
+push 5549
+push 5550
+pop
+revoke
+pop
+pop
+pop
+print
+revoke
+pop
+print
+pop
+revoke
+push 5562
+revoke
+revoke
+push 5565
+revoke
+print
+pop
+revoke
+revoke
+print
+pop
+print
+push 5574
+revoke
+push 5576
+pop
+print
+pop
+push 5580
+print
+revoke
+revoke
+push 5584
+revoke
+print
+revoke
+push 5588
+revoke
+push 5590
+push 5591
+pop
+pop
+push 5594
+revoke
+print
+revoke
+print
+push 5599
+revoke
+revoke
+revoke
+pop
+push 5604
+print
+revoke
+pop
+revoke
+pop
+print
+push 5611
+revoke
+revoke
+print
+push 5615
+pop
+revoke
+pop
+push 5619
+revoke
+revoke
+pop
+pop
+revoke
+push 5625
+revoke
+pop
+push 5628
+push 5629
+print
+push 5631
+push 5632
+pop
+revoke
+print
+revoke
+pop
+pop
+print
+push 5640
+revoke
+pop
+push 5643
+pop
+push 5645
+push 5646
+print
+pop
+push 5649
+push 5650
+push 5651
+pop
+print
+push 5654
+revoke
+revoke
+print
+revoke
+pop
+pop
+pop
+pop
+push 5663
+revoke
+push 5665
+revoke
+print
+revoke
+push 5669
+push 5670
+pop
+push 5672
+print
+pop
+revoke
+print
+pop
+print
+push 5679
+pop
+pop
+pop
+pop
+print
+revoke
+push 5686
+push 5687
+pop
+push 5689
+print
+revoke
+push 5692
+pop
+revoke
+print
+pop
+push 5697
+push 5698
+pop
+push 5700
+push 5701
+pop
+push 5703
+revoke
+print
+pop
+push 5707
+push 5708
+revoke
+pop
+print
+revoke
+print
+pop
+print
+revoke
+revoke
+revoke
+pop
+push 5720
+pop
+push 5722
+pop
+print
+pop
+print
+revoke
+push 5728
+print
+pop
+revoke
+push 5732
+push 5733
+print
+revoke
+pop
+push 5737
+pop
+push 5739
+push 5740
+print
+push 5742
+revoke
+push 5744
+print
+push 5746
+print
+revoke
+print
+revoke
+print
+push 5752
+revoke
+pop
+pop
+pop
+revoke
+pop
+revoke
+push 5760
+print
+revoke
+revoke
+print
+push 5765
+push 5766
+print
+push 5768
+print
+push 5770
+print
+push 5772
+print
+revoke
+push 5775
+push 5776
+push 5777
+revoke
+push 5779
+push 5780
+revoke
+print
+push 5783
+print
+revoke
+pop
+pop
+push 5788
+pop
+print
+push 5791
+print
+pop
+revoke
+push 5795
+push 5796
+print
+pop
+print
+pop
+push 5801
+revoke
+revoke
+pop
+print
+push 5806
+print
+push 5808
+pop
+print
+revoke
+pop
+pop
+pop
+print
+revoke
+push 5817
+pop
+pop
+push 5820
+pop
+print
+push 5823
+revoke
+print
+push 5826
+revoke
+print
+revoke
+revoke
+print
+revoke
+print
+revoke
+revoke
+push 5836
+push 5837
+push 5838
+print
+pop
+print
+pop
+pop
+revoke
+pop
+push 5846
+revoke
+revoke
+print
+push 5850
+revoke
+pop
+pop
+push 5854
+print
+pop
+revoke
+pop
+revoke
+print
+pop
+print
+revoke
+push 5864
+push 5865
+pop
+pop
+push 5868
+print
+push 5870
+pop
+print
+push 5873
+pop
+revoke
+print
+push 5877
+push 5878
+pop
+push 5880
+revoke
+revoke
+pop
+pop
+revoke
+push 5886
+print
+push 5888
+print
+push 5890
+pop
+revoke
+push 5893
+revoke
+print
+pop
+push 5897
+revoke
+push 5899
+pop
+pop
+pop
+pop
+push 5904
+print
+pop
+revoke
+revoke
+push 5909
+revoke
+push 5911
+push 5912
+revoke
+push 5914
+revoke
+revoke
+pop
+push 5918
+revoke
+print
+pop
+push 5922
+pop
+pop
+revoke
+pop
+print
+push 5928
+pop
+push 5930
+push 5931
+pop
+revoke
+print
+push 5935
+revoke
+push 5937
+push 5938
+push 5939
+print
+pop
+print
+push 5943
+push 5944
+push 5945
+push 5946
+print
+revoke
+print
+push 5950
+pop
+revoke
+push 5953
+revoke
+revoke
+revoke
+push 5957
+print
+revoke
+print
+revoke
+revoke
+revoke
+revoke
+pop
+revoke
+push 5967
+pop
+pop
+pop
+print
+push 5972
+revoke
+revoke
+print
+push 5976
+push 5977
+revoke
+print
+revoke
+pop
+print
+revoke
+push 5984
+push 5985
+print
+push 5987
+revoke
+revoke
+push 5990
+push 5991
+print
+revoke
+revoke
+print
+pop
+revoke
+pop
+revoke
+print
+pop
+revoke
+revoke
+print
+revoke
+print
+pop
+revoke
+pop
+pop
+revoke
+print
+push 6013
+push 6014
+push 6015
+pop
+pop
+print
+push 6019
+push 6020
+pop
+push 6022
+pop
+print
+push 6025
+pop
+print
+revoke
+push 6029
+push 6030
+pop
+push 6032
+push 6033
+pop
+revoke
+pop
+push 6037
+pop
+revoke
+revoke
+push 6041
+revoke
+pop
+print
+push 6045
+revoke
+print
+revoke
+print
+revoke
+print
+pop
+revoke
+revoke
+print
+pop
+print
+pop
+print
+revoke
+revoke
+print
+revoke
+print
+pop
+pop
+push 6067
+pop
+pop
+revoke
+push 6071
+print
+pop
+print
+push 6075
+pop
+pop
+revoke
+print
+push 6080
+pop
+revoke
+revoke
+push 6084
+pop
+revoke
+push 6087
+push 6088
+pop
+print
+revoke
+push 6092
+revoke
+revoke
+revoke
+revoke
+revoke
+push 6098
+revoke
+pop
+pop
+revoke
+pop
+revoke
+pop
+revoke
+print
+push 6108
+print
+revoke
+pop
+print
+push 6113
+revoke
+pop
+revoke
+revoke
+revoke
+revoke
+push 6120
+pop
+push 6122
+print
+revoke
+push 6125
+push 6126
+print
+pop
+push 6129
+push 6130
+revoke
+revoke
+pop
+print
+push 6135
+pop
+revoke
+print
+revoke
+pop
+pop
+print
+revoke
+push 6144
+print
+push 6146
+print
+revoke
+print
+revoke
+print
+push 6152
+push 6153
+revoke
+revoke
+print
+revoke
+print
+push 6159
+print
+push 6161
+push 6162
+print
+revoke
+pop
+pop
+push 6167
+print
+push 6169
+pop
+print
+revoke
+pop
+push 6174
+print
+revoke
+pop
+print
+revoke
+push 6180
+revoke
+push 6182
+push 6183
+revoke
+revoke
+print
+revoke
+revoke
+revoke
+push 6190
+revoke
+revoke
+print
+pop
+print
+revoke
+print
+revoke
+print
+revoke
+print
+push 6202
+push 6203
+push 6204
+push 6205
+push 6206
+push 6207
+pop
+pop
+revoke
+push 6211
+print
+pop
+push 6214
+pop
+pop
+push 6217
+revoke
+revoke
+push 6220
+revoke
+pop
+pop
+push 6224
+pop
+pop
+pop
+push 6228
+revoke
+revoke
+revoke
+pop
+revoke
+print
+push 6235
+revoke
+print
+pop
+print
+revoke
+pop
+pop
+revoke
+pop
+revoke
+revoke
+revoke
+revoke
+push 6249
+print
+push 6251
+push 6252
+push 6253
+push 6254
+push 6255
+print
+pop
+pop
+pop
+revoke
+revoke
+pop
+revoke
+push 6264
+print
+push 6266
+print
+push 6268
+pop
+push 6270
+pop
+print
+push 6273
+revoke
+push 6275
+revoke
+revoke
+pop
+pop
+pop
+revoke
+print
+pop
+print
+revoke
+print
+revoke
+push 6288
+push 6289
+print
+revoke
+push 6292
+print
+pop
+revoke
+pop
+revoke
+push 6298
+print
+pop
+print
+pop
+pop
+pop
+print
+revoke
+print
+push 6308
+pop
+push 6310
+push 6311
+pop
+push 6313
+print
+pop
+push 6316
+print
+revoke
+push 6319
+print
+revoke
+print
+revoke
+pop
+push 6325
+print
+pop
+print
+pop
+pop
+pop
+print
+pop
+print
+push 6335
+print
+pop
+print
+pop
+print
+revoke
+push 6342
+print
+pop
+push 6345
+pop
+print
+revoke
+print
+pop
+print
+revoke
+pop
+revoke
+print
+pop
+pop
+push 6358
+print
+pop
+revoke
+revoke
+push 6363
+push 6364
+pop
+pop
+print
+push 6368
+revoke
+revoke
+revoke
+revoke
+revoke
+print
+push 6375
+print
+revoke
+push 6378
+push 6379
+print
+pop
+pop
+print
+revoke
+push 6385
+revoke
+revoke
+push 6388
+revoke
+revoke
+print
+revoke
+print
+pop
+pop
+push 6396
+pop
+print
+pop
+pop
+pop
+revoke
+print
+revoke
+push 6405
+push 6406
+push 6407
+pop
+revoke
+revoke
+revoke
+revoke
+pop
+print
+revoke
+push 6416
+print
+pop
+pop
+revoke
+push 6421
+print
+revoke
+push 6424
+revoke
+print
+pop
+push 6428
+pop
+revoke
+push 6431
+revoke
+pop
+push 6434
+pop
+revoke
+print
+pop
+print
+pop
+print
+pop
+pop
+push 6444
+push 6445
+print
+push 6447
+revoke
+revoke
+pop
+print
+push 6452
+pop
+push 6454
+pop
+push 6456
+revoke
+push 6458
+revoke
+print
+pop
+push 6462
+pop
+revoke
+revoke
+push 6466
+push 6467
+push 6468
+revoke
+pop
+push 6471
+print
+revoke
+revoke
+push 6475
+print
+push 6477
+push 6478
+revoke
+push 6480
+print
+revoke
+revoke
+revoke
+pop
+print
+pop
+print
+push 6489
+pop
+push 6491
+print
+push 6493
+pop
+revoke
+revoke
+revoke
+print
+pop
+pop
+push 6501
+print
+revoke
+print
+revoke
+pop
+revoke
+print
+revoke
+print
+revoke
+pop
+revoke
+push 6514
+revoke
+print
+push 6517
+print
+pop
+push 6520
+revoke
+print
+pop
+print
+pop
+revoke
+pop
+print
+pop
+print
+push 6531
+pop
+print
+pop
+print
+push 6536
+revoke
+print
+pop
+pop
+pop
+pop
+revoke
+push 6544
+revoke
+push 6546
+print
+pop
+revoke
+print
+pop
+revoke
+revoke
+print
+revoke
+push 6556
+revoke
+pop
+revoke
+pop
+revoke
+push 6562
+push 6563
+print
+push 6565
+print
+push 6567
+revoke
+pop
+push 6570
+print
+revoke
+pop
+push 6574
+print
+push 6576
+push 6577
+print
+pop
+push 6580
+print
+push 6582
+revoke
+push 6584
+pop
+print
+revoke
+print
+pop
+revoke
+print
+pop
+print
+pop
+revoke
+print
+pop
+pop
+pop
+revoke
+pop
+pop
+print
+pop
+pop
+print
+revoke
+push 6608
+print
+push 6610
+push 6611
+pop
+push 6613
+print
+push 6615
+revoke
+print
+push 6618
+print
+pop
+pop
+push 6622
+push 6623
+print
+push 6625
+print
+revoke
+pop
+print
+pop
+push 6631
+pop
+revoke
+pop
+push 6635
+push 6636
+revoke
+print
+revoke
+print
+revoke
+print
+pop
+pop
+print
+pop
+push 6647
+revoke
+print
+push 6650
+push 6651
+revoke
+push 6653
+revoke
+revoke
+pop
+revoke
+print
+push 6659
+revoke
+push 6661
+push 6662
+push 6663
+push 6664
+push 6665
+revoke
+pop
+print
+revoke
+push 6670
+revoke
+revoke
+push 6673
+revoke
+pop
+push 6676
+print
+revoke
+pop
+revoke
+push 6681
+push 6682
+push 6683
+revoke
+revoke
+revoke
+revoke
+push 6688
+print
+push 6690
+push 6691
+print
+push 6693
+push 6694
+pop
+revoke
+print
+push 6698
+push 6699
+pop
+pop
+pop
+revoke
+print
+revoke
+push 6706
+print
+pop
+push 6709
+print
+push 6711
+revoke
+push 6713
+pop
+revoke
+print
+revoke
+push 6718
+push 6719
+push 6720
+pop
+push 6722
+pop
+revoke
+revoke
+pop
+print
+pop
+revoke
+push 6730
+push 6731
+print
+pop
+print
+pop
+pop
+print
+revoke
+push 6739
+print
+pop
+print
+push 6743
+pop
+pop
+push 6746
+push 6747
+print
+revoke
+push 6750
+push 6751
+push 6752
+pop
+push 6754
+push 6755
+push 6756
+push 6757
+revoke
+revoke
+push 6760
+revoke
+pop
+revoke
+print
+pop
+print
+pop
+print
+push 6769
+revoke
+pop
+pop
+revoke
+print
+revoke
+revoke
+push 6777
+revoke
+revoke
+revoke
+print
+push 6782
+pop
+pop
+pop
+push 6786
+revoke
+pop
+push 6789
+print
+revoke
+pop
+revoke
+push 6794
+push 6795
+print
+push 6797
+print
+pop
+push 6800
+pop
+push 6802
+revoke
+pop
+revoke
+pop
+push 6807
+pop
+revoke
+push 6810
+revoke
+revoke
+push 6813
+revoke
+revoke
+push 6816
+push 6817
+push 6818
+pop
+revoke
+push 6821
+push 6822
+pop
+pop
+pop
+print
+push 6827
+pop
+print
+push 6830
+revoke
+pop
+revoke
+print
+pop
+push 6836
+print
+revoke
+pop
+pop
+push 6841
+pop
+revoke
+push 6844
+print
+pop
+print
+push 6848
+push 6849
+pop
+push 6851
+revoke
+revoke
+revoke
+push 6855
+pop
+pop
+push 6858
+print
+push 6860
+revoke
+pop
+pop
+pop
+pop
+revoke
+revoke
+push 6868
+push 6869
+pop
+revoke
+revoke
+pop
+pop
+print
+revoke
+push 6877
+pop
+print
+pop
+pop
+revoke
+pop
+print
+revoke
+print
+pop
+print
+pop
+pop
+revoke
+print
+pop
+revoke
+revoke
+pop
+pop
+push 6898
+push 6899
+pop
+push 6901
+revoke
+print
+push 6904
+pop
+print
+pop
+pop
+push 6909
+revoke
+print
+push 6912
+push 6913
+pop
+push 6915
+push 6916
+revoke
+push 6918
+revoke
+print
+pop
+pop
+pop
+print
+pop
+print
+revoke
+revoke
+revoke
+pop
+revoke
+push 6932
+print
+pop
+print
+pop
+pop
+revoke
+print
+revoke
+revoke
+pop
+push 6943
+print
+revoke
+push 6946
+pop
+print
+revoke
+push 6950
+pop
+revoke
+push 6953
+print
+push 6955
+revoke
+push 6957
+pop
+pop
+push 6960
+revoke
+revoke
+print
+push 6964
+pop
+print
+revoke
+push 6968
+pop
+print
+pop
+pop
+revoke
+push 6974
+revoke
+print
+push 6977
+push 6978
+push 6979
+print
+pop
+pop
+push 6983
+revoke
+pop
+revoke
+print
+revoke
+push 6989
+print
+push 6991
+print
+push 6993
+print
+push 6995
+pop
+revoke
+pop
+push 6999
+push 7000
+print
+push 7002
+pop
+push 7004
+push 7005
+push 7006
+revoke
+push 7008
+push 7009
+revoke
+print
+pop
+print
+push 7014
+pop
+revoke
+push 7017
+pop
+print
+revoke
+pop
+revoke
+revoke
+revoke
+print
+push 7026
+push 7027
+push 7028
+print
+pop
+pop
+print
+pop
+push 7034
+print
+pop
+print
+pop
+revoke
+push 7040
+print
+pop
+pop
+print
+pop
+revoke
+pop
+revoke
+push 7049
+print
+pop
+print
+pop
+push 7054
+revoke
+print
+pop
+revoke
+print
+revoke
+print
+push 7062
+push 7063
+revoke
+push 7065
+pop
+pop
+print
+pop
+push 7070
+print
+pop
+revoke
+push 7074
+revoke
+pop
+pop
+pop
+pop
+revoke
+push 7081
+revoke
+revoke
+push 7084
+push 7085
+pop
+push 7087
+print
+pop
+print
+revoke
+revoke
+print
+push 7094
+pop
+print
+push 7097
+pop
+print
+push 7100
+pop
+revoke
+print
+push 7104
+pop
+revoke
+push 7107
+print
+pop
+revoke
+push 7111
+print
+revoke
+revoke
+push 7115
+revoke
+print
+revoke
+print
+push 7120
+push 7121
+push 7122
+pop
+pop
+pop
+print
+revoke
+pop
+pop
+print
+push 7131
+pop
+print
+revoke
+revoke
+print
+revoke
+push 7138
+push 7139
+revoke
+push 7141
+push 7142
+push 7143
+print
+pop
+print
+push 7147
+pop
+pop
+revoke
+revoke
+print
+push 7153
+revoke
+pop
+print
+revoke
+print
+push 7159
+push 7160
+revoke
+revoke
+print
+push 7164
+push 7165
+pop
+revoke
+print
+push 7169
+print
+revoke
+pop
+print
+revoke
+revoke
+pop
+print
+pop
+print
+pop
+push 7181
+push 7182
+pop
+push 7184
+print
+pop
+pop
+pop
+pop
+revoke
+push 7191
+push 7192
+pop
+pop
+pop
+push 7196
+revoke
+push 7198
+pop
+print
+pop
+print
+push 7203
+push 7204
+print
+push 7206
+pop
+pop
+pop
+revoke
+print
+push 7212
+push 7213
+print
+pop
+pop
+push 7217
+print
+push 7219
+revoke
+pop
+push 7222
+revoke
+push 7224
+pop
+push 7226
+pop
+pop
+print
+push 7230
+push 7231
+revoke
+revoke
+print
+revoke
+push 7236
+revoke
+push 7238
+revoke
+revoke
+print
+pop
+revoke
+pop
+push 7245
+push 7246
+print
+revoke
+pop
+revoke
+print
+revoke
+push 7253
+push 7254
+revoke
+push 7256
+push 7257
+print
+push 7259
+push 7260
+revoke
+print
+push 7263
+push 7264
+push 7265
+push 7266
+print
+push 7268
+revoke
+revoke
+revoke
+revoke
+print
+push 7274
+push 7275
+print
+pop
+pop
+pop
+print
+pop
+pop
+pop
+print
+push 7285
+pop
+print
+pop
+revoke
+pop
+pop
+print
+pop
+pop
+pop
+push 7296
+revoke
+push 7298
+print
+revoke
+revoke
+pop
+pop
+push 7304
+revoke
+print
+revoke
+pop
+pop
+revoke
+print
+pop
+push 7313
+print
+revoke
+push 7316
+print
+revoke
+revoke
+push 7320
+push 7321
+pop
+print
+pop
+pop
+push 7326
+pop
+revoke
+pop
+push 7330
+revoke
+print
+revoke
+push 7334
+pop
+revoke
+push 7337
+pop
+pop
+print
+push 7341
+pop
+revoke
+push 7344
+revoke
+pop
+push 7347
+revoke
+revoke
+push 7350
+push 7351
+print
+revoke
+push 7354
+print
+push 7356
+pop
+pop
+push 7359
+pop
+print
+revoke
+push 7363
+revoke
+print
+push 7366
+push 7367
+revoke
+revoke
+print
+push 7371
+revoke
+revoke
+revoke
+print
+push 7376
+print
+push 7378
+push 7379
+push 7380
+push 7381
+push 7382
+pop
+print
+pop
+push 7386
+print
+pop
+print
+push 7390
+print
+pop
+push 7393
+print
+push 7395
+push 7396
+revoke
+pop
+push 7399
+revoke
+push 7401
+pop
+pop
+print
+revoke
+print
+revoke
+print
+push 7409
+print
+push 7411
+push 7412
+push 7413
+print
+push 7415
+revoke
+push 7417
+revoke
+pop
+revoke
+push 7421
+push 7422
+print
+push 7424
+pop
+pop
+push 7427
+pop
+push 7429
+push 7430
+print
+revoke
+pop
+print
+pop
+pop
+revoke
+print
+revoke
+print
+pop
+print
+pop
+push 7444
+pop
+print
+revoke
+pop
+push 7449
+push 7450
+pop
+revoke
+revoke
+print
+pop
+pop
+print
+push 7458
+push 7459
+push 7460
+revoke
+print
+push 7463
+pop
+pop
+pop
+print
+push 7468
+print
+push 7470
+push 7471
+pop
+pop
+print
+revoke
+pop
+print
+revoke
+push 7479
+print
+revoke
+revoke
+push 7483
+revoke
+pop
+pop
+revoke
+print
+pop
+print
+push 7491
+pop
+push 7493
+push 7494
+pop
+print
+push 7497
+push 7498
+pop
+print
+push 7501
+revoke
+push 7503
+push 7504
+print
+pop
+revoke
+pop
+pop
+pop
+revoke
+push 7512
+pop
+push 7514
+revoke
+revoke
+push 7517
+pop
+revoke
+pop
+print
+pop
+pop
+pop
+revoke
+push 7526
+revoke
+revoke
+pop
+revoke
+revoke
+revoke
+push 7533
+revoke
+push 7535
+push 7536
+print
+revoke
+pop
+print
+revoke
+push 7542
+revoke
+push 7544
+pop
+revoke
+pop
+print
+pop
+push 7550
+print
+push 7552
+push 7553
+pop
+revoke
+print
+push 7557
+pop
+push 7559
+print
+revoke
+pop
+revoke
+print
+push 7565
+print
+revoke
+pop
+push 7569
+print
+push 7571
+push 7572
+push 7573
+push 7574
+print
+pop
+print
+revoke
+pop
+print
+pop
+print
+pop
+pop
+push 7585
+push 7586
+revoke
+revoke
+print
+pop
+revoke
+print
+revoke
+print
+revoke
+revoke
+push 7597
+revoke
+revoke
+revoke
+pop
+print
+push 7603
+push 7604
+print
+revoke
+pop
+revoke
+print
+push 7610
+revoke
+pop
+pop
+push 7614
+print
+revoke
+print
+pop
+push 7619
+revoke
+print
+push 7622
+push 7623
+push 7624
+print
+pop
+pop
+print
+revoke
+push 7630
+push 7631
+print
+pop
+print
+push 7635
+print
+push 7637
+revoke
+pop
+print
+pop
+push 7642
+print
+pop
+push 7645
+push 7646
+pop
+revoke
+revoke
+pop
+revoke
+pop
+pop
+push 7654
+pop
+push 7656
+print
+push 7658
+revoke
+revoke
+pop
+print
+revoke
+print
+revoke
+revoke
+push 7667
+print
+pop
+pop
+print
+push 7672
+pop
+push 7674
+print
+revoke
+print
+revoke
+pop
+push 7680
+print
+push 7682
+push 7683
+print
+push 7685
+push 7686
+push 7687
+push 7688
+revoke
+pop
+pop
+push 7692
+pop
+print
+revoke
+push 7696
+pop
+push 7698
+push 7699
+pop
+push 7701
+print
+pop
+print
+push 7705
+push 7706
+print
+push 7708
+revoke
+pop
+push 7711
+pop
+push 7713
+revoke
+pop
+revoke
+pop
+pop
+print
+push 7720
+pop
+pop
+revoke
+print
+push 7725
+revoke
+revoke
+print
+push 7729
+push 7730
+print
+push 7732
+pop
+revoke
+pop
+revoke
+revoke
+pop
+print
+push 7740
+push 7741
+pop
+pop
+pop
+pop
+revoke
+print
+push 7748
+push 7749
+revoke
+revoke
+push 7752
+print
+pop
+push 7755
+print
+pop
+push 7758
+print
+push 7760
+print
+pop
+push 7763
+revoke
+pop
+push 7766
+push 7767
+revoke
+pop
+revoke
+pop
+print
+pop
+push 7774
+pop
+print
+revoke
+push 7778
+push 7779
+push 7780
+pop
+revoke
+revoke
+push 7784
+revoke
+revoke
+push 7787
+push 7788
+push 7789
+print
+revoke
+print
+push 7793
+print
+push 7795
+revoke
+revoke
+push 7798
+pop
+revoke
+push 7801
+pop
+print
+revoke
+push 7805
+pop
+pop
+pop
+pop
+pop
+push 7811
+print
+push 7813
+pop
+pop
+push 7816
+push 7817
+pop
+print
+push 7820
+print
+revoke
+push 7823
+print
+push 7825
+pop
+revoke
+pop
+pop
+revoke
+pop
+push 7832
+revoke
+revoke
+push 7835
+revoke
+pop
+print
+pop
+revoke
+revoke
+revoke
+print
+revoke
+print
+pop
+print
+pop
+pop
+pop
+push 7851
+pop
+push 7853
+print
+revoke
+print
+pop
+push 7858
+pop
+print
+push 7861
+push 7862
+push 7863
+print
+push 7865
+pop
+print
+pop
+pop
+push 7870
+push 7871
+print
+pop
+revoke
+print
+push 7876
+print
+pop
+pop
+pop
+revoke
+print
+revoke
+push 7884
+revoke
+revoke
+push 7887
+print
+revoke
+push 7890
+push 7891
+revoke
+revoke
+pop
+print
+push 7896
+revoke
+print
+pop
+print
+pop
+pop
+push 7903
+revoke
+pop
+pop
+revoke
+push 7908
+pop
+revoke
+pop
+revoke
+revoke
+revoke
+revoke
+push 7916
+push 7917
+revoke
+push 7919
+revoke
+print
+push 7922
+print
+push 7924
+pop
+print
+push 7927
+print
+push 7929
+print
+pop
+print
+revoke
+print
+revoke
+pop
+pop
+push 7938
+revoke
+pop
+revoke
+pop
+revoke
+pop
+push 7945
+push 7946
+pop
+revoke
+push 7949
+revoke
+revoke
+print
+revoke
+print
+revoke
+print
+revoke
+print
+revoke
+print
+push 7961
+revoke
+push 7963
+pop
+revoke
+pop
+revoke
+push 7968
+revoke
+revoke
+print
+pop
+push 7973
+revoke
+revoke
+push 7976
+revoke
+pop
+print
+push 7980
+pop
+print
+revoke
+push 7984
+revoke
+print
+pop
+print
+push 7989
+push 7990
+print
+push 7992
+push 7993
+pop
+print
+revoke
+print
+pop
+print
+push 8000
+revoke
+print
+revoke
+print
+revoke
+pop
+print
+push 8008
+push 8009
+pop
+revoke
+revoke
+revoke
+pop
+print
+pop
+revoke
+print
+revoke
+pop
+pop
+print
+revoke
+print
+push 8025
+pop
+revoke
+revoke
+print
+revoke
+revoke
+revoke
+push 8033
+revoke
+pop
+revoke
+push 8037
+pop
+revoke
+pop
+push 8041
+print
+pop
+revoke
+print
+revoke
+print
+pop
+revoke
+print
+push 8051
+print
+revoke
+push 8054
+pop
+revoke
+push 8057
+revoke
+revoke
+pop
+revoke
+pop
+revoke
+pop
+revoke
+push 8066
+pop
+push 8068
+revoke
+revoke
+push 8071
+revoke
+push 8073
+print
+pop
+revoke
+pop
+pop
+push 8079
+pop
+print
+push 8082
+pop
+revoke
+print
+pop
+revoke
+print
+pop
+print
+revoke
+push 8092
+pop
+revoke
+push 8095
+pop
+print
+revoke
+push 8099
+push 8100
+print
+revoke
+pop
+push 8104
+print
+pop
+push 8107
+print
+revoke
+pop
+revoke
+revoke
+revoke
+push 8114
+revoke
+push 8116
+print
+push 8118
+pop
+revoke
+print
+revoke
+revoke
+pop
+print
+revoke
+print
+push 8128
+revoke
+revoke
+pop
+print
+push 8133
+print
+revoke
+push 8136
+print
+pop
+revoke
+pop
+revoke
+revoke
+push 8143
+push 8144
+print
+push 8146
+revoke
+push 8148
+pop
+revoke
+pop
+pop
+pop
+pop
+revoke
+pop
+pop
+push 8158
+print
+push 8160
+revoke
+revoke
+push 8163
+print
+pop
+revoke
+revoke
+revoke
+print
+push 8170
+push 8171
+push 8172
+revoke
+push 8174
+pop
+push 8176
+push 8177
+print
+revoke
+revoke
+revoke
+push 8182
+pop
+print
+revoke
+pop
+print
+revoke
+pop
+pop
+pop
+pop
+push 8193
+revoke
+revoke
+revoke
+pop
+revoke
+revoke
+revoke
+push 8201
+revoke
+print
+pop
+print
+push 8206
+revoke
+print
+push 8209
+pop
+pop
+revoke
+push 8213
+pop
+revoke
+print
+push 8217
+pop
+print
+pop
+revoke
+push 8222
+print
+push 8224
+revoke
+push 8226
+revoke
+print
+push 8229
+revoke
+push 8231
+pop
+revoke
+push 8234
+revoke
+pop
+pop
+revoke
+revoke
+revoke
+print
+revoke
+push 8243
+pop
+pop
+print
+pop
+pop
+push 8249
+push 8250
+push 8251
+push 8252
+push 8253
+push 8254
+push 8255
+print
+push 8257
+revoke
+pop
+pop
+pop
+print
+revoke
+print
+pop
+print
+push 8267
+revoke
+pop
+print
+pop
+pop
+revoke
+pop
+print
+push 8276
+push 8277
+pop
+print
+push 8280
+pop
+revoke
+revoke
+push 8284
+print
+revoke
+pop
+revoke
+pop
+push 8290
+push 8291
+push 8292
+pop
+print
+pop
+push 8296
+print
+revoke
+revoke
+pop
+push 8301
+revoke
+print
+revoke
+print
+pop
+push 8307
+revoke
+print
+push 8310
+revoke
+print
+revoke
+push 8314
+print
+push 8316
+push 8317
+pop
+pop
+revoke
+push 8321
+pop
+print
+revoke
+revoke
+push 8326
+pop
+revoke
+push 8329
+revoke
+push 8331
+pop
+print
+revoke
+push 8335
+push 8336
+print
+push 8338
+print
+push 8340
+pop
+pop
+pop
+pop
+revoke
+print
+pop
+revoke
+print
+push 8350
+revoke
+revoke
+revoke
+pop
+revoke
+print
+push 8357
+revoke
+print
+pop
+push 8361
+revoke
+pop
+pop
+push 8365
+print
+pop
+push 8368
+pop
+print
+pop
+revoke
+pop
+push 8374
+push 8375
+push 8376
+pop
+push 8378
+pop
+revoke
+print
+pop
+revoke
+revoke
+push 8385
+print
+revoke
+pop
+push 8389
+pop
+push 8391
+revoke
+pop
+print
+pop
+revoke
+pop
+revoke
+push 8399
+pop
+revoke
+pop
+print
+push 8404
+pop
+print
+revoke
+revoke
+pop
+print
+pop
+print
+revoke
+print
+push 8415
+print
+pop
+revoke
+push 8419
+revoke
+push 8421
+push 8422
+pop
+revoke
+print
+push 8426
+pop
+push 8428
+revoke
+revoke
+revoke
+revoke
+push 8433
+revoke
+pop
+revoke
+revoke
+print
+push 8439
+pop
+push 8441
+print
+push 8443
+print
+pop
+pop
+print
+pop
+pop
+revoke
+print
+pop
+revoke
+revoke
+pop
+revoke
+pop
+print
+revoke
+push 8460
+push 8461
+print
+revoke
+pop
+revoke
+push 8466
+push 8467
+print
+pop
+print
+pop
+push 8472
+pop
+push 8474
+revoke
+pop
+revoke
+print
+pop
+print
+revoke
+print
+pop
+push 8484
+push 8485
+push 8486
+pop
+push 8488
+print
+push 8490
+print
+revoke
+print
+revoke
+print
+pop
+pop
+revoke
+push 8499
+revoke
+revoke
+print
+push 8503
+revoke
+push 8505
+pop
+revoke
+push 8508
+revoke
+revoke
+print
+pop
+revoke
+revoke
+push 8515
+print
+push 8517
+push 8518
+pop
+pop
+print
+push 8522
+print
+push 8524
+revoke
+pop
+revoke
+revoke
+push 8529
+pop
+push 8531
+revoke
+revoke
+revoke
+pop
+print
+pop
+revoke
+pop
+push 8540
+revoke
+revoke
+print
+revoke
+print
+push 8546
+revoke
+print
+revoke
+pop
+pop
+revoke
+revoke
+revoke
+revoke
+print
+revoke
+pop
+revoke
+revoke
+pop
+revoke
+revoke
+push 8564
+push 8565
+pop
+pop
+pop
+push 8569
+pop
+revoke
+print
+push 8573
+revoke
+pop
+revoke
+push 8577
+pop
+push 8579
+pop
+push 8581
+pop
+push 8583
+print
+pop
+print
+pop
+print
+revoke
+pop
+revoke
+push 8592
+pop
+revoke
+print
+push 8596
+push 8597
+print
+push 8599
+push 8600
+print
+push 8602
+revoke
+revoke
+print
+revoke
+push 8607
+push 8608
+push 8609
+pop
+pop
+push 8612
+pop
+print
+push 8615
+push 8616
+pop
+print
+push 8619
+pop
+print
+push 8622
+pop
+print
+push 8625
+print
+revoke
+revoke
+revoke
+pop
+pop
+print
+pop
+pop
+revoke
+pop
+revoke
+push 8638
+print
+pop
+revoke
+revoke
+print
+pop
+pop
+print
+push 8647
+revoke
+pop
+pop
+revoke
+revoke
+push 8653
+revoke
+push 8655
+push 8656
+revoke
+revoke
+revoke
+revoke
+revoke
+push 8662
+pop
+pop
+print
+revoke
+revoke
+revoke
+revoke
+pop
+revoke
+push 8672
+print
+pop
+pop
+pop
+revoke
+push 8678
+revoke
+push 8680
+push 8681
+pop
+push 8683
+pop
+pop
+revoke
+push 8687
+revoke
+revoke
+revoke
+pop
+pop
+pop
+pop
+print
+pop
+revoke
+print
+revoke
+push 8700
+push 8701
+pop
+push 8703
+push 8704
+print
+pop
+pop
+pop
+print
+revoke
+revoke
+revoke
+print
+revoke
+push 8715
+push 8716
+push 8717
+revoke
+pop
+push 8720
+print
+push 8722
+push 8723
+print
+push 8725
+revoke
+revoke
+print
+pop
+push 8730
+revoke
+pop
+revoke
+pop
+print
+revoke
+revoke
+push 8738
+revoke
+pop
+push 8741
+print
+revoke
+print
+pop
+push 8746
+push 8747
+push 8748
+revoke
+print
+pop
+revoke
+push 8753
+pop
+pop
+print
+push 8757
+push 8758
+revoke
+print
+pop
+push 8762
+print
+revoke
+pop
+push 8766
+pop
+revoke
+push 8769
+print
+push 8771
+push 8772
+pop
+revoke
+print
+push 8776
+push 8777
+print
+revoke
+pop
+pop
+pop
+push 8783
+pop
+revoke
+print
+pop
+pop
+pop
+push 8790
+pop
+revoke
+print
+revoke
+pop
+revoke
+pop
+push 8798
+revoke
+push 8800
+pop
+revoke
+pop
+revoke
+pop
+pop
+push 8807
+revoke
+revoke
+revoke
+revoke
+print
+push 8813
+print
+push 8815
+revoke
+push 8817
+pop
+push 8819
+push 8820
+push 8821
+push 8822
+push 8823
+push 8824
+push 8825
+push 8826
+revoke
+push 8828
+pop
+pop
+pop
+revoke
+pop
+print
+pop
+push 8836
+push 8837
+push 8838
+pop
+print
+push 8841
+pop
+push 8843
+revoke
+revoke
+pop
+push 8847
+print
+pop
+push 8850
+pop
+print
+revoke
+print
+push 8855
+pop
+pop
+push 8858
+revoke
+print
+pop
+pop
+print
+push 8864
+revoke
+print
+pop
+pop
+push 8869
+push 8870
+revoke
+print
+push 8873
+print
+push 8875
+revoke
+pop
+print
+push 8879
+pop
+push 8881
+pop
+revoke
+pop
+print
+push 8886
+print
+push 8888
+push 8889
+print
+push 8891
+pop
+pop
+revoke
+print
+push 8896
+pop
+revoke
+print
+revoke
+pop
+pop
+push 8903
+pop
+pop
+revoke
+print
+revoke
+print
+pop
+revoke
+revoke
+push 8913
+pop
+push 8915
+print
+pop
+pop
+revoke
+print
+pop
+revoke
+print
+pop
+revoke
+pop
+revoke
+print
+pop
+push 8930
+revoke
+revoke
+push 8933
+print
+push 8935
+pop
+pop
+print
+revoke
+print
+pop
+print
+push 8943
+pop
+print
+push 8946
+push 8947
+revoke
+revoke
+pop
+revoke
+revoke
+revoke
+print
+pop
+revoke
+print
+revoke
+revoke
+print
+push 8961
+revoke
+push 8963
+print
+revoke
+push 8966
+push 8967
+pop
+revoke
+push 8970
+pop
+revoke
+print
+revoke
+pop
+revoke
+revoke
+pop
+print
+revoke
+push 8981
+pop
+revoke
+revoke
+push 8985
+revoke
+push 8987
+revoke
+revoke
+pop
+pop
+pop
+push 8993
+print
+push 8995
+pop
+revoke
+pop
+revoke
+push 9000
+print
+revoke
+pop
+revoke
+pop
+pop
+revoke
+push 9008
+print
+push 9010
+pop
+print
+pop
+print
+push 9015
+print
+push 9017
+print
+push 9019
+push 9020
+push 9021
+print
+push 9023
+print
+push 9025
+print
+pop
+push 9028
+push 9029
+print
+revoke
+push 9032
+print
+revoke
+revoke
+print
+revoke
+pop
+print
+revoke
+push 9041
+print
+revoke
+push 9044
+pop
+push 9046
+print
+push 9048
+print
+pop
+revoke
+revoke
+pop
+push 9054
+push 9055
+print
+pop
+push 9058
+print
+push 9060
+revoke
+print
+pop
+revoke
+print
+pop
+revoke
+print
+revoke
+push 9070
+print
+revoke
+push 9073
+push 9074
+push 9075
+print
+revoke
+pop
+pop
+pop
+push 9081
+push 9082
+pop
+push 9084
+pop
+revoke
+pop
+push 9088
+print
+pop
+revoke
+push 9092
+pop
+print
+pop
+revoke
+push 9097
+pop
+push 9099
+revoke
+pop
+pop
+print
+revoke
+pop
+pop
+pop
+print
+push 9109
+push 9110
+pop
+push 9112
+push 9113
+push 9114
+pop
+revoke
+push 9117
+print
+push 9119
+push 9120
+pop
+revoke
+print
+push 9124
+revoke
+revoke
+push 9127
+pop
+print
+pop
+pop
+push 9132
+print
+push 9134
+print
+pop
+print
+push 9138
+revoke
+pop
+pop
+push 9142
+print
+revoke
+revoke
+revoke
+revoke
+print
+revoke
+revoke
+push 9151
+revoke
+pop
+print
+pop
+pop
+print
+pop
+pop
+print
+push 9161
+pop
+print
+revoke
+pop
+revoke
+revoke
+revoke
+print
+push 9170
+print
+pop
+revoke
+revoke
+revoke
+push 9176
+pop
+revoke
+print
+revoke
+print
+push 9182
+push 9183
+revoke
+pop
+revoke
+revoke
+pop
+push 9189
+push 9190
+pop
+revoke
+revoke
+print
+pop
+push 9196
+push 9197
+pop
+push 9199
+pop
+print
+revoke
+revoke
+revoke
+pop
+push 9206
+push 9207
+revoke
+print
+push 9210
+print
+pop
+push 9213
+push 9214
+pop
+pop
+pop
+pop
+revoke
+print
+pop
+print
+revoke
+push 9224
+pop
+revoke
+revoke
+pop
+pop
+revoke
+push 9231
+push 9232
+print
+revoke
+revoke
+revoke
+pop
+revoke
+print
+push 9240
+push 9241
+pop
+revoke
+pop
+revoke
+push 9246
+revoke
+push 9248
+print
+push 9250
+push 9251
+pop
+revoke
+pop
+revoke
+push 9256
+revoke
+pop
+push 9259
+revoke
+push 9261
+pop
+print
+pop
+pop
+pop
+print
+pop
+print
+push 9270
+print
+revoke
+push 9273
+revoke
+revoke
+print
+pop
+print
+revoke
+print
+pop
+print
+revoke
+revoke
+pop
+push 9286
+push 9287
+push 9288
+push 9289
+revoke
+pop
+push 9292
+revoke
+revoke
+revoke
+print
+push 9297
+push 9298
+push 9299
+print
+push 9301
+print
+pop
+revoke
+pop
+print
+revoke
+pop
+push 9309
+push 9310
+revoke
+print
+push 9313
+revoke
+push 9315
+revoke
+pop
+revoke
+pop
+pop
+pop
+push 9322
+revoke
+pop
+push 9325
+push 9326
+pop
+push 9328
+push 9329
+print
+revoke
+push 9332
+pop
+push 9334
+pop
+revoke
+push 9337
+pop
+pop
+print
+pop
+pop
+pop
+push 9344
+push 9345
+print
+push 9347
+revoke
+revoke
+print
+pop
+push 9352
+revoke
+print
+revoke
+revoke
+pop
+print
+push 9359
+print
+revoke
+pop
+pop
+print
+push 9365
+revoke
+print
+revoke
+revoke
+push 9370
+pop
+pop
+pop
+push 9374
+print
+revoke
+pop
+print
+revoke
+print
+push 9381
+revoke
+pop
+pop
+revoke
+pop
+pop
+print
+revoke
+pop
+revoke
+revoke
+pop
+push 9394
+push 9395
+revoke
+print
+pop
+revoke
+pop
+pop
+pop
+print
+push 9404
+push 9405
+pop
+pop
+pop
+revoke
+print
+revoke
+print
+push 9413
+print
+pop
+revoke
+pop
+print
+pop
+revoke
+push 9421
+push 9422
+push 9423
+revoke
+print
+revoke
+push 9427
+revoke
+push 9429
+print
+push 9431
+pop
+revoke
+push 9434
+print
+revoke
+pop
+print
+revoke
+print
+revoke
+revoke
+pop
+push 9444
+print
+revoke
+revoke
+pop
+revoke
+revoke
+pop
+revoke
+pop
+push 9454
+print
+push 9456
+print
+push 9458
+print
+pop
+pop
+push 9462
+pop
+revoke
+push 9465
+revoke
+print
+push 9468
+print
+revoke
+pop
+print
+push 9473
+print
+revoke
+print
+revoke
+pop
+push 9479
+revoke
+print
+pop
+revoke
+pop
+push 9485
+print
+push 9487
+pop
+push 9489
+pop
+print
+pop
+pop
+print
+push 9495
+revoke
+revoke
+revoke
+pop
+pop
+revoke
+print
+revoke
+print
+pop
+push 9506
+revoke
+push 9508
+print
+revoke
+pop
+push 9512
+print
+push 9514
+push 9515
+print
+push 9517
+push 9518
+revoke
+push 9520
+revoke
+print
+push 9523
+print
+revoke
+pop
+push 9527
+revoke
+push 9529
+revoke
+print
+push 9532
+push 9533
+print
+pop
+print
+push 9537
+revoke
+print
+revoke
+push 9541
+print
+push 9543
+pop
+pop
+push 9546
+print
+revoke
+revoke
+push 9550
+push 9551
+revoke
+print
+pop
+pop
+print
+pop
+print
+pop
+push 9560
+push 9561
+revoke
+push 9563
+revoke
+revoke
+pop
+push 9567
+print
+push 9569
+pop
+pop
+print
+pop
+revoke
+revoke
+pop
+pop
+print
+push 9579
+pop
+pop
+push 9582
+revoke
+print
+pop
+pop
+print
+pop
+pop
+revoke
+print
+pop
+pop
+pop
+revoke
+pop
+push 9597
+push 9598
+push 9599
+push 9600
+push 9601
+print
+revoke
+pop
+pop
+pop
+revoke
+push 9608
+print
+revoke
+revoke
+print
+revoke
+print
+push 9615
+pop
+pop
+print
+revoke
+push 9620
+print
+revoke
+print
+revoke
+print
+push 9626
+print
+revoke
+push 9629
+revoke
+pop
+pop
+print
+pop
+print
+revoke
+pop
+revoke
+print
+revoke
+push 9641
+push 9642
+pop
+print
+pop
+print
+pop
+revoke
+push 9649
+push 9650
+pop
+revoke
+print
+pop
+revoke
+revoke
+push 9657
+pop
+push 9659
+revoke
+revoke
+print
+revoke
+revoke
+print
+push 9666
+print
+revoke
+pop
+print
+pop
+pop
+revoke
+push 9674
+print
+push 9676
+revoke
+push 9678
+push 9679
+push 9680
+revoke
+pop
+push 9683
+pop
+print
+revoke
+pop
+print
+pop
+revoke
+push 9691
+revoke
+pop
+push 9694
+print
+revoke
+push 9697
+print
+push 9699
+push 9700
+pop
+revoke
+pop
+pop
+revoke
+pop
+revoke
+revoke
+push 9709
+pop
+revoke
+push 9712
+push 9713
+print
+revoke
+pop
+push 9717
+pop
+pop
+revoke
+pop
+revoke
+push 9723
+pop
+print
+revoke
+push 9727
+push 9728
+print
+pop
+push 9731
+pop
+revoke
+revoke
+print
+revoke
+print
+pop
+pop
+revoke
+pop
+pop
+print
+revoke
+print
+revoke
+print
+push 9748
+revoke
+pop
+revoke
+push 9752
+print
+push 9754
+pop
+revoke
+print
+pop
+print
+push 9760
+pop
+pop
+print
+pop
+pop
+print
+push 9767
+print
+pop
+print
+revoke
+revoke
+revoke
+push 9774
+revoke
+print
+pop
+revoke
+revoke
+revoke
+pop
+push 9782
+pop
+print
+revoke
+print
+push 9787
+revoke
+push 9789
+print
+pop
+pop
+pop
+revoke
+pop
+print
+revoke
+print
+pop
+revoke
+push 9801
+pop
+revoke
+push 9804
+push 9805
+print
+pop
+print
+pop
+push 9810
+print
+revoke
+pop
+revoke
+pop
+push 9816
+pop
+pop
+print
+revoke
+push 9821
+pop
+pop
+push 9824
+push 9825
+print
+push 9827
+push 9828
+print
+pop
+push 9831
+print
+pop
+pop
+revoke
+print
+pop
+print
+push 9839
+print
+revoke
+push 9842
+revoke
+print
+push 9845
+pop
+pop
+pop
+revoke
+push 9850
+pop
+push 9852
+revoke
+pop
+print
+push 9856
+push 9857
+pop
+pop
+pop
+pop
+revoke
+push 9863
+push 9864
+print
+revoke
+push 9867
+push 9868
+revoke
+pop
+push 9871
+revoke
+print
+pop
+push 9875
+print
+pop
+print
+pop
+push 9880
+print
+push 9882
+revoke
+pop
+revoke
+print
+revoke
+pop
+push 9889
+revoke
+print
+revoke
+print
+revoke
+revoke
+revoke
+revoke
+push 9898
+push 9899
+revoke
+revoke
+revoke
+push 9903
+push 9904
+push 9905
+print
+pop
+print
+revoke
+print
+pop
+revoke
+pop
+pop
+revoke
+push 9916
+print
+pop
+revoke
+push 9920
+pop
+revoke
+pop
+revoke
+pop
+push 9926
+revoke
+revoke
+push 9929
+revoke
+push 9931
+pop
+pop
+push 9934
+revoke
+push 9936
+pop
+pop
+revoke
+print
+push 9941
+pop
+revoke
+push 9944
+revoke
+revoke
+push 9947
+print
+push 9949
+pop
+push 9951
+print
+pop
+print
+push 9955
+print
+revoke
+pop
+print
+push 9960
+push 9961
+print
+pop
+revoke
+revoke
+print
+push 9967
+push 9968
+print
+push 9970
+pop
+pop
+push 9973
+revoke
+push 9975
+print
+push 9977
+revoke
+print
+pop
+pop
+push 9982
+push 9983
+push 9984
+push 9985
+push 9986
+print
+push 9988
+revoke
+pop
+pop
+pop
+pop
+pop
+pop
+push 9996
+revoke
+revoke
+pop
+push 10000
+revoke
+push 10002
+print
+push 10004
+revoke
+push 10006
+print
+pop
+pop
+print
+push 10011
+pop
+print
+revoke
+pop
+print
+revoke
+pop
+revoke
+revoke
+revoke
+revoke
+print
+push 10024
+print
+revoke
+revoke
+revoke
+print
+pop
+push 10031
+pop
+pop
+print
+revoke
+revoke
+print
+push 10038
+revoke
+pop
+print
+push 10042
+pop
+revoke
+print
+push 10046
+revoke
+print
+push 10049
+pop
+print
+pop
+revoke
+revoke
+push 10055
+pop
+push 10057
+print
+push 10059
+revoke
+print
+revoke
+pop
+push 10064
+print
+pop
+push 10067
+print
+revoke
+revoke
+pop
+push 10072
+push 10073
+revoke
+revoke
+print
+revoke
+push 10078
+revoke
+revoke
+revoke
+revoke
+push 10083
+pop
+revoke
+pop
+revoke
+pop
+revoke
+push 10090
+push 10091
+push 10092
+pop
+pop
+pop
+push 10096
+push 10097
+push 10098
+revoke
+revoke
+push 10101
+print
+revoke
+print
+push 10105
+print
+push 10107
+print
+revoke
+push 10110
+pop
+pop
+print
+pop
+push 10115
+pop
+pop
+push 10118
+pop
+push 10120
+print
+revoke
+print
+revoke
+print
+revoke
+revoke
+push 10128
+pop
+push 10130
+print
+pop
+pop
+revoke
+revoke
+revoke
+pop
+push 10138
+print
+revoke
+pop
+pop
+pop
+push 10144
+push 10145
+pop
+print
+pop
+print
+pop
+pop
+print
+push 10153
+print
+pop
+pop
+pop
+revoke
+pop
+print
+push 10161
+pop
+push 10163
+pop
+pop
+revoke
+push 10167
+print
+pop
+pop
+push 10171
+print
+push 10173
+revoke
+pop
+pop
+push 10177
+revoke
+revoke
+revoke
+print
+revoke
+revoke
+pop
+pop
+pop
+push 10187
+revoke
+revoke
+pop
+pop
+push 10192
+push 10193
+push 10194
+print
+push 10196
+pop
+revoke
+revoke
+push 10200
+print
+revoke
+print
+pop
+print
+revoke
+revoke
+push 10208
+push 10209
+revoke
+revoke
+pop
+print
+revoke
+pop
+revoke
+revoke
+print
+pop
+revoke
+pop
+revoke
+push 10223
+print
+push 10225
+push 10226
+push 10227
+push 10228
+revoke
+revoke
+pop
+pop
+pop
+revoke
+print
+pop
+pop
+revoke
+pop
+push 10240
+pop
+pop
+revoke
+print
+push 10245
+print
+pop
+revoke
+print
+push 10250
+print
+push 10252
+print
+push 10254
+print
+revoke
+revoke
+pop
+revoke
+revoke
+pop
+pop
+revoke
+pop
+push 10265
+print
+push 10267
+pop
+print
+pop
+revoke
+revoke
+push 10273
+pop
+push 10275
+print
+push 10277
+print
+pop
+print
+pop
+pop
+print
+push 10284
+revoke
+push 10286
+revoke
+push 10288
+pop
+revoke
+print
+push 10292
+print
+push 10294
+revoke
+push 10296
+pop
+pop
+pop
+push 10300
+print
+push 10302
+print
+pop
+push 10305
+revoke
+print
+revoke
+push 10309
+pop
+push 10311
+print
+revoke
+pop
+push 10315
+push 10316
+push 10317
+revoke
+revoke
+print
+push 10321
+push 10322
+print
+pop
+pop
+push 10326
+print
+pop
+pop
+revoke
+push 10331
+print
+pop
+push 10334
+push 10335
+pop
+push 10337
+push 10338
+pop
+push 10340
+print
+revoke
+print
+revoke
+push 10345
+print
+revoke
+revoke
+push 10349
+revoke
+push 10351
+revoke
+revoke
+pop
+push 10355
+revoke
+print
+pop
+revoke
+print
+push 10361
+revoke
+pop
+pop
+pop
+push 10366
+print
+revoke
+push 10369
+revoke
+pop
+print
+pop
+revoke
+revoke
+print
+pop
+print
+revoke
+push 10380
+revoke
+pop
+pop
+push 10384
+pop
+print
+push 10387
+print
+pop
+push 10390
+revoke
+revoke
+revoke
+print
+pop
+revoke
+print
+revoke
+pop
+push 10400
+pop
+pop
+pop
+pop
+push 10405
+print
+push 10407
+print
+revoke
+print
+pop
+print
+revoke
+revoke
+revoke
+revoke
+revoke
+push 10418
+print
+pop
+revoke
+push 10422
+pop
+print
+pop
+revoke
+pop
+pop
+revoke
+revoke
+push 10431
+revoke
+push 10433
+print
+pop
+push 10436
+push 10437
+revoke
+push 10439
+print
+pop
+pop
+print
+push 10444
+print
+revoke
+print
+pop
+push 10449
+print
+revoke
+push 10452
+push 10453
+pop
+print
+revoke
+push 10457
+pop
+push 10459
+push 10460
+push 10461
+print
+revoke
+pop
+push 10465
+pop
+push 10467
+push 10468
+revoke
+pop
+revoke
+revoke
+pop
+print
+push 10475
+revoke
+print
+revoke
+push 10479
+pop
+pop
+print
+pop
+pop
+revoke
+print
+pop
+print
+push 10489
+push 10490
+revoke
+print
+pop
+revoke
+print
+push 10496
+push 10497
+revoke
+print
+push 10500
+print
+revoke
+push 10503
+revoke
+push 10505
+push 10506
+push 10507
+print
+push 10509
+print
+pop
+push 10512
+push 10513
+print
+revoke
+revoke
+pop
+revoke
+revoke
+print
+push 10521
+push 10522
+revoke
+print
+push 10525
+revoke
+push 10527
+pop
+push 10529
+print
+revoke
+push 10532
+pop
+revoke
+pop
+print
+push 10537
+print
+push 10539
+push 10540
+pop
+print
+revoke
+revoke
+pop
+push 10546
+pop
+print
+revoke
+pop
+print
+revoke
+print
+pop
+push 10555
+push 10556
+print
+push 10558
+revoke
+push 10560
+pop
+push 10562
+push 10563
+pop
+push 10565
+push 10566
+revoke
+revoke
+revoke
+pop
+revoke
+print
+revoke
+revoke
+push 10575
+push 10576
+print
+push 10578
+pop
+push 10580
+print
+pop
+push 10583
+print
+pop
+print
+push 10587
+pop
+push 10589
+revoke
+print
+pop
+pop
+revoke
+revoke
+print
+pop
+revoke
+push 10599
+revoke
+print
+revoke
+revoke
+push 10604
+revoke
+revoke
+revoke
+revoke
+pop
+push 10610
+print
+push 10612
+push 10613
+print
+pop
+revoke
+revoke
+print
+push 10619
+revoke
+print
+push 10622
+push 10623
+pop
+print
+revoke
+pop
+push 10628
+print
+revoke
+print
+push 10632
+pop
+revoke
+pop
+pop
+pop
+push 10638
+pop
+pop
+pop
+pop
+revoke
+revoke
+print
+push 10646
+pop
+print
+revoke
+print
+pop
+pop
+print
+pop
+print
+pop
+pop
+print
+push 10659
+pop
+print
+revoke
+revoke
+print
+revoke
+print
+push 10667
+pop
+print
+pop
+revoke
+revoke
+print
+push 10674
+print
+revoke
+print
+pop
+pop
+revoke
+push 10681
+print
+revoke
+push 10684
+push 10685
+print
+revoke
+push 10688
+revoke
+print
+revoke
+pop
+print
+revoke
+pop
+push 10696
+revoke
+pop
+push 10699
+pop
+push 10701
+revoke
+pop
+revoke
+push 10705
+revoke
+push 10707
+pop
+pop
+revoke
+pop
+pop
+push 10713
+revoke
+print
+pop
+push 10717
+push 10718
+revoke
+pop
+revoke
+push 10722
+pop
+revoke
+push 10725
+revoke
+print
+push 10728
+push 10729
+print
+pop
+push 10732
+push 10733
+push 10734
+push 10735
+revoke
+push 10737
+push 10738
+revoke
+revoke
+pop
+revoke
+revoke
+revoke
+push 10745
+pop
+pop
+push 10748
+print
+revoke
+push 10751
+pop
+pop
+push 10754
+push 10755
+pop
+pop
+pop
+revoke
+pop
+revoke
+print
+revoke
+push 10764
+pop
+push 10766
+print
+push 10768
+revoke
+pop
+print
+revoke
+pop
+push 10774
+push 10775
+revoke
+push 10777
+print
+push 10779
+revoke
+print
+push 10782
+print
+push 10784
+pop
+print
+revoke
+push 10788
+revoke
+revoke
+pop
+push 10792
+revoke
+push 10794
+revoke
+pop
+print
+revoke
+push 10799
+pop
+pop
+pop
+revoke
+revoke
+push 10805
+pop
+print
+revoke
+push 10809
+push 10810
+push 10811
+revoke
+push 10813
+pop
+pop
+print
+revoke
+pop
+print
+pop
+print
+pop
+push 10823
+push 10824
+revoke
+revoke
+pop
+print
+push 10829
+push 10830
+push 10831
+push 10832
+push 10833
+print
+pop
+push 10836
+print
+pop
+push 10839
+pop
+print
+pop
+revoke
+revoke
+print
+revoke
+print
+pop
+print
+pop
+print
+push 10852
+print
+push 10854
+push 10855
+print
+push 10857
+push 10858
+revoke
+push 10860
+revoke
+revoke
+pop
+print
+pop
+revoke
+revoke
+push 10868
+revoke
+pop
+revoke
+print
+pop
+pop
+pop
+print
+push 10877
+push 10878
+push 10879
+pop
+print
+pop
+print
+pop
+push 10885
+pop
+pop
+push 10888
+print
+revoke
+print
+push 10892
+revoke
+pop
+push 10895
+push 10896
+push 10897
+pop
+pop
+push 10900
+pop
+push 10902
+print
+revoke
+push 10905
+print
+push 10907
+push 10908
+push 10909
+push 10910
+revoke
+pop
+print
+push 10914
+pop
+print
+revoke
+print
+push 10919
+print
+revoke
+push 10922
+print
+pop
+revoke
+pop
+revoke
+pop
+pop
+revoke
+revoke
+print
+pop
+revoke
+push 10935
+revoke
+revoke
+pop
+revoke
+revoke
+revoke
+pop
+revoke
+push 10944
+push 10945
+revoke
+push 10947
+print
+pop
+push 10950
+pop
+revoke
+pop
+revoke
+push 10955
+print
+revoke
+push 10958
+revoke
+pop
+print
+revoke
+push 10963
+print
+pop
+pop
+revoke
+revoke
+push 10969
+revoke
+revoke
+revoke
+print
+pop
+pop
+pop
+push 10977
+push 10978
+print
+pop
+pop
+push 10982
+print
+push 10984
+revoke
+pop
+push 10987
+print
+revoke
+print
+pop
+push 10992
+pop
+revoke
+pop
+pop
+push 10997
+print
+pop
+revoke
+revoke
+revoke
+push 11003
+push 11004
+print
+pop
+print
+push 11008
+push 11009
+revoke
+push 11011
+print
+pop
+print
+revoke
+pop
+pop
+push 11018
+print
+push 11020
+pop
+push 11022
+pop
+print
+pop
+pop
+pop
+pop
+revoke
+revoke
+push 11031
+push 11032
+revoke
+print
+push 11035
+revoke
+print
+push 11038
+pop
+push 11040
+pop
+push 11042
+push 11043
+push 11044
+push 11045
+push 11046
+pop
+print
+push 11049
+revoke
+revoke
+push 11052
+push 11053
+pop
+revoke
+push 11056
+print
+revoke
+push 11059
+print
+push 11061
+print
+pop
+pop
+push 11065
+revoke
+push 11067
+pop
+pop
+push 11070
+revoke
+revoke
+revoke
+print
+pop
+push 11076
+revoke
+push 11078
+print
+push 11080
+pop
+revoke
+print
+push 11084
+pop
+pop
+revoke
+print
+push 11089
+pop
+revoke
+pop
+print
+revoke
+pop
+pop
+print
+pop
+print
+pop
+print
+revoke
+pop
+push 11104
+pop
+push 11106
+push 11107
+pop
+push 11109
+revoke
+push 11111
+revoke
+print
+revoke
+print
+push 11116
+push 11117
+pop
+print
+pop
+push 11121
+pop
+revoke
+push 11124
+revoke
+push 11126
+revoke
+print
+push 11129
+revoke
+pop
+push 11132
+print
+push 11134
+push 11135
+print
+push 11137
+push 11138
+print
+pop
+push 11141
+push 11142
+print
+revoke
+push 11145
+print
+push 11147
+push 11148
+pop
+print
+pop
+push 11152
+pop
+print
+pop
+push 11156
+print
+revoke
+push 11159
+push 11160
+push 11161
+revoke
+pop
+revoke
+print
+push 11166
+print
+revoke
+print
+revoke
+pop
+revoke
+print
+revoke
+pop
+pop
+pop
+print
+pop
+print
+pop
+revoke
+push 11183
+pop
+revoke
+print
+push 11187
+pop
+push 11189
+pop
+push 11191
+pop
+pop
+revoke
+revoke
+push 11196
+revoke
+pop
+print
+push 11200
+revoke
+pop
+print
+pop
+revoke
+pop
+pop
+push 11208
+pop
+print
+push 11211
+pop
+revoke
+pop
+push 11215
+print
+pop
+push 11218
+pop
+print
+revoke
+pop
+pop
+push 11224
+push 11225
+revoke
+print
+pop
+pop
+push 11230
+pop
+revoke
+pop
+revoke
+print
+pop
+pop
+print
+pop
+print
+pop
+revoke
+push 11243
+pop
+print
+pop
+pop
+print
+revoke
+pop
+push 11251
+pop
+revoke
+revoke
+pop
+revoke
+pop
+print
+revoke
+revoke
+pop
+pop
+revoke
+pop
+push 11265
+revoke
+pop
+print
+revoke
+print
+push 11271
+print
+pop
+revoke
+pop
+print
+pop
+push 11278
+print
+pop
+print
+revoke
+pop
+revoke
+revoke
+pop
+print
+pop
+print
+revoke
+push 11291
+print
+revoke
+revoke
+revoke
+revoke
+print
+push 11298
+revoke
+push 11300
+pop
+pop
+revoke
+push 11304
+pop
+push 11306
+pop
+pop
+push 11309
+revoke
+revoke
+push 11312
+pop
+revoke
+pop
+revoke
+push 11317
+revoke
+print
+revoke
+print
+push 11322
+revoke
+print
+push 11325
+push 11326
+push 11327
+revoke
+push 11329
+revoke
+push 11331
+push 11332
+revoke
+revoke
+push 11335
+push 11336
+print
+push 11338
+revoke
+pop
+revoke
+pop
+revoke
+push 11344
+pop
+push 11346
+print
+revoke
+print
+revoke
+pop
+push 11352
+print
+push 11354
+push 11355
+print
+push 11357
+push 11358
+print
+pop
+revoke
+revoke
+push 11363
+push 11364
+push 11365
+pop
+print
+push 11368
+pop
+print
+pop
+print
+push 11373
+print
+revoke
+print
+push 11377
+print
+pop
+print
+pop
+print
+pop
+revoke
+print
+push 11386
+revoke
+revoke
+revoke
+push 11390
+pop
+push 11392
+pop
+print
+pop
+pop
+print
+push 11398
+revoke
+print
+pop
+revoke
+pop
+revoke
+push 11405
+print
+pop
+print
+push 11409
+revoke
+print
+push 11412
+revoke
+pop
+pop
+print
+push 11417
+revoke
+revoke
+push 11420
+revoke
+revoke
+print
+pop
+revoke
+pop
+pop
+revoke
+revoke
+print
+push 11431
+push 11432
+pop
+push 11434
+print
+push 11436
+push 11437
+print
+revoke
+push 11440
+print
+revoke
+revoke
+push 11444
+push 11445
+pop
+pop
+revoke
+pop
+push 11450
+pop
+pop
+push 11453
+push 11454
+push 11455
+pop
+push 11457
+push 11458
+push 11459
+pop
+print
+push 11462
+print
+revoke
+pop
+print
+push 11467
+revoke
+revoke
+pop
+push 11471
+print
+revoke
+revoke
+pop
+revoke
+print
+revoke
+push 11479
+print
+push 11481
+revoke
+revoke
+revoke
+print
+pop
+print
+revoke
+pop
+print
+push 11491
+push 11492
+pop
+revoke
+print
+pop
+revoke
+print
+push 11499
+push 11500
+revoke
+push 11502
+revoke
+revoke
+push 11505
+push 11506
+pop
+pop
+push 11509
+push 11510
+pop
+print
+push 11513
+print
+revoke
+push 11516
+print
+revoke
+print
+revoke
+revoke
+pop
+print
+pop
+print
+revoke
+push 11527
+revoke
+push 11529
+push 11530
+print
+revoke
+push 11533
+revoke
+revoke
+pop
+pop
+pop
+print
+push 11540
+push 11541
+revoke
+revoke
+revoke
+revoke
+push 11546
+revoke
+revoke
+print
+pop
+pop
+push 11552
+push 11553
+print
+push 11555
+print
+revoke
+revoke
+print
+revoke
+pop
+revoke
+push 11563
+revoke
+push 11565
+print
+pop
+print
+pop
+revoke
+print
+revoke
+push 11573
+revoke
+print
+revoke
+pop
+print
+revoke
+pop
+push 11581
+push 11582
+pop
+pop
+pop
+revoke
+push 11587
+push 11588
+pop
+revoke
+pop
+pop
+revoke
+revoke
+push 11595
+push 11596
+print
+push 11598
+print
+push 11600
+print
+revoke
+pop
+print
+revoke
+push 11606
+print
+pop
+push 11609
+pop
+print
+push 11612
+print
+pop
+pop
+pop
+revoke
+revoke
+pop
+pop
+print
+push 11622
+revoke
+print
+pop
+pop
+pop
+push 11628
+push 11629
+push 11630
+pop
+print
+pop
+push 11634
+push 11635
+revoke
+pop
+print
+push 11639
+push 11640
+pop
+pop
+revoke
+revoke
+pop
+print
+push 11647
+push 11648
+push 11649
+pop
+push 11651
+print
+push 11653
+push 11654
+revoke
+revoke
+revoke
+print
+push 11659
+revoke
+revoke
+pop
+print
+pop
+revoke
+print
+pop
+revoke
+pop
+pop
+push 11671
+push 11672
+revoke
+pop
+pop
+pop
+revoke
+pop
+pop
+print
+push 11681
+revoke
+print
+push 11684
+push 11685
+push 11686
+print
+revoke
+pop
+pop
+print
+push 11692
+print
+push 11694
+print
+pop
+print
+revoke
+print
+push 11700
+push 11701
+push 11702
+push 11703
+push 11704
+revoke
+push 11706
+push 11707
+print
+push 11709
+revoke
+print
+revoke
+push 11713
+revoke
+push 11715
+pop
+print
+revoke
+pop
+print
+revoke
+pop
+pop
+push 11724
+print
+revoke
+revoke
+revoke
+revoke
+print
+pop
+print
+push 11733
+push 11734
+revoke
+print
+push 11737
+pop
+push 11739
+push 11740
+print
+push 11742
+pop
+pop
+pop
+pop
+push 11747
+push 11748
+print
+pop
+print
+revoke
+pop
+print
+revoke
+push 11756
+print
+pop
+print
+push 11760
+pop
+revoke
+push 11763
+push 11764
+print
+push 11766
+push 11767
+pop
+print
+revoke
+revoke
+print
+pop
+pop
+pop
+pop
+push 11777
+revoke
+pop
+push 11780
+pop
+print
+push 11783
+print
+revoke
+pop
+print
+push 11788
+pop
+revoke
+pop
+print
+push 11793
+print
+pop
+push 11796
+pop
+revoke
+push 11799
+push 11800
+pop
+revoke
+push 11803
+revoke
+print
+revoke
+print
+push 11808
+revoke
+pop
+pop
+pop
+print
+revoke
+revoke
+print
+push 11817
+push 11818
+print
+pop
+print
+revoke
+pop
+revoke
+pop
+pop
+push 11827
+push 11828
+push 11829
+pop
+revoke
+print
+revoke
+print
+revoke
+print
+pop
+push 11838
+print
+revoke
+pop
+print
+push 11843
+pop
+pop
+revoke
+print
+pop
+pop
+push 11850
+push 11851
+pop
+print
+revoke
+print
+revoke
+revoke
+revoke
+print
+pop
+pop
+revoke
+push 11863
+push 11864
+revoke
+print
+pop
+push 11868
+revoke
+push 11870
+revoke
+print
+push 11873
+push 11874
+push 11875
+print
+push 11877
+revoke
+pop
+push 11880
+push 11881
+push 11882
+revoke
+push 11884
+print
+revoke
+print
+push 11888
+push 11889
+revoke
+push 11891
+revoke
+print
+revoke
+push 11895
+revoke
+push 11897
+push 11898
+push 11899
+revoke
+push 11901
+push 11902
+print
+push 11904
+print
+pop
+push 11907
+revoke
+print
+revoke
+revoke
+print
+pop
+revoke
+pop
+print
+pop
+pop
+revoke
+pop
+push 11921
+revoke
+print
+push 11924
+pop
+push 11926
+push 11927
+revoke
+push 11929
+pop
+print
+pop
+push 11933
+revoke
+pop
+revoke
+print
+revoke
+pop
+pop
+revoke
+print
+push 11943
+pop
+pop
+revoke
+pop
+push 11948
+push 11949
+pop
+print
+push 11952
+pop
+revoke
+print
+revoke
+revoke
+pop
+revoke
+revoke
+pop
+print
+push 11963
+push 11964
+revoke
+revoke
+revoke
+print
+pop
+push 11970
+pop
+print
+push 11973
+print
+push 11975
+push 11976
+revoke
+pop
+pop
+print
+revoke
+push 11982
+revoke
+print
+revoke
+pop
+pop
+pop
+push 11989
+push 11990
+revoke
+print
+push 11993
+print
+pop
+revoke
+revoke
+pop
+pop
+push 12000
+push 12001
+pop
+revoke
+print
+push 12005
+print
+revoke
+revoke
+print
+pop
+push 12011
+push 12012
+print
+pop
+print
+push 12016
+print
+push 12018
+print
+pop
+pop
+print
+pop
+revoke
+pop
+revoke
+push 12027
+print
+revoke
+print
+pop
+pop
+revoke
+revoke
+print
+pop
+revoke
+print
+push 12039
+pop
+revoke
+print
+pop
+print
+pop
+pop
+revoke
+pop
+push 12049
+pop
+push 12051
+print
+push 12053
+revoke
+revoke
+push 12056
+revoke
+print
+pop
+print
+push 12061
+revoke
+pop
+pop
+push 12065
+push 12066
+push 12067
+revoke
+push 12069
+pop
+push 12071
+push 12072
+push 12073
+print
+revoke
+print
+pop
+revoke
+pop
+revoke
+print
+pop
+revoke
+pop
+revoke
+print
+push 12087
+print
+revoke
+revoke
+print
+push 12092
+print
+pop
+pop
+push 12096
+push 12097
+pop
+pop
+revoke
+push 12101
+print
+push 12103
+push 12104
+pop
+push 12106
+pop
+pop
+push 12109
+pop
+push 12111
+print
+pop
+print
+push 12115
+revoke
+revoke
+pop
+push 12119
+revoke
+revoke
+push 12122
+pop
+print
+revoke
+push 12126
+push 12127
+print
+pop
+print
+revoke
+print
+pop
+print
+revoke
+print
+pop
+push 12138
+push 12139
+revoke
+print
+revoke
+revoke
+print
+revoke
+print
+pop
+revoke
+revoke
+print
+push 12151
+revoke
+print
+revoke
+revoke
+print
+revoke
+print
+push 12159
+pop
+pop
+revoke
+pop
+revoke
+revoke
+push 12166
+print
+pop
+pop
+revoke
+pop
+pop
+pop
+revoke
+print
+pop
+print
+revoke
+print
+pop
+push 12181
+revoke
+print
+pop
+print
+pop
+pop
+pop
+print
+pop
+revoke
+print
+revoke
+push 12194
+push 12195
+pop
+pop
+print
+push 12199
+push 12200
+pop
+revoke
+pop
+print
+revoke
+revoke
+push 12207
+pop
+print
+pop
+push 12211
+print
+revoke
+print
+pop
+revoke
+pop
+revoke
+push 12219
+revoke
+print
+revoke
+pop
+push 12224
+print
+pop
+pop
+push 12228
+print
+revoke
+pop
+push 12232
+push 12233
+push 12234
+push 12235
+push 12236
+revoke
+push 12238
+push 12239
+push 12240
+revoke
+print
+pop
+print
+push 12245
+push 12246
+revoke
+pop
+pop
+push 12250
+print
+pop
+push 12253
+push 12254
+push 12255
+pop
+revoke
+print
+revoke
+print
+revoke
+pop
+revoke
+push 12264
+print
+push 12266
+pop
+pop
+pop
+push 12270
+pop
+revoke
+pop
+revoke
+revoke
+print
+push 12277
+revoke
+print
+pop
+pop
+pop
+pop
+print
+push 12285
+print
+revoke
+push 12288
+revoke
+push 12290
+revoke
+pop
+revoke
+revoke
+print
+push 12296
+push 12297
+print
+pop
+print
+revoke
+push 12302
+print
+pop
+pop
+pop
+print
+push 12308
+pop
+push 12310
+push 12311
+pop
+revoke
+pop
+revoke
+revoke
+print
+revoke
+print
+push 12320
+print
+pop
+pop
+push 12324
+push 12325
+revoke
+push 12327
+push 12328
+print
+pop
+print
+push 12332
+push 12333
+pop
+pop
+revoke
+push 12337
+print
+pop
+revoke
+push 12341
+push 12342
+print
+push 12344
+print
+push 12346
+print
+revoke
+push 12349
+print
+revoke
+pop
+pop
+push 12354
+push 12355
+revoke
+pop
+print
+pop
+print
+pop
+push 12362
+pop
+revoke
+print
+pop
+print
+push 12368
+pop
+revoke
+revoke
+pop
+push 12373
+revoke
+pop
+pop
+pop
+print
+pop
+revoke
+print
+pop
+revoke
+revoke
+print
+revoke
+pop
+pop
+push 12389
+print
+revoke
+revoke
+pop
+revoke
+print
+pop
+push 12397
+push 12398
+print
+push 12400
+pop
+print
+revoke
+print
+revoke
+print
+pop
+print
+pop
+push 12410
+print
+revoke
+print
+revoke
+print
+push 12416
+print
+pop
+revoke
+push 12420
+pop
+push 12422
+print
+push 12424
+push 12425
+push 12426
+push 12427
+print
+push 12429
+revoke
+print
+pop
+push 12433
+revoke
+pop
+revoke
+push 12437
+print
+push 12439
+pop
+revoke
+revoke
+push 12443
+print
+pop
+push 12446
+revoke
+print
+push 12449
+print

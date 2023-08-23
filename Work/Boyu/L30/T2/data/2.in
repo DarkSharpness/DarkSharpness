@@ -1,0 +1,752 @@
+751
+push 0
+push 1
+push 2
+pop
+push 4
+push 5
+push 6
+revoke
+pop
+pop
+revoke
+print
+pop
+pop
+revoke
+revoke
+push 16
+push 17
+pop
+print
+push 20
+push 21
+push 22
+revoke
+pop
+revoke
+push 26
+pop
+pop
+push 29
+revoke
+push 31
+revoke
+print
+push 34
+push 35
+pop
+pop
+revoke
+print
+pop
+revoke
+revoke
+revoke
+push 44
+push 45
+push 46
+push 47
+pop
+print
+pop
+print
+push 52
+print
+pop
+print
+push 56
+push 57
+print
+revoke
+push 60
+pop
+revoke
+pop
+pop
+revoke
+pop
+pop
+print
+revoke
+pop
+pop
+revoke
+revoke
+print
+pop
+print
+pop
+pop
+revoke
+push 80
+pop
+pop
+push 83
+print
+push 85
+print
+push 87
+push 88
+pop
+push 90
+revoke
+print
+pop
+push 94
+pop
+revoke
+revoke
+pop
+push 99
+pop
+push 101
+push 102
+push 103
+push 104
+push 105
+pop
+push 107
+print
+push 109
+push 110
+push 111
+revoke
+pop
+pop
+pop
+revoke
+pop
+push 118
+pop
+print
+pop
+push 122
+push 123
+pop
+pop
+push 126
+push 127
+revoke
+print
+pop
+push 131
+pop
+revoke
+pop
+push 135
+pop
+revoke
+push 138
+push 139
+revoke
+pop
+push 142
+push 143
+print
+push 145
+print
+revoke
+revoke
+push 149
+print
+revoke
+print
+pop
+push 154
+pop
+push 156
+pop
+print
+push 159
+print
+push 161
+pop
+revoke
+pop
+print
+revoke
+pop
+push 168
+pop
+print
+revoke
+print
+revoke
+push 174
+revoke
+push 176
+print
+pop
+pop
+print
+push 181
+revoke
+pop
+revoke
+revoke
+print
+pop
+pop
+push 189
+revoke
+revoke
+revoke
+pop
+revoke
+print
+revoke
+print
+pop
+push 199
+print
+push 201
+print
+push 203
+revoke
+revoke
+print
+revoke
+push 208
+print
+revoke
+revoke
+revoke
+push 213
+pop
+pop
+print
+revoke
+print
+revoke
+pop
+push 221
+print
+revoke
+push 224
+revoke
+pop
+pop
+push 228
+print
+push 230
+pop
+revoke
+print
+pop
+push 235
+pop
+revoke
+pop
+print
+pop
+print
+pop
+pop
+revoke
+revoke
+revoke
+pop
+revoke
+pop
+push 250
+pop
+print
+push 253
+pop
+revoke
+push 256
+print
+revoke
+revoke
+push 260
+revoke
+pop
+pop
+print
+push 265
+push 266
+revoke
+pop
+print
+pop
+push 271
+print
+push 273
+print
+push 275
+print
+revoke
+print
+pop
+revoke
+print
+pop
+revoke
+pop
+revoke
+print
+push 287
+print
+pop
+pop
+print
+pop
+push 293
+revoke
+pop
+print
+push 297
+push 298
+pop
+revoke
+pop
+revoke
+pop
+pop
+pop
+revoke
+print
+push 308
+revoke
+print
+pop
+push 312
+print
+pop
+revoke
+revoke
+print
+revoke
+pop
+pop
+pop
+revoke
+pop
+push 324
+pop
+push 326
+print
+push 328
+push 329
+push 330
+push 331
+print
+revoke
+revoke
+print
+pop
+pop
+pop
+push 339
+revoke
+print
+push 342
+print
+revoke
+pop
+push 346
+print
+pop
+print
+push 350
+pop
+push 352
+revoke
+revoke
+revoke
+revoke
+print
+pop
+print
+pop
+push 361
+pop
+revoke
+pop
+push 365
+pop
+print
+pop
+print
+pop
+revoke
+revoke
+print
+push 374
+revoke
+push 376
+push 377
+push 378
+print
+push 380
+push 381
+pop
+revoke
+push 384
+revoke
+push 386
+push 387
+push 388
+revoke
+print
+revoke
+revoke
+revoke
+pop
+revoke
+push 396
+push 397
+pop
+revoke
+revoke
+pop
+print
+revoke
+print
+push 405
+pop
+pop
+revoke
+pop
+push 410
+pop
+print
+revoke
+revoke
+pop
+revoke
+pop
+print
+push 419
+print
+push 421
+revoke
+revoke
+print
+push 425
+push 426
+push 427
+push 428
+pop
+push 430
+push 431
+pop
+print
+push 434
+push 435
+print
+pop
+pop
+push 439
+revoke
+revoke
+revoke
+print
+push 444
+pop
+push 446
+print
+pop
+print
+pop
+revoke
+push 452
+print
+pop
+print
+push 456
+print
+revoke
+print
+push 460
+revoke
+push 462
+push 463
+push 464
+revoke
+print
+push 467
+push 468
+print
+revoke
+revoke
+pop
+print
+revoke
+revoke
+pop
+revoke
+print
+push 479
+print
+revoke
+pop
+pop
+push 484
+revoke
+pop
+print
+push 488
+print
+push 490
+pop
+push 492
+push 493
+print
+revoke
+pop
+print
+revoke
+push 499
+print
+push 501
+pop
+pop
+pop
+revoke
+print
+revoke
+print
+revoke
+push 510
+push 511
+pop
+pop
+pop
+push 515
+revoke
+print
+pop
+push 519
+pop
+push 521
+pop
+revoke
+revoke
+print
+revoke
+push 527
+print
+push 529
+print
+push 531
+print
+revoke
+push 534
+push 535
+revoke
+push 537
+push 538
+print
+pop
+pop
+push 542
+pop
+print
+pop
+print
+revoke
+print
+revoke
+revoke
+push 551
+print
+pop
+push 554
+print
+pop
+push 557
+revoke
+print
+pop
+pop
+push 562
+revoke
+print
+push 565
+pop
+revoke
+push 568
+revoke
+revoke
+push 571
+revoke
+push 573
+print
+pop
+push 576
+pop
+print
+pop
+print
+revoke
+push 582
+push 583
+print
+pop
+pop
+revoke
+pop
+push 589
+push 590
+print
+push 592
+push 593
+push 594
+print
+push 596
+print
+pop
+push 599
+pop
+print
+push 602
+pop
+push 604
+print
+revoke
+print
+push 608
+push 609
+push 610
+pop
+push 612
+pop
+pop
+revoke
+revoke
+revoke
+pop
+print
+push 620
+push 621
+push 622
+print
+pop
+print
+pop
+print
+revoke
+print
+revoke
+pop
+push 632
+push 633
+print
+revoke
+print
+pop
+print
+push 639
+print
+push 641
+push 642
+print
+pop
+print
+revoke
+revoke
+push 648
+push 649
+print
+pop
+pop
+print
+pop
+pop
+push 656
+push 657
+pop
+pop
+print
+push 661
+push 662
+print
+push 664
+pop
+push 666
+pop
+print
+push 669
+print
+revoke
+push 672
+revoke
+push 674
+push 675
+revoke
+push 677
+pop
+pop
+pop
+print
+revoke
+pop
+push 684
+push 685
+pop
+push 687
+print
+pop
+pop
+pop
+pop
+pop
+pop
+pop
+revoke
+print
+revoke
+print
+push 700
+print
+pop
+push 703
+print
+pop
+print
+revoke
+pop
+revoke
+print
+pop
+print
+pop
+print
+revoke
+revoke
+revoke
+push 718
+pop
+push 720
+print
+pop
+push 723
+push 724
+pop
+print
+revoke
+pop
+push 729
+push 730
+push 731
+print
+push 733
+push 734
+print
+revoke
+print
+pop
+push 739
+revoke
+print
+revoke
+pop
+print
+push 745
+revoke
+push 747
+revoke
+pop
+print
