@@ -22,7 +22,7 @@
 
 附: [wiki](https://minecraft.fandom.com/zh/wiki/%E9%A3%9F%E7%89%A9)上的食物价值表.......
 
-![1685859631692](image/rules/1685859631692.png)
+![1685859631692](images/rules/1685859631692.png)
 
 
 #### 收集
