@@ -93,3 +93,5 @@ EHC (Easy HardCore)，类似原版 UHC，属于原版生存类 pvp ，但是难�
 本项目的 Question & Answer 专区请[点击跳转](issue.md)
 
 如有更多问题或想要提供的 Features ，请在 Github Issue 或者 [网页评论区(推荐)](https://darksharpness.github.io/mcImpart) 提出。
+
+> $\copyright$ 2023 DarkSharpness - Impart 保留所有权利
