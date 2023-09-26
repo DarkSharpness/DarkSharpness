@@ -1,0 +1,58 @@
+\documentclass[fontset=windows]{article}
+\usepackage[margin=1in]{geometry}%设置边距，符合Word设定
+\usepackage{ctex}
+\usepackage{amsmath, xparse}
+\usepackage{amssymb}
+\usepackage{setspace}
+\usepackage{lipsum}
+\usepackage{graphicx}%插入图片
+\graphicspath{{Figures/}}%文章所用图片在当前目录下的 Figures目录
+\usepackage{hyperref} % 对目录生成链接，注：该宏包可能与其他宏包冲突，故放在所有引用的宏包之后
+\hypersetup{
+    colorlinks        = true,  % 将链接文字带颜色
+	bookmarksopen     = true, % 展开书签
+	bookmarksnumbered = true, % 书签带章节编号
+	pdftitle          = 标题, % 标题
+	pdfauthor         = DarkSharpness, % 作者
+    citecolor         = green,
+    linkcolor         = red,
+    urlcolor          = blue}
+\bibliographystyle{plain}% 参考文献引用格式
+\newcommand{\upcite}[1]{\textsuperscript{\cite{#1}}}
+
+% \renewcommand{\contentsname}{\centerline{Contents}} %经过设置word格式后，将目录标题居中
+
+% Keywords command
+\providecommand{\keywords}[1]
+{
+  \textbf{\text{Keywords: }} #1
+}
+
+\title{\heiti\zihao{2} Combinatiorics Homework 01}
+\author{DarkSharpness}
+\date{2023.09.17}
+
+\begin{document}
+	\maketitle
+	% \thispagestyle{empty}
+
+\tableofcontents
+
+
+\section*{Problem 1} $30000$
+
+\section*{Problem 2} $81$
+
+\section*{Problem 3} $ 1 + 10n + 100  {n \choose 2} $
+
+\section*{Problem 4}
+
+对于初始分班，假设一开始 $k + 1$ 个班级人数分别为 $x_i$ ($i \in [1,k + 1]$) 。此时，我们为第 $i$ 个班级的每个人赋予权值 $ a = \frac 1 {x_i} $ ，那么一个班级内所有人的权值和 $\sum a = 1$ ，所有人的权值和 $\sum a = k + 1$ 。
+
+那么，在分完班之后，第 $i$ ($i \in [1,2023] $) 个人的权值同理设为 $b$ ，那么同理 $\sum b_i = k$ 。
+
+因此， $\sum (a_i-b_i) = 1$ 。设原来第 $i$ 个人班级里人数为 $c_i$ ，现在班变为了 $d_i$ ，那么 $a_i = \frac 1 {c_i}$ 且 $b_i = \frac 1 {d_i}$。若至多一个人其同学人数变多，若存在不妨设其为 1 号，那么 $c_i > d_i$ ($i \in [2,2023]$) 。又因为人数为正整数， 所以满足 $a_1 - b_1 = \frac 1 {c_1} - \frac 1 {d_1}  < 1 - 0 = 1$ ，而 $a_i - b_i = \frac 1 {c_i} - \frac 1 {d_i} < 0  $ ($i \in [2,2023]$) ，所以 $\sum (a_i-b_i) < 1 + 0 + ... + 0 = 1$ ，矛盾。
+
+综上，至少有两个人同学人数变多。
+
+\end{document}

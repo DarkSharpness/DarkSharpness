@@ -1,0 +1,95 @@
+\documentclass[fontset=windows]{article}
+\usepackage[margin=1in]{geometry}%设置边距，符合Word设定
+\usepackage{ctex}
+\usepackage{amsmath, xparse}
+\usepackage{amssymb}
+\usepackage{setspace}
+\usepackage{lipsum}
+\usepackage{graphicx}%插入图片
+\graphicspath{{Figures/}}%文章所用图片在当前目录下的 Figures目录
+\usepackage{hyperref} % 对目录生成链接，注：该宏包可能与其他宏包冲突，故放在所有引用的宏包之后
+\hypersetup{
+    colorlinks        = true,  % 将链接文字带颜色
+	bookmarksopen     = true, % 展开书签
+	bookmarksnumbered = true, % 书签带章节编号
+	pdftitle          = 标题, % 标题
+	pdfauthor         = DarkSharpness, % 作者
+    citecolor         = green,
+    linkcolor         = red,
+    urlcolor          = blue}
+\bibliographystyle{plain}% 参考文献引用格式
+\newcommand{\upcite}[1]{\textsuperscript{\cite{#1}}}
+
+% \renewcommand{\contentsname}{\centerline{Contents}} %经过设置word格式后，将目录标题居中
+
+% Keywords command
+\providecommand{\keywords}[1]
+{
+  \textbf{\text{Keywords: }} #1
+}
+
+\title{\heiti\zihao{2} Combinatiorics Homework 02}
+\author{DarkSharpness}
+\date{2023.09.17}
+
+\begin{document}
+	\maketitle
+	% \thispagestyle{empty}
+
+\tableofcontents
+
+
+\section*{Problem 1} 
+\subsection*{(a)}
+    $$((4,blue),4)$$
+\subsection*{(b)}
+    $$\{1,2\},\{1,3\},\{1,4\},\{2,3\},\{2,4\},\{3,4\}$$
+
+
+\section*{Problem 2} $$3^n$$
+
+\section*{Problem 3} $$6^n-5^n-5^n+4^n$$
+
+\section*{Problem 4} $$n(1-\frac 1 {2^k}) (2^n)^k$$
+
+\section*{Problem 5} $${2022} \choose {42}$$
+
+\section*{Problem 6}
+
+$$
+\begin{aligned}
+LHS &= \sum_{k=1}^{n}{ ( {{n} \choose {k}} - {{n - 1} \choose {k}} )  {  {n + m} \choose {k} }^{-1}} \\
+    &= \frac{n!m!}{(n + m)!}  \sum_{k=1}^{n} \frac{(n + m - k)!} {(n - k)! m!}
+        - \frac{(n - 1)!(m + 1)!}{(n + m)!} \sum_{k=1}^n \frac {(n + m - k)!} {(n - k - 1)!(m + 1)!} \\
+\end{aligned}
+$$
+
+而
+
+$$
+\sum_{k=1}^{n} \frac{(n + m -k)!}{(n-k)!m!} = \sum_{t=0}^{n-1} \frac{(m + t)!}{m!t!} = \sum_{t=0}^{n-1} {m + t \choose t} = {{m + n} \choose {m + 1}}
+$$
+
+所以
+
+$$
+\begin{aligned}
+LHS &= {{n + m} \choose m}^{-1} {{n + m} \choose {m + 1}} - {{n + m} \choose {m + 1}} ^{-1} {{n + m} \choose {m + 2}} \\
+    &= \frac{n}{m + 1} - \frac{n - 1}{m + 2} \\
+    &= \frac{n + m + 1}{(m + 1)(m + 2)}
+\end{aligned}
+$$
+
+
+\section*{Problem 7} $$(\frac 1 3)^{50} (\frac 2 3) ^ {50} {{100} \choose {50}}$$
+
+\section*{Problem 8}
+$$
+\begin{aligned}
+ANS &= \int_0^{1} {p^{50} (1-p)^{50} {{100}\choose{50}} dp} \\
+    &= \int_0^{ \frac{\pi}2} \frac{ (\sin{2x})^{100} } {2^{100}} {{100}\choose{50}} dx \\
+    &=  {\frac {{ {100} \choose {50} }} {2^{100}}}  { \frac{99!!}{100!!} } \frac{\pi}{2}
+\end{aligned}
+$$
+
+\end{document}
