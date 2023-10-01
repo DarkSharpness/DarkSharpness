@@ -36,7 +36,7 @@ signed main() {
         freopen(in.data(),"w",stdout);
 
         dark::writeline(n,m);
-        for(int i = 1 ; i <= n ; ++i) dark::writeline(loc[i]);
+        dark::writelineRange(loc.begin() + 1,n);
 
         for(int i = 1 ; i <= m ; ++i) {
             int r = ans[i];
