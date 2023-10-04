@@ -6,7 +6,6 @@ long long sum[N];
 
 signed main() {
     int n;
-    freopen("data/10.in","r",stdin);
     cin >> n;
     for(int i = 0 ; i < n ; ++i) cin >> sum[i];
     long long ans = 0;
