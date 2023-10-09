@@ -1,0 +1,79 @@
+\documentclass[fontset=windows]{article}
+\usepackage[margin=1.5in]{geometry}%设置边距，符合Word设定
+\usepackage{ctex}
+\usepackage{amsmath, xparse}
+\usepackage{amssymb}
+\usepackage{setspace}
+\usepackage{lipsum}
+\usepackage{graphicx}%插入图片
+\graphicspath{{Figures/}}%文章所用图片在当前目录下的 Figures目录
+\usepackage{hyperref} % 对目录生成链接，注：该宏包可能与其他宏包冲突，故放在所有引用的宏包之后
+\hypersetup{
+    colorlinks        = true,  % 将链接文字带颜色
+	bookmarksopen     = true, % 展开书签
+	bookmarksnumbered = true, % 书签带章节编号
+	pdftitle          = 标题, % 标题
+	pdfauthor         = DarkSharpness, % 作者
+    citecolor         = green,
+    linkcolor         = red,
+    urlcolor          = blue}
+\bibliographystyle{plain}% 参考文献引用格式
+\newcommand{\upcite}[1]{\textsuperscript{\cite{#1}}}
+
+% \renewcommand{\contentsname}{\centerline{Contents}} %经过设置word格式后，将目录标题居中
+
+% Keywords command
+\providecommand{\keywords}[1]
+{
+  \textbf{\text{Keywords: }} #1
+}
+
+\title{\heiti\zihao{2} Homework 03}
+\author{DarkSharpness}
+\date{2023.10.6}
+
+\begin{document}
+	\maketitle
+	% \thispagestyle{empty}
+    \tableofcontents
+
+\section*{T3}
+
+充分性: 如果 $\phi : x \longmapsto x^{-1}$ 是 $G$ 的同构映射， 则 $\forall x, y \in G$ ， 有 $x y = (y^{-1}x^{-1})^{-1} =  \phi(\phi(y)\phi(x)) = \phi(\phi(y)) \phi(\phi(x)) = y x$ ， 即 $G$ 是交换群。
+
+必要性: 如果 $G$ 是交换群，那么 $\phi(xy) = (xy)^{-1} = y^{-1}x^{-1} = x^{-1}y^{-1} = \phi(x)\phi(y)$ ， 即 $\phi$ 是 $G$ 的同构映射。
+
+\section*{T4}
+
+$\forall x, y \in G$ ，有 $phi(xy) = axya^{-1} = ax(a^{-1}a)ya^{-1} = (axa^{-1})(aya^{-1}) = \phi(x)\phi(y)$ ， 即 $\phi$ 是 $G$ 的同构映射。
+
+\section*{T6}
+
+取 $G$ 和 $H$ 都是 $(\mathbb{N},+)$ 。真子群为 $(2\mathbb{N},+)$ ，取映射 $\phi = 2x$ 即可。
+
+\section*{T1}
+
+$(1)$  $0$ 的阶为 $1$ ; 其他数的阶为 $7$ 。
+
+$(2)$  $0$ 的阶为 $1$ ; $1,3,5,7$ 的阶为 $8$ ; $2,6$ 的阶为 $4$ ; $4$ 的阶为 $2$ .
+
+$(3)$  $0$ 的阶为 $1$ ; $1,3,7,9$ 的阶为 $10$ ; $2,4,6,8$ 的阶为 $5$ ; $5$ 的阶为 $2$ .
+
+$(4)$  $0$ 的阶为 $1$ ; $1,3,5,9,11,13$ 的阶为 $14$ ; $2,4,6,10,12$ 的阶为 $7$ ; $7$ 的阶为 $2$ .
+
+$(5)$  $0$ 的阶为 $1$ ; $1,2,4,7,8,11,13,14$ 的阶为 $15$ ; $3,6,9,12$ 的阶为 $5$ ; $5,10$ 的阶为 $3$ .
+
+$(6)$  $0$ 的阶为 $1$ ; $1,5,7,11,13,17$ 的阶为 $18$ ; $2,4,8,10,14,16$ 的阶为 $9$ ; $3,15$ 的阶为 $6$ ; $6,12$ 的阶为 $3$ ; $9$ 的阶为 $2$ .
+
+
+\section*{T5}
+
+显然， $U(n) = \{ e^{\frac{2i k \pi}{n}} | k \in [n] \}$ 为 $n$ 阶循环群。
+
+循环元为所有 $k$ 与 $n$ 互素的 $k$ ， $e^{\frac{2i k \pi}{n}} $ 即为循环元。
+
+\section*{T12}
+
+若 $(g a g^{-1})^k = e$ ，则展开后得到 $g a^k g^{-1} = e$ ， 即 $ga^k = g$ ，即等价于 $a^k = e$ 。因此显然 $a$ 与 $gag^{-1}$ 有相同的阶。 
+
+\end{document}

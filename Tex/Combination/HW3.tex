@@ -1,0 +1,116 @@
+\documentclass{article}
+\usepackage[margin=1.5in]{geometry}%设置边距，符合Word设定
+\usepackage{ctex}
+\usepackage{amsmath, xparse}
+\usepackage{amssymb}
+\usepackage{setspace}
+\usepackage{lipsum}
+\usepackage{graphicx}%插入图片
+\graphicspath{{Figures/}}%文章所用图片在当前目录下的 Figures目录
+\usepackage{hyperref} % 对目录生成链接，注：该宏包可能与其他宏包冲突，故放在所有引用的宏包之后
+\hypersetup{
+    colorlinks        = true,  % 将链接文字带颜色
+	bookmarksopen     = true, % 展开书签
+	bookmarksnumbered = true, % 书签带章节编号
+	pdftitle          = 标题, % 标题
+	pdfauthor         = DarkSharpness, % 作者
+    citecolor         = green,
+    linkcolor         = red,
+    urlcolor          = blue}
+\bibliographystyle{plain}% 参考文献引用格式
+\newcommand{\upcite}[1]{\textsuperscript{\cite{#1}}}
+
+% \renewcommand{\contentsname}{\centerline{Contents}} %经过设置word格式后，将目录标题居中
+
+% Keywords command
+\providecommand{\keywords}[1]
+{
+  \textbf{\text{Keywords: }} #1
+}
+
+\title{\heiti\zihao{2} Combinatiorics Homework 01}
+\author{DarkSharpness}
+\date{2023.10.6}
+
+\begin{document}
+	\maketitle
+	% \thispagestyle{empty}
+
+\tableofcontents
+
+
+\section*{Problem 1}
+
+当 $n = t^2 -2 (t \in \mathbb{N})$ ， $k = \frac{1}{2} (n - \sqrt{n + 2})$ 或 $k = \frac{1}{2} (n - \sqrt{n + 2}) - 1$ 时，${ n \choose {k + 1} } - { n \choose k}$ 取到最大值。
+
+否则，当 $n = \lfloor \frac{1}{2} (n - \sqrt{n + 2}) \rfloor$ 时，取到最大值。
+
+
+\section*{Problem 2}
+
+$$E(|X-Y|) = \frac{1000}{2^{1000}} {1000 \choose 500}$$
+
+\section*{Problem 3}
+
+右边的组合含义是: 从 $n$ 个元素之间有 $n + 1$ 个空隙，从中任取 $a + b + 1$ 个空隙。而我们转化这个模型: 对于左边的 $a$ 个空隙，我们认为其绑定的是空隙右边的元素；对于右边的 $b$ 个空隙，我们认为其绑定的是空隙左边的元素。对于剩下那个空隙，我们认为其实分割先，把左边和右边的元素分开。
+
+此时，如果我们先枚举中间的空隙，那么其可以把 $n$ 个元素分为左边 $k$ 个和右边 $n - k$ 个。而对于左边的 $k$ 个元素，我们相当于从 $k$ 个元素中选 $a$ 个 。对于右边同理。因此，其等于 ${k \choose a} {n - k \choose b}$ 然后对于 $k$ 求和，即为左边的式子。
+
+
+\section*{Problem 4}
+
+有 $2n$ 个元素，我们不妨将其两两配对得到 $n$ 个对子。右式相当于从 $2n$ 个元素中选出 $n$ 个的方案数量。而对于每个对子，我们存在三种可能 : 选了 $0 \ or \ 1 \ or \ 2$ 个元素。对于选 $n$ 个物品的方案，我们如果被选择了 $2$ 个元素的对子有 $k$ 个。显然，被选了 $0$ 个元素的对子也有 $k$ 个，而选了 $1$ 个元素的对子有 $n - 2k$ 个。
+
+因此，对于右边的式子，我们先枚举选了 $2$ 个元素的对子，再枚举选了 $0$ 个元素的对子，一共有 ${n \choose 2k} {2k \choose k}$种方案。而对于剩下的选了 $1$ 个元素的对子，每种对子有 $2$ 种选择，因此有 $2^{n - 2k}$ 种方案。右边的式子等价于  ${n \choose 2k} {2k \choose k} 2^{n - 2k}$ 求和，即为左边的式子。
+
+
+\section*{Problem 5}
+
+\subsection*{(a)}
+
+我们考虑 $P(-x) \times P(x)$ 。因为 $P(x) = \sum_{k = 0}^{2n} {a_k x^k} $ ，且显然 $a_k = a_{2n-k}$ ，因此 $P(-x) = \sum_{k = 0}^{2n} {(-1)^k a_{n-2k} x^k}$ 。考虑 $P(x) \times P(-x)$ 的第 $2n$ 次项 $b_{2k}$ 。显然，
+
+$$b_{2k} =\sum_{k = 0}^{2n} {a_k (-1)^{2n-k} a_k} = \sum_{k = 0}^{2n} {(-1)^k a_k^2 }$$
+
+而我们代入多项式的原始含义:
+
+$$P(x) \times P(-x) = (1 + x^2 + x^4)^n = P(x^2)$$
+
+所以由定义， $b_{2k} = a_k$ 。所以得证。
+
+\subsection*{(b)}
+
+代入 $x = \pm 1$ 。 $P(1) = \sum_{k=0}^{2n}{a_k}$ 且 $P(-1) = \sum_{k=0}^{2n}{(-1)^k a_k}$ 。所以
+
+$$ a_0 + \dots + a_{2n} = \frac{1}{2}(P(1) + P(-1)) = \frac{1}{2}(3^n + (-1)^n) $$
+
+\subsection*{(c)}
+
+考虑 $G(x) = (1 - x) ^ n $ 。设 $G(x) = \sum_{k=0}^{n}{b_k x^k}$ 。显然 $b_k = (-1)^k {n \choose k}$ 。令 $H(x) = G(x) P(x) = (1 - x^3) ^ n$ 。设 $H(x) = \sum_{k=0}^{3n}{c_k x^k}$ 。显然 $c_k = \sum_{i=0}^{k}{b_i a_{k-i}} = \sum_{i=0}^{k}{(-1)^i {n \choose i} a_{k-i}}$ 。所以所求即为 $c_k$ 。显然:
+
+$$
+c_k =
+\begin{cases}
+    (-1)^k {n \choose t} & (k = 3 * t,~\ t \in \mathbb{Z}) \\
+    0 & (\text{otherwise})
+\end{cases}
+$$
+
+\section*{Problem 6}
+
+显然，
+
+$$
+\begin{aligned}
+\frac{{n \choose b}} {{n \choose a}} 
+    &= \frac{a! (n - a)!} {b! (n - b)!} \\
+    &= \frac{a! (n - a)! (b - a)!} {b! (n - b)! (b - a)!} \\
+    &= \frac{ {{n - a} \choose {n - b}} } { {b \choose {a}} } \\
+\end{aligned}
+$$
+
+如果 $\gcd ({n \choose b},{n \choose a}) = 1$ ，那么 $\frac{{n \choose b}} {{n \choose a}}$ 一定已经是最简形式的分式，但 ${b \choose a} < { n \choose a} $ 说明其一定不是最简形式的分式，因此矛盾。所以 $\gcd ({n \choose b},{n \choose a}) > 1$ 。
+
+
+
+\end{document}
