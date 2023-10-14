@@ -1,0 +1,97 @@
+\documentclass{article}
+\usepackage[margin=1.5in]{geometry}%设置边距，符合Word设定
+\usepackage{ctex}
+\usepackage{amsmath, xparse}
+\usepackage{amssymb}
+\usepackage{setspace}
+\usepackage{lipsum}
+\usepackage{graphicx}%插入图片
+\graphicspath{{Figures/}}%文章所用图片在当前目录下的 Figures目录
+\usepackage{hyperref} % 对目录生成链接，注：该宏包可能与其他宏包冲突，故放在所有引用的宏包之后
+\hypersetup{
+    colorlinks        = true,  % 将链接文字带颜色
+	bookmarksopen     = true, % 展开书签
+	bookmarksnumbered = true, % 书签带章节编号
+	pdftitle          = 标题, % 标题
+	pdfauthor         = DarkSharpness, % 作者
+    citecolor         = green,
+    linkcolor         = red,
+    urlcolor          = blue}
+\bibliographystyle{plain}% 参考文献引用格式
+\newcommand{\upcite}[1]{\textsuperscript{\cite{#1}}}
+
+% \renewcommand{\contentsname}{\centerline{Contents}} %经过设置word格式后，将目录标题居中
+
+% Keywords command
+\providecommand{\keywords}[1]
+{
+  \textbf{\text{Keywords: }} #1
+}
+
+\title{\heiti\zihao{2} Combinatiorics Homework 01}
+\author{DarkSharpness}
+\date{2023.10.6}
+
+\begin{document}
+	\maketitle
+	% \thispagestyle{empty}
+
+\tableofcontents
+
+\section*{Problem 1} $e^{-1}$
+
+\section*{Problem 2} $e^{-2}$
+
+\section*{Problem 3}
+
+$$f(x) = \sum_{i = 0}^{\infty} C_i x^{i}$$
+
+$$f(x) \cdot f(x) = \sum_{i = 0}^{\infty} \sum_{j = 0}^{\infty} C_i C_j x^{i + j}$$
+
+由题， $C_n = \sum_{i + j = n - 1, i, j \geq 0} C_i C_j$ 且 $C_0 = 1$ ，因此有:
+
+$$f(x) \cdot f(x) = \sum_{n = 1}^{\infty} C_n x^{n - 1}$$
+
+因此， $f(x) \cdot f(x) \cdot x = f(x) - C_0 = f(x) - 1$
+
+观察到 $g(x) = \frac{1}{2x} (-1 + \sqrt{1 + 4x})$ 满足上式。且 $g(x)$ 的幂级数展开为:
+
+$$
+\begin{aligned}
+    g(x)
+        &= \frac{1}{2x} (-1 + \sqrt{1 + 4x}) \\
+        &= \frac{1}{2x} (-1 + \sum_{i = 0}^{\infty} { {\frac{1}{2} \choose i} (4x) ^ i  }) \\
+        &= \frac{1}{2x} \sum_{i = 1}^{\infty} { \frac{(2i - 2)!}{2 ^ {2i - 1}(i - 1)!i!} 4^i x ^ i }  \\
+        &= \sum_{i = 1}^{\infty} { \frac{(2i - 2)!}{(i - 1)!i!} x ^ {i - 1} }  \\
+        &= \sum_{i = 0}^{\infty} { \frac{1}{i + 1} {2i \choose i} x ^ {i} }  \\
+\end{aligned}
+$$
+
+且特别地，边界项 $\frac{1}{0 + 1} {0 \choose 0} = 1 = C_0$ 。有 $C_i = \frac{1}{i + 1} {2i \choose i}$ 。
+
+\section*{Problem 4}
+
+考虑把 $[n]$ 分为两个连续的可空区间 $[1,k]$ 和 $[k+1,n]$ ，其中 $k\in[0,n]$ 。显然，一共有 $n + 1$ 种划分方法。
+
+我们记 $A_i = 0,1$ 为 $i$ 在左边/右边的情况 。定义一个事件为给定所有 $\{A_i\} , i\in[n]$ 。定义 $B_i = \{\{A_j\} | A_i = 1 \wedge A_{i+1} = 0\}$ ，即所有满足 $i + 1$ 在左边， $i$ 在右边的全体事件。不难发现，一个划分满足条件，当且仅当 $B_i$ 同时不发生。由容斥原理，满足条件的划分数 $C$ 满足:
+
+$$ C = \sum_{I \subseteq [n]} (-1)^{|I|} \left| \bigcap_{i \in I} B_i \right| $$
+
+下面分析 $\left| I \right| = k$ 时， $\left| \bigcap_{i \in I} B_i \right|$ 的总数。
+
+显然， $B_i \cap B_{i + 1} = \varnothing$ 。因此我们只需考虑 $\left| I \right| = k$ 且 $B_i \cap B_{i + 1} \ne \varnothing ~\ \forall i \in [n]$ 的情况。其相当于给定 $n$ 个元素，我们选出其中 $k$ 个元素对，其他元素情况任意的总数。
+
+因为剩下 $n-2k$ 个元素状态任意，而 $A_i$ 取值共两种，所以剩下的元素共有 $2 ^ {n - 2k}$ 种情况。
+
+对于选出的 $k$ 个元素对，我们可以看作从 $n$ 个元素中选取 $k$ 个元素，且选出的元素后面那个元素没有被选中。其等价于我们强行在前面加入第 $0$ 个元素，而我们需要从 $n+1$ 个元素中选取 $k$ 个元素且，且选出的元素前后元素均为被选中。而这又等价于我们用 $n + 1 - k $ 个元素填充 $k + 1$ 个空位，且每个空位至少填充一个元素。显然，该结果相当于 $n + 1 - k$ 个元素中选择 $k + 1$ 个，即 ${n + 1 - k - 1 \choose k + 1 - 1} = {n - k\choose k}$ 。
+
+综上，当 $\left| I \right| = k$ 时， $\left| \bigcap_{i \in I} B_i \right| = {n - k\choose k} 2 ^ {n - 2k}$ 。
+
+求和，即可得到
+
+$$ C = \sum_{k = 0}^{n} (-1)^k {n - k\choose k} 2 ^ {n - 2k}
+     = \sum_{k = 0}^{\lfloor(\frac{n}{2})\rfloor}  (-1)^k {n - k\choose k} 2 ^ {n - 2k}$$
+
+因此 $C = n + 1 $ 。当 $n$ 为偶数即为题目情况。
+
+\end{document}
