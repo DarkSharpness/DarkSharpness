@@ -7,7 +7,6 @@ int a[N];
 
 
 signed main() {
-    freopen("data/10.in","r",stdin);
     int n,w,c;
     cin >> n >> w >> c;
     for(int i = 0 ; i < n ; ++i) cin >> a[i];
