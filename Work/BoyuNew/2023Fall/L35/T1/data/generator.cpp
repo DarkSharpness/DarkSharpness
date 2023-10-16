@@ -1,5 +1,4 @@
 #include <bits/stdc++.h>
-#include <Dark/inout>
 using namespace std;
 
 const int N = 5003;
@@ -13,10 +12,10 @@ signed main() {
         const int m = 50 * i * i;
         const int n = rand() % m + 1;
         freopen(in.data(),"w",stdout);
-        dark::writeline(n);
+        std::cout << n << '\n';
         for(int i = 0 ; i < n ; ++i) {
-            int x = (rand() ^ (rand () << 5)) % m;
-            dark::print(x,' ');
+            int x = (rand() ^ (rand () << 5)) % m + 1;
+            std::cout << x << ' ';
             q.push(x);
         }
         freopen(out.data(),"w",stdout);
@@ -34,7 +33,7 @@ signed main() {
             }
         }
         q = decltype(q) {};
-        dark::writeline(ans);
+        std::cout << ans << '\n';
     }
     return 0;
 }
