@@ -1,5 +1,4 @@
 #include <bits/stdc++.h>
-#include <Dark/inout>
 using namespace std;
 
 template <size_t __N,size_t __M>
@@ -26,18 +25,14 @@ signed main() {
         if (c > n + 2 * m) c = better_rand <10,10> () % M + 1;
 
         freopen(in.c_str(),"w",stdout);
-        dark::writeline(n,m,c);
+        std::cout << n << ' ' << m << ' ' << c << '\n';
 
         while (n--)
-            dark::print(
-                better_rand <10,10> () % N + 1, ' '
-            );
-        dark::writeline();
+            std::cout << better_rand <10,10> () % N + 1 << ' ';
+        std::cout << '\n';
 
         while (m--)
-            dark::print(
-                better_rand <10,10> () % N + 1, ' '
-            );
+            std::cout << better_rand <10,10> () % N + 1 << ' ' << '\n';
     }
     return 0;
 }
