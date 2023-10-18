@@ -1,0 +1,101 @@
+\documentclass[fontset=windows]{article}
+\usepackage[margin=1.5in]{geometry}%设置边距，符合Word设定
+\usepackage{ctex}
+\usepackage{amsmath, xparse}
+\usepackage{amssymb}
+\usepackage{setspace}
+\usepackage{lipsum}
+\usepackage{graphicx}%插入图片
+\graphicspath{{Figures/}}%文章所用图片在当前目录下的 Figures目录
+\usepackage{hyperref} % 对目录生成链接，注：该宏包可能与其他宏包冲突，故放在所有引用的宏包之后
+\hypersetup{
+    colorlinks        = true,  % 将链接文字带颜色
+	bookmarksopen     = true, % 展开书签
+	bookmarksnumbered = true, % 书签带章节编号
+	pdftitle          = 标题, % 标题
+	pdfauthor         = DarkSharpness, % 作者
+    citecolor         = green,
+    linkcolor         = red,
+    urlcolor          = blue}
+\bibliographystyle{plain}% 参考文献引用格式
+\newcommand{\upcite}[1]{\textsuperscript{\cite{#1}}}
+
+% \renewcommand{\contentsname}{\centerline{Contents}} %经过设置word格式后，将目录标题居中
+
+% Keywords command
+\providecommand{\keywords}[1]
+{
+  \textbf{\text{Keywords: }} #1
+}
+
+\title{\heiti\zihao{2} Homework 05}
+\author{DarkSharpness}
+\date{2023.10.18}
+
+\begin{document}
+	\maketitle
+	% \thispagestyle{empty}
+    \tableofcontents
+
+\section*{T1}
+
+$H=\{(1),(12)(34),(13)(24),(14)(23)\}$ 在 $A_4$ 中的左陪集为:
+
+$$\{(1),(12)(34),(13)(24),(14)(23)\}$$
+$$\{(132),(243),(142),(134)\}$$
+$$\{(123),(143),(234),(124)\}$$
+
+在 $S_4$ 中的左陪集为:
+
+$$\{(1),(12)(34),(13)(24),(14)(23)\}$$
+$$\{(132),(243),(142),(134)\}$$
+$$\{(123),(143),(234),(124)\}$$
+$$\{(12),(34),(1423),(1324)\}$$
+$$\{(13),(24),(1432),(1234)\}$$
+$$\{(14),(23),(1243),(1342)\}$$
+
+\section*{T8}
+
+两个。 $\langle a^2 \rangle$ 和 $a \langle a^2 \rangle = \{a^n | n = 2k - 1, k \in [15]\}$
+
+\section*{T11}
+
+设子群为 $H \le G$ ，设左陪集为 $aH, a \in G$ 。
+
+$\forall x \in aH, x = ah$ ，因此 $x^{-1} = h^{-1}a^{-1} \in Ha^{-1}$ ，即 $aH$ 中的元素的逆元素在 $Ha^{-1}$ 中。同理，任意 $x \in Ha^{-1}, x = ha^{-1}$ ，因此，$x^{-1} = a^{-1}h^{-1} \in aH$ ，即 $Ha^{-1}$ 每个元素都是 $aH$ 中某个元素的逆元素。所以可知， $aH$ 所有元素的逆元素组成了这个子群的右陪集 $Ha^{-1}$ 。
+
+\section*{T12}
+
+$$
+\begin{aligned}
+    x \in a(H_1 \cap H_2)
+    \iff & \exists h, h \in H_1 \cap H_2 \wedge x = ah \\
+    \iff & \exists h, h \in H_1 \wedge h \in H_2 \wedge x = ah \\
+    \iff & \exists h_1,h_2, h_1 \in H_1 \wedge h_2 \in H_2\\
+    & \wedge x = ah_1 \wedge x = ah_2 (\text{a.k.a} ~\ h_1 = h_2 ~\ \text{in this case})\\
+    \iff &x \in aH_1 \wedge x \in aH_2 \\
+    \iff &x \in aH_1 \cap aH_2
+\end{aligned}
+$$
+
+\section*{T20}
+
+设 $|G| = 3$ 。构造 $G^* = \{(a,b,c) | abc = 1~\ , a,b,c \in G\}$ 。因为确定了 $a,b$ 之后，存在唯一的 $c \in G$ 满足条件，所以 $|G^*| = (3n)^{3 - 1} = 9n^2$ 。定义 $A = \{(a,a,a) | a^3 = 1~\ , a \in G\}$ ， $B = \{(a,b,c) | abc = 1 ~\ , a \ne b \vee b \ne c \vee c \ne a ~\ , a,b,c \in G\}$ 。显然， $|G^*| = |A| + |B|$ 。对于任意 $\{a,b,c\} \in B$ ， $(a,b,c),(b,c,a),(c,a,b) \in B$ 。因此，对于每个 $B$ 中元素，存在唯一与之对应的两组元素，即 $B$ 可以看作由一些无序三元组中的每个元素构成。设 $\exists m \in \mathbb{Z},|B| = 3m $ ，又因为 $|G^*| = |A| + |B|$ ，因此可知 $\exists k \in \mathbb{Z},|A| = 3k$ 。
+
+注意到: $(1,1,1) \in A$ ，因此 $|A| \ge 3$ ，即 $\exists g \in G, (g,g,g) \in A, g \ne 1$ ，即 $G$ 中存在 $3$ 阶元素.
+
+注: 本结论为 Cauchy 定理的特例。
+
+\section*{22}
+
+因为交换群，所以: $\pi: a \mapsto a^n$ 满足 $\pi(ab) = (ab)^n = a^n b^n = \pi(a) \pi(b)$ ，即 $\pi$ 为 $G$ 的自同态。
+
+下证 $\pi$ 为双射。
+
+若存在 $a,b \in G, a\ne b \wedge \pi(a) = \pi(b)$ ，则由交换群性质， $(ab^{-1})^n = 1$ ，因此 $ord(\langle ab^{-1} \rangle)\ |\ n$ 。因为 $ab^{-1} \in G$ ，因此 $ord(\langle ab^{-1} \rangle)\ |\ ord(G)$ 。而注意到 $(ord(G),n) = 1$ 因此 $ord(ab^{-1}) = 1$ 即 $a=b$ 矛盾。所以 $a,b \in G, a\ne b$ ，有 $\pi(a) \ne \pi(b)$ 即为单射。
+
+因为 $\pi$ 为 $G$ 到自身的单射，且 $G$ 有限，因此由元素数相等可知，为满射。
+
+综上 $\pi$ 为 $G$ 的自同构。
+
+\end{document}
