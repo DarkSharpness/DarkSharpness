@@ -1,9 +1,0 @@
-#ifndef _DARK_OI_
-#define _DARK_OI_
-
-
-#include "General/inout.h"
-#include "OIT/segment_tree.h"
-
-
-#endif

@@ -1,7 +1,0 @@
-#ifndef _DARK_LRU_MAP_
-#define _DARK_LRU_MAP_
-
-
-#include "Container/LRU_map.h"
-
-#endif
