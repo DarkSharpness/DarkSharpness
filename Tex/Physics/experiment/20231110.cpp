@@ -34,6 +34,7 @@ void work(std::ifstream &fin, data_t &I) {
     I.ur = ur;
 }
 
+constexpr double U[3] = { 850, 900, 950 };
 signed main() {
     freopen("20231110.txt", "w", stdout);
     std::ifstream fin[3];
@@ -43,18 +44,7 @@ signed main() {
     fin[2].open("950.txt");
 
 
-    constexpr double D = 0.095;
-    constexpr double L = 0.240;
-    constexpr double x = 0.199 / 2;
-
-    const double K = 1e14 * L * L / (
-        2 * (
-            std::sqrt(D * D / 4 + (L / 2 + x) * (L / 2 + x)) 
-        -   std::sqrt(D * D / 4 + (L / 2 - x) * (L / 2 - x)) 
-        )
-    );
-    std::cout << std::format("K  = {:.3f} \n\n", K);
-
+    constexpr double K = 9.64e13;
     for (int j = 0 ; j < 3 ; ++j) {
         for (int i = 0 ; i < 3 ; ++i) work(fin[j],I[j][i]);
         for (int i = 3 ; i < 6 ; ++i) work(fin[j],I[j][i]);
@@ -72,11 +62,10 @@ signed main() {
 
         std::cout << std::format(
             "I  = {:.3f} ± {:.3f} A \t"
-            "ur = {:.2f}% \n\n",
-            _I, u, ur
+            "ur = {:.2f}% \n\n"
+            "e/m = {:.3e} C/kg \n",
+            _I, u, ur, K * U[j] / (1306 * 1306 * _I * _I)
         );
-        
-        
 
         std::cout << "--------------------\n";
     }
