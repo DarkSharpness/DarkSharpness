@@ -1,0 +1,121 @@
+{
+    "SupportedFiles": [
+        "local.h"
+    ],
+    "Groups": [
+        {
+            "GroupID": 1,
+            "GroupName": "Basic-0: constructors, operator [], size()",
+            "GroupScore": 10,
+            "TestPoints": [
+                1
+            ]
+        },
+        {
+            "GroupID": 2,
+            "GroupName": "Basic-1: push_back(), set()",
+            "GroupScore": 10,
+            "TestPoints": [
+                2
+            ]
+        },
+        {
+            "GroupID": 3,
+            "GroupName": "Basic-2: none(), all()",
+            "GroupScore": 10,
+            "TestPoints": [
+                3
+            ]
+        },
+        {
+            "GroupID": 4,
+            "GroupName": "Basic-3: set(), flip(), reset()",
+            "GroupScore": 15,
+            "TestPoints": [
+                4,
+                5,
+                6,
+                7
+            ]
+        },
+        {
+            "GroupID": 5,
+            "GroupName": "Basic-4: operator &,|,^",
+            "GroupScore": 15,
+            "TestPoints": [
+                8,
+                9,
+                10,
+                11
+            ]
+        },
+        {
+            "GroupID": 6,
+            "GroupName": "Basic-6: operator <<, >>",
+            "GroupScore": 15,
+            "TestPoints": [
+                12,
+                13,
+                14
+            ]
+        },
+        {
+            "GroupID": 7,
+            "GroupName": "Advanced: Everything! ",
+            "GroupScore": 15,
+            "TestPoints": [
+                15,
+                16,
+                17
+            ]
+        },
+        {
+            "GroupID": 8,
+            "GroupName": "Memleak: Why not std::vector!",
+            "GroupScore": 8,
+            "TestPoints": [
+                18
+            ]
+        },
+        {
+            "GroupID": 9,
+            "GroupName": "Speed-0: Use the longest unsigned integer you could imagine!",
+            "GroupScore": 1,
+            "TestPoints": [
+                19
+            ]
+        },
+        {
+            "GroupID": 10,
+            "GroupName": "Speed-1: memset and memmove always wins!",
+            "GroupScore": 1,
+            "TestPoints": [
+                20
+            ]
+        }
+    ],
+    "Details": [
+        { "ID": 1, "Dependency": 0, "TimeLimit": 3000, "MemoryLimit": 100663296, "DiskLimit": 0, "ValgrindTestOn": false },
+        { "ID": 2, "Dependency": 1, "TimeLimit": 3000, "MemoryLimit": 268435456, "DiskLimit": 0, "ValgrindTestOn": false },
+        { "ID": 3, "Dependency": 1, "TimeLimit": 3000, "MemoryLimit": 268435456, "DiskLimit": 0, "ValgrindTestOn": false },
+        { "ID": 4, "Dependency": 1, "TimeLimit": 3000, "MemoryLimit": 268435456, "DiskLimit": 0, "ValgrindTestOn": false },
+        { "ID": 5, "Dependency": 1, "TimeLimit": 3000, "MemoryLimit": 268435456, "DiskLimit": 0, "ValgrindTestOn": false },
+        { "ID": 6, "Dependency": 1, "TimeLimit": 3000, "MemoryLimit": 268435456, "DiskLimit": 0, "ValgrindTestOn": false },
+        { "ID": 7, "Dependency": 1, "TimeLimit": 3000, "MemoryLimit": 268435456, "DiskLimit": 0, "ValgrindTestOn": false },
+        { "ID": 8, "Dependency": 1, "TimeLimit": 3000, "MemoryLimit": 268435456, "DiskLimit": 0, "ValgrindTestOn": false },
+        { "ID": 9, "Dependency": 1, "TimeLimit": 3000, "MemoryLimit": 268435456, "DiskLimit": 0, "ValgrindTestOn": false },
+        { "ID": 10, "Dependency": 1, "TimeLimit": 3000, "MemoryLimit": 268435456, "DiskLimit": 0, "ValgrindTestOn": false },
+        { "ID": 11, "Dependency": 1, "TimeLimit": 3000, "MemoryLimit": 268435456, "DiskLimit": 0, "ValgrindTestOn": false },
+        { "ID": 12, "Dependency": 1, "TimeLimit": 3000, "MemoryLimit": 268435456, "DiskLimit": 0, "ValgrindTestOn": false },
+        { "ID": 13, "Dependency": 1, "TimeLimit": 3000, "MemoryLimit":  268435456, "DiskLimit": 0, "ValgrindTestOn": false },
+        { "ID": 14, "Dependency": 1, "TimeLimit": 3000, "MemoryLimit": 268435456, "DiskLimit": 0, "ValgrindTestOn": false },
+        { "ID": 15, "Dependency": 1, "TimeLimit": 3000, "MemoryLimit":  268435456, "DiskLimit": 0, "ValgrindTestOn": false },
+        { "ID": 16, "Dependency": 1, "TimeLimit": 3000, "MemoryLimit":  268435456, "DiskLimit": 0, "ValgrindTestOn": false },
+        { "ID": 17, "Dependency": 1, "TimeLimit": 3000, "MemoryLimit":  268435456, "DiskLimit": 0, "ValgrindTestOn": false },
+        { "ID": 18, "Dependency": 17, "TimeLimit": 15000, "MemoryLimit":  268435456, "DiskLimit": 0, "ValgrindTestOn": true },
+        { "ID": 19, "Dependency": 0, "TimeLimit": 1500, "MemoryLimit":  268435456, "DiskLimit": 0, "ValgrindTestOn": false },
+        { "ID": 20, "Dependency": 0, "TimeLimit": 1500, "MemoryLimit":  268435456, "DiskLimit": 0, "ValgrindTestOn": false }
+    ],
+    "CompileTimeLimit": 10000,
+    "SPJ": 3
+}
