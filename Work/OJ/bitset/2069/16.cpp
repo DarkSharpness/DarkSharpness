@@ -1,7 +1,7 @@
 #include "src.hpp"
 #include "local.h"
 
-template <check T = dynamic_bitset>
+template <class T = dynamic_bitset>
 void test_fxxk() {
     T x(233);
     x <<= 65;

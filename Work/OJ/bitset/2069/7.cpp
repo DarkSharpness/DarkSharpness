@@ -2,7 +2,7 @@
 #include "local.h"
 
 
-template <check T = dynamic_bitset>
+template <class T = dynamic_bitset>
 void test_corner() {
     T x(114514);
     auto __print = [&]() -> void {

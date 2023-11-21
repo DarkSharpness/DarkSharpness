@@ -2,7 +2,7 @@
 #include "local.h"
 
 
-template <check T = dynamic_bitset>
+template <class T = dynamic_bitset>
 void test_func() {
     std::string x = "1";
     for (int i = 0 ; i < 10 ; ++i) x += x;

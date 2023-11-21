@@ -3,7 +3,7 @@
 
 #include <chrono>
 
-template <check T = dynamic_bitset>
+template <class T = dynamic_bitset>
 void test_speed() {
     const int N = 1024 << 20;
     T x(N);

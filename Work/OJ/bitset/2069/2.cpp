@@ -2,7 +2,7 @@
 #include "local.h"
 
 
-template <check T = dynamic_bitset>
+template <class T = dynamic_bitset>
 std::size_t push_backer() {
     T x;
     for (int i = 0 ; i < 1919810 ; ++i) x.push_back(i & 1);

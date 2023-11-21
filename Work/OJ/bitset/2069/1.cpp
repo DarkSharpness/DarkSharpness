@@ -2,7 +2,7 @@
 #include "local.h"
 
 
-template <check T = dynamic_bitset>
+template <class T = dynamic_bitset>
 void basic_init() {
     std::string str = "01";
     str.reserve(129);
@@ -18,7 +18,7 @@ void basic_init() {
     print(z);
 }
 
-template <check T = dynamic_bitset>
+template <class T = dynamic_bitset>
 std::size_t stack_killer() {
     T x[1000];
     for (int i = 0 ; i < 1000 ; ++i) x[i] = T("1");
@@ -29,7 +29,7 @@ std::size_t stack_killer() {
     return sum;
 }
 
-template <check T = dynamic_bitset>
+template <class T = dynamic_bitset>
 std::size_t press_tester() {
     constexpr std::size_t N = 512 << 20;
     constexpr std::size_t M = 4096;

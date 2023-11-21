@@ -2,7 +2,7 @@
 #include "local.h"
 
 
-template <check T = dynamic_bitset>
+template <class T = dynamic_bitset>
 void test_func() {
     std::string a(64 * 114514 + 1,'1');
     std::string b(64 * 114514 + 1,'0');

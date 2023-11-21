@@ -3,7 +3,7 @@
 
 #include <chrono>
 
-template <check T = dynamic_bitset>
+template <class T = dynamic_bitset>
 void test_speed_0() {
     const int N = 1 << 19;
     T x;
@@ -11,7 +11,7 @@ void test_speed_0() {
     if (!x.none()) std::cout << "Error\n";
 }
 
-template <check T = dynamic_bitset>
+template <class T = dynamic_bitset>
 void test_speed_1() {
     const int N = 1 << 14;
     T x;

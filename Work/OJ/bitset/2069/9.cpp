@@ -2,7 +2,7 @@
 #include "local.h"
 
 
-template <check T = dynamic_bitset>
+template <class T = dynamic_bitset>
 void test_func() {
     T x(114514);
     T y(1919810);
@@ -19,7 +19,7 @@ void test_func() {
     print_detail(y);
 }
 
-template <check T = dynamic_bitset>
+template <class T = dynamic_bitset>
 void test_rand() {
     T x;
     for(int i = 0 ; i < 1919810 ; ++i) x.push_back(my_rand() & 0b1);
@@ -29,7 +29,7 @@ void test_rand() {
     print_detail(x |= y);
 }
 
-template <check T = dynamic_bitset>
+template <class T = dynamic_bitset>
 void test_corner() {
     T x;
     T y;

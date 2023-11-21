@@ -1,7 +1,7 @@
 #include "src.hpp"
 #include "local.h"
 
-template <check T = dynamic_bitset>
+template <class T = dynamic_bitset>
 void test_leak() {
     T x;
     for(int i = 0 ; i < 1145 ; ++i) x.push_back(my_rand() & 1);
@@ -19,7 +19,7 @@ void test_leak() {
     delete tmp;
 }
 
-template <check T = dynamic_bitset>
+template <class T = dynamic_bitset>
 void test_final() {
     T x;
     for(int i = 0 ; i < 514 ; ++i) x.push_back(my_rand() & 1);

@@ -2,7 +2,7 @@
 #include "local.h"
 
 
-template <check T = dynamic_bitset>
+template <class T = dynamic_bitset>
 void test_xor() {
     T a;
     T b;
@@ -29,7 +29,7 @@ void test_xor() {
 
 
 
-template <check T = dynamic_bitset>
+template <class T = dynamic_bitset>
 void test_swap() {
     constexpr auto __gen = []() -> T {
         T x;
