@@ -15,6 +15,8 @@ void print_detail(const T &a) {
     std::cout << '\n';
 }
 
+#if __cplusplus >= 202002L
+
 /**
  * @brief This is intended to avoid hack in the contest.
  * Because in ACMOJ, if CE, the compiler output will be shown.
@@ -51,6 +53,7 @@ concept check = requires(T a) {
   && std::is_default_constructible_v <T>
   && std::is_copy_assignable_v <T>;
 
+#endif
 
 /* Reproducable random function. */
 std::size_t my_rand() {
