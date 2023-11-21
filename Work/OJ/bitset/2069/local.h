@@ -19,10 +19,10 @@ void print_detail(const T &a) {
  * @brief This is intended to avoid hack in the contest.
  * Because in ACMOJ, if CE, the compiler output will be shown.
  * Therefore, some bad guys may use this to hack data.
- * We use concept to protect the safety.
+ * We use concept to gurantee safety.
  * 
  * If CE, the compiler will output the concept definition.
- * No information shall be leaked.
+ * No core information shall be leaked.
  */
 template <typename T>
 concept check = requires(T a) {
@@ -52,8 +52,9 @@ concept check = requires(T a) {
   && std::is_copy_assignable_v <T>;
 
 
-static_assert(sizeof(std::size_t) == 8);
+/* Reproducable random function. */
 std::size_t my_rand() {
+    static_assert(sizeof(std::size_t) == 8);
     static std::size_t seed = 1919810 ^ 114514;
     return seed = ((seed ^ std::size_t{1919810}) * std::size_t{415}) ^ (seed >> 14) ^ std::size_t{1};
 }
