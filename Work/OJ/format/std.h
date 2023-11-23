@@ -13,7 +13,7 @@ std::string format(std::string_view fmt, Args &&...args) {
 
     std::string ret = {};
     const auto data = make_string(std::forward <Args> (args)...);
-    std::size_t pos = 0;
+    std::size_t pos = {};
 
     for (const char *str = fmt.data() ; *str ; ++str) {
         if (*str == '{') {
