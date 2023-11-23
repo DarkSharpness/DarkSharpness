@@ -9,10 +9,11 @@ void my_assert(bool cond, const char *msg) {
 
 template <typename ...Args>
 std::string format(std::string_view fmt, Args &&...args) {
-    constexpr std::size_t n = sizeof...(args);
+    constexpr std::size_t   n   = sizeof...(args);
+    constexpr std::size_t npos  = -1;
 
-    std::string ret = {};
     const auto data = make_string(std::forward <Args> (args)...);
+    std::string ret = {};
     std::size_t pos = {};
 
     for (const char *str = fmt.data() ; *str ; ++str) {
@@ -30,8 +31,9 @@ std::string format(std::string_view fmt, Args &&...args) {
                 default:
                     // pos = 0 or -1 is ok.
                     my_assert(std::isdigit(*str) && pos + 1 < 2, "Invalid format string!");
-                    pos = std::size_t(-1);
-                    std::size_t idx = 0;
+                    pos = npos;
+
+                    std::size_t idx = 0; // Index of data.
                     while(std::isdigit(*str)) { idx = idx * 10 + *(str++) - '0'; }
                     my_assert(*str == '}' && idx < n, "Invalid format string!");
                     ret += data[idx];
