@@ -1,0 +1,11 @@
+You may wonder why I use std::string_view here.
+The reason is rather simple.
+When you just want to hold a reference to a string,
+but you don't want to modify it or copy it,
+you can use std::string_view as const reference.
+Why not const std::string &?
+If you initialize from a const char *,
+std::string_view will not allocate memory!
+It is a light-weight reference to a string.
+It provides a lot of useful functions, such as O(1) substr.
+End! Hope to be useful for you!

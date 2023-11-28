@@ -1,0 +1,24 @@
+{
+    "SupportedFiles": [
+        "utility.h"
+    ],
+    "Groups": [
+        {
+            "GroupID": 1,
+            "GroupName": "Group 114514",
+            "GroupScore": 10,
+            "TestPoints": [
+                1,2,3,4,5
+            ]
+        }
+    ],
+    "Details": [
+        { "ID": 1, "Dependency": 0, "TimeLimit": 1000, "MemoryLimit": 268435456, "DiskLimit": 0, "ValgrindTestOn": false },
+        { "ID": 2, "Dependency": 0, "TimeLimit": 1000, "MemoryLimit": 268435456, "DiskLimit": 0, "ValgrindTestOn": false },
+        { "ID": 3, "Dependency": 0, "TimeLimit": 1000, "MemoryLimit": 268435456, "DiskLimit": 0, "ValgrindTestOn": false },
+        { "ID": 4, "Dependency": 0, "TimeLimit": 1000, "MemoryLimit": 268435456, "DiskLimit": 0, "ValgrindTestOn": false },
+        { "ID": 5, "Dependency": 0, "TimeLimit": 1000, "MemoryLimit": 268435456, "DiskLimit": 0, "ValgrindTestOn": false }
+    ],
+    "CompileTimeLimit": 10000,
+    "SPJ": 3
+}
