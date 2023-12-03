@@ -17,14 +17,20 @@ signed main() {
         const int log = log2(n);
         const int mod = i * i * 150;
 
+        vector <int> v;
+
         for (int i = 1 ; i <= sqr ; ++i)
-            in << (rand() ^ rand() << 8) % (i + 1) + 1 << ' ';
-
+            v.push_back((rand() ^ rand() << 8) % (i + 1) + 1);
         for (int i = sqr + 1 ; i < n - log ; ++i)
-            in << (rand() ^ rand() << 8) % sqr + 1 << ' ';
-
+            v.push_back((rand() ^ rand() << 8) % sqr + 1);
         for (int i = n - log ; i <= n ; ++i)
-            in << (rand() ^ rand() << 8) % mod + 1 << ' ';
+            v.push_back((rand() ^ rand() << 8) % mod + 1);
+
+        std::ranges::sort(v, greater<int>());
+        if (i == 2) // filter out all odd numbers
+            std::ranges::transform(v, v.begin(), [](int x) { return x + (x & 1); });
+        std::ranges::shuffle(v.begin(), v.end(), std::mt19937(std::random_device()()));
+        std::ranges::copy(v, ostream_iterator<int>(in, " "));
     }
     return 0;
 }
