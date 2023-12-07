@@ -30,7 +30,7 @@ struct reg {
     void sync() { value = bak; }
 
     template <int l>
-    void set_byte(int val) {
+    void set_byte(char val) {
         static_assert(l >= 0 && l < 4);
         dat[l] = val;
     }

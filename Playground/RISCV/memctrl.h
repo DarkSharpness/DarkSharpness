@@ -33,9 +33,9 @@ struct memctrl {
     reg loadData;   // Data loaded.
 
   private:
-    reg status;
-    reg bias;
-    reg lens; // Length of read/write.
+    reg status; // Status of the execution.
+    reg stage;  // Stage of the execution.
+    reg lens;   // Length of read/write.
 
   public:
     void init(std::vector <wire> vec) {
@@ -50,7 +50,7 @@ struct memctrl {
     }
 
     void work() {
-        if (reset || ~ready) {
+        if (reset || !ready) {
             mem_wr  <= 0;
             iDone   <= 0;
             lsbDone <= 0;
@@ -64,60 +64,60 @@ struct memctrl {
                         // Set the operation length.
                         switch (take <1,0> (__lsbType)) {
                             default: throw std::runtime_error("Invalid lsbType");
-                            case 0: lens <= 0; break;
-                            case 1: lens <= 1; break;
-                            case 2: lens <= 3; break;
+                            case 0: lens <= 1; break;
+                            case 1: lens <= 2; break;
+                            case 2: lens <= 4; break;
                         }
-
                         status   <= take <4,3> (__lsbType);
-                        bias     <= 0;
+                        stage    <= 0;
                         mem_addr <= lsbAddr();
                     } else if (iFetchOn()) {
+                        lens     <= 4;
                         status   <= IFETCH;
-                        bias     <= 0;
-                        lens     <= 3;
+                        stage    <= 0;
                         mem_addr <= iFetchPc();
                     } break;
 
-                case IFETCH: // Almost the same.
+                case IFETCH:
                 case READ:
                     // Wrong predict: Halt wrong reading.
-                    if (rollback()) { status <= IDLE; break; }
+                    if (rollback())  { status <= IDLE; break; }
 
-                    switch (bias()) {
-                        default: throw std::runtime_error("Invalid bias 1");
-                        case 0: loadData.set_byte <0> (mem_in()); break;
-                        case 1: loadData.set_byte <1> (mem_in()); break;
-                        case 2: loadData.set_byte <2> (mem_in()); break;
-                        case 3: loadData.set_byte <3> (mem_in()); break;
+                    switch (stage()) {
+                        default: throw std::runtime_error("Invalid stage 1");
+                        case 0: break; // Wait for the data to come.
+                        case 1: loadData.set_byte <0> (mem_in()); break;
+                        case 2: loadData.set_byte <1> (mem_in()); break;
+                        case 3: loadData.set_byte <2> (mem_in()); break;
+                        case 4: loadData.set_byte <3> (mem_in()); break;
                     }
 
-                    bias     <= bias() + 1;
+                    stage    <= stage() + 1;
                     mem_addr <= mem_addr() + 1;
 
-                    if (bias() == lens()) {
+                    if (stage() == lens()) {
                         iDone   <= (status() == IFETCH);
                         lsbDone <= (status() != IFETCH);
                         iDone   <= 1;
                         status  <= IDLE; 
                     } break;
 
-                case WRITE:
+                case WRITE:        
                     if (io_buffer_full()) break; // Do nothing if the buffer is full.
 
-                    switch (bias()) {
-                        default: throw std::runtime_error("Invalid bias 2");
-                        case 0: mem_out.set_byte <0> (lsbData()); break;
-                        case 1: mem_out.set_byte <1> (lsbData()); break;
-                        case 2: mem_out.set_byte <2> (lsbData()); break;
-                        case 3: mem_out.set_byte <3> (lsbData()); break;
+                    switch (stage()) {
+                        default: throw std::runtime_error("Invalid stage 2");
+                        case 0: mem_out <= take <7 , 0> (lsbData()); break;  
+                        case 1: mem_out <= take <15, 8> (lsbData()); break;
+                        case 2: mem_out <= take <23,16> (lsbData()); break;
+                        case 3: mem_out <= take <31,24> (lsbData()); break;
                     }
 
                     mem_wr <= 1;
-                    bias   <= bias() + 1;
-                    if (bias()) mem_addr <= mem_addr() + 1;
+                    stage  <= stage() + 1;
+                    if (stage() != 0) mem_addr <= mem_addr() + 1;
 
-                    if (bias() == lens()) {
+                    if (stage() + 1 == lens()) {
                         lsbDone <= 1;
                         status  <= IDLE;
                     } break;
@@ -126,7 +126,7 @@ struct memctrl {
     }
 
     void sync() {
-        bias.sync();
+        stage.sync();
         status.sync();
         mem_out.sync();
         mem_addr.sync();
