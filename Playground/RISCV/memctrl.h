@@ -47,6 +47,7 @@ struct memctrl {
         lsbAddr         = vec[5];
         lsbData         = vec[6];
         rollback        = vec[7];
+        vec.at(7); // Bound check.
     }
 
     void work() {

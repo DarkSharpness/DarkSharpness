@@ -30,6 +30,7 @@ struct icache {
         addrIn          = vec[0];
         writeEnable     = vec[1];
         dataIn          = vec[2];
+        vec.at(2); // Bound check.
     }
 
     // Work in one cycle.
