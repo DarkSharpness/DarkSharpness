@@ -50,4 +50,13 @@ constexpr int take(int val) {
 
 inline const wire NotImplemented = { [] () -> int { throw std::runtime_error("Not implemented"); } };
 
+
+// Check if all the conditions are true.
+template <typename ...T>
+requires (std::convertible_to <T, bool> && ...)
+inline void assert(T &&...cond) {
+    if (!(bool(cond) && ...))
+        throw std::runtime_error("Assertion failed");
+}
+
 } // namespace dark

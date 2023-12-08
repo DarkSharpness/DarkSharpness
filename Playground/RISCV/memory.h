@@ -34,9 +34,7 @@ struct memory {
 
     void work() {
         unsigned __addr = mem_addr(); // Speed up by caching.
-        if (__addr >> width)
-            throw std::runtime_error("Memory overflow");
-
+        assert(__addr < (1 << width));
         if (mem_wr()) data[__addr] = mem_out();
         else          last_addr <= __addr;
     }

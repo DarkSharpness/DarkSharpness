@@ -39,6 +39,7 @@ struct memctrl {
 
   public:
     void init(std::vector <wire> vec) {
+        assert(vec.size() == 8);
         mem_in          = vec[0];
         io_buffer_full  = vec[1];
         iFetchOn        = vec[2];
@@ -47,7 +48,6 @@ struct memctrl {
         lsbAddr         = vec[5];
         lsbData         = vec[6];
         rollback        = vec[7];
-        vec.at(7); // Bound check.
     }
 
     void work() {
@@ -58,13 +58,13 @@ struct memctrl {
             if (ready) status <= IDLE;
         } else {
             switch (status.value) {
-                default: throw std::runtime_error("Invalid status");
+                assert(false); 
                 case IDLE:
                     // Speed up simulation using temporary variables.
                     if (int __lsbType = lsbType(); take <4> (__lsbType)) { // LSB enabled
                         // Set the operation length.
                         switch (take <1,0> (__lsbType)) {
-                            default: throw std::runtime_error("Invalid lsbType");
+                            default: assert(false);
                             case 0: lens <= 1; break;
                             case 1: lens <= 2; break;
                             case 2: lens <= 4; break;
@@ -85,7 +85,7 @@ struct memctrl {
                     if (rollback())  { status <= IDLE; break; }
 
                     switch (stage()) {
-                        default: throw std::runtime_error("Invalid stage 1");
+                        assert(false);
                         case 0: break; // Wait for the data to come.
                         case 1: loadData.set_byte <0> (mem_in()); break;
                         case 2: loadData.set_byte <1> (mem_in()); break;
@@ -103,11 +103,11 @@ struct memctrl {
                         status  <= IDLE; 
                     } break;
 
-                case WRITE:        
+                case WRITE:
                     if (io_buffer_full()) break; // Do nothing if the buffer is full.
 
                     switch (stage()) {
-                        default: throw std::runtime_error("Invalid stage 2");
+                        assert(false);
                         case 0: mem_out <= take <7 , 0> (lsbData()); break;  
                         case 1: mem_out <= take <15, 8> (lsbData()); break;
                         case 2: mem_out <= take <23,16> (lsbData()); break;

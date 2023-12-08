@@ -27,10 +27,10 @@ struct icache {
 
     // Link the lines.
     void init(std::vector <wire> vec) {
+        assert(vec.size() == 3);
         addrIn          = vec[0];
         writeEnable     = vec[1];
         dataIn          = vec[2];
-        vec.at(2); // Bound check.
     }
 
     // Work in one cycle.
@@ -40,7 +40,7 @@ struct icache {
                 cmd[i] <= 0;
                 tag[i] <= 0;
             }
-        } else if (ready && writeEnable()) {
+        } else if (writeEnable()) {
             cmd[index()] <= dataIn();
             tag[index()] <= tagIn();
         }

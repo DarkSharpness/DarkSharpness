@@ -12,8 +12,6 @@ signed main() {
     mem->mem_addr       = cpu->mem_addr();
     mem->mem_wr         = cpu->mem_wr();
     cpu->init();
-
-
     std::cerr << "Done!\n";
     return 0;
 }
