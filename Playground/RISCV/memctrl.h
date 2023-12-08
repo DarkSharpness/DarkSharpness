@@ -51,11 +51,13 @@ struct memctrl {
     }
 
     void work() {
-        if (reset || !ready) {
+        if (reset) {
             mem_wr  <= 0;
             iDone   <= 0;
             lsbDone <= 0;
-            if (ready) status <= IDLE;
+            status  <= IDLE;
+        } if (!ready) {
+            mem_wr  <= 0;
         } else {
             switch (status.value) {
                 assert(false); 

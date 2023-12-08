@@ -40,7 +40,7 @@ struct icache {
                 cmd[i] <= 0;
                 tag[i] <= 0;
             }
-        } else if (writeEnable()) {
+        } else if (ready && writeEnable()) {
             cmd[index()] <= dataIn();
             tag[index()] <= tagIn();
         }
