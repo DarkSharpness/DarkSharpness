@@ -7,8 +7,9 @@ namespace dark {
 
 struct ifetch {
   public:
-    static constexpr int IDLE = 0; // Work in one cycle.
-    static constexpr int WAIT = 1; // Wait for memory.
+    static constexpr int width = 8;             // Branch prediction width.
+    static constexpr int size  = 1 << width;    // Branch prediction size.
+
 
     wire rsFull;    // Reservation station full.
     wire lsbFull;   // Load/store buffer full.
@@ -19,8 +20,6 @@ struct ifetch {
 
     wire hit;       // icache hit.
     wire instData;  // Instruction fetched from cache.
-    wire iDone;     // Whether memory control is done.
-    wire loadData;  // Instruction fetched from memory.
 
     wire robEn;     // Reorder buffer enable.
     wire robPc;     // Reorder buffer PC.
@@ -31,64 +30,113 @@ struct ifetch {
 
   public:
 
-    reg instRdy;    // Whether fetched.
-    reg instOut;    // Instruction fetched.
-    reg nextPc;     // Instruction PC (next command).
-    reg instJump;   // Jump or not (branching).
-
-    reg opType;
-    reg rs1Index;
-    reg rs2Index;
-    reg rdIndex;
-    reg immData;
+    reg pc;         // Program counter.
+    reg insDone;    // Whether fetched.
+    reg insOut;     // Instruction fetched.
+    reg insPc;      // Instruction PC (next command).
+    reg insJump;    // Jump or not (branching).
 
   private:
-    reg pc;     // Program counter.
-    reg status; // Status of the fetcher.
-
-    bool brEn  () { return take <1> (brJump()); }
-    bool brJump() { return take <0> (brJump()); }
+    reg table[size]; // Branch history table.
 
     bool issueable() { return !(rsFull() || lsbFull() || robFull()); }
+    bool predJump()  { return table[take <width + 1,2> (pc())](); }
+
+    int jalImm() {
+        union jal {
+            int imm;
+            struct {
+                unsigned opcode     : 7;
+                unsigned rd         : 5;
+                unsigned imm_19_12  : 8;
+                unsigned imm_11     : 1;
+                unsigned imm_10_1   : 10;
+                unsigned imm_20     : 1;
+            };
+            int data() const {
+                return sign_extend <20> (
+                    imm_20 << 20 | imm_19_12 << 12 | imm_11 << 11 | imm_10_1 << 1
+                );
+            }
+        };
+        static_assert(sizeof(jal) == 4);
+        return jal { .imm = instData() }.data();
+    }
+
+    int brImm() {
+        union br {
+            int imm;
+            struct {
+                unsigned opcode     : 7;
+                unsigned imm_11     : 1;
+                unsigned imm_4_1    : 4;
+                unsigned funct3     : 3;
+                unsigned rs1        : 5;
+                unsigned rs2        : 5;
+                unsigned imm_10_5   : 6;
+                unsigned imm_12     : 1;
+            };
+            int data() const {
+                return sign_extend <12> (
+                    imm_12 << 12 | imm_11 << 11 | imm_10_5 << 5 | imm_4_1 << 1
+                );
+            }
+        };
+        static_assert(sizeof(br) == 4);
+        return br { .imm = instData() }.data();
+    }
+
 
   public:
     void init(std::vector <wire> vec) {
-        assert(vec.size() == 11);
+        assert(vec.size() == 9);
         rsFull      = vec[0];
         lsbFull     = vec[1];
         robFull     = vec[2];
         hit         = vec[3];
         instData    = vec[4];
-        iDone       = vec[5];
-        loadData    = vec[6];
-        robEn       = vec[7];
-        robPc       = vec[8];
-        brType      = vec[9];
-        brPc        = vec[10];
+        robEn       = vec[5];
+        robPc       = vec[6];
+        brType      = vec[7];
+        brPc        = vec[8];
     }
 
     void work() {
         if (reset) {
             pc      <= 0;
-            status  <= IDLE;
-            instRdy <= 0;
-            nextPc  <= 0;
+            insDone <= 0;
         } else if (ready) {
-            if (status() == IDLE) {
-                if (!issueable()) return; // Stall.
-                if (hit()) { // hit and issue.
-                    instRdy <= 1;
-                    instOut <= instData();
+            if (hit() && issueable()) {
+                insDone <= 1;
+                insOut  <= instData();
+                insPc   <= pc();
 
-                } else { // Non hit and try wait.
-                    status <= WAIT;
+                switch (take <6,0> (instData())) {
+                    case 0b1101111: // Jump and link.
+                        pc <= pc() + jalImm();
+                        break;
+
+                    case 0b1100011:{// Branching
+                        bool __predJump = predJump();
+                        insJump <= __predJump;
+                        pc <= pc() + (__predJump ? brImm() : 4);
+                    }   break;
+
+                    case 0b1100111: // Jump and link register.
+                        static_cast <void> (NotImplemented());
+
+                    default: // Non-branching, normal case.
+                        pc <= pc() + 4;
                 }
-            } else {
-                // Waiting for iDone signal.
-                if (iDone()) {
+            }
+        }
 
-                }
-
+        // BHT update part.
+        if (reset) {
+            for (int i = 0; i < size; ++i) table[i] <= 0;
+        } else if (ready) {
+            if (take <1> (brType())) {
+                table[take <width + 1, 2> (brPc())] <= take <0> (brType());
             }
         }
     }

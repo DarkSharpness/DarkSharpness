@@ -10,7 +10,7 @@ inline bool ready {};
 
 struct wire {
     std::function <int (void) > func;
-    int operator() ()  { return func(); }
+    int operator() (void) const { return func(); }
 };
 
 struct reg {
@@ -20,7 +20,7 @@ struct reg {
         char dat[4];
     };
 
-    int operator() ()  { return value; }
+    int operator() (void) const { return value; }
     operator wire() { return { [this] () -> int { return value; } }; }
 
     void operator = (int val) { value = bak = val; }
@@ -36,8 +36,25 @@ struct reg {
     }
 };
 
+inline const wire NotImplemented = { [] () -> int { throw std::runtime_error("Not implemented"); } };
+
+// Check if all the conditions are true.
+template <typename ...T>
+requires (std::convertible_to <T, bool> && ...)
+inline void assert(T &&...cond) {
+    if (!(bool(cond) && ...))
+        throw std::runtime_error("Assertion failed");
+}
+
+template <int width>
+inline constexpr int sign_extend(int val) {
+    static_assert(width >= 0 && width < 32);
+    struct { int val : width + 1; } tmp;
+    return tmp.val = val;
+}
+
 template <int l,int r = l>
-constexpr int take(int val) {
+inline constexpr int take(int val) {
     static_assert(l >= r);
     constexpr int width = l - r + 1;
     if constexpr (width == 32) {
@@ -48,15 +65,5 @@ constexpr int take(int val) {
     }
 }
 
-inline const wire NotImplemented = { [] () -> int { throw std::runtime_error("Not implemented"); } };
-
-
-// Check if all the conditions are true.
-template <typename ...T>
-requires (std::convertible_to <T, bool> && ...)
-inline void assert(T &&...cond) {
-    if (!(bool(cond) && ...))
-        throw std::runtime_error("Assertion failed");
-}
 
 } // namespace dark

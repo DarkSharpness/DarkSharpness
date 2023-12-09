@@ -13,8 +13,21 @@ struct icache {
     wire dataIn;
 
   public:
-    wire hit() { return { [this]()-> int { return tag[index()]() == tagIn(); } }; }
-    wire dataOut() { return { [this]() -> int { return cmd[index()](); } }; }
+    wire hit() {
+        return {
+            [this]()-> int {
+                return writeEnable() || tag[index()]() == tagIn();
+            }
+        };
+    }
+
+    wire dataOut() {
+        return {
+            [this]() -> int {
+                return writeEnable() ? dataIn() : cmd[index()]();
+            }
+        };
+    }
 
   private:
     reg  cmd[size];
