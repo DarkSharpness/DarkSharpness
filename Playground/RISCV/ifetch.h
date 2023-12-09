@@ -7,9 +7,6 @@ namespace dark {
 
 struct ifetch {
   public:
-    static constexpr int width = 8;             // Branch prediction width.
-    static constexpr int size  = 1 << width;    // Branch prediction size.
-
     static constexpr int IDLE = 0; // Work in one cycle.
     static constexpr int WAIT = 1; // Wait for memory.
 
@@ -20,7 +17,7 @@ struct ifetch {
     // Case 1: hit
     // Case 2: miss and rely on fetch.
 
-    wire instEn;    // icache hit.
+    wire hit;       // icache hit.
     wire instData;  // Instruction fetched from cache.
     wire iDone;     // Whether memory control is done.
     wire loadData;  // Instruction fetched from memory.
@@ -28,6 +25,7 @@ struct ifetch {
     wire robEn;     // Reorder buffer enable.
     wire robPc;     // Reorder buffer PC.
 
+    // Update branch history table.
     wire brType;    // Compress enable and jump result.
     wire brPc;      // PC of a branch.
 
@@ -48,14 +46,53 @@ struct ifetch {
     reg pc;     // Program counter.
     reg status; // Status of the fetcher.
 
-    reg pred[size]; // Branch prediction.
-
     bool brEn  () { return take <1> (brJump()); }
     bool brJump() { return take <0> (brJump()); }
 
+    bool issueable() { return !(rsFull() || lsbFull() || robFull()); }
+
   public:
-    void init(std::vector <wire> vec);
-    void work();
+    void init(std::vector <wire> vec) {
+        assert(vec.size() == 11);
+        rsFull      = vec[0];
+        lsbFull     = vec[1];
+        robFull     = vec[2];
+        hit         = vec[3];
+        instData    = vec[4];
+        iDone       = vec[5];
+        loadData    = vec[6];
+        robEn       = vec[7];
+        robPc       = vec[8];
+        brType      = vec[9];
+        brPc        = vec[10];
+    }
+
+    void work() {
+        if (reset) {
+            pc      <= 0;
+            status  <= IDLE;
+            instRdy <= 0;
+            nextPc  <= 0;
+        } else if (ready) {
+            if (status() == IDLE) {
+                if (!issueable()) return; // Stall.
+                if (hit()) { // hit and issue.
+                    instRdy <= 1;
+                    instOut <= instData();
+
+                } else { // Non hit and try wait.
+                    status <= WAIT;
+                }
+            } else {
+                // Waiting for iDone signal.
+                if (iDone()) {
+
+                }
+
+            }
+        }
+    }
+
     void sync();
 };
 
