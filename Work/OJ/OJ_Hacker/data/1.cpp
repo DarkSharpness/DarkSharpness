@@ -8,6 +8,5 @@ signed main() {
     if (x == 1) std::cout << "Accepted!\n";
     else        std::cout << "Wrong answer!\n";
 
-    std::cout << "Checker: OK!\n";
     return 0;
 }
