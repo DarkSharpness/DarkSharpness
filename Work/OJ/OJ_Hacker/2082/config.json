@@ -1,0 +1,57 @@
+{
+    "SupportedFiles": [
+        "utility.h"
+    ],
+    "Groups": [
+        {
+            "GroupID": 1,
+            "GroupName": "",
+            "GroupScore": 10,
+            "TestPoints": [
+                1
+            ]
+        },
+        {
+            "GroupID": 2,
+            "GroupName": "",
+            "GroupScore": 10,
+            "TestPoints": [
+                2
+            ]
+        },
+        {
+            "GroupID": 3,
+            "GroupName": "",
+            "GroupScore": 10,
+            "TestPoints": [
+                3
+            ]
+        },
+        {
+            "GroupID": 4,
+            "GroupName": "",
+            "GroupScore": 10,
+            "TestPoints": [
+                4
+            ]
+        },
+        {
+            "GroupID": 5,
+            "GroupName": "",
+            "GroupScore": 10,
+            "TestPoints": [
+                5
+            ]
+        }
+    ],
+    "Details": [
+        { "ID": 1, "Dependency": 0, "TimeLimit": 1000, "MemoryLimit": 268435456, "DiskLimit": 0, "ValgrindTestOn": false },
+        { "ID": 2, "Dependency": 0, "TimeLimit": 1000, "MemoryLimit": 268435456, "DiskLimit": 0, "ValgrindTestOn": false },
+        { "ID": 3, "Dependency": 0, "TimeLimit": 1000, "MemoryLimit": 268435456, "DiskLimit": 0, "ValgrindTestOn": false },
+        { "ID": 4, "Dependency": 0, "TimeLimit": 1000, "MemoryLimit": 268435456, "DiskLimit": 0, "ValgrindTestOn": true  },
+        { "ID": 5, "Dependency": 0, "TimeLimit": 1000, "MemoryLimit": 268435456, "DiskLimit": 0, "ValgrindTestOn": false }
+    ],
+    "CompileTimeLimit": 10000,
+    "SPJ": 3,
+    "Scorer": 0
+}
