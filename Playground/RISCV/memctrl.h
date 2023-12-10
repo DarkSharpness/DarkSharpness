@@ -59,7 +59,7 @@ struct memctrl {
         } if (!ready) {
             mem_wr  <= 0;
         } else {
-            switch (status.value) {
+            switch (status()) {
                 assert(false); 
                 case IDLE:
                     // Speed up simulation using temporary variables.
