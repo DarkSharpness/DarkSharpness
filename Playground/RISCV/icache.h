@@ -12,39 +12,37 @@ struct icache {
     wire writeEnable;
     wire dataIn;
 
-  public:
-    wire hit() {
-        return {
-            [this]()-> int {
-                return writeEnable() || tag[index()]() == tagIn();
-            }
-        };
-    }
+    /**
+     * @return Whether the instruction is ready. (Cache hit)
+     */
+    const wire hit = {
+        [this]()-> int { return writeEnable() || tag[index()]() == tagIn(); }
+    };
+    /**
+     * @return The instruction fetched from icache.
+     */
+    const wire dataOut = {
+        [this]()-> int { return writeEnable() ? dataIn() : cmd[index()](); }
+    };
 
-    wire dataOut() {
-        return {
-            [this]() -> int {
-                return writeEnable() ? dataIn() : cmd[index()]();
-            }
-        };
-    }
+  private: // Private properties.
+
+    std::array <reg, size> cmd;
+    std::array <reg, size> tag;
+
+    // These are caches to speed up fake simulation.
+    // In practice, they are just wires...
+
+    int __index  {};
+    int __dataIn {};
+    int __tagIn  {};
 
   private:
-    reg  cmd[size];
-    reg  tag[size];
 
-    int tagIn() { return take <31, width + 2> (addrIn()) << 1 | 1; }
-    int index() { return take <width + 1 , 0> (addrIn());          }
+    int tagIn() { return bits {take <31, width + 2> (addrIn()) , bits <1> (1) };}
+    int index() { return bits {take <width + 1 , 0> (addrIn())                };}
 
   public:
-
-    // Link the lines.
-    void init(std::vector <wire> vec) {
-        assert(vec.size() == 3);
-        addrIn          = vec[0];
-        writeEnable     = vec[1];
-        dataIn          = vec[2];
-    }
 
     // Work in one cycle.
     void work() {
@@ -54,15 +52,23 @@ struct icache {
                 tag[i] <= 0;
             }
         } else if (ready && writeEnable()) {
-            cmd[index()] <= dataIn();
-            tag[index()] <= tagIn();
+            // Special optimization.
+            __index     = index();
+            __dataIn    = dataIn();
+            __tagIn     = tagIn();
+
+            cmd[__index] <= __dataIn;
+            tag[__index] <= __tagIn;
         }
     }
 
-    // Synchronize all registers
     void sync() {
-        for (int i = 0 ; i < size ; ++i) { cmd[i].sync(); tag[i].sync(); }
+        /* This functions is specially rewritten for better performance. */
+        if (reset)
+            for (int i = 0 ; i < size ; ++i) cmd[i] = 0, tag[i] = 0;
+        else cmd[__index] = __dataIn, tag[__index] = __tagIn;
     }
+
 }; // struct icache
 
 

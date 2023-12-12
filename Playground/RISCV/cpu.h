@@ -12,32 +12,27 @@ struct cpu {
 
     reg pc;
 
-  private:
+  public: // This part should be private.
 
     memctrl ctrl;
     icache cache;
 
   public:
 
-    wire mem_out()  { return ctrl.mem_out;  }
-    wire mem_addr() { return ctrl.mem_addr; }
-    wire mem_wr()   { return ctrl.mem_wr;   }
+    const wire mem_out  = ctrl.mem_out;
+    const wire mem_addr = ctrl.mem_addr;
+    const wire mem_wr   = ctrl.mem_wr;
 
   public:
-    void init() {
 
-    }
-
-    void work() {
-
-    }
-
-    void sync() {
-
-    }
-
-
+    void init();
+    void work();
 };
+
+// Link the wires.
+void cpu::init() {}
+void cpu::work() {}
+
 
 
 
