@@ -7,13 +7,18 @@ namespace dark {
 /**
  * @brief A random access memory.
  */
-struct memory {
+struct ram {
+  public:
     static constexpr int width = 18;
-    std::uint8_t data[1 << width];  // Data storage.
+    using storage_type = std::array <std::uint8_t, 1 << width>;
+
+    storage_type data;
 
     wire mem_out;   // Input from cpu.
     wire mem_wr;    // Whether to write.
     wire mem_addr;  // Address to read/write.
+
+  public:
 
     /**
      * @brief Output of RAM (Input of CPU).
@@ -21,26 +26,28 @@ struct memory {
      * It will output the value of cycle #x + 1.
      * @return Requested byte of last cycle.
      */
-    wire mem_in() { return { [this] () -> int { return data[last_addr()]; } }; }
+    const wire mem_in = { [this] () -> int { return data[last_addr()]; } };
     /**
      * @return Always 0 (RAM is never full), currently.
      */
-    wire io_buffer_full() { return { [this] () ->int { return 0; } }; }
+    const wire io_buffer_full = { [this] () -> int { return 0; } };
 
-  private:
+  public: // This part should be private.
     reg last_addr; // Address of last cycle.
 
   public:
-
-    void work() {
-        unsigned __addr = mem_addr(); // Speed up by caching.
-        assert(__addr < (1 << width));
-        if (mem_wr()) data[__addr] = mem_out();
-        else          last_addr <= __addr;
-    }
-
-    void sync() { last_addr.sync(); }
+    void read();
+    void work();
 };
+
+
+void ram::read() { /* To be completed... */ }
+void ram::work()  {
+    unsigned __addr = mem_addr(); // Speed up by caching.
+    assert(__addr < (1 << width), "Memory address out of range");
+    if (mem_wr()) data[__addr] = mem_out();
+    else          last_addr   <= __addr;
+}
 
 
 } // namespace dark
