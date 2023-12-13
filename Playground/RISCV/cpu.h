@@ -7,12 +7,16 @@
 namespace dark {
 
 struct cpu {
+  public:
+    using sync = sync_tag <void>;
+
     wire mem_in;
     wire io_buffer_full;
 
     reg pc;
 
-  public: // This part should be private.
+  public:
+    // Internal components.
 
     memctrl ctrl;
     icache cache;

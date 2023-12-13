@@ -1,7 +1,8 @@
 #pragma once
+#include "debug.h" // If you want to use debug, include this.
 #include <functional>
 #include <stdexcept>
-#include <iostream> // Debug only.
+
 
 /* Declaration of basic register and wire type. */
 namespace dark {
@@ -14,7 +15,7 @@ namespace dark {
 struct wire {
     std::function <int (void)> func;
     int operator() (void) const { return func(); }
-    void sync() { std::cerr << "wire\n"; /* Do nothing!!! */ }
+    void sync() { debug("Sync wire:", this); }
 };
 
 /**
@@ -25,7 +26,7 @@ struct wire {
 struct reg {
   private:
     int value {};
-    union { int  bak {}; char dat[4]; };
+    union { int bak {}; char dat[4]; };
   public:
 
     int operator() (void) const { return value; }
@@ -35,7 +36,7 @@ struct reg {
     void operator = (reg rhs) { value = bak = rhs.value; }
     void operator <= (int val) { bak = val; }
     void operator <= (reg rhs) { bak = rhs.value; } 
-    void sync() { value = bak; std::cerr << "reg\n"; }
+    void sync() { debug("Sync reg:", this, this->value, this->bak); value = bak;  }
 
     // Set given byte to given char (indexed from 0, low byte).
     template <int l> requires (l >= 0 && l < 4)

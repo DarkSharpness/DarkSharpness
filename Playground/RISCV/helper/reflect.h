@@ -18,6 +18,7 @@ struct caster {
  * @brief A helper class to indicate the base type to sync().
  * If you want to synchronize a base type,
  * please define tag = sync_tag <base_type>
+ * @note If _Tags = void, then sync() will visit members.
  */
 template <typename ..._Tags>
 struct sync_tag {};
@@ -143,45 +144,45 @@ inline void sync_member(_Tp &val) {
     static_assert(std::is_aggregate_v <_Tp>, "Type must be aggregate!");
     static_assert(!detail::std_array  <_Tp>, "No array allowed!");
     using namespace detail;
-    constexpr auto   _N     = size <_Tp> ();
-    constexpr auto __sync   = [](auto &...args) { (synchronize(args), ...); };
+    constexpr auto __size = size <_Tp> ();
+    constexpr auto __sync = [](auto &...args) { (synchronize(args), ...); };
 
-    if constexpr (_N == 0) {
+    if constexpr (__size == 0) {
         // Do nothing.
-    } else if constexpr (_N == 1) {
+    } else if constexpr (__size == 1) {
         auto &[a] = val;
         __sync(a);
-    } else if constexpr (_N == 2) {
+    } else if constexpr (__size == 2) {
         auto &[a, b] = val;
         __sync(a, b);
-    } else if constexpr (_N == 3) {
+    } else if constexpr (__size == 3) {
         auto &[a, b, c] = val;
         __sync(a, b, c);
-    } else if constexpr (_N == 4) {
+    } else if constexpr (__size == 4) {
         auto &[a, b, c, d] = val;
         __sync(a, b, c, d);
-    } else if constexpr (_N == 5) {
+    } else if constexpr (__size == 5) {
         auto &[a, b, c, d, e] = val;
         __sync(a, b, c, d, e);
-    } else if constexpr (_N == 6) {
+    } else if constexpr (__size == 6) {
         auto &[a, b, c, d, e, f] = val;
         __sync(a, b, c, d, e, f);
-    } else if constexpr (_N == 7) {
+    } else if constexpr (__size == 7) {
         auto &[a, b, c, d, e, f, g] = val;
         __sync(a, b, c, d, e, f, g);
-    } else if constexpr (_N == 8) {
+    } else if constexpr (__size == 8) {
         auto &[a, b, c, d, e, f, g, h] = val;
         __sync(a, b, c, d, e, f, g, h);
-    } else if constexpr (_N == 9) {
+    } else if constexpr (__size == 9) {
         auto &[a, b, c, d, e, f, g, h, i] = val;
         __sync(a, b, c, d, e, f, g, h, i);
-    } else if constexpr (_N == 10) {
+    } else if constexpr (__size == 10) {
         auto &[a, b, c, d, e, f, g, h, i, j] = val;
         __sync(a, b, c, d, e, f, g, h, i, j);
-    } else if constexpr (_N == 11) {
+    } else if constexpr (__size == 11) {
         auto &[a, b, c, d, e, f, g, h, i, j, k] = val;
         __sync(a, b, c, d, e, f, g, h, i, j, k);
-    } else if constexpr (_N == 12) {
+    } else if constexpr (__size == 12) {
         auto &[a, b, c, d, e, f, g, h, i, j, k, l] = val;
         __sync(a, b, c, d, e, f, g, h, i, j, k, l);
     } else {

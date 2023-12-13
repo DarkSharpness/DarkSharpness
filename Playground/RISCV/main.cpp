@@ -21,12 +21,15 @@ signed main() {
 
     dark::reset = true;
     dark::ready = false;
-    for (int i = 0 ; i < 100 ; ++i) {
+
+    for (int i = 0, t = 10 ; i < t ; ++i) {
         cpu->work();
         mem->work();
-        // synchronize(*cpu);
-        // synchronize(*mem);
+        synchronize(*cpu);
+        synchronize(*mem);
     }
+
+    std::cerr << "Reset done.\n\n";
 
     dark::reset = false;
     dark::ready = true;

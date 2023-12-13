@@ -5,8 +5,8 @@ namespace dark {
 
 struct icache {
   public:
-    static constexpr int width = 8;
-    static constexpr int size  = 1 << width;
+    static constexpr int width = 6;
+    static constexpr int lines = 1 << width;
 
     wire addrIn;
     wire writeEnable;
@@ -27,8 +27,8 @@ struct icache {
 
   private: // Private properties.
 
-    std::array <reg, size> cmd;
-    std::array <reg, size> tag;
+    std::array <reg, lines> cmd;
+    std::array <reg, lines> tag;
 
     // These are caches to speed up fake simulation.
     // In practice, they are just wires...
@@ -47,7 +47,7 @@ struct icache {
     // Work in one cycle.
     void work() {
         if (reset) {
-            for (int i = 0 ; i < size ; ++i) {
+            for (int i = 0 ; i < lines ; ++i) {
                 cmd[i] <= 0;
                 tag[i] <= 0;
             }
@@ -65,7 +65,7 @@ struct icache {
     void sync() {
         /* This functions is specially rewritten for better performance. */
         if (reset)
-            for (int i = 0 ; i < size ; ++i) cmd[i] = 0, tag[i] = 0;
+            for (int i = 0 ; i < lines ; ++i) cmd[i] = 0, tag[i] = 0;
         else cmd[__index] = __dataIn, tag[__index] = __tagIn;
     }
 
