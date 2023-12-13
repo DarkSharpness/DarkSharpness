@@ -8,7 +8,7 @@ namespace dark {
 
 struct cpu {
   public:
-    using sync = sync_tag <void>;
+    using sync = sync_member_tag;
 
     wire mem_in;
     wire io_buffer_full;

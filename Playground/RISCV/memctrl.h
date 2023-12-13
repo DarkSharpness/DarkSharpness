@@ -10,11 +10,11 @@ struct memctrl_input {
     wire iFetchOn;  // Whether to fetch.
     wire iFetchPc;  // Ifetch PC.
 
-    wire lsbType;           // low 2 bits are avail and read/write.
-    wire lsbAddr;           // Address to read/write.
-    wire lsbData[VIDX];     // Data to write.
+    wire memType;           // low 2 bits are avail and read/write.
+    wire memAddr;           // Address from decoder.
+    wire memData[VIDX];     // Data to write.
 
-    // wire rollback;  // Roll back when branch mispredict.
+    wire stride;    // Stride if vector.
 };
 
 struct memctrl_output {
@@ -25,16 +25,16 @@ struct memctrl_output {
     reg  mem_wr;    // Whether to write.
 
     reg  iDone;     // Whether the ifetch is done.
-    reg  lsbDone;   // Whether it's ok to stop
+    reg  memDone;   // Whether it's ok to stop
 
     regs loadData;  // Data loaded.
 };
 
 struct memctrl_private {
-    reg  status; // Status of the execution.
-    reg  stage;  // Stage of the execution.
-    reg  lens;   // Length of read/write.
-    reg  toWrite[VIDX]; // Data to write.
+    reg status; // Status of the execution.
+    reg stage;  // Stage of the execution.
+    reg lens;   // Length of read/write.
+    reg bias;   // Bias of each memory stride.
 };
 
 struct memctrl : memctrl_input, memctrl_output, memctrl_private {
@@ -58,7 +58,7 @@ struct memctrl : memctrl_input, memctrl_output, memctrl_private {
     void set_stored() {
         static_assert (N < VIDX * 4);
         constexpr auto pos = (N % 4) * 8;
-        mem_out <= take <pos + 7, pos> (lsbData[N / 4]());
+        mem_out <= take <pos + 7, pos> (memData[N / 4]());
     }
 };
 
@@ -71,7 +71,7 @@ void memctrl::work() {
     if (reset) {
         mem_wr  <= 0;
         iDone   <= 0;
-        lsbDone <= 0;
+        memDone <= 0;
         status  <= IDLE;
     } if (!ready) {
         mem_wr  <= 0;
@@ -80,26 +80,27 @@ void memctrl::work() {
             default: assert(false); break;
             case IDLE:
                 // Speed up simulation using temporary variables.
-                if (int __lsbType = lsbType(); take <1> (__lsbType)) { // LSB enabled
-                    lens     <= take <31,2> (__lsbType);
-                    status   <= take <1, 0> (__lsbType);
-                    stage    <= 0;
-                    mem_addr <= lsbAddr();
+                if (int __memType = memType(); take <1> (__memType)) {
+                    lens     <= take <31,2> (__memType);
+                    status   <= take <1, 0> (__memType);
 
+                    stage    <= 0;
+                    mem_addr <= memAddr();
+                    bias     <= stride();
                 } else if (iFetchOn()) {
                     lens     <= 4;
                     status   <= IFETCH;
+
                     stage    <= 0;
                     mem_addr <= iFetchPc();
-                } break;
+                    bias     <= 1;
+                }   break;
 
             case IFETCH: // Fall through.
             case READ:
-                // Wrong predict: Halt wrong reading (?)
-                // if (rollback())  { status <= IDLE; break; }
 
                 switch (stage()) {
-                    default: assert(false);
+                    default: assert(false); break;
                     case 0: break; // Wait for the data to come.
                     case 1: set_loaded <0> (); break;
                     case 2: set_loaded <1> (); break;
@@ -112,13 +113,13 @@ void memctrl::work() {
                 }
 
                 stage    <= stage() + 1;
-                mem_addr <= mem_addr() + 1;
+                mem_addr <= mem_addr() + bias();
 
                 if (stage() == lens()) {
                     iDone   <= (status() == IFETCH);
-                    lsbDone <= (status() != IFETCH);
+                    memDone <= (status() != IFETCH);
                     iDone   <= 1;
-                    status  <= IDLE; 
+                    status  <= IDLE;
                 } break;
 
             case WRITE:
@@ -138,9 +139,9 @@ void memctrl::work() {
 
                 mem_wr <= 1;
                 stage  <= stage() + 1;
-                if (stage() != 0) { mem_addr <= mem_addr() + 1; }
+                if (stage() != 0) { mem_addr <= mem_addr() + bias(); }
                 if (stage() + 1 == lens()) {
-                    lsbDone <= 1;
+                    memDone <= 1;
                     status  <= IDLE;
                 }
         }

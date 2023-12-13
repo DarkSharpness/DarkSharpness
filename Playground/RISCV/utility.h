@@ -18,21 +18,36 @@ inline constexpr int VLEN {64}; // 64 bits in one vector.
 inline constexpr int VIDX {VLEN / ELEN} ; // 2 registers.
 
 
-enum class ALUop {
-    ADD, // JAL & JALR included.
-    SUB,
-    SLL,
-    SRL,
-    SRA,
-    AND,
-    OR,
-    XOR,
-    SLT,
-    SLTU,
-    SGE,
-    SGEU,
-    SEQ,
-    SNEQ
+struct ALU_type {
+    enum {
+        normal,     // Normal.
+        vector,     // Vector.
+        immediate,  // Immediate.
+        branch,     // Branch.
+        jalr,       // JALR.
+        pcImm,      // PC + immediate.
+        load,       // Load & store.
+        store,      // Store.
+    };
+};
+
+struct ALU_op {
+    enum {
+        ADD,
+        SUB,
+        SLL,
+        SRL,
+        SRA,
+        AND,
+        OR,
+        XOR,
+        SLT,
+        SLTU,
+        SGE,
+        SGEU,
+        SEQ,
+        SNEQ
+    };
 };
 
 } // namespace dark

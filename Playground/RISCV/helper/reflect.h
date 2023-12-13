@@ -23,6 +23,9 @@ struct caster {
 template <typename ..._Tags>
 struct sync_tag {};
 
+using sync_member_tag = sync_tag <void>;
+
+
 /* Forward declaration. */
 template <typename _Tp>
 inline void sync_member(_Tp &);
@@ -51,7 +54,7 @@ struct has_sync_tag <sync_tag <_Tags...>> {
     static constexpr int value = 1; // Visit by tags.
 };
 template <>
-struct has_sync_tag <sync_tag <void>> {
+struct has_sync_tag <sync_member_tag> {
     static constexpr int value = 2; // Visit member.
 };
 
