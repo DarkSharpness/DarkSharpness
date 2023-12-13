@@ -3,33 +3,62 @@
 
 namespace dark {
 
-struct decoder {
-  public:
-
-    wire rsFull;    // Reservation station full.
-    wire lsbFull;   // Load/store buffer full.
-    wire robFull;   // Reorder buffer full.
-
+struct decoder_input {
     wire insDone;   // Whether the instruction is available.
-    wire ins;       // Instruction to decode.
+    wire insData;   // Instruction to decode.
     wire insPc;     // Instruction PC.
-    wire insJump;   // Whether the instruction is a jump.
-
-  public:
-    reg  issue;      // Whether to issue.
-
-    reg  rs1Flag;    // Reorder of rs1. If highbit = 0, then rs1 available.
-    reg  rs1Data;    // Source register 1.
-
-    reg  rs2Flag;    // Reorder of rs2. If highbit = 0, then rs2 available.
-    reg  rs2Data;    // Source register 2.
-
-    reg  rdFlag;     // Whether to write back to register file.
-    reg  rdIndex;    // Index in register file.
-
-    reg  opType;     // Operation type (decoded).
-
-
 };
+
+struct decoder_output {
+    reg  issue;     // Whether to issue + vector/scalar.
+
+    reg  rs1Data;   // Data if scalar. Index if vector.
+    reg  rs2Data;   // Data if scalar. Index if vector.
+
+    reg  rdIndex;   // Index in register file.
+    reg  opType;    // Operation type (decoded).
+};
+
+struct instruction_queue {
+    static constexpr int width  = 4;
+    static constexpr int lines  = 1 << width;
+    std::array <reg, lines> queue;
+
+    reg head;
+    reg tail;
+
+    static int round(int val) { return val & (lines - 1); }
+    int size() const { return round(tail() - head()); }
+    bool avail() const { return size() < lines - 2; }
+    bool empty() const { return head() == tail(); }
+};
+
+
+struct decoder : public decoder_input, decoder_output, private instruction_queue {
+    using sync = sync_tag <decoder_output, instruction_queue>;
+    friend class caster <decoder>;
+    void work();
+};
+
+} // namespace dark
+
+namespace dark {
+
+void decoder::work() {
+    if (reset) {
+        issue   <= 0;
+    } else if (ready && !empty()) {
+
+
+    }
+
+    if (reset) {
+        head    <= 0;
+        tail    <= 0;
+    } else if (ready && insDone()) {
+        tail    <= round(tail() + 1);
+        queue[tail()] <= insData();
+    }
+}
 
 } // namespace dark

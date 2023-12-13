@@ -13,8 +13,8 @@ inline void assert(bool cond, std::string_view msg = "") {
 
 // Vector extension part.
 
-inline constexpr int VLEN {64}; // 64bits
-inline constexpr int VIDX {2} ; // 2 registers per unit.
-
+inline constexpr int ELEN {32}; // 32 bits at one time.
+inline constexpr int VLEN {64}; // 64 bits in one vector.
+inline constexpr int VIDX {VLEN / ELEN} ; // 2 registers.
 
 } // namespace dark
