@@ -74,7 +74,7 @@ void memctrl::work() {
         memDone <= 0;
         status  <= IDLE;
     } if (!ready) {
-        mem_wr  <= 0;
+        mem_wr  <= 0; // Only disable write.
     } else {
         switch (status()) {
             default: assert(false); break;
@@ -94,7 +94,10 @@ void memctrl::work() {
                     stage    <= 0;
                     mem_addr <= iFetchPc();
                     bias     <= 1;
-                }   break;
+                }
+                iDone   <= 0; // Reset the signal.
+                memDone <= 0; // Reset the signal.
+                break;
 
             case IFETCH: // Fall through.
             case READ:
@@ -118,7 +121,6 @@ void memctrl::work() {
                 if (stage() == lens()) {
                     iDone   <= (status() == IFETCH);
                     memDone <= (status() != IFETCH);
-                    iDone   <= 1;
                     status  <= IDLE;
                 } break;
 

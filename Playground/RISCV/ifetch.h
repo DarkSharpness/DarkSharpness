@@ -58,28 +58,28 @@ void ifetch::work() {
     if (reset) {
         pc      <= 0;
         insDone <= 0;
-    } else if (ready) {
-        if (hit() && insAvail() && !stall()) {
-            insDone <= 1;
-            insOut  <= instData();
-            insPc   <= pc();
-
-            switch (take <6,0> (instData())) {
-                case 0b1101111: // Jump and link.
-                    pc <= pc() + jalImm(instData()); break;
-                case 0b1100011: // Branching, wait until done.
-                case 0b1100111: // Jump and link register.
-                    stall <= 1; break;
-                default: // Non-branching, normal case.
-                    pc <= pc() + 4;
-            }
+    } else if (!ready) {
+        // Do nothing.
+    } else if(hit() && insAvail() && !stall()) {
+        insDone <= 1;
+        insOut  <= instData();
+        insPc   <= pc();
+        switch (take <6,0> (instData())) {
+            case 0b1101111: // Jump and link.
+                pc <= pc() + jalImm(instData()); break;
+            case 0b1100011: // Branching, wait until done.
+            case 0b1100111: // Jump and link register.
+                stall <= 1; break;
+            default: // Non-branching, normal case.
+                pc <= pc() + 4;
         }
-
-        if (auto __brType = brType()) {
-            stall <= 0;
+    } else {
+        insDone <= 0;
+        if (auto __brType = brType()) { // Wait for WB.
+            stall  <= 0;
             if (take <1> (__brType)) { // Branch.
                 pc <= pc() + (take <0> (__brType) ? brImm(instData()) : 4); 
-            } else {
+            } else { // Jump and link register.
                 pc <= brData();
             }
         }
