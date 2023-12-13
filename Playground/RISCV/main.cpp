@@ -3,6 +3,7 @@
 #include "icache.h"
 #include "memctrl.h"
 #include "ifetch.h"
+#include "decoder.h"
 #include <iostream>
 
 
