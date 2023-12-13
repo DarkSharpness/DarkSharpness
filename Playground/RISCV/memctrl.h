@@ -14,7 +14,7 @@ struct memctrl_input {
     wire lsbAddr;           // Address to read/write.
     wire lsbData[VIDX];     // Data to write.
 
-    wire rollback;  // Roll back when branch mispredict.
+    // wire rollback;  // Roll back when branch mispredict.
 };
 
 struct memctrl_output {
@@ -31,9 +31,10 @@ struct memctrl_output {
 };
 
 struct memctrl_private {
-    reg status; // Status of the execution.
-    reg stage;  // Stage of the execution.
-    reg lens;   // Length of read/write.
+    reg  status; // Status of the execution.
+    reg  stage;  // Stage of the execution.
+    reg  lens;   // Length of read/write.
+    reg  toWrite[VIDX]; // Data to write.
 };
 
 struct memctrl : memctrl_input, memctrl_output, memctrl_private {
@@ -95,7 +96,7 @@ void memctrl::work() {
             case IFETCH: // Fall through.
             case READ:
                 // Wrong predict: Halt wrong reading (?)
-                if (rollback())  { status <= IDLE; break; }
+                // if (rollback())  { status <= IDLE; break; }
 
                 switch (stage()) {
                     default: assert(false);
@@ -145,6 +146,5 @@ void memctrl::work() {
         }
     }
 }
-
 
 } // namespace dark

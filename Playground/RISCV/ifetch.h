@@ -12,7 +12,7 @@ struct ifetch_input {
 
     // Update value after write_back.
     wire brType;    // Compress enable and jump result.
-    wire brData;    // PC of a branch/jalr.
+    wire brData;    // New PC of a jalr destination.
 
     wire insAvail;  // Instruction queue not full.
 };
@@ -33,12 +33,19 @@ struct ifetch : public ifetch_input, ifetch_output {
   private:
     reg stall;      // Stall on branch and jalr.
 
-    int jalImm() {
-        auto val = instData();
+    static int jalImm(int ins) {
+        // auto ins = instData();
         return sign_extend(bits {
-            take <31> (val) , take <19, 12> (val) , take <20> (val) , take <30, 21> (val) , bits <1> (0)
+            take <31> (ins) , take <19, 12> (ins) , take <20> (ins) , take <30, 21> (ins) , bits <1> (0)
         });
     }
+    static int brImm(int ins) {
+        // auto ins = instData();
+        return sign_extend(bits {
+            take <31> (ins) , take <7> (ins) , take <30, 25> (ins), take <11,8> (ins) , bits <1> (0)
+        });
+    }
+
 
   public:
     void work();
@@ -60,7 +67,7 @@ void ifetch::work() {
 
             switch (take <6,0> (instData())) {
                 case 0b1101111: // Jump and link.
-                    pc <= pc() + jalImm();
+                    pc <= pc() + jalImm(instData());
                     break;
 
                 case 0b1100011: // Branching, wait until done.
@@ -73,9 +80,12 @@ void ifetch::work() {
             }
         }
 
-        if (auto __brType = brType(); take <1> (__brType)) {
-            stall <= 0;
-            pc    <= brData();
+        if (auto __brType = brType()) {
+            if (take <1> (__brType)) { // Branch.
+                pc <= pc() + (take <0> (__brType) ? brImm(instData()) : 4); 
+            } else {
+                pc <= brData();
+            }
         }
     }
 }

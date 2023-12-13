@@ -17,4 +17,22 @@ inline constexpr int ELEN {32}; // 32 bits at one time.
 inline constexpr int VLEN {64}; // 64 bits in one vector.
 inline constexpr int VIDX {VLEN / ELEN} ; // 2 registers.
 
+
+enum class ALUop {
+    ADD, // JAL & JALR included.
+    SUB,
+    SLL,
+    SRL,
+    SRA,
+    AND,
+    OR,
+    XOR,
+    SLT,
+    SLTU,
+    SGE,
+    SGEU,
+    SEQ,
+    SNEQ
+};
+
 } // namespace dark
