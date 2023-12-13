@@ -5,55 +5,59 @@
 namespace dark {
 
 struct decoder_input {
-    wire insDone;   // Whether the instruction is available.
+    wire insDone;   // Whether the instruction is fetched.
     wire insData;   // Instruction to decode.
     wire insPc;     // Instruction PC.
 
-    wire rs1Dirty;  // rs1 whether available.
-    wire rs2Dirty;  // rs2 whether available.
+    wire rs1Busy;   // Whether rs1 is busy.
+    wire rs2Busy;   // Whether rs2 is busy.
+    wire rdBusy;    // Whether rd is busy.
+
+    wire vs1Busy;   // Whether vs1 is busy.
+    wire vs2Busy;   // Whether vs2 is busy.
+    wire vdBusy;    // Whether vd is busy.
 };
 
 struct decoder_output {
     reg  issue;     // Whether to issue.
-
     reg  iType;     // Instruction type for ALU.
     reg  ALUPc;     // Pc for ALU.
-
     reg  rs1Index;  // Index for rs1.
     reg  rs2Index;  // Index for rs2.
     reg  immediate; // Immediate value.
-
     reg  rdIndex;   // Index in register file.
     reg  opType;    // Operation type for ALU.
 };
 
-struct instruction_queue {
+struct ins_queue {
     static constexpr int width  = 4;
     static constexpr int lines  = 1 << width;
-
-    struct reg2 {
-        reg ins; reg pc;
-        struct pair { int x,y; };
+    struct entry {
+        reg ins, pc;
         void sync() { ins.sync(); pc.sync(); }
-        void operator <= (pair n) { ins <= n.x; pc <= n.y; }
     };
+    std::array <entry, lines> queue;
+    reg head, tail;
 
-    std::array <reg2, lines> queue;
-
-    reg head;
-    reg tail;
-
+  protected:
     static int round(int val) { return val & (lines - 1); }
-    int size()   const { return round(tail() - head()); }
+    int  size()  const { return round(tail() - head()); }
     bool avail() const { return size() < lines - 2; }
     bool empty() const { return head() == tail(); }
 };
 
 
-struct decoder : public decoder_input, decoder_output, private instruction_queue, register_file {
-    using sync = sync_tag <decoder_output, instruction_queue, register_file>;
+struct decoder : public decoder_input, decoder_output, private ins_queue {
+    using sync = sync_tag <decoder_output, ins_queue>;
     friend class caster <decoder>;
     void work();
+
+    const wire rs1Head()
+    { return { [this] () -> int { return rs1(queue[head()].ins()); } }; }
+    const wire rs2Head()
+    { return { [this] () -> int { return rs2(queue[head()].ins()); } }; }
+    const wire rdHead()
+    { return { [this] () -> int { return rd (queue[head()].ins()); } }; }
 
   private:
 
@@ -67,18 +71,18 @@ struct decoder : public decoder_input, decoder_output, private instruction_queue
         return sign_extend(bits {take <31,25> (ins), take <11,7> (ins)});
     }
 
-    /* Issue and set if rd is dirty. */
-    void issue_dirty(bool __dirty) {
-        issue <= 1;
-        head  <= round(head() + 1);
-        if (__dirty) dirty[rdIndex()] <= 1;
+    void issue_fail() { issue <= 0; }
+    void issue_success() {
+        issue   <= 1;
+        head    <= round(head() + 1);
     }
 
     void work_lui(int __ins) {
-        issue_dirty(true);
-
-        rdIndex     <= rd(__ins);
+        if (rdBusy()) return issue_fail();
+        issue_success();
         rs1Index    <= 0;       // Zero register.
+        rs2Index    <= 0;       // Zero register.
+        rdIndex     <= rd(__ins);
         immediate   <= take <31,12> (__ins);
 
         iType       <= ALU_type::immediate;
@@ -86,8 +90,11 @@ struct decoder : public decoder_input, decoder_output, private instruction_queue
     }
 
     void work_auipc(int __ins) {
-        issue_dirty(true);
+        if (rdBusy()) return issue_fail();
+        issue_success();
 
+        rs1Index    <= 0;       // Zero register.
+        rs2Index    <= 0;       // Zero register.
         rdIndex     <= rd(__ins);
         immediate   <= take <31,12> (__ins);
 
@@ -96,8 +103,11 @@ struct decoder : public decoder_input, decoder_output, private instruction_queue
     }
 
     void work_jal(int __ins) {
-        issue_dirty(true);
+        if (rdBusy()) return issue_fail();
+        issue_success();
 
+        rs1Index    <= 0;       // Zero register.
+        rs2Index    <= 0;       // Zero register.
         rdIndex     <= rd(__ins);
         immediate   <= 4;
 
@@ -106,11 +116,12 @@ struct decoder : public decoder_input, decoder_output, private instruction_queue
     }
 
     void work_jalr(int __ins) {
-        if (dirty[rs1(__ins)]()) return;
-        issue_dirty(true);
+        if (rdBusy() || rs1Busy()) return issue_fail();
+        issue_success();
 
-        rdIndex     <= rd(__ins);
         rs1Index    <= rs1(__ins);
+        rs2Index    <= 0;       // Zero register.
+        rdIndex     <= rd(__ins);
         immediate   <= jalrImm(__ins);
 
         iType       <= ALU_type::jalr;
@@ -118,12 +129,12 @@ struct decoder : public decoder_input, decoder_output, private instruction_queue
     }
 
     void work_branch(int __ins) {
-        if (dirty[rs1(__ins)]() || dirty[rs2(__ins)]()) return;
-        issue_dirty(false);
+        if (rs1Busy() || rs2Busy()) return issue_fail();
+        issue_success();
 
-        rdIndex     <= rd(__ins);
         rs1Index    <= rs1(__ins);
         rs2Index    <= rs2(__ins); 
+        rdIndex     <= 0;       // Zero register.
 
         iType       <= ALU_type::branch;
         switch (funct3(__ins)) {
@@ -150,12 +161,12 @@ struct decoder : public decoder_input, decoder_output, private instruction_queue
     }
 
     void work_load(int __ins) {
-        if (dirty[rs1(__ins)]() || dirty[rd(__ins)]()) return;
-        issue_dirty(true);
+        if (rdBusy() || rs1Busy()) return issue_fail();
+        issue_success();
 
-        rdIndex     <= rd(__ins);
         rs1Index    <= rs1(__ins);
-        rs2Index    <= funct3(__ins);
+        rs2Index    <= 0;       // Zero register.
+        rdIndex     <= rd(__ins);
         immediate   <= loadImm(__ins);
 
         iType       <= ALU_type::load;
@@ -163,11 +174,12 @@ struct decoder : public decoder_input, decoder_output, private instruction_queue
     }
 
     void work_store(int __ins) {
-        if (dirty[rs1(__ins)]() || dirty[rs2(__ins)]()) return;
-        issue_dirty(false);
+        if (rs1Busy() || rs2Busy()) return issue_fail();
+        issue_success();
 
         rs1Index    <= rs1(__ins);
         rs2Index    <= rs2(__ins);
+        rdIndex     <= 0;       // Zero register.
         immediate   <= storeImm(__ins);
 
         iType       <= ALU_type::store;
@@ -175,11 +187,12 @@ struct decoder : public decoder_input, decoder_output, private instruction_queue
     }
 
     void work_immediate(int __ins) {
-        if (dirty[rs1(__ins)]() || dirty[rd(__ins)]()) return;
-        issue_dirty(true);
+        if (rdBusy() || rs1Busy()) return issue_fail();
+        issue_success();
 
-        rdIndex     <= rd(__ins);
         rs1Index    <= rs1(__ins);
+        rs2Index    <= 0;       // Zero register.
+        rdIndex     <= rd(__ins);
         immediate   <= sign_extend(take <31,20> (__ins));
 
         iType       <= ALU_type::immediate;
@@ -205,12 +218,12 @@ struct decoder : public decoder_input, decoder_output, private instruction_queue
     }
 
     void work_register(int __ins) {
-        if (dirty[rs1(__ins)]() || dirty[rs2(__ins)]() || dirty[rd(__ins)]()) return;
-        issue_dirty(true);
+        if (rdBusy() || rs1Busy() || rs2Busy()) return issue_fail();
+        issue_success();
 
-        rdIndex     <= rd(__ins);
         rs1Index    <= rs1(__ins);
         rs2Index    <= rs2(__ins);
+        rdIndex     <= rd(__ins);
 
         iType       <= ALU_type::normal;
         switch (funct3(__ins)) {
@@ -233,7 +246,6 @@ struct decoder : public decoder_input, decoder_output, private instruction_queue
                 opType <= ALU_op::AND; break;
         }
     }
-
 };
 
 
@@ -244,8 +256,10 @@ namespace dark {
 void decoder::work() {
     // Decoder part.
     if (reset) {
-        issue   <= 0;
-    } else if (ready && !empty()) {
+        issue <= 0;
+    } else if (!ready) {
+        // Do nothing.
+    } else if (ready && !empty() && insDone()) {
         // Instruction and pc.
         int __ins = queue[head()].ins();
         int __pc  = queue[head()].pc();
@@ -273,15 +287,16 @@ void decoder::work() {
             // Vector part:
             default: assert(false, "Not implemented!"); break;
         }
-    }
+    } else { issue_fail(); }
 
     // Ins queue part.
     if (reset) {
-        head    <= 0;
-        tail    <= 0;
+        head <= 0;
+        tail <= 0;
     } else if (ready && insDone()) {
-        tail    <= round(tail() + 1);
-        queue[tail()] <= reg2::pair {insData(), insPc()};
+        tail <= round(tail() + 1);
+        queue[tail()].ins <= insData();
+        queue[tail()].pc  <= insPc();
     }
 }
 
