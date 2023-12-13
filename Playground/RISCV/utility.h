@@ -20,14 +20,14 @@ inline constexpr int VIDX {VLEN / ELEN} ; // 2 registers.
 
 struct ALU_type {
     enum {
-        normal,     // Normal.
-        vector,     // Vector.
-        immediate,  // Immediate.
-        branch,     // Branch.
-        jalr,       // JALR.
-        pcImm,      // PC + immediate.
-        load,       // Load & store.
-        store,      // Store.
+        normal,     // Normal. (rs1 and rs2 and rd)
+        vector,     // Vector. (vs1 and vs2 and vd)
+        immediate,  // Immediate. (rs1 and immediate and rd)
+        branch,     // Branch.    (rs1 and rs2)
+        jalr,       // JALR.      (rs1 and immediate and rd)
+        pcImm,      // PC + immediate. (pc and immediate and rd)
+        load,       // Load.    (rs1 and rs2 and immediate rd)
+        store,      // Store.   (rs1 and rs2 and immediate)
     };
 };
 

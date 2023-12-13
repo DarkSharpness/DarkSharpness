@@ -26,10 +26,12 @@ struct wire {
 struct reg {
   private:
     int value {};
-    union { int bak {}; char dat[4]; };
+    int bak   {};
   public:
 
     int operator() (void) const { return value; }
+    bool operator[] (int x) const { return (value >> x) & 1; }
+
     operator wire() { return { [this] () -> int { return value; } }; }
 
     void operator = (int val) { value = bak = val; }
@@ -40,7 +42,15 @@ struct reg {
 
     // Set given byte to given char (indexed from 0, low byte).
     template <int l> requires (l >= 0 && l < 4)
-    void set_byte(char val) { dat[l] = val; }
+    void set_byte(char val) {
+        bak &= ~(0xff << (l * 8));
+        bak |= unsigned(val) << (l * 8);
+    }
+
+    void set_bit(int l, bool val) {
+        bak &= ~(1 << l);
+        bak |= val << l;
+    }
 };
 
 
