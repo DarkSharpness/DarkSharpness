@@ -1,9 +1,5 @@
 #include "cpu.h"
 #include "ram.h"
-#include "icache.h"
-#include "memctrl.h"
-#include "ifetch.h"
-#include "decoder.h"
 #include <iostream>
 
 
