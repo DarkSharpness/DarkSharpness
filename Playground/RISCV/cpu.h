@@ -1,31 +1,41 @@
 #pragma once
 #include "utility.h"
 
+#include "alu.h"
 #include "icache.h"
 #include "memctrl.h"
+#include "ifetch.h"
+#include "decoder.h"
+#include "register.h"
+#include "controller.h"
 
 namespace dark {
 
-struct cpu {
-  public:
-    using sync = sync_member_tag;
-
+struct cpu_input {
     wire mem_in;
     wire io_buffer_full;
+};
+struct cpu_component {
+    memctrl     memCtrl;
+    icache      cache;
 
-    reg pc;
+    ifetch      fetcher;
+    decoder     decoder;
 
+    controller  control;
+    scalar_file scalars;
+    scalar_ALU  scalarALU;
+};
+
+
+struct cpu : public cpu_input, private cpu_component {
   public:
-    // Internal components.
+    using sync = sync_tag <cpu_component>;
+    friend class caster <cpu>;
 
-    memctrl ctrl;
-    icache cache;
-
-  public:
-
-    const wire mem_out  = ctrl.mem_out;
-    const wire mem_addr = ctrl.mem_addr;
-    const wire mem_wr   = ctrl.mem_wr;
+    const wire mem_out  = memCtrl.mem_out;
+    const wire mem_addr = memCtrl.mem_addr;
+    const wire mem_wr   = memCtrl.mem_wr;
 
   public:
 

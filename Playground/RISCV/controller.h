@@ -10,20 +10,19 @@ struct controller_input {
     wire iType;     // Instruction type for ALU.
     wire ALUPc;     // Pc for ALU.
 
-    wire rs1Index;  // Index for rs1.
-    wire rs2Index;  // Index for rs2.
-
     wire immediate; // Immediate value.
     wire rdIndex;   // Index in register file.
-    wire opType;    // Operation type for ALU.
 
     wire memDone;   // Load store is done, which will stop bubble.
 };
 
 struct controller_output {
+    reg memWork;    // Whether to work.
     reg memType;    // Type for next memory operation.
+
     reg memPc;      // Program counter for next operation.
     reg memImm;     // Immediate value for next operation.
+    reg memRd;      // Register index for writing back.
 
     reg isBubbling; // Whether there is a bubble in this cycle.
 };
@@ -55,12 +54,12 @@ struct controller : public controller_input, controller_output {
                 isBubbling <= 1;
             }
 
-            if (!issue()) {
-                memType <= ALU_type::waiting;
-            } else {
-                memPc   <= ALUPc();
-                memType <= iType();
-            }
+            memWork <= issue();
+            memType <= iType();
+
+            memPc   <= ALUPc();
+            memImm  <= immediate();
+            memRd   <= rdIndex();
         }
     }
 

@@ -3,7 +3,7 @@
 
 namespace dark {
 
-struct scalar_input {
+struct scalar_ALU_input {
     wire issue;     // Whether to issue.
     wire iType;     // Instruction type for ALU.
 
@@ -17,11 +17,11 @@ struct scalar_input {
     wire isBubbling;    // Whether is bubbling.
 };
 
-struct scalar_output {
+struct scalar_ALU_output {
     reg scalarOut;  // Only output of scalar ALU.
 };
 
-struct scalar_ALU : scalar_input, scalar_output {
+struct scalar_ALU : scalar_ALU_input, scalar_ALU_output {
   public:
     void work() {
         if (reset) {

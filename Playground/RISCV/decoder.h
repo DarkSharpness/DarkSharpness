@@ -233,7 +233,7 @@ struct decoder : public decoder_input, decoder_output, private ins_queue {
         rs1Index    <= rs1(__ins);
         rs2Index    <= rs2(__ins);
         rdIndex     <= rd(__ins);
-        immediate   <= immediate; // Immediate is not used.
+        immediate   <= immediate(); // Immediate is not used.
 
         iType       <= ALU_type::scalar;
         switch (funct3(__ins)) {
