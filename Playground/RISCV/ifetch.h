@@ -11,7 +11,7 @@ struct ifetch_input {
     wire instData;  // Instruction fetched from cache.
 
     // Update value after write_back.
-    wire brType;    // Compress enable and jump result.
+    wire brDone;    // Compress enable and jump result.
     wire brData;    // New PC of a jalr destination.
 
     wire insAvail;  // Instruction queue not full.
@@ -37,12 +37,6 @@ struct ifetch : public ifetch_input, ifetch_output {
         // auto ins = instData();
         return sign_extend(bits {
             take <31> (ins) , take <19, 12> (ins) , take <20> (ins) , take <30, 21> (ins) , bits <1> (0)
-        });
-    }
-    static int brImm(int ins) {
-        // auto ins = instData();
-        return sign_extend(bits {
-            take <31> (ins) , take <7> (ins) , take <30, 25> (ins), take <11,8> (ins) , bits <1> (0)
         });
     }
 
@@ -75,13 +69,9 @@ void ifetch::work() {
         }
     } else {
         insDone <= 0;
-        if (auto __brType = brType()) { // Wait for WB.
-            stall  <= 0;
-            if (take <1> (__brType)) { // Branch.
-                pc <= pc() + (take <0> (__brType) ? brImm(instData()) : 4); 
-            } else { // Jump and link register.
-                pc <= brData();
-            }
+        if (brDone()) { // Wait for WB...
+            stall <= 0;
+            pc <= brData();
         }
     }
 }

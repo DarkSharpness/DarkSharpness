@@ -17,7 +17,7 @@ struct decoder_input {
     wire vs2Busy;   // Whether vs2 is busy.
     wire vdBusy;    // Whether vd is busy.
 
-    wire bubble;    // Whether to bubble (if load/store)
+    wire nextBubble;    // Whether to bubble (if load/store)
 };
 
 struct decoder_output {
@@ -68,6 +68,11 @@ struct decoder : public decoder_input, decoder_output, private ins_queue {
     static int loadImm(int ins) { return sign_extend(take <31,20> (ins)); }
     static int storeImm(int ins){
         return sign_extend(bits {take <31,25> (ins), take <11,7> (ins)});
+    }
+    static int brImm(int ins) {
+        return sign_extend(bits {
+            take <31> (ins) , take <7> (ins) , take <30, 25> (ins), take <11,8> (ins) , bits <1> (0)
+        });
     }
 
     void issue_fail() { issue <= 0; }
@@ -134,6 +139,7 @@ struct decoder : public decoder_input, decoder_output, private ins_queue {
         rs1Index    <= rs1(__ins);
         rs2Index    <= rs2(__ins); 
         rdIndex     <= 0;       // Zero register.
+        immediate   <= brImm(__ins);
 
         iType       <= ALU_type::branch;
         switch (funct3(__ins)) {
@@ -168,8 +174,10 @@ struct decoder : public decoder_input, decoder_output, private ins_queue {
         rdIndex     <= rd(__ins);
         immediate   <= loadImm(__ins);
 
-        iType       <= ALU_type::load;
-        opType      <= funct3(__ins);
+        constexpr auto __wid = ALU_type::width;
+
+        iType       <= (funct3(__ins) << __wid | ALU_type::load);
+        opType      <= ALU_op::ADD;
     }
 
     void work_store(int __ins) {
@@ -181,8 +189,10 @@ struct decoder : public decoder_input, decoder_output, private ins_queue {
         rdIndex     <= 0;       // Zero register.
         immediate   <= storeImm(__ins);
 
-        iType       <= ALU_type::store;
-        opType      <= funct3(__ins);
+        constexpr auto __wid = ALU_type::width;
+
+        iType       <= (funct3(__ins) << __wid | ALU_type::store);
+        opType      <= ALU_op::ADD;
     }
 
     void work_immediate(int __ins) {
@@ -223,8 +233,9 @@ struct decoder : public decoder_input, decoder_output, private ins_queue {
         rs1Index    <= rs1(__ins);
         rs2Index    <= rs2(__ins);
         rdIndex     <= rd(__ins);
+        immediate   <= immediate; // Immediate is not used.
 
-        iType       <= ALU_type::normal;
+        iType       <= ALU_type::scalar;
         switch (funct3(__ins)) {
             default: assert(false); break;
             case 0b000: // add/sub
@@ -256,10 +267,11 @@ void decoder::work() {
     // Decoder part.
     if (reset) {
         issue <= 0;
-    } else if (!ready || bubble()) {
+    } else if (!ready) {
         // Do nothing.
-    } else if (ready && !empty() && insDone()) {
-        // Instruction and pc.
+    } else if (empty() || nextBubble()) {
+        issue <= 0;
+    } else { // Non-empty and no bubble!
         int __ins = queue[head()].ins();
         int __pc  = queue[head()].pc();
         ALUPc <= __pc;
@@ -286,7 +298,7 @@ void decoder::work() {
             // Vector part:
             default: assert(false, "Not implemented!"); break;
         }
-    } else { issue_fail(); }
+    }
 
     // Ins queue part.
     if (reset) {
