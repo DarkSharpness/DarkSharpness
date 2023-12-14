@@ -17,14 +17,14 @@ struct controller_input {
 };
 
 struct controller_output {
-    reg memWork;    // Whether to work.
-    reg memType;    // Type for next memory operation.
+    reg  wrWork;        // Whether to work.
+    reg  wrType;        // Type for next writeback operation.
 
-    reg memPc;      // Program counter for next operation.
-    reg memImm;     // Immediate value for next operation.
-    reg memRd;      // Register index for writing back.
+    reg  wrPc;          // Program counter for writeback.
+    reg  wrImm;         // Immediate value for next operation.
+    reg  wrRd;          // Register index for writing back.
 
-    reg isBubbling; // Whether there is a bubble in this cycle.
+    reg  isBubbling;    // Whether there is a bubble in this cycle.
 };
 
 
@@ -43,31 +43,30 @@ struct controller : public controller_input, controller_output {
 
     void work() {
         if (reset) {
-            memType     <= 0;
+            wrType      <= 0;
             isBubbling  <= 0;
         } else if (!ready) {
             // Do nothing.
         } else {
+            wrWork <= issue();
+            wrType <= iType();
+
+            wrPc   <= ALUPc();
+            wrImm  <= immediate();
+            wrRd   <= rdIndex();
+
             if (isBubbling()) {
                 isBubbling <= !memDone();
             } else if (isNewBubble()) {
                 isBubbling <= 1;
             }
-
-            memWork <= issue();
-            memType <= iType();
-
-            memPc   <= ALUPc();
-            memImm  <= immediate();
-            memRd   <= rdIndex();
         }
     }
 
   private:
     /* Whether there is a new bubble generating. */
-    bool isNewBubble() const { return issue() && isMem(iType()); }
     /* Whether this command is a memory related command. */
-    static bool isMem(int type) { return take <5,4> (type); }
+    bool isNewBubble() const { return issue() && ALU_type::isMemory(iType()); }
 };
 
 

@@ -12,13 +12,12 @@ struct memctrl_input {
 
     wire memType;           // low 2 bits are avail and read/write.
     wire memAddr;           // Address from decoder.
-    wire memData[VIDX];     // Data to write.
+    vwire memData;          // Data to write.
 
-    wire stride;    // Stride if vector.
+    // wire stride;    // Stride if vector.
 };
 
 struct memctrl_output {
-    using regs = std::array <reg, VIDX>;
 
     reg  mem_out;   // Output to memory.
     reg  mem_addr;  // Address to read/write.
@@ -27,14 +26,14 @@ struct memctrl_output {
     reg  iDone;     // Whether the ifetch is done.
     reg  memDone;   // Whether it's ok to stop
 
-    regs loadData;  // Data loaded.
+    vreg loadData;  // Data loaded.
 };
 
 struct memctrl_private {
     reg status; // Status of the execution.
     reg stage;  // Stage of the execution.
     reg lens;   // Length of read/write.
-    reg bias;   // Bias of each memory stride.
+    // reg bias;   // Bias of each memory stride.
 };
 
 struct memctrl : memctrl_input, memctrl_output, memctrl_private {
@@ -86,14 +85,14 @@ void memctrl::work() {
 
                     stage    <= 0;
                     mem_addr <= memAddr();
-                    bias     <= stride();
+                    // bias     <= stride();
                 } else if (iFetchOn()) {
                     lens     <= 4;
                     status   <= IFETCH;
 
                     stage    <= 0;
                     mem_addr <= iFetchPc();
-                    bias     <= 1;
+                    // bias     <= 1;
                 }
                 iDone   <= 0; // Reset the signal.
                 memDone <= 0; // Reset the signal.
@@ -116,7 +115,7 @@ void memctrl::work() {
                 }
 
                 stage    <= stage() + 1;
-                mem_addr <= mem_addr() + bias();
+                mem_addr <= mem_addr() + 1; // bias();
 
                 if (stage() == lens()) {
                     iDone   <= (status() == IFETCH);
@@ -141,7 +140,7 @@ void memctrl::work() {
 
                 mem_wr <= 1;
                 stage  <= stage() + 1;
-                if (stage() != 0) { mem_addr <= mem_addr() + bias(); }
+                if (stage() != 0) mem_addr <= mem_addr() + 1; // bias();
                 if (stage() + 1 == lens()) {
                     memDone <= 1;
                     status  <= IDLE;

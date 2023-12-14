@@ -8,6 +8,7 @@
 #include "decoder.h"
 #include "register.h"
 #include "controller.h"
+#include "writer.h"
 
 namespace dark {
 
@@ -25,6 +26,8 @@ struct cpu_component {
     controller  control;
     scalar_file scalars;
     scalar_ALU  scalarALU;
+
+    writer      writeback;
 };
 
 
