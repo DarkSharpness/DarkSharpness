@@ -17,6 +17,15 @@ inline constexpr int ELEN {32}; // 32 bits at one time.
 inline constexpr int VLEN {64}; // 64 bits in one vector.
 inline constexpr int VIDX {VLEN / ELEN} ; // 2 registers.
 
+// Vector register.
+struct vreg {
+    reg data[VIDX];
+    void sync() { for (auto &reg : data) reg.sync(); }
+};
+
+
+
+// ALU type code and opcode.
 
 struct ALU_type {
     enum {

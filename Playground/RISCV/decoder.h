@@ -16,6 +16,8 @@ struct decoder_input {
     wire vs1Busy;   // Whether vs1 is busy.
     wire vs2Busy;   // Whether vs2 is busy.
     wire vdBusy;    // Whether vd is busy.
+
+    wire bubble;    // Whether to bubble (if load/store)
 };
 
 struct decoder_output {
@@ -52,12 +54,9 @@ struct decoder : public decoder_input, decoder_output, private ins_queue {
     friend class caster <decoder>;
     void work();
 
-    const wire rs1Head()
-    { return { [this] () -> int { return rs1(queue[head()].ins()); } }; }
-    const wire rs2Head()
-    { return { [this] () -> int { return rs2(queue[head()].ins()); } }; }
-    const wire rdHead()
-    { return { [this] () -> int { return rd (queue[head()].ins()); } }; }
+    const wire rs1Head = { [this] () -> int { return rs1(queue[head()].ins()); } };
+    const wire rs2Head = { [this] () -> int { return rs2(queue[head()].ins()); } };
+    const wire rdHead  = { [this] () -> int { return rd (queue[head()].ins()); } };
 
   private:
 
@@ -257,7 +256,7 @@ void decoder::work() {
     // Decoder part.
     if (reset) {
         issue <= 0;
-    } else if (!ready) {
+    } else if (!ready || bubble()) {
         // Do nothing.
     } else if (ready && !empty() && insDone()) {
         // Instruction and pc.

@@ -9,6 +9,8 @@ namespace dark {
  */
 struct ram {
   public:
+    using sync = sync_member_tag;
+
     static constexpr int width = 18;
     using storage_type = std::array <std::uint8_t, 1 << width>;
 
