@@ -272,6 +272,7 @@ void decoder::work() {
         // Do nothing.
     } else if (empty() || nextBubble()) {
         issue <= 0;
+        iType <= 0;
     } else { // Non-empty and no bubble!
         int __ins = queue[head()].ins();
         int __pc  = queue[head()].pc();

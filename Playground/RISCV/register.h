@@ -57,11 +57,20 @@ struct scalar_file : public scalar_input , private scalar_private {
             }
         }
 
-        // details("Scalar file: ");
-        // std::string str = "";
-        // for (auto &reg : regs) str += std::to_string(reg()) + ' ';
-        // details(str, "");
+        details("Scalar file:"
+            "  sp =", regs[2](), 
+            "| a0 =", regs[10](),
+            "| a1 =", regs[11](),
+            "| a2 =", regs[12](),
+            "| a3 =", regs[13](),
+            "| a4 =", regs[14](),
+            "| a5 =", regs[15](),
+            ""
+            );
+
     }
+
+    int return_value() const { return regs[10](); }
 
   private:
     // Test whether the register is really busy.

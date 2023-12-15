@@ -44,8 +44,7 @@ struct cpu : public cpu_input, private cpu_component {
 
     void init();
     void work();
-    auto return_value() {
-    }
+    auto return_value() { return scalars.return_value(); }
 };
 
 // Link the wires.
@@ -57,7 +56,7 @@ void cpu::init() {
 
     memctrl.memType         = writeback.memType;
     memctrl.memAddr         = writeback.memAddr;
-    memctrl.memData[0]      = writeback.wbData;
+    memctrl.memData         = writeback.memData;
 
     icache.addrIn           = fetcher.pc;
     icache.writeEnable      = memctrl.iDone;
@@ -112,6 +111,7 @@ void cpu::init() {
     writeback.memDone       = memctrl.memDone;
     writeback.loadData      = memctrl.loadData[0];
     writeback.scalarData    = scalars.rs2Data;
+    writeback.memStatus     = memctrl.status;
 }
 
 void cpu::work() {

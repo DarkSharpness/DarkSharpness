@@ -16,6 +16,7 @@ struct writer_input {
 
     wire memDone;       // Load store is done, which will stop bubble.
     wire loadData;      // Data loaded.
+    wire memStatus;     // Status of the memory.
 
     wire    scalarData; // Scalar data from register file (for storing)
     vwire   vectorData; // Vector data from register file (for storing)
@@ -81,6 +82,8 @@ void writer::work() {
                 } break;
 
             case LOAD:
+                if (take <1> (memStatus()))
+                    memType <= 0;
                 if (memDone()) {
                     status <= IDLE;
                     wbDone <= wbRd();
@@ -95,7 +98,11 @@ void writer::work() {
                 } break;
 
             case STORE:
-                if (memDone()) { status <= IDLE; } break;
+                if (take <1> (memStatus()))
+                    memType <= 0;
+                if (memDone())
+                    status  <= IDLE;
+                break;
         }
     }
 }
@@ -109,6 +116,7 @@ void writer::work_idle() {
             brDone  <= 0;
             wbDone  <= wbRd();
             wbData  <= scalarOut();
+            memType <= 0;
             break;
 
         case ALU_type::jalr:
@@ -116,12 +124,14 @@ void writer::work_idle() {
             brData  <= scalarOut();
             wbDone  <= wbRd();
             wbData  <= wbPc() + 4;
+            memType <= 0;
             break;
 
         case ALU_type::branch:
             brDone  <= 1;
             brData  <= (scalarOut() ? wbPc() + wbImm() : wbPc() + 4);
             wbDone  <= 0;
+            memType <= 0;
             break;
 
         case ALU_type::load:

@@ -18,7 +18,6 @@ struct memctrl_input {
 };
 
 struct memctrl_output {
-
     reg  mem_out;   // Output to memory.
     reg  mem_addr;  // Address to read/write.
     reg  mem_wr;    // Whether to write.
@@ -26,11 +25,12 @@ struct memctrl_output {
     reg  iDone;     // Whether the ifetch is done.
     reg  memDone;   // Whether it's ok to stop
 
+    reg  status;    // Status of the execution.
+
     vreg loadData;  // Data loaded.
 };
 
 struct memctrl_private {
-    reg status; // Status of the execution.
     reg stage;  // Stage of the execution.
     reg lens;   // Length of read/write.
     // reg bias;   // Bias of each memory stride.
@@ -85,6 +85,7 @@ void memctrl::work() {
 
                     stage    <= 0;
                     mem_addr <= memAddr();
+                    details("Memory address: ", memAddr());
                     // bias     <= stride();
                 } else if (iFetchOn()) {
                     lens     <= 4;
@@ -94,6 +95,7 @@ void memctrl::work() {
                     mem_addr <= iFetchPc();
                     // bias     <= 1;
                 }
+                mem_wr  <= 0; // Reset the signal.
                 iDone   <= 0; // Reset the signal.
                 memDone <= 0; // Reset the signal.
                 break;
@@ -121,6 +123,17 @@ void memctrl::work() {
                     iDone   <= (status() == IFETCH);
                     memDone <= (status() != IFETCH);
                     status  <= IDLE;
+
+                    loadData[0].sync(); // In order to see the result...
+
+                    if (status() == IFETCH) {
+                        details("Instruction loaded :" , int_to_hex(loadData[0]()) ,
+                                " at " , int_to_hex(mem_addr() - 4));
+                    } else {
+                        details("Data loaded :" , int_to_hex(loadData[0]()) ,
+                                " at " , mem_addr() - lens(),
+                                ", length ", lens());
+                    }
                 } break;
 
             case WRITE:
@@ -144,6 +157,9 @@ void memctrl::work() {
                 if (stage() + 1 == lens()) {
                     memDone <= 1;
                     status  <= IDLE;
+                    details("Data stored :" , int_to_hex(memData[0]()),
+                            " at " , mem_addr() - lens() + 2,
+                            ", length ", lens());
                 }
         }
     }

@@ -47,13 +47,15 @@ void ram::read(std::istream &in) {
     char    buf[32];
     std::string str;
     size_t  idx = 0;
+    size_t  cnt = 0;
     while(in >> buf) {
         if(buf[0] == '@') {
             idx = std::stoi(str = buf + 1, nullptr, 16);
         } else {
-            data[idx++] = std::stoi(str = buf, nullptr, 16);
+            data[idx++] = std::stoi(str = buf, nullptr, 16); cnt++;
         }
     }
+    details("Read ", cnt, " bytes.\n");
 }
 
 void ram::work()  {

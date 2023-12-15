@@ -31,7 +31,7 @@ struct ifetch_private {
 
 struct ifetch : public ifetch_input, ifetch_output, private ifetch_private {
   public:
-    using sync = sync_tag <ifetch_output>;
+    using sync = sync_tag <ifetch_output, ifetch_private>;
     friend class caster <ifetch>;
 
   private:
@@ -61,6 +61,7 @@ void ifetch::work() {
     } else if(hit() && insAvail() && !stall() && !pause()) {
         // Special judge.
         int __instData = instData();
+        details("Instruction fetched: ", int_to_hex(__instData) , " at ", int_to_hex(pc()));
         if (__instData == 0x0ff00513) {
             pause   <= 1;
             insDone <= 1;
@@ -81,7 +82,6 @@ void ifetch::work() {
             default: // Non-branching, normal case.
                 pc <= pc() + 4;
         }
-        details("Program counter:", pc());
     } else {
         insDone <= 0;   // Set to not done.
         if (brDone()) { // Wait for WB...
@@ -90,7 +90,6 @@ void ifetch::work() {
             if (pause()) { ::dark::stall = true; }
         }
     }
-    debug("Program counter:", pc());
 }
 
 } // namespace dark

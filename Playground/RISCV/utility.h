@@ -77,8 +77,8 @@ struct ALU_type {
         scalar  = 0b0000011,        // rs1 <op> rs2 -> rd
         jalr    = 0b0000111,        // pc + 4 -> rd, rs1 + imm -> pc
         branch  = 0b0001011,        // rs1 <comp> rs2
-        load    = 0b0010011,        // M[rs1 + imm] -> rd
-        store   = 0b0100011,        // rs2 -> M[rs1 + imm]
+        load    = 0b0010001,        // M[rs1 + imm] -> rd
+        store   = 0b0100001,        // rs2 -> M[rs1 + imm]
         vector  = 0b1000011,        // vs1 <op> vs2 -> vd
 
         pcImm       = 0b0000000,    // pc  <op> imm -> rd
