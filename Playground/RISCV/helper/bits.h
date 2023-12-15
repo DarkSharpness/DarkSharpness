@@ -95,4 +95,11 @@ constexpr auto concat(bits <len> ...args) {
     return bits <(len + ...)> { concat_bits <len...> (int(args)...) };
 }
 
+
+std::string int_to_hex(int x) {
+    static char buf[16];
+    (void)sprintf(buf, "0x%08X", x);
+    return buf;
+}
+
 } // namespace dark
