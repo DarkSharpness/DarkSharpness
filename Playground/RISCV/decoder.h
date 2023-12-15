@@ -29,6 +29,8 @@ struct decoder_output {
     reg  rdIndex;   // Index in register file.
     reg  immediate; // Immediate value.
     reg  opType;    // Operation type for ALU.
+
+    reg  dbgCmd;    // Debug command.
 };
 
 struct ins_queue {
@@ -54,9 +56,9 @@ struct decoder : public decoder_input, decoder_output, private ins_queue {
     friend class caster <decoder>;
     void work();
 
-    const wire rs1Head = { [this] () -> int { return rs1(queue[head()].ins()); } };
-    const wire rs2Head = { [this] () -> int { return rs2(queue[head()].ins()); } };
-    const wire rdHead  = { [this] () -> int { return rd (queue[head()].ins()); } };
+    const wire rs1Head = { [this] () -> int { return rs1(queue.at(head()).ins()); } };
+    const wire rs2Head = { [this] () -> int { return rs2(queue.at(head()).ins()); } };
+    const wire rdHead  = { [this] () -> int { return rd (queue.at(head()).ins()); } };
     const wire notFull = { [this] () -> int { return avail(); } };
 
   private:
@@ -80,6 +82,7 @@ struct decoder : public decoder_input, decoder_output, private ins_queue {
     void issue_success() {
         issue   <= 1;
         head    <= round(head() + 1);
+        dbgCmd  <= queue.at(head()).ins();
     }
 
     void work_lui(int __ins) {
@@ -274,8 +277,8 @@ void decoder::work() {
         issue <= 0;
         iType <= 0;
     } else { // Non-empty and no bubble!
-        int __ins = queue[head()].ins();
-        int __pc  = queue[head()].pc();
+        int __ins = queue.at(head()).ins();
+        int __pc  = queue.at(head()).pc();
         ALUPc <= __pc;
 
         switch (take <6,0> (__ins)) {
@@ -308,8 +311,8 @@ void decoder::work() {
         tail <= 0;
     } else if (ready && insDone()) {
         tail <= round(tail() + 1);
-        queue[tail()].ins <= insData();
-        queue[tail()].pc  <= insPc();
+        queue.at(tail()).ins <= insData();
+        queue.at(tail()).pc  <= insPc();
     }
 }
 

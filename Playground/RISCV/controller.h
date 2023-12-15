@@ -14,6 +14,8 @@ struct controller_input {
     wire rdIndex;   // Index in register file.
 
     wire memDone;   // Load store is done, which will stop bubble.
+
+    wire dbgCmd;
 };
 
 struct controller_output {
@@ -25,6 +27,7 @@ struct controller_output {
     reg  wbRd;          // Register index for writing back.
 
     reg  isBubbling;    // Whether there is a bubble in this cycle.
+    reg  dbgOut;
 };
 
 
@@ -48,6 +51,11 @@ struct controller : public controller_input, controller_output {
         } else if (!ready) {
             // Do nothing.
         } else {
+            if (issue())
+                details("- Issuing: ", int_to_hex(dbgCmd()),
+                        "at" , int_to_hex(ALUPc()));
+            dbgOut <= dbgCmd();
+
             wrWork <= issue();
             wrType <= iType();
 

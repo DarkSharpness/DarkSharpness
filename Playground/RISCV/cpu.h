@@ -82,6 +82,7 @@ void cpu::init() {
     control.immediate       = decoder.immediate;
     control.rdIndex         = decoder.rdIndex;
     control.memDone         = memctrl.memDone;
+    control.dbgCmd          = decoder.dbgCmd;
 
     scalars.rs1             = decoder.rs1Head;
     scalars.rs2             = decoder.rs2Head;
@@ -112,6 +113,7 @@ void cpu::init() {
     writeback.loadData      = memctrl.loadData[0];
     writeback.scalarData    = scalars.rs2Data;
     writeback.memStatus     = memctrl.status;
+    writeback.dbgCmd        = control.dbgOut;
 }
 
 void cpu::work() {

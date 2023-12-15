@@ -4,6 +4,10 @@
 #include <iostream>
 #include <fstream>
 
+#ifdef _SAFE
+#include <unordered_map>
+#endif
+
 namespace dark {
 
 /**
@@ -12,8 +16,11 @@ namespace dark {
 struct ram {
   public:
     static constexpr int width = 18;
+#ifdef _SAFE
+    using storage_type = std::unordered_map <std::uint32_t, std::uint8_t>;
+#else
     using storage_type = std::array <std::uint8_t, 1 << width>;
-
+#endif
     storage_type data;
 
     wire mem_out;   // Input from cpu.
@@ -63,11 +70,16 @@ void ram::read(std::istream &in) {
 void ram::work()  {
     unsigned __addr = mem_addr(); // Speed up by caching.
     assert(__addr < (1 << width), "Memory address out of range");
+#ifdef _SAFE
+    if (!mem_wr() && __addr < (1 << (width - 2)))
+        data.at(__addr);
+#endif
+
     if (mem_wr()) {
-        data[__addr] = mem_out();
+        data.at(__addr) = mem_out();
         if (__addr >> 16 == 0x3)
             out << (char)mem_out();
-    } else          last_addr   <= __addr;
+    } else last_addr <= __addr;
 }
 
 

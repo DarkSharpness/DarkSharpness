@@ -31,8 +31,8 @@ struct memctrl_output {
 };
 
 struct memctrl_private {
-    reg stage;  // Stage of the execution.
-    reg lens;   // Length of read/write.
+    reg stage;      // Stage of the execution.
+    reg lens;       // Length of read/write.
     // reg bias;   // Bias of each memory stride.
 };
 
@@ -117,7 +117,8 @@ void memctrl::work() {
                 }
 
                 stage    <= stage() + 1;
-                mem_addr <= mem_addr() + 1; // bias();
+                if (stage() + 1 < lens())
+                    mem_addr <= mem_addr() + 1; // bias();
 
                 if (stage() == lens()) {
                     iDone   <= (status() == IFETCH);
@@ -127,11 +128,11 @@ void memctrl::work() {
                     loadData[0].sync(); // In order to see the result...
 
                     if (status() == IFETCH) {
-                        details("Instruction loaded :" , int_to_hex(loadData[0]()) ,
+                        details("= Instruction loaded :" , int_to_hex(loadData[0]()) ,
                                 " at " , int_to_hex(mem_addr() - 4));
                     } else {
-                        details("Data loaded :" , int_to_hex(loadData[0]()) ,
-                                " at " , mem_addr() - lens(),
+                        details("= Data loaded :" , int_to_hex(loadData[0]()) ,
+                                " at " , mem_addr() - lens() + 1,
                                 ", length ", lens());
                     }
                 } break;

@@ -49,23 +49,30 @@ struct scalar_file : public scalar_input , private scalar_private {
         } else if (!ready) {
             // Do nothing.
         } else { // Normal work.
-            if (new_busy() != 0) {
+            assert(!(issue() && wbDone() && issueRd() == wbDone()));
+            assert(issueRd() < 32 && wbDone() < 32 , "??");
+
+            if (issue() && issueRd()) {
                 busy.set_bit(issueRd(), true);
-            } else if (wbDone() != 0) {
+            }
+
+            if (wbDone()) {
                 busy.set_bit(wbDone(), false);
                 regs[wbDone()] <= wbData();
             }
         }
 
+        assert(regs[0]() == 0, "Register 0 is always 0.");
         details("Scalar file:"
-            "  sp =", regs[2](), 
-            "| a0 =", regs[10](),
-            "| a1 =", regs[11](),
-            "| a2 =", regs[12](),
-            "| a3 =", regs[13](),
-            "| a4 =", regs[14](),
-            "| a5 =", regs[15](),
-            ""
+            "   ra =", regs[1].bak,
+            "|  sp =", regs[2].bak, 
+            "| a0 =", regs[10].bak,
+            "| a1 =", regs[11].bak,
+            "| a2 =", regs[12].bak,
+            "| a3 =", regs[13].bak,
+            "| a4 =", regs[14].bak,
+            "| a5 =", regs[15].bak,
+            "| busy =", busy.bak
             );
 
     }
