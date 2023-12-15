@@ -46,7 +46,7 @@ struct icache {
   private:
 
     int tagIn() { return bits {take <31, width + 2> (addrIn()) , bits <1> (1) };}
-    int index() { return bits {take <width + 1 , 0> (addrIn())                };}
+    int index() { return bits {take <width + 1 , 2> (addrIn())                };}
 
   public:
 
@@ -63,8 +63,8 @@ struct icache {
             __dataIn    = dataIn();
             __tagIn     = tagIn();
 
-            cmd[__index] <= __dataIn;
-            tag[__index] <= __tagIn;
+            cmd.at(__index) <= __dataIn;
+            tag.at(__index) <= __tagIn;
         }
     }
 
