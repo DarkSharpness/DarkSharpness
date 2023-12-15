@@ -1,13 +1,17 @@
 #include "cpu.h"
 #include "ram.h"
+#include <memory>
 #include <fstream>
 
+std::size_t count = 0; // Count the total cycles.
 
-signed main() {
+void run_simulator() {
+    // freopen("cache.tmp","w",stderr);
     std::ifstream file_input ("test.tmp");
     using dark::synchronize;
-    dark::cpu      *cpu = new dark::cpu;
-    dark::ram      *mem = new dark::ram;
+    auto cpu = std::make_unique <dark::cpu> ();
+    auto mem = std::make_unique <dark::ram> ();
+    // dark::ram      *mem = new dark::ram;
     cpu->mem_in         = mem->mem_in;
     cpu->io_buffer_full = mem->io_buffer_full;
     mem->mem_out        = cpu->mem_out;
@@ -33,15 +37,27 @@ signed main() {
     dark::ready = true;
     dark::clock = true;
     dark::stall = false;
-    std::size_t count = 0;
     do {
+        dark::details("Cycle: ", ++count);
         cpu->work();
         mem->work();
         synchronize(*cpu);
         synchronize(*mem);
-        if (++count == 100) break;
+        dark::details(' ');
+        if (count > 100000000) throw std::runtime_error("Too many cycles!");
     } while(!dark::stall);
 
+    std::cerr << "Result: ";
+    std::cout << cpu->return_value() << std::endl;
+}
+
+
+signed main() {
+    try {
+        run_simulator();
+    } catch(const std::exception& e) {
+        std::cerr << "\033[33m- Error: " << e.what() << " -\033[0m\n";
+    }
     std::cerr << "Total cycles: " << count << "\n";
     return 0;
 }
