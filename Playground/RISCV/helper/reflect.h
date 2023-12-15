@@ -99,7 +99,7 @@ inline void synchronize(_Tp &val) {
     } else if constexpr (value == 2) {
         return sync_member(val);
     } else {
-        static_assert(false, "Not supported type!");
+        static_assert (false, "Not supported type!");
     }
 }
 
@@ -144,8 +144,8 @@ inline void sync_by(_Tp &val, sync_tag <_Vp, _Tags...>) {
  */
 template <typename _Tp>
 inline void sync_member(_Tp &val) {
-    static_assert(std::is_aggregate_v <_Tp>, "Type must be aggregate!");
-    static_assert(!detail::std_array  <_Tp>, "No array allowed!");
+    static_assert (std::is_aggregate_v <_Tp>, "Type must be aggregate!");
+    static_assert (!detail::std_array  <_Tp>, "No array allowed!");
     using namespace detail;
     constexpr auto __size = size <_Tp> ();
     constexpr auto __sync = [](auto &...args) { (synchronize(args), ...); };
@@ -189,7 +189,7 @@ inline void sync_member(_Tp &val) {
         auto &[a, b, c, d, e, f, g, h, i, j, k, l] = val;
         __sync(a, b, c, d, e, f, g, h, i, j, k, l);
     } else {
-        static_assert(false, "Too many members in struct!");
+        static_assert (false, "Too many members in struct!");
     }
 }
 

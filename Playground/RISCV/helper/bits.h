@@ -25,7 +25,7 @@ concept bits_type = std::same_as <detail::bits_tag, typename T::tag>;
  */
 template <int width>
 struct bits {
-    static_assert(width > 0 && width <= 32);
+    static_assert (width > 0 && width <= 32);
     using tag = detail::bits_tag;
     int value {};
 
@@ -56,7 +56,7 @@ bits(T...) -> bits <(T::length + ...)>;
  */
 template <int l,int r = l>
 inline constexpr auto take(unsigned val) -> bits <l - r + 1> {
-    static_assert(l >= r);
+    static_assert (l >= r);
     return bits <l - r + 1> { int(val >> r) };
 }
 

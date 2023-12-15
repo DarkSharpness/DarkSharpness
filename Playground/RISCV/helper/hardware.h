@@ -7,15 +7,74 @@
 /* Declaration of basic register and wire type. */
 namespace dark {
 
+struct wire;
+
+
+namespace detail {
+
+template <typename _Func>
+concept wire_lambda =
+    !std::same_as <wire, std::decay_t <_Func>> &&
+    requires(_Func &&__f) { { __f() } -> std::same_as <int>; };
+
+struct wire_base {
+    using _Ret = int;
+    using _Cpy = wire_base *;
+    virtual _Ret call()     = 0;
+    virtual _Cpy copy()     = 0;
+    virtual ~wire_base() = default;
+};
+
+template <typename _Func>
+struct wire_implement final : wire_base {
+    static_assert (std::same_as <std::decay_t <_Func>, _Func>);
+    _Func lambda;
+    wire_implement(const _Func &__func) : lambda(__func) {}
+    wire_implement(_Func &&__func) : lambda(std::move(__func)) {}
+    ~wire_implement() = default;
+
+    _Ret call()     override { return lambda(); }
+    _Cpy copy()     override { return new wire_implement(lambda); }
+};
+
+}
+
+
 /**
  * @brief Simulator wire.
  * For better constructor (use {} initialization),
  * we have to make public its member variable.
  */
 struct wire {
-    std::function <int (void)> func;
-    int operator() (void) const { return func(); }
-    void sync() { debug("Sync wire:", this); }
+//   private:
+    using _Manage = detail::wire_base;
+    _Manage *manage {};
+
+  public:
+    wire() = default;
+    ~wire() { delete manage; }
+
+    wire(const wire &other) : manage(other.manage->copy()) {}
+    wire(wire &&other) noexcept : manage(other.manage) { other.manage = nullptr; }
+
+    template <detail::wire_lambda _Func>
+    wire(_Func &&__func) {
+        using _Real = std::decay_t <_Func>;
+        manage = new detail::wire_implement <_Real>
+            (std::forward <_Func> (__func));
+    }
+
+    wire &operator = (const wire &rhs) {
+        if (this != &rhs) { this->~wire(); ::new (this) wire(rhs); } return *this;
+    }
+    wire &operator = (wire &&rhs) noexcept {
+        if (this != &rhs) { this->~wire(); ::new (this) wire(std::move(rhs)); } return *this;
+    }
+
+    int operator() (void) const {
+        if (!manage) throw std::runtime_error("Uninitialized wire.");
+        return manage->call();
+    }
 };
 
 /**
@@ -24,7 +83,7 @@ struct wire {
  * we make private its member variables.
  */
 struct reg {
-  private:
+//   private:
     int value {};
     int bak   {};
   public:
