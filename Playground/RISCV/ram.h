@@ -2,6 +2,7 @@
 #include "utility.h"
 #include <cstdint>
 #include <iostream>
+#include <fstream>
 
 namespace dark {
 
@@ -35,6 +36,7 @@ struct ram {
 
   private: // This part should be private.
     reg last_addr; // Address of last cycle.
+    std::ofstream out {"test.out"};
 
   public:
     void read(std::istream &in);
@@ -61,8 +63,11 @@ void ram::read(std::istream &in) {
 void ram::work()  {
     unsigned __addr = mem_addr(); // Speed up by caching.
     assert(__addr < (1 << width), "Memory address out of range");
-    if (mem_wr()) data[__addr] = mem_out();
-    else          last_addr   <= __addr;
+    if (mem_wr()) {
+        data[__addr] = mem_out();
+        if (__addr >> 16 == 0x3)
+            out << (char)mem_out();
+    } else          last_addr   <= __addr;
 }
 
 
