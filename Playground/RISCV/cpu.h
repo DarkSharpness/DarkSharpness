@@ -44,7 +44,7 @@ struct cpu : public cpu_input, private cpu_component {
 
     void init();
     void work();
-    auto return_value() { return scalars.return_value(); }
+    auto return_value() { return scalars.return_value() & 0xff; }
 };
 
 // Link the wires.
