@@ -24,6 +24,12 @@ struct icache {
     const wire dataOut = {
         [this]()-> int { return writeEnable() ? dataIn() : cmd[index()](); }
     };
+    /**
+     * @return a.k.a not hit. 
+     */
+    const wire iFetch = {
+        [this]()-> int { return !(writeEnable() || tag[index()]() == tagIn()); }
+    };
 
   private: // Private properties.
 

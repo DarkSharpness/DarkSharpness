@@ -24,14 +24,17 @@ struct ifetch_output {
     reg insPc;      // Instruction PC (next command).
 };
 
+struct ifetch_private {
+    reg stall;      // Stall on jalr/branch.
+    reg pause;      // Pause on end command.
+};
 
-struct ifetch : public ifetch_input, ifetch_output {
+struct ifetch : public ifetch_input, ifetch_output, private ifetch_private {
   public:
     using sync = sync_tag <ifetch_output>;
     friend class caster <ifetch>;
 
   private:
-    reg stall;      // Stall on branch and jalr.
 
     static int jalImm(int ins) {
         // auto ins = instData();
@@ -51,29 +54,43 @@ namespace dark {
 void ifetch::work() {
     if (reset) {
         pc      <= 0;
+        pause   <= 0;
         insDone <= 0;
     } else if (!ready) {
         // Do nothing.
-    } else if(hit() && insAvail() && !stall()) {
+    } else if(hit() && insAvail() && !stall() && !pause()) {
+        // Special judge.
+        int __instData = instData();
+        if (__instData == 0x0ff00513) {
+            pause   <= 1;
+            insDone <= 1;
+            insOut  <= 0b1100111; // Jump to address 0, meaningless.
+            return void (debug("End command detected!"));
+        }
+
         insDone <= 1;
         insOut  <= instData();
         insPc   <= pc();
-        switch (take <6,0> (instData())) {
+
+        switch (take <6,0> (__instData)) {
             case 0b1101111: // Jump and link.
-                pc <= pc() + jalImm(instData()); break;
+                pc <= pc() + jalImm(__instData); break;
             case 0b1100011: // Branching, wait until done.
             case 0b1100111: // Jump and link register.
                 stall <= 1; break;
             default: // Non-branching, normal case.
                 pc <= pc() + 4;
         }
+        details("Program counter:", pc());
     } else {
-        insDone <= 0;
+        insDone <= 0;   // Set to not done.
         if (brDone()) { // Wait for WB...
             stall <= 0;
             pc <= brData();
+            if (pause()) { ::dark::stall = true; }
         }
     }
+    debug("Program counter:", pc());
 }
 
 } // namespace dark

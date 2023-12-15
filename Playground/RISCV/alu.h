@@ -56,7 +56,7 @@ struct scalar_ALU : scalar_ALU_input, scalar_ALU_output {
             case ALU_op::SGEU:  return (unsigned)x >= (unsigned)y;
             case ALU_op::SEQ:   return x == y;
             case ALU_op::SNEQ:  return x != y;
-            default: assert(false, "Unknown ALU operation.");
+            default: assert(false, "Unknown ALU operation."); return 0;
         }
     }
 };

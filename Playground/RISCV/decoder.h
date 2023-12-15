@@ -26,8 +26,8 @@ struct decoder_output {
     reg  ALUPc;     // Pc for ALU.
     reg  rs1Index;  // Index for rs1.
     reg  rs2Index;  // Index for rs2.
-    reg  immediate; // Immediate value.
     reg  rdIndex;   // Index in register file.
+    reg  immediate; // Immediate value.
     reg  opType;    // Operation type for ALU.
 };
 
@@ -57,6 +57,7 @@ struct decoder : public decoder_input, decoder_output, private ins_queue {
     const wire rs1Head = { [this] () -> int { return rs1(queue[head()].ins()); } };
     const wire rs2Head = { [this] () -> int { return rs2(queue[head()].ins()); } };
     const wire rdHead  = { [this] () -> int { return rd (queue[head()].ins()); } };
+    const wire notFull = { [this] () -> int { return avail(); } };
 
   private:
 
@@ -87,7 +88,7 @@ struct decoder : public decoder_input, decoder_output, private ins_queue {
         rs1Index    <= 0;       // Zero register.
         rs2Index    <= 0;       // Zero register.
         rdIndex     <= rd(__ins);
-        immediate   <= take <31,12> (__ins);
+        immediate   <= bits {take <31,12> (__ins), bits <12> (0)};
 
         iType       <= ALU_type::immediate;
         opType      <= ALU_op::ADD;

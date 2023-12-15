@@ -1,9 +1,10 @@
 #include "cpu.h"
 #include "ram.h"
-#include <iostream>
+#include <fstream>
 
 
 signed main() {
+    std::ifstream file_input ("test.tmp");
     using dark::synchronize;
     dark::cpu      *cpu = new dark::cpu;
     dark::ram      *mem = new dark::ram;
@@ -14,7 +15,7 @@ signed main() {
     mem->mem_wr         = cpu->mem_wr;
 
     cpu->init();
-    mem->read();
+    mem->read(file_input);
 
     dark::reset = true;
     dark::ready = false;
@@ -31,14 +32,14 @@ signed main() {
     dark::reset = false;
     dark::ready = true;
     dark::clock = true;
-    dark::stall = true;
+    dark::stall = false;
     std::size_t count = 0;
     do {
         cpu->work();
         mem->work();
         synchronize(*cpu);
         synchronize(*mem);
-        ++count;
+        if (++count == 100) break;
     } while(!dark::stall);
 
     std::cerr << "Total cycles: " << count << "\n";

@@ -8,16 +8,17 @@ struct writer_input {
     wire wrWork;        // Whether to work.
     wire wrType;        // Type for next writeback operation.
 
-    wire wrPc;          // Program counter for writeback.
-    wire wrImm;         // Immediate value for next operation.
-    wire wrRd;          // Register index for writing back.
+    wire wbPc;          // Program counter for writeback.
+    wire wbImm;         // Immediate value for next operation.
+    wire wbRd;          // Register index for writing back.
 
-    wire scalarOut;     // Scalar output.
-
-    wire isBubbling;    // Whether there is a bubble in this cycle.
+    wire scalarOut;     // Scalar output from ALU.
 
     wire memDone;       // Load store is done, which will stop bubble.
     wire loadData;      // Data loaded.
+
+    wire    scalarData; // Scalar data from register file (for storing)
+    vwire   vectorData; // Vector data from register file (for storing)
 };
 
 struct writer_output {
@@ -29,6 +30,7 @@ struct writer_output {
 
     reg  memType;       // Memory type.
     reg  memAddr;       // Memory address.
+    vreg memData;       // Memory data.
 };
 
 struct writer_private {
@@ -69,7 +71,7 @@ void writer::work() {
          * When translating into verilog, be careful about this!
          */
         switch (status()) {
-            default: assert(false, "It's already enough... Fxxk you!");
+            default: assert(false, "It's already enough... Fxxk you!"); break;
             case IDLE:
                 if (wrWork()) {
                     work_idle();
@@ -81,9 +83,9 @@ void writer::work() {
             case LOAD:
                 if (memDone()) {
                     status <= IDLE;
-                    wbDone <= wrRd();
+                    wbDone <= wbRd();
                     switch (ALU_type::funct3(wrType())) {
-                        default: assert(false, "I give up...");
+                        default: assert(false, "I give up..."); break;
                         case 0b000: wbData <= take  <7, 0> (loadData()); break;
                         case 0b001: wbData <= take <15, 0> (loadData()); break;
                         case 0b010: wbData <= take <31, 0> (loadData()); break;
@@ -100,25 +102,25 @@ void writer::work() {
 
 void writer::work_idle() {
     switch(take <ALU_type::width, 0> (wrType())) {
-        default: assert(false, "I give up...");
+        default: assert(false, "I give up..."); break;
         case ALU_type::scalar:
         case ALU_type::pcImm:
         case ALU_type::immediate:
             brDone  <= 0;
-            wbDone  <= wrRd();
+            wbDone  <= wbRd();
             wbData  <= scalarOut();
             break;
 
         case ALU_type::jalr:
             brDone  <= 1;
             brData  <= scalarOut();
-            wbDone  <= wrRd();
-            wbData  <= wrPc() + 4;
+            wbDone  <= wbRd();
+            wbData  <= wbPc() + 4;
             break;
 
         case ALU_type::branch:
             brDone  <= 1;
-            brData  <= (scalarOut() ? wrPc() + wrImm() : wrPc() + 4);
+            brData  <= (scalarOut() ? wbPc() + wbImm() : wbPc() + 4);
             wbDone  <= 0;
             break;
 
@@ -128,7 +130,7 @@ void writer::work_idle() {
             status  <= LOAD;
             memAddr <= scalarOut();
             switch (ALU_type::funct3_2(wrType())) {
-                default: assert(false, "I give up...");
+                default: assert(false, "I give up..."); break;
                 case 0b00: memType <= 0b00110; break;
                 case 0b01: memType <= 0b01010; break;
                 case 0b10: memType <= 0b10010; break;
@@ -140,8 +142,9 @@ void writer::work_idle() {
             wbDone  <= 0;
             status  <= STORE;
             memAddr <= scalarOut();
+            memData <= scalarData();
             switch (ALU_type::funct3_2(wrType())) {
-                default: assert(false, "I give up...");
+                default: assert(false, "I give up..."); break;
                 case 0b00: memType <= 0b00111; break;
                 case 0b01: memType <= 0b01011; break;
                 case 0b10: memType <= 0b10011; break;

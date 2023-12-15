@@ -38,7 +38,7 @@ struct reg {
     void operator = (reg rhs) { value = bak = rhs.value; }
     void operator <= (int val) { bak = val; }
     void operator <= (reg rhs) { bak = rhs.value; } 
-    void sync() { debug("Sync reg:", this, this->value, this->bak); value = bak;  }
+    void sync() { debug("Sync reg:", this, this->value, this->bak); value = bak; }
 
     // Set given byte to given char (indexed from 0, low byte).
     template <int l> requires (l >= 0 && l < 4)

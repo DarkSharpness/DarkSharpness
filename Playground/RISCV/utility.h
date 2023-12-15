@@ -17,13 +17,23 @@ inline constexpr int ELEN {32}; // 32 bits at one time.
 inline constexpr int VLEN {64}; // 64 bits in one vector.
 inline constexpr int VIDX {VLEN / ELEN} ; // 2 registers.
 
-// Vector register.
-struct vreg : public std::array <reg, VIDX> {
-    void sync() { for (auto &reg : *this) reg.sync(); }
-};
 
 struct vwire : public std::array <wire, VIDX> {
     void sync() { /* Still do nothing. */}
+};
+
+struct vreg : public std::array <reg, VIDX> {
+    void sync() { for (auto &reg : *this) reg.sync(); }
+    operator vwire() {
+        vwire ret;
+        for (int i = 0 ; i < VIDX ; ++i) ret[i] = (*this)[i];
+        return ret;
+    }
+
+    void operator <= (int rhs) { (*this)[0] <= rhs; }
+    // void operator <= (const vreg &rhs) {
+    //     for (int i = 0 ; i < VIDX ; ++i) (*this)[i] <= rhs[i];
+    // }
 };
 
 

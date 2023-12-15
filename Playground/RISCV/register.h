@@ -5,10 +5,14 @@ namespace dark {
 
 
 struct scalar_input {
-    // Query before issue.
+    // Query busy before issue.
     wire rs1;       // Index of the register to read.
     wire rs2;       // Index of the register to read.
     wire rd;        // Index of the register to write.
+
+    // Query data after issue.
+    wire rs1ALU;    // Data of rs1.
+    wire rs2ALU;    // Data of rs2.
 
     // Set busy after issue.
     wire issue;     // Whether to issue.
@@ -31,8 +35,8 @@ struct scalar_file : public scalar_input , private scalar_private {
     using sync = sync_tag <scalar_private>;
     friend class caster <scalar_file>;
 
-    const wire rs1Data = { [this]() -> int { return regs[rs1()](); } };
-    const wire rs2Data = { [this]() -> int { return regs[rs2()](); } };
+    const wire rs1Data = { [this]() -> int { return regs[rs1ALU()](); } };
+    const wire rs2Data = { [this]() -> int { return regs[rs2ALU()](); } };
 
     const wire rs1Busy = { [this]() -> int { return test_busy(rs1()); }};
     const wire rs2Busy = { [this]() -> int { return test_busy(rs2()); }};
@@ -52,6 +56,11 @@ struct scalar_file : public scalar_input , private scalar_private {
                 regs[wbDone()] <= wbData();
             }
         }
+
+        // details("Scalar file: ");
+        // std::string str = "";
+        // for (auto &reg : regs) str += std::to_string(reg()) + ' ';
+        // details(str, "");
     }
 
   private:

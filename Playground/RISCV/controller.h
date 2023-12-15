@@ -20,9 +20,9 @@ struct controller_output {
     reg  wrWork;        // Whether to work.
     reg  wrType;        // Type for next writeback operation.
 
-    reg  wrPc;          // Program counter for writeback.
-    reg  wrImm;         // Immediate value for next operation.
-    reg  wrRd;          // Register index for writing back.
+    reg  wbPc;          // Program counter for writeback.
+    reg  wbImm;         // Immediate value for next operation.
+    reg  wbRd;          // Register index for writing back.
 
     reg  isBubbling;    // Whether there is a bubble in this cycle.
 };
@@ -51,9 +51,9 @@ struct controller : public controller_input, controller_output {
             wrWork <= issue();
             wrType <= iType();
 
-            wrPc   <= ALUPc();
-            wrImm  <= immediate();
-            wrRd   <= rdIndex();
+            wbPc   <= ALUPc();
+            wbImm  <= immediate();
+            wbRd   <= rdIndex();
 
             if (isBubbling()) {
                 isBubbling <= !memDone();

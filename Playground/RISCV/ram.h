@@ -1,6 +1,7 @@
 #pragma once
 #include "utility.h"
 #include <cstdint>
+#include <iostream>
 
 namespace dark {
 
@@ -9,8 +10,6 @@ namespace dark {
  */
 struct ram {
   public:
-    using sync = sync_member_tag;
-
     static constexpr int width = 18;
     using storage_type = std::array <std::uint8_t, 1 << width>;
 
@@ -34,16 +33,29 @@ struct ram {
      */
     const wire io_buffer_full = { [this] () -> int { return 0; } };
 
-  public: // This part should be private.
+  private: // This part should be private.
     reg last_addr; // Address of last cycle.
 
   public:
-    void read();
+    void read(std::istream &in);
     void work();
+    void sync() { last_addr.sync(); }
 };
 
 
-void ram::read() { /* To be completed... */ }
+void ram::read(std::istream &in) {
+    char    buf[32];
+    std::string str;
+    size_t  idx = 0;
+    while(in >> buf) {
+        if(buf[0] == '@') {
+            idx = std::stoi(str = buf + 1, nullptr, 16);
+        } else {
+            data[idx++] = std::stoi(str = buf, nullptr, 16);
+        }
+    }
+}
+
 void ram::work()  {
     unsigned __addr = mem_addr(); // Speed up by caching.
     assert(__addr < (1 << width), "Memory address out of range");
