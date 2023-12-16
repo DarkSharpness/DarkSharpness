@@ -99,7 +99,7 @@ void writer::work() {
                         case 0b100: wbData <= sign_extend  <7> (loadData()); break;
                         case 0b101: wbData <= sign_extend <15> (loadData()); break;
                     }
-                    details("-- Load from", int_to_hex(memAddr()), "to", wbRd(), ":", wbData.bak);
+                    details("-- Load from", int_to_hex(memAddr()), "to", wbRd(), ":", wbData.next());
                 } break;
 
             case STORE:
@@ -124,7 +124,7 @@ void writer::work_idle() {
             wbDone  <= wbRd();
             wbData  <= scalarOut();
             memType <= 0;
-            details("-- Scalar writeback:", wbData.bak, "to", wbRd());
+            details("-- Scalar writeback:", wbData.next(), "to", wbRd());
             break;
 
         case ALU_type::jalr:
@@ -133,8 +133,8 @@ void writer::work_idle() {
             wbDone  <= wbRd();
             wbData  <= wbPc() + 4;
             memType <= 0;
-            details("-- Jalr writeback:", wbData.bak, "to", wbRd(),
-                    " and jump to", int_to_hex(brData.bak));
+            details("-- Jalr writeback:", wbData.next(), "to", wbRd(),
+                    " and jump to", int_to_hex(brData.next()));
             break;
 
         case ALU_type::branch:
@@ -142,7 +142,7 @@ void writer::work_idle() {
             brData  <= (scalarOut() ? wbPc() + wbImm() : wbPc() + 4);
             wbDone  <= 0;
             memType <= 0;
-            details("-- Branch PC: ", int_to_hex(brData.bak));
+            details("-- Branch PC: ", int_to_hex(brData.next()));
             break;
 
         case ALU_type::load:

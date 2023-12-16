@@ -42,11 +42,12 @@ struct wire_implement final : wire_base {
 
 /**
  * @brief Simulator wire.
- * For better constructor (use {} initialization),
- * we have to make public its member variable.
+ * On consideration of type safety,
+ * we make private its member variables.
+ * Wrapper of std::function <int(void)>.
  */
 struct wire {
-//   private:
+  private:
     using _Manage = detail::wire_base;
     _Manage *manage {};
 
@@ -75,6 +76,8 @@ struct wire {
         if (!manage) throw std::runtime_error("Uninitialized wire.");
         return manage->call();
     }
+
+    void sync() { /* Do nothing. */ }
 };
 
 /**
@@ -83,40 +86,38 @@ struct wire {
  * we make private its member variables.
  */
 struct reg {
-//   private:
+  private:
     int value {};
     int bak   {};
   public:
-
+    int next() const { return bak; }
     int operator() (void) const { return value; }
     bool operator[] (int x) const { return (value >> x) & 1; }
 
     operator wire() { return { [this] () -> int { return value; } }; }
 
-    void operator = (int val) { value = bak = val; }
-    void operator = (reg rhs) { value = bak = rhs.value; }
-    void operator <= (int val) { bak = val; }
-    void operator <= (reg rhs) { bak = rhs.value; } 
-    void sync() { debug("Sync reg:", this, this->value, this->bak); value = bak; }
+    void operator = (int val)   { value = bak = val; }
+    void operator = (reg rhs)   { value = bak = rhs.value; }
+    void operator <= (int val)  { bak = val; }
+    void operator <= (reg rhs)  { bak = rhs.value; } 
+    void sync()                 { value = bak; }
 
-    // Set given byte to given char (indexed from 0, low byte).
-    template <int l> requires (l >= 0 && l < 4)
-    void set_byte(char val) {
+    // Set given byte to given char.
+    void set_byte(int l, char val) {
         bak &= ~(0xff << (l * 8));
         bak |= unsigned(val) << (l * 8);
     }
-
+    // Set given bit to true or false.
     void set_bit(int l, bool val) {
-        bak &= ~(1 << l);
-        bak |= val << l;
+        if (val)    bak |=   1u << l;
+        else        bak &= ~(1u << l);
     }
 };
 
-
-inline bool clock {}; // Clock signal. Its actually useless...
 inline bool reset {}; // Reset signal. Reset all registers if high.
 inline bool ready {}; // Ready signal. Stall the CPU temporarily if low.
 inline bool stall {}; // Stall signal. Stop the program and exit if high.
+inline auto clock {0ull};   // Count of cycles. Used for debug.
 
 // Not implemented wire. Throw if called.
 inline const wire NotImplemented = {

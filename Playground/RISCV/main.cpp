@@ -3,23 +3,26 @@
 #include <memory>
 #include <fstream>
 
-std::size_t count = 0; // Count the total cycles.
-
 void run_simulator() {
-    // freopen("cache.tmp","w",stderr);
-    std::ifstream file_input ("test.tmp");
     using dark::synchronize;
+
     auto cpu = std::make_unique <dark::cpu> ();
     auto mem = std::make_unique <dark::ram> ();
-    // dark::ram      *mem = new dark::ram;
+
+
     cpu->mem_in         = mem->mem_in;
     cpu->io_buffer_full = mem->io_buffer_full;
     mem->mem_out        = cpu->mem_out;
     mem->mem_addr       = cpu->mem_addr;
     mem->mem_wr         = cpu->mem_wr;
 
-    cpu->init();
-    mem->read(file_input);
+
+    { // Initialize.
+        cpu->init();
+        std::ifstream file_input ("test.tmp");
+        mem->read(file_input);
+    } // End of initialization.
+
 
     dark::reset = true;
     dark::ready = false;
@@ -38,13 +41,13 @@ void run_simulator() {
     dark::clock = true;
     dark::stall = false;
     do {
-        dark::details("Cycle: ", ++count);
+        dark::details("Cycle: ", ++dark::clock);
         cpu->work();
         mem->work();
         synchronize(*cpu);
         synchronize(*mem);
         dark::details(' ');
-        if (count > 100000000) throw std::runtime_error("Too many cycles!");
+        if (dark::clock > 100000000) throw std::runtime_error("Too many cycles!");
     } while(!dark::stall);
 
     std::cerr << "Result: ";
@@ -58,6 +61,6 @@ signed main() {
     } catch(const std::exception& e) {
         std::cerr << "\033[33m- Error: " << e.what() << " -\033[0m\n";
     }
-    std::cerr << "Total cycles: " << count << "\n";
+    std::cerr << "Total cycles: " << dark::clock << "\n";
     return 0;
 }

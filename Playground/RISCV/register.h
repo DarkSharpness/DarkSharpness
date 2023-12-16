@@ -64,15 +64,15 @@ struct scalar_file : public scalar_input , private scalar_private {
 
         assert(regs[0]() == 0, "Register 0 is always 0.");
         details("Scalar file:"
-            "   ra =", regs[1].bak,
-            "|  sp =", regs[2].bak, 
-            "| a0 =", regs[10].bak,
-            "| a1 =", regs[11].bak,
-            "| a2 =", regs[12].bak,
-            "| a3 =", regs[13].bak,
-            "| a4 =", regs[14].bak,
-            "| a5 =", regs[15].bak,
-            "| busy =", busy.bak
+            "   ra =", regs[1].next(),
+            "|  sp =", regs[2].next(), 
+            "| a0 =", regs[10].next(),
+            "| a1 =", regs[11].next(),
+            "| a2 =", regs[12].next(),
+            "| a3 =", regs[13].next(),
+            "| a4 =", regs[14].next(),
+            "| a5 =", regs[15].next(),
+            "| busy =", busy.next()
             );
 
     }

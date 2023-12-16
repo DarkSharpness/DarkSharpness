@@ -50,7 +50,7 @@ struct memctrl : memctrl_input, memctrl_output, memctrl_private {
     template <size_t N>
     void set_loaded() {
         static_assert (N < VIDX * 4);
-        loadData[N / 4].set_byte <N % 4> (mem_in());
+        loadData[N / 4].set_byte(N % 4,mem_in());
     }
 
     template <size_t N>
