@@ -35,7 +35,17 @@ struct ram {
      * It will output the value of cycle #x + 1.
      * @return Requested byte of last cycle.
      */
-    const wire mem_in = { [this] () -> int { return data[last_addr()]; } };
+    const wire mem_in = {
+        [this] () -> int {
+            if (last_addr() >> 16 == 0x3) {
+                uint8_t __byte; /* Read one byte from memory. */
+                in >> __byte;
+                return __byte;
+            } else {
+                return data[last_addr()];
+            }
+        }
+    };
     /**
      * @return Always 0 (RAM is never full), currently.
      */
@@ -43,6 +53,7 @@ struct ram {
 
   private: // This part should be private.
     reg last_addr; // Address of last cycle.
+    std::ifstream in  {"test.in"};
     std::ofstream out {"test.out"};
 
   public:
@@ -53,32 +64,27 @@ struct ram {
 
 
 void ram::read(std::istream &in) {
-    char    buf[32];
+    using buffer_type = char[16];
+    buffer_type buf;
     std::string str;
     size_t  idx = 0;
-    size_t  cnt = 0;
     while(in >> buf) {
         if(buf[0] == '@') {
             idx = std::stoi(str = buf + 1, nullptr, 16);
         } else {
-            data[idx++] = std::stoi(str = buf, nullptr, 16); cnt++;
+            data[idx++] = std::stoi(str = buf, nullptr, 16);
         }
     }
-    details("Read ", cnt, " bytes.\n");
 }
+
 
 void ram::work()  {
     unsigned __addr = mem_addr(); // Speed up by caching.
     assert(__addr < (1 << width), "Memory address out of range");
-#ifdef _SAFE
-    if (!mem_wr() && __addr < (1 << (width - 2)))
-        data.at(__addr);
-#endif
-
     if (mem_wr()) {
-        data.at(__addr) = mem_out();
-        if (__addr >> 16 == 0x3)
-            out << (char)mem_out();
+        data[__addr] = mem_out();
+        // Output if writing to given high address.
+        if (__addr >> 16 == 0x3) out << (char)mem_out();
     } else last_addr <= __addr;
 }
 
