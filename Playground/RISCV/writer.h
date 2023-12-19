@@ -15,8 +15,8 @@ struct writer_input {
     wire scalarOut;     // Scalar output from ALU.
 
     wire memDone;       // Load store is done, which will stop bubble.
-    wire loadData;      // Data loaded.
     wire memStatus;     // Status of the memory.
+    wire loadData;      // Data loaded.
 
     wire    scalarData; // Scalar data from register file (for storing)
     vwire   vectorData; // Vector data from register file (for storing)
@@ -33,7 +33,7 @@ struct writer_output {
 
     reg  memType;       // Memory type.
     reg  memAddr;       // Memory address.
-    vreg memData;       // Memory data.
+    reg  scalarStore;   // Memory data to store.
 };
 
 struct writer_private {
@@ -86,8 +86,9 @@ void writer::work() {
                 } break;
 
             case LOAD:
+                // If Scalar READ/WRITE is operating, reset memType.
                 if (take <1> (memStatus()))
-                    memType <= 0;
+                    memType <= 0; // Stop the query if reading/writing.
                 if (memDone()) {
                     status <= IDLE;
                     wbDone <= wbRd();
@@ -104,10 +105,10 @@ void writer::work() {
 
             case STORE:
                 if (take <1> (memStatus()))
-                    memType <= 0;
+                    memType <= 0; // Stop the query if reading/writing.
                 if (memDone()) {
                     status  <= IDLE;
-                    details("-- Store to", int_to_hex(memAddr()), ":", memData[0]());
+                    details("-- Store to", int_to_hex(memAddr()), ":", scalarData());
                 }
                 break;
         }
@@ -163,12 +164,12 @@ void writer::work_idle() {
             break;
 
         case ALU_type::store:
-            brDone  <= 0;
-            wbDone  <= 0;
-            status  <= STORE;
-            memAddr <= scalarOut();
-            memData <= scalarData();
-            curType <= wrType();
+            brDone      <= 0;
+            wbDone      <= 0;
+            status      <= STORE;
+            memAddr     <= scalarOut();
+            curType     <= wrType();
+            scalarStore <= scalarData();
             switch (ALU_type::funct3_2(wrType())) {
                 default: assert(false, "I give up..."); break;
                 case 0b00: memType <= 0b00111; break;

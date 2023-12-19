@@ -9,7 +9,6 @@ namespace dark {
 
 struct wire;
 
-
 namespace detail {
 
 template <typename _Func>
@@ -60,9 +59,8 @@ struct wire {
 
     template <detail::wire_lambda _Func>
     wire(_Func &&__func) {
-        using _Real = std::decay_t <_Func>;
-        manage = new detail::wire_implement <_Real>
-            (std::forward <_Func> (__func));
+        using _Real = std::decay_t <_Func>; // Real type of lambda.
+        manage = new detail::wire_implement <_Real> (std::forward <_Func> (__func));
     }
 
     wire &operator = (const wire &rhs) {
