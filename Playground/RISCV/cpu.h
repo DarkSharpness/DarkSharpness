@@ -17,17 +17,17 @@ struct cpu_input {
     wire io_buffer_full;
 };
 struct cpu_component {
-    memctrl     memctrl;
-    icache      icache;
+    memctrl     Memctrl;
+    icache      Icache;
 
-    ifetch      fetcher;
-    decoder     decoder;
+    ifetch      Fetcher;
+    decoder     Decoder;
 
-    controller  control;
-    scalar_file scalars;
-    scalar_ALU  scalarALU;
+    controller  Control;
+    scalar_file Scalars;
+    scalar_ALU  ScalarALU;
 
-    writer      writeback;
+    writer      Writeback;
 };
 
 
@@ -36,95 +36,95 @@ struct cpu : public cpu_input, private cpu_component {
     using sync = sync_tag <cpu_component>;
     friend class caster <cpu>;
 
-    const wire mem_out  = memctrl.mem_out;
-    const wire mem_addr = memctrl.mem_addr;
-    const wire mem_wr   = memctrl.mem_wr;
+    const wire mem_out  = Memctrl.mem_out;
+    const wire mem_addr = Memctrl.mem_addr;
+    const wire mem_wr   = Memctrl.mem_wr;
 
   public:
 
     void init();
     void work();
-    auto return_value() { return scalars.return_value() & 0xff; }
+    auto return_value() { return Scalars.return_value() & 0xff; }
 };
 
 // Link the wires.
 void cpu::init() {
-    memctrl.mem_in          = mem_in;
-    memctrl.io_buffer_full  = io_buffer_full;
-    memctrl.iFetchOn        = icache.iFetch;
-    memctrl.iFetchPc        = fetcher.pc;
+    Memctrl.mem_in          = mem_in;
+    Memctrl.io_buffer_full  = io_buffer_full;
+    Memctrl.iFetchOn        = Icache.iFetch;
+    Memctrl.iFetchPc        = Fetcher.pc;
 
-    memctrl.memType         = writeback.memType;
-    memctrl.memAddr         = writeback.memAddr;
-    memctrl.memData         = writeback.memData;
+    Memctrl.memType         = Writeback.memType;
+    Memctrl.memAddr         = Writeback.memAddr;
+    Memctrl.scalarStore     = Writeback.scalarStore;
 
-    icache.addrIn           = fetcher.pc;
-    icache.writeEnable      = memctrl.iDone;
-    icache.dataIn           = memctrl.loadData[0];
+    Icache.addrIn           = Fetcher.pc;
+    Icache.writeEnable      = Memctrl.iDone;
+    Icache.dataIn           = Memctrl.scalarLoad;
 
-    fetcher.hit             = icache.hit;
-    fetcher.instData        = icache.dataOut;
-    fetcher.brDone          = writeback.brDone;
-    fetcher.brData          = writeback.brData;
-    fetcher.insAvail        = decoder.notFull;
+    Fetcher.hit             = Icache.hit;
+    Fetcher.instData        = Icache.dataOut;
+    Fetcher.brDone          = Writeback.brDone;
+    Fetcher.brData          = Writeback.brData;
+    Fetcher.insAvail        = Decoder.notFull;
 
-    decoder.insDone         = fetcher.insDone;
-    decoder.insData         = fetcher.insOut;
-    decoder.insPc           = fetcher.insPc;
-    decoder.rs1Busy         = scalars.rs1Busy;
-    decoder.rs2Busy         = scalars.rs2Busy;
-    decoder.rdBusy          = scalars.rdBusy;
-    decoder.nextBubble      = control.nextBubble;
+    Decoder.insDone         = Fetcher.insDone;
+    Decoder.insData         = Fetcher.insOut;
+    Decoder.insPc           = Fetcher.insPc;
+    Decoder.rs1Busy         = Scalars.rs1Busy;
+    Decoder.rs2Busy         = Scalars.rs2Busy;
+    Decoder.rdBusy          = Scalars.rdBusy;
+    Decoder.nextBubble      = Control.nextBubble;
 
-    control.issue           = decoder.issue;
-    control.iType           = decoder.iType;
-    control.ALUPc           = decoder.ALUPc;
-    control.immediate       = decoder.immediate;
-    control.rdIndex         = decoder.rdIndex;
-    control.memDone         = memctrl.memDone;
-    control.dbgCmd          = decoder.dbgCmd;
+    Control.issue           = Decoder.issue;
+    Control.iType           = Decoder.iType;
+    Control.ALUPc           = Decoder.ALUPc;
+    Control.immediate       = Decoder.immediate;
+    Control.rdIndex         = Decoder.rdIndex;
+    Control.memDone         = Memctrl.memDone;
+    Control.dbgCmd          = Decoder.dbgCmd;
 
-    scalars.rs1             = decoder.rs1Head;
-    scalars.rs2             = decoder.rs2Head;
-    scalars.rd              = decoder.rdHead;
-    scalars.rs1ALU          = decoder.rs1Index;
-    scalars.rs2ALU          = decoder.rs2Index;
-    scalars.issue           = decoder.issue;
-    scalars.issueRd         = decoder.rdIndex;
-    scalars.wbDone          = writeback.wbDone;
-    scalars.wbData          = writeback.wbData;
+    Scalars.rs1             = Decoder.rs1Head;
+    Scalars.rs2             = Decoder.rs2Head;
+    Scalars.rd              = Decoder.rdHead;
+    Scalars.rs1ALU          = Decoder.rs1Index;
+    Scalars.rs2ALU          = Decoder.rs2Index;
+    Scalars.issue           = Decoder.issue;
+    Scalars.issueRd         = Decoder.rdIndex;
+    Scalars.wbDone          = Writeback.wbDone;
+    Scalars.wbData          = Writeback.wbData;
 
-    scalarALU.issue         = decoder.issue;
-    scalarALU.iType         = decoder.iType;
-    scalarALU.ALUPc         = decoder.ALUPc;
-    scalarALU.immediate     = decoder.immediate;
-    scalarALU.rs1Data       = scalars.rs1Data;
-    scalarALU.rs2Data       = scalars.rs2Data;
-    scalarALU.opType        = decoder.opType;
-    scalarALU.isBubbling    = control.isBubbling;
+    ScalarALU.issue         = Decoder.issue;
+    ScalarALU.iType         = Decoder.iType;
+    ScalarALU.ALUPc         = Decoder.ALUPc;
+    ScalarALU.immediate     = Decoder.immediate;
+    ScalarALU.rs1Data       = Scalars.rs1Data;
+    ScalarALU.rs2Data       = Scalars.rs2Data;
+    ScalarALU.opType        = Decoder.opType;
+    ScalarALU.isBubbling    = Control.isBubbling;
 
-    writeback.wrWork        = control.wrWork;
-    writeback.wrType        = control.wrType;
-    writeback.wbPc          = control.wbPc;
-    writeback.wbImm         = control.wbImm;
-    writeback.wbRd          = control.wbRd;
-    writeback.scalarOut     = scalarALU.scalarOut;
-    writeback.memDone       = memctrl.memDone;
-    writeback.loadData      = memctrl.loadData[0];
-    writeback.scalarData    = scalars.rs2Data;
-    writeback.memStatus     = memctrl.status;
-    writeback.dbgCmd        = control.dbgOut;
+    Writeback.wrWork        = Control.wrWork;
+    Writeback.wrType        = Control.wrType;
+    Writeback.wbPc          = Control.wbPc;
+    Writeback.wbImm         = Control.wbImm;
+    Writeback.wbRd          = Control.wbRd;
+    Writeback.scalarOut     = ScalarALU.scalarOut;
+    Writeback.memDone       = Memctrl.memDone;
+    Writeback.loadData      = Memctrl.scalarLoad;
+    Writeback.scalarData    = Scalars.rs2Data;
+    Writeback.memStatus     = Memctrl.status;
+    Writeback.dbgCmd        = Control.dbgOut;
 }
 
 void cpu::work() {
-    memctrl.work();
-    icache.work();
-    fetcher.work();
-    decoder.work();
-    control.work();
-    scalars.work();
-    scalarALU.work();
-    writeback.work();
+    Memctrl.work();
+    Icache.work();
+    Fetcher.work();
+    Decoder.work();
+    Control.work();
+    Scalars.work();
+    ScalarALU.work();
+    Writeback.work();
 }
 
 } // namespace dark
