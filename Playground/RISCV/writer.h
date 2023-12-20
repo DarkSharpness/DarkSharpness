@@ -32,6 +32,7 @@ struct writer_output {
     reg  wbData;        // The data to write back to register file.
 
     reg  memType;       // Memory type.
+    reg  memSize;       // Memory read/write length.
     reg  memAddr;       // Memory address.
     reg  scalarStore;   // Memory data to store.
 };
@@ -86,9 +87,8 @@ void writer::work() {
                 } break;
 
             case LOAD:
-                // If Scalar READ/WRITE is operating, reset memType.
-                if (take <1> (memStatus()))
-                    memType <= 0; // Stop the query if reading/writing.
+                // Stop the query if reading/writing.
+                if (memStatus() == 2) memType <= 0;
                 if (memDone()) {
                     status <= IDLE;
                     wbDone <= wbRd();
@@ -104,13 +104,12 @@ void writer::work() {
                 } break;
 
             case STORE:
-                if (take <1> (memStatus()))
-                    memType <= 0; // Stop the query if reading/writing.
+                // Stop the query if writing.
+                if (memStatus() == 3) memType <= 0;
                 if (memDone()) {
                     status  <= IDLE;
                     details("-- Store to", int_to_hex(memAddr()), ":", scalarData());
-                }
-                break;
+                } break;
         }
     }
 }
@@ -118,8 +117,8 @@ void writer::work() {
 void writer::work_idle() {
     switch(take <ALU_type::width - 1, 0> (wrType())) {
         default: assert(false, "I give up..."); break;
-        case ALU_type::scalar:
-        case ALU_type::pcImm:
+        case ALU_type::scalar:      // Fallthrough.
+        case ALU_type::pcImm:       // Fallthrough.
         case ALU_type::immediate:
             brDone  <= 0;
             wbDone  <= wbRd();
@@ -152,16 +151,13 @@ void writer::work_idle() {
             status  <= LOAD;
             memAddr <= scalarOut();
             curType <= wrType();
-            if (memAddr() == 131036) {
-                details("?");
-            }
+            memType <= 2; // Read!
             switch (ALU_type::funct3_2(wrType())) {
                 default: assert(false, "I give up..."); break;
-                case 0b00: memType <= 0b00110; break;
-                case 0b01: memType <= 0b01010; break;
-                case 0b10: memType <= 0b10010; break;
-            }
-            break;
+                case 0b00: memSize <= 0b001; break;
+                case 0b01: memSize <= 0b010; break;
+                case 0b10: memSize <= 0b100; break;
+            } break;
 
         case ALU_type::store:
             brDone      <= 0;
@@ -170,13 +166,13 @@ void writer::work_idle() {
             memAddr     <= scalarOut();
             curType     <= wrType();
             scalarStore <= scalarData();
+            memType     <= 3; // Write!
             switch (ALU_type::funct3_2(wrType())) {
                 default: assert(false, "I give up..."); break;
-                case 0b00: memType <= 0b00111; break;
-                case 0b01: memType <= 0b01011; break;
-                case 0b10: memType <= 0b10011; break;
-            }
-            break;
+                case 0b00: memSize <= 0b001; break;
+                case 0b01: memSize <= 0b010; break;
+                case 0b10: memSize <= 0b100; break;
+            } break;
 
         case ALU_type::vector:
             assert(false, "Vector is not supported yet.");

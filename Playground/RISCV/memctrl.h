@@ -10,7 +10,8 @@ struct memctrl_input {
     wire iFetchOn;  // Whether to fetch.
     wire iFetchPc;  // Ifetch PC.
 
-    wire memType;           // low 2 bits are avail and read/write.
+    wire memType;           // For read/write.
+    wire memSize;           // Memory length.
     wire memAddr;           // Address from decoder.
     wire scalarStore;       // Data to write.
 
@@ -36,12 +37,15 @@ struct memctrl_private {
 
 struct memctrl : memctrl_input, memctrl_output, memctrl_private {
     using sync = sync_tag <memctrl_output, memctrl_private>;
-
     friend class caster <memctrl_private>;
+
     static constexpr int IDLE           = 0;
     static constexpr int IFETCH         = 1;
     static constexpr int SCALAR_READ    = 2;
     static constexpr int SCALAR_WRITE   = 3;
+    static constexpr int VECTOR_READ    = 6;
+    static constexpr int VECTOR_WRITE   = 7;
+
     void work();
 
   private:
@@ -80,11 +84,10 @@ void memctrl::work() {
         switch (status()) {
             default: assert(false); break;
             case IDLE:
-                // Speed up simulation using temporary variables.
-                if (int __memType = memType(); take <1> (__memType)) {
+                if (memType()) {
                     stage    <= 0;
-                    lens     <= take <31,2> (__memType);
-                    status   <= take <1, 0> (__memType);
+                    lens     <= memSize();
+                    status   <= memType();
                     mem_addr <= memAddr();
                     mem_out  <= scalarStore();
                 } else if (iFetchOn()) {
@@ -122,6 +125,10 @@ void memctrl::work() {
                         mem_wr  <= lens;
                         dbg_print_store();
                 } break;
+
+            case VECTOR_READ:
+            case VECTOR_WRITE:
+                
         }
     }
 }

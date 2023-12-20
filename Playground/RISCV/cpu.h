@@ -53,8 +53,8 @@ void cpu::init() {
     Memctrl.io_buffer_full  = io_buffer_full;
     Memctrl.iFetchOn        = Icache.iFetch;
     Memctrl.iFetchPc        = Fetcher.pc;
-
     Memctrl.memType         = Writeback.memType;
+    Memctrl.memSize         = Writeback.memSize;
     Memctrl.memAddr         = Writeback.memAddr;
     Memctrl.scalarStore     = Writeback.scalarStore;
 
