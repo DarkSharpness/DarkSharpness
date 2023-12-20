@@ -260,6 +260,27 @@ struct decoder : public decoder_input, decoder_output, private ins_queue {
                 opType <= ALU_op::AND; break;
         }
     }
+
+    void work_vload(int __ins) {
+
+        issue_success();
+        rs1Index    <= rs1(__ins);
+        rs2Index    <= rs2(__ins);  // Load offset.
+        rdIndex     <= rd(__ins);   // Load destination or store source.
+
+        NotImplemented();
+    }
+
+    void work_vstore(int __ins) {
+        issue_success();
+        rs1Index    <= rs1(__ins);
+        rs2Index    <= rs2(__ins);  // Load offset.
+        rdIndex     <= rd(__ins);   // Load destination or store source.
+
+        NotImplemented();
+    }
+
+
 };
 
 
@@ -300,7 +321,14 @@ void decoder::work() {
                 work_immediate(__ins); break;
             case 0b0110011: // register
                 work_register(__ins); break;
+            
             // Vector part:
+
+            case 0b0000111: // vload
+                work_vload(__ins);
+            case 0b0100111: // vstore
+                work_vstore(__ins);
+            
             default: assert(false, "Not implemented!"); break;
         }
     }

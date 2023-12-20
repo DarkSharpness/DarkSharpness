@@ -56,6 +56,21 @@ struct ALU_op {
     };
 };
 
+// Vector ALU type code and opcode.
+
+struct VAU_OP {
+    enum {
+        ADD,
+        SUB,
+        WADD,
+        WSUB,
+        MACC,
+        NMSAC,
+        MADD,
+    };
+};
+
+
 /**
  * Bit 0: use rs1 (true) / pc (false)
  * Bit 1: use rs2 (true) / imm (false)
@@ -77,10 +92,13 @@ struct ALU_type {
         branch  = 0b0001011,        // rs1 <comp> rs2
         load    = 0b0010001,        // M[rs1 + imm] -> rd
         store   = 0b0100001,        // rs2 -> M[rs1 + imm]
-        vector  = 0b1000011,        // vs1 <op> vs2 -> vd
-
         pcImm       = 0b0000000,    // pc  <op> imm -> rd
         immediate   = 0b0000001,    // rs1 <op> imm -> rd
+
+        // Vector instructions.
+        vload   = 0b1010001,        // M[rs1 + imm] -> rd
+        vstore  = 0b1100001,        // rs2 -> M[rs1 + imm]
+    
     };
     inline static constexpr int width = 7;
 
