@@ -11,6 +11,8 @@ struct memctrl_input {
     wire iFetchPc;  // Ifetch PC.
 
     wire memType;           // low 2 bits are avail and read/write.
+    wire memSize;           // Memory size.
+
     wire memAddr;           // Address from decoder.
     vwire memData;          // Data to write.
 

@@ -11,29 +11,6 @@ inline void assert(bool cond, std::string_view msg = "") {
     if (!cond) throw std::runtime_error(std::string(msg));
 }
 
-// Vector extension part.
-
-inline constexpr int ELEN {32}; // 32 bits at one time.
-inline constexpr int VLEN {64}; // 64 bits in one vector.
-inline constexpr int IMUL {8};  // At most 8 vectors as one big vector.
-inline constexpr int VIDX {VLEN / ELEN * IMUL} ; // 2 registers.
-
-/* The largest data passing of a vector. */
-struct vwire : public std::array <wire, VIDX> {
-    void sync() { /* Still do nothing. */}
-};
-
-struct vreg : public std::array <reg, VIDX> {
-    void sync() { for (auto &reg : *this) reg.sync(); }
-    operator vwire() {
-        vwire ret;
-        for (int i = 0 ; i < VIDX ; ++i) ret[i] = (*this)[i];
-        return ret;
-    }
-
-    void operator <= (int rhs) { (*this)[0] <= rhs; }
-};
-
 
 // ALU type code and opcode.
 
@@ -63,7 +40,6 @@ struct ALU_op {
  * Bit 3: is branch (rs1 <comp> rs2)
  * Bit 4: is load   (M[rs1 + imm] -> rd)
  * Bit 5: is store  (rs2 -> M[rs1 + imm])
- * Bit 6: is vector (change 'r' to 'v')
  * 
  * If load/store, then higher 3 bits are funct3 of load/store.
  * In fact, it should be a combination of several bits.
@@ -77,21 +53,18 @@ struct ALU_type {
         branch  = 0b0001011,        // rs1 <comp> rs2
         load    = 0b0010001,        // M[rs1 + imm] -> rd
         store   = 0b0100001,        // rs2 -> M[rs1 + imm]
-        vector  = 0b1000011,        // vs1 <op> vs2 -> vd
 
         pcImm       = 0b0000000,    // pc  <op> imm -> rd
         immediate   = 0b0000001,    // rs1 <op> imm -> rd
     };
+
     inline static constexpr int width = 7;
 
-    static bool isVector(int type) { return take <6> (type);    }
-    static bool isScalar(int type) { return !isVector(type);    }
     static bool isMemory(int type) { return take <5,4> (type);  }
     static bool isBranch(int type) { return take <3> (type);    }
     static bool isJalr(int type)   { return take <2> (type);    }
     static bool useRs1(int type)   { return take <0> (type);    }
     static bool useRs2(int type)   { return take <1> (type);    }
-    static bool useRd (int type)   { return !take <6,3> (type); }
     static bool isLoad (int type)  { return take <5> (type);    }
     static bool isStore(int type)  { return take <4> (type);    }
 
