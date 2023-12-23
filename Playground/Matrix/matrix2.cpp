@@ -17,6 +17,7 @@ signed main() {
             for (int j = 0 ; j < N ; ++j)
                 c[i][j] += a[i][k] * b[k][j];
     auto end = std::chrono::high_resolution_clock::now();
+    freopen("matrix2.out", "a", stdout);
     std::cout << std::chrono::duration_cast<std::chrono::milliseconds> (end - start).count() << "ms\n";
     return 0;
 }

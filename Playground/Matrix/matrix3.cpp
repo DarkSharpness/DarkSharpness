@@ -11,13 +11,18 @@ signed main() {
     for (int i = 0 ; i < N ; ++i)
         for (int j = 0 ; j < N ; ++j)
             a[i][j] = rand(), b[i][j] = rand();
+    for (int i = 0 ; i < N ; ++i)
+        for (int j = i + 1 ; j < N ; ++j)
+            std::swap(b[i][j], b[j][i]);
     auto start = std::chrono::high_resolution_clock::now();
+
     for (int i = 0 ; i < N ; ++i)
         for (int j = 0 ; j < N ; ++j)
             for (int k = 0 ; k < N ; ++k)
-                c[i][j] += a[i][k] * b[k][j];
+                c[i][j] += a[i][k] * b[j][k];
+
     auto end = std::chrono::high_resolution_clock::now();
-    freopen("matrix1.out", "a", stdout);
+    freopen("matrix3.out", "a", stdout);
     std::cout << std::chrono::duration_cast<std::chrono::milliseconds> (end - start).count() << "ms\n";
     return 0;
 }
