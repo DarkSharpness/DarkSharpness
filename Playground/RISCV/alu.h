@@ -14,7 +14,6 @@ struct scalar_ALU_input {
     wire rs2Data;   // Data of rs2.
 
     wire opType;        // Operation type for ALU.
-    wire isBubbling;    // Whether is bubbling.
 };
 
 struct scalar_ALU_output {

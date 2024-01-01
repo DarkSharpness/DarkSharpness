@@ -122,13 +122,13 @@ void memctrl::work() {
                     case 0: // Write to memory.
                         status  <= IDLE;
                         memDone <= 1;
-                        mem_wr  <= lens;
+                        mem_wr  <= lens();
                         dbg_print_store();
                 } break;
 
             case VECTOR_READ:
             case VECTOR_WRITE:
-                
+                NotImplemented();
         }
     }
 }

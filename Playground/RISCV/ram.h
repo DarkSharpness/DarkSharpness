@@ -88,9 +88,9 @@ void ram::work()  {
             auto __mem_out = mem_out();
             switch (__len) {
                 default: assert(false, "Invalid memory write length"); break;
-                case 4: data[__addr + 3] = take <31, 24> (__mem_out);
-                case 3: data[__addr + 2] = take <23, 16> (__mem_out);
-                case 2: data[__addr + 1] = take <15,  8> (__mem_out);
+                case 4: data[__addr + 3] = take <31, 24> (__mem_out); [[fallthrough]];
+                case 3: data[__addr + 2] = take <23, 16> (__mem_out); [[fallthrough]];
+                case 2: data[__addr + 1] = take <15,  8> (__mem_out); [[fallthrough]];
                 case 1: data[__addr + 0] = take < 7,  0> (__mem_out);
             }
         } // Output if writing to given high address.

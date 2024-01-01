@@ -15,7 +15,7 @@ struct controller_input {
 
     wire memDone;   // Load store is done, which will stop bubble.
 
-    wire dbgCmd;
+    wire dbgCmd;    // Debug command.
 };
 
 struct controller_output {
@@ -27,7 +27,7 @@ struct controller_output {
     reg  wbRd;          // Register index for writing back.
 
     reg  isBubbling;    // Whether there is a bubble in this cycle.
-    reg  dbgOut;
+    reg  dbgOut;        // Debug command.
 };
 
 
@@ -42,7 +42,7 @@ struct controller : public controller_input, controller_output {
     friend class caster <controller>;
 
     /* Whether ther is a bubble this or next cycle. */
-    const wire nextBubble = { [this]() -> int { return isBubbling() || isNewBubble(); } };
+    const wire nextBubble = [this]() -> int { return isBubbling() || isNewBubble(); };
 
     void work() {
         if (reset) {

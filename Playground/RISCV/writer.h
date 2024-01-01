@@ -173,10 +173,6 @@ void writer::work_idle() {
                 case 0b01: memSize <= 0b010; break;
                 case 0b10: memSize <= 0b100; break;
             } break;
-
-        case ALU_type::vector:
-            assert(false, "Vector is not supported yet.");
-            break;
     }
 }
 

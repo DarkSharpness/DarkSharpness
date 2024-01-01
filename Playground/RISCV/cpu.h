@@ -87,8 +87,6 @@ void cpu::init() {
     Scalars.rs1             = Decoder.rs1Head;
     Scalars.rs2             = Decoder.rs2Head;
     Scalars.rd              = Decoder.rdHead;
-    Scalars.rs1ALU          = Decoder.rs1Index;
-    Scalars.rs2ALU          = Decoder.rs2Index;
     Scalars.issue           = Decoder.issue;
     Scalars.issueRd         = Decoder.rdIndex;
     Scalars.wbDone          = Writeback.wbDone;
@@ -101,7 +99,6 @@ void cpu::init() {
     ScalarALU.rs1Data       = Scalars.rs1Data;
     ScalarALU.rs2Data       = Scalars.rs2Data;
     ScalarALU.opType        = Decoder.opType;
-    ScalarALU.isBubbling    = Control.isBubbling;
 
     Writeback.wrWork        = Control.wrWork;
     Writeback.wrType        = Control.wrType;
