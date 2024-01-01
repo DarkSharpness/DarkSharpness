@@ -50,8 +50,8 @@ struct scalar_file : public scalar_input, scalar_output , private scalar_private
             assert(!(issue() && wbDone() && issueRd() == wbDone()));
             assert(issueRd() < 32 && wbDone() < 32 , "??");
 
-            rs1Data <= regs[rs1()]();
-            rs2Data <= regs[rs2()]();
+            rs1Data <= get_value(rs1());
+            rs2Data <= get_value(rs2());
 
             if (issue() && issueRd()) {
                 busy.set_bit(issueRd(), true);
@@ -91,6 +91,9 @@ struct scalar_file : public scalar_input, scalar_output , private scalar_private
     }
     // A new_made busy register.
     bool new_busy() const { return issue() && issueRd(); }
+    int get_value(int x) const {
+        return (wbDone() && wbDone() == x) ? wbData() : regs[x]();
+    }
 };
 
 
