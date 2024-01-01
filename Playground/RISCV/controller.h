@@ -14,6 +14,7 @@ struct controller_input {
     wire rdIndex;   // Index in register file.
 
     wire memDone;   // Load store is done, which will stop bubble.
+    wire rs2Data;   // Data of rs2. (For store).
 
     wire dbgCmd;    // Debug command.
 };
@@ -25,6 +26,7 @@ struct controller_output {
     reg  wbPc;          // Program counter for writeback.
     reg  wbImm;         // Immediate value for next operation.
     reg  wbRd;          // Register index for writing back.
+    reg  memData;       // Data to memory.
 
     reg  isBubbling;    // Whether there is a bubble in this cycle.
     reg  dbgOut;        // Debug command.
@@ -51,22 +53,22 @@ struct controller : public controller_input, controller_output {
         } else if (!ready) {
             // Do nothing.
         } else {
-            if (issue())
+            wrWork <= issue();
+            if (issue()) {
                 details("- Issuing: ", int_to_hex(dbgCmd()),
                         "at" , int_to_hex(ALUPc()));
-            dbgOut <= dbgCmd();
+                dbgOut <= dbgCmd();
+                wrType <= iType();
 
-            wrWork <= issue();
-            wrType <= iType();
-
-            wbPc   <= ALUPc();
-            wbImm  <= immediate();
-            wbRd   <= rdIndex();
-
+                wbPc   <= ALUPc();
+                wbImm  <= immediate();
+                wbRd   <= rdIndex();
+            }
             if (isBubbling()) {
                 isBubbling <= !memDone();
             } else if (isNewBubble()) {
                 isBubbling <= 1;
+                memData <= rs2Data();
             }
         }
     }

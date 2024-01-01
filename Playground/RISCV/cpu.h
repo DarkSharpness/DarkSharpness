@@ -83,6 +83,7 @@ void cpu::init() {
     Control.rdIndex         = Decoder.rdIndex;
     Control.memDone         = Memctrl.memDone;
     Control.dbgCmd          = Decoder.dbgCmd;
+    Control.rs2Data         = Scalars.rs2Data;
 
     Scalars.rs1             = Decoder.rs1Head;
     Scalars.rs2             = Decoder.rs2Head;
@@ -108,7 +109,7 @@ void cpu::init() {
     Writeback.scalarOut     = ScalarALU.scalarOut;
     Writeback.memDone       = Memctrl.memDone;
     Writeback.loadData      = Memctrl.scalarLoad;
-    Writeback.scalarData    = Scalars.rs2Data;
+    Writeback.scalarData    = Control.memData;
     Writeback.memStatus     = Memctrl.status;
     Writeback.dbgCmd        = Control.dbgOut;
 }
