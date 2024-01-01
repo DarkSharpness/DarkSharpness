@@ -95,7 +95,7 @@ struct decoder : public decoder_input, decoder_output, private ins_queue {
 
         rdIndex     <= rd(__ins);
         immediate   <= bits {take <31,12> (__ins), bits <12> (0)};
-        iType       <= ALU_type::immediate;
+        iType       <= ALU_type::pcImm;
         opType      <= ALU_op::ADD;
     }
 
@@ -104,7 +104,7 @@ struct decoder : public decoder_input, decoder_output, private ins_queue {
         issue_success();
 
         rdIndex     <= rd(__ins);
-        immediate   <= take <31,12> (__ins);
+        immediate   <= bits {take <31,12> (__ins), bits <12> (0)};
         iType       <= ALU_type::pcImm;
         opType      <= ALU_op::ADD;
     }
@@ -115,6 +115,7 @@ struct decoder : public decoder_input, decoder_output, private ins_queue {
 
         rdIndex     <= rd(__ins);
         immediate   <= 4;
+
         iType       <= ALU_type::pcImm;
         opType      <= ALU_op::ADD;
     }
@@ -264,7 +265,7 @@ void decoder::work() {
     } else { // Non-empty and no bubbling!
         int __ins = queue.at(head()).ins();
         int __pc  = queue.at(head()).pc();
-        ALUPc <= __pc;
+        ALUPc <= (take <6,0> (__ins) == 0b0110111 ? 0 : __pc);
 
         switch (take <6,0> (__ins)) {
             case 0b0110111: // lui
