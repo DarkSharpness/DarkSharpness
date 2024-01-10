@@ -111,8 +111,8 @@ struct ALU_type {
     static bool useRs1(int type)   { return take <0> (type);    }
     static bool useRs2(int type)   { return take <1> (type);    }
     static bool useRd (int type)   { return !take <6,3> (type); }
-    static bool isLoad (int type)  { return take <5> (type);    }
-    static bool isStore(int type)  { return take <4> (type);    }
+    static bool isLoad (int type)  { return take <4> (type);    }
+    static bool isStore(int type)  { return take <5> (type);    }
 
     static auto funct3  (int type) { return take <width + 2, width> (type); }
     static bool funct3_1(int type) { return take <width + 2>        (type); }

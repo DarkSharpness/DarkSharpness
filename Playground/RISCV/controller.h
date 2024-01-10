@@ -95,13 +95,6 @@ struct controller : public controller_input, controller_output, private controll
                     NotImplemented();
                 } else { // Scalar load and store.
                     memType <= (ALU_type::isLoad(iType()) ? 2 : 3);
-                    if (memType.next() == 2) {
-                        std::cout << "Loading\n";
-                    } else {
-                        std::cout << "Storing ";
-                        std::cout << wbrs1.next() << ' ';
-                        std::cout << wbImm.next() << '\n';
-                    }
                     switch (ALU_type::funct3_2(iType())) {
                         case 0b00: memSize <= 0b001; break;
                         case 0b01: memSize <= 0b010; break;
