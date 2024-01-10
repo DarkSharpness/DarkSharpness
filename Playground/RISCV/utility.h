@@ -8,7 +8,8 @@
 namespace dark {
 
 inline void assert(bool cond, std::string_view msg = "") {
-    if (!cond) throw std::runtime_error(std::string(msg));
+    if (!cond)
+        throw std::runtime_error(std::string(msg));
 }
 
 // Vector extension part.

@@ -18,21 +18,25 @@ struct scalar_ALU_input {
 
 struct scalar_ALU_output {
     reg scalarOut;  // Only output of scalar ALU.
+    reg scalarDone; // Whether scalar ALU is done.
 };
 
 struct scalar_ALU : scalar_ALU_input, scalar_ALU_output {
   public:
     void work() {
         if (reset) {
-            // Do nothing.
+            scalarDone  <= 0;
         } else if (!ready) {
             // Do nothing.
         } else if (issue() && ALU_type::isScalar(iType())) {
-            scalarOut <= result(rs1Real(), rs2Real(), opType());
+            scalarOut   <= result(rs1Real(), rs2Real(), opType());
+            scalarDone  <= 1;
+        } else {
+            scalarDone  <= 0;
         }
     }
 
-    void sync() { scalarOut.sync(); }
+    void sync() { scalarOut.sync(); scalarDone.sync(); }
 
   private:
     int rs1Real() const { return ALU_type::useRs1(iType()) ? rs1Data() : ALUPc();       }

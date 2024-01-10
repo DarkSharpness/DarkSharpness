@@ -25,10 +25,11 @@ struct details {
     template <typename T, typename ...Args>
     details([[maybe_unused]]T &&v,[[maybe_unused]] Args &&...args) {
 #ifdef _DETAIL
-        std::cerr << "\033[32m";
+        // std::cerr << "\033[32m";
         std::cerr << v;
         ((std::cerr << ' ' << args),...);
-        std::cerr << "\033[0m\n";
+        // std::cerr << "\033[0m";
+        std::cerr << '\n';
 #endif
     }
 };

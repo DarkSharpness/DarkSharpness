@@ -53,10 +53,10 @@ void cpu::init() {
     Memctrl.io_buffer_full  = io_buffer_full;
     Memctrl.iFetchOn        = Icache.iFetch;
     Memctrl.iFetchPc        = Fetcher.pc;
-    Memctrl.memType         = Writeback.memType;
-    Memctrl.memSize         = Writeback.memSize;
-    Memctrl.memAddr         = Writeback.memAddr;
-    Memctrl.scalarStore     = Writeback.scalarStore;
+    Memctrl.memType         = Control.memType;
+    Memctrl.memSize         = Control.memSize;
+    Memctrl.memAddr         = ScalarALU.scalarOut;
+    Memctrl.scalarStore     = Control.wbrs2;
 
     Icache.addrIn           = Fetcher.pc;
     Icache.writeEnable      = Memctrl.iDone;
@@ -82,7 +82,9 @@ void cpu::init() {
     Control.immediate       = Decoder.immediate;
     Control.rdIndex         = Decoder.rdIndex;
     Control.memDone         = Memctrl.memDone;
+    Control.memStatus       = Memctrl.memStatus;
     Control.dbgCmd          = Decoder.dbgCmd;
+    Control.rs1Data         = Scalars.rs1Data;
     Control.rs2Data         = Scalars.rs2Data;
 
     Scalars.rs1             = Decoder.rs1Head;
@@ -100,7 +102,7 @@ void cpu::init() {
     ScalarALU.rs2Data       = Scalars.rs2Data;
     ScalarALU.opType        = Decoder.opType;
 
-    Writeback.wrWork        = Control.wrWork;
+    Writeback.wrWork        = ScalarALU.scalarDone;
     Writeback.wrType        = Control.wrType;
     Writeback.wbPc          = Control.wbPc;
     Writeback.wbImm         = Control.wbImm;
@@ -108,8 +110,6 @@ void cpu::init() {
     Writeback.scalarOut     = ScalarALU.scalarOut;
     Writeback.memDone       = Memctrl.memDone;
     Writeback.loadData      = Memctrl.scalarLoad;
-    Writeback.scalarData    = Control.memData;
-    Writeback.memStatus     = Memctrl.status;
     Writeback.dbgCmd        = Control.dbgOut;
 }
 

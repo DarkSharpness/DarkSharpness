@@ -71,7 +71,8 @@ struct wire {
     }
 
     int operator() (void) const {
-        if (!manage) throw std::runtime_error("Uninitialized wire.");
+        if (!manage)
+            throw std::runtime_error("Uninitialized wire.");
         return manage->call();
     }
 

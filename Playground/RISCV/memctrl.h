@@ -15,7 +15,7 @@ struct memctrl_input {
     wire memAddr;           // Address from decoder.
     wire scalarStore;       // Data to write.
 
-    // wire stride;    // Stride if vector.
+    vwire stride;           // Offset of vector.
 };
 
 struct memctrl_output {
@@ -26,18 +26,20 @@ struct memctrl_output {
     reg  iDone;     // Whether the ifetch is done.
     reg  memDone;   // Whether it's ok to stop
 
-    reg  status;        // Status of the execution.
     reg  scalarLoad;    // Data loaded
 };
 
 struct memctrl_private {
+    reg status;     // Status of the execution.
     reg stage;      // Stage of the execution.
     reg lens;       // Length of read/write.
 };
 
-struct memctrl : memctrl_input, memctrl_output, memctrl_private {
+struct memctrl : public memctrl_input, memctrl_output, private memctrl_private {
     using sync = sync_tag <memctrl_output, memctrl_private>;
-    friend class caster <memctrl_private>;
+    friend class caster <memctrl>;
+
+    const wire memStatus = status;
 
     static constexpr int IDLE           = 0;
     static constexpr int IFETCH         = 1;
