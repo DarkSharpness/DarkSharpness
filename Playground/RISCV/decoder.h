@@ -289,11 +289,9 @@ void decoder::work() {
             // Vector part:
 
             case 0b0000111: // vload
-                work_vload(__ins);
+                work_vload(__ins); break;
             case 0b0100111: // vstore
-                work_vstore(__ins);
-
-
+                work_vstore(__ins); break;
 
             default: assert(false, "Not implemented!"); break;
         }

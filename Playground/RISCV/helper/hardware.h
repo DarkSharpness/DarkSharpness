@@ -101,6 +101,11 @@ struct reg {
     void operator <= (reg rhs)  { bak = rhs.value; } 
     void sync()                 { value = bak; }
 
+    // Set given half word to given short.
+    void set_half(int l, short val) {
+        bak &= ~(0xffff << (l * 16));
+        bak |= unsigned(val) << (l * 16);
+    }
     // Set given byte to given char.
     void set_byte(int l, char val) {
         bak &= ~(0xff << (l * 8));

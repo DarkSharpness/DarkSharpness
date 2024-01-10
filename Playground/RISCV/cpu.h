@@ -56,7 +56,7 @@ void cpu::init() {
     Memctrl.memType         = Control.memType;
     Memctrl.memSize         = Control.memSize;
     Memctrl.memAddr         = ScalarALU.scalarOut;
-    Memctrl.scalarStore     = Control.wbrs2;
+    Memctrl.memData         = Control.wbrs2;
 
     Icache.addrIn           = Fetcher.pc;
     Icache.writeEnable      = Memctrl.iDone;

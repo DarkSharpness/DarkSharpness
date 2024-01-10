@@ -17,7 +17,7 @@ inline void assert(bool cond, std::string_view msg = "") {
 inline constexpr int ELEN {32}; // 32 bits at one time.
 inline constexpr int VLEN {64}; // 64 bits in one vector.
 inline constexpr int IMUL {8};  // At most 8 vectors as one big vector.
-inline constexpr int VIDX {VLEN / ELEN * IMUL} ; // 2 registers.
+inline constexpr int VIDX {VLEN / ELEN} ; // 2 registers.
 
 /* The largest data passing of a vector. */
 struct vwire : public std::array <wire, VIDX> {
