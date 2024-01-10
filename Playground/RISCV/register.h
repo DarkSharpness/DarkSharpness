@@ -10,10 +10,7 @@ struct scalar_input {
     wire rs2;       // Index of the register to read.
     wire rd;        // Index of the register to write.
 
-    // Set busy after issue.
-    wire issue;     // Whether to issue.
     wire issueRd;   // Whether to issue and write back to rd.   
-
     wire wbDone;    // Whether write back is done.
     wire wbData;    // Data to write back.
 };
@@ -47,13 +44,12 @@ struct scalar_file : public scalar_input, scalar_output , private scalar_private
         } else if (!ready) {
             // Do nothing.
         } else { // Normal work.
-            assert(!(issue() && wbDone() && issueRd() == wbDone()));
             assert(issueRd() < 32 && wbDone() < 32 , "??");
 
             rs1Data <= get_value(rs1());
             rs2Data <= get_value(rs2());
 
-            if (issue() && issueRd()) {
+            if (issueRd()) {
                 busy.set_bit(issueRd(), true);
             }
 
@@ -87,10 +83,8 @@ struct scalar_file : public scalar_input, scalar_output , private scalar_private
     bool test_busy(int x) const {
         return
             (busy[x]   && x != wbDone())    // Old busy.
-        || (new_busy() && x == issueRd());  // New busy.
+        ||  (issueRd() && x == issueRd());  // New busy.
     }
-    // A new_made busy register.
-    bool new_busy() const { return issue() && issueRd(); }
     int get_value(int x) const {
         return (wbDone() && wbDone() == x) ? wbData() : regs[x]();
     }

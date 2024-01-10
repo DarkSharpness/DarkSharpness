@@ -88,7 +88,6 @@ void cpu::init() {
     Scalars.rs1             = Decoder.rs1Head;
     Scalars.rs2             = Decoder.rs2Head;
     Scalars.rd              = Decoder.rdHead;
-    Scalars.issue           = Decoder.issue;
     Scalars.issueRd         = Decoder.rdIndex;
     Scalars.wbDone          = Writeback.wbDone;
     Scalars.wbData          = Writeback.wbData;

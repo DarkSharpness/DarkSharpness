@@ -115,7 +115,6 @@ struct decoder : public decoder_input, decoder_output, private ins_queue {
 
         rdIndex     <= rd(__ins);
         immediate   <= 4;
-
         iType       <= ALU_type::pcImm;
         opType      <= ALU_op::ADD;
     }
@@ -256,7 +255,7 @@ namespace dark {
 void decoder::work() {
     // Decoder part.
     if (reset) {
-        issue <= 0;
+        issue_fail();
     } else if (!ready) {
         // Do nothing.
     } else if (empty() || nextBubble()) {
@@ -286,14 +285,16 @@ void decoder::work() {
                 work_immediate(__ins); break;
             case 0b0110011: // register
                 work_register(__ins); break;
-            
+
             // Vector part:
 
-            // case 0b0000111: // vload
-            //     work_vload(__ins);
-            // case 0b0100111: // vstore
-            //     work_vstore(__ins);
-            
+            case 0b0000111: // vload
+                work_vload(__ins);
+            case 0b0100111: // vstore
+                work_vstore(__ins);
+
+
+
             default: assert(false, "Not implemented!"); break;
         }
     }
