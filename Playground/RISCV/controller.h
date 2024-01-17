@@ -35,6 +35,7 @@ struct controller_output {
 
     reg  memType;       // Memory type.
     reg  memSize;       // Memory size.
+    reg  stride;        // Stride of vector operation.
 
     reg  dbgOut;        // Debug command.
 };
@@ -92,7 +93,23 @@ struct controller : public controller_input, controller_output, private controll
 
             if (__nextMemory) {
                 if (__nextVector) {
-                    NotImplemented();
+                    memType <= (ALU_type::isLoad(iType()) ? 4 : 5);
+                    if (ALU_type::memOp(iType()) == 0b00) {
+                        // Unit stride.
+                        memSize <= 0b100;
+                        stride  <= 4;
+                    } else if (ALU_type::memOp(iType()) == 0b10) {
+                        // Strided
+                        switch (ALU_type::funct3_2(iType())) {
+                            case 0b00: memSize <= 0b001; break;
+                            case 0b01: memSize <= 0b010; break;
+                            case 0b10: memSize <= 0b100; break;
+                            default: assert(false, "Unknown memory size.");
+                        }
+                        stride  <= rs2Data();
+                    } else {
+                        assert(false, "Unknown memory operation.");
+                    }
                 } else { // Scalar load and store.
                     memType <= (ALU_type::isLoad(iType()) ? 2 : 3);
                     switch (ALU_type::funct3_2(iType())) {
@@ -103,6 +120,8 @@ struct controller : public controller_input, controller_output, private controll
                     }
                 }
             } else {
+                // No memory operation newly issued
+                // Reset the memory type if memctrl is working on current status.
                 if (memType() == memStatus()) memType <= 0;
             }
         }

@@ -101,7 +101,8 @@ struct ALU_type {
         vstore  = 0b1100001,        // rs2 -> M[rs1 + imm]
     
     };
-    inline static constexpr int width = 7;
+    inline static constexpr int width    = 7;
+    inline static constexpr int widthMem = 10;
 
     static bool isVector(int type) { return take <6> (type);    }
     static bool isScalar(int type) { return !isVector(type);    }
@@ -117,6 +118,9 @@ struct ALU_type {
     static auto funct3  (int type) { return take <width + 2, width> (type); }
     static bool funct3_1(int type) { return take <width + 2>        (type); }
     static int  funct3_2(int type) { return take <width + 1, width> (type); }
+
+    static int  memOp(int type) { return take <widthMem + 1, widthMem> (type); }
+
 };
 
 

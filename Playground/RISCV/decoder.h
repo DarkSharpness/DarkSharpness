@@ -236,12 +236,10 @@ struct decoder : public decoder_input, decoder_output, private ins_queue {
     }
 
     void work_vload(int) {
-        issue_success();
         NotImplemented();
     }
 
     void work_vstore(int) {
-        issue_success();
         NotImplemented();
     }
 

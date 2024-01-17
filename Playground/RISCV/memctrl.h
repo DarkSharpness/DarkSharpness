@@ -215,7 +215,7 @@ void memctrl::work() {
                         case 2:
                             mem_out <= take <15,0>  (vecData[1]());  break;
                         case 3:
-                            mem_out <= take <31,16> (vecData[1]());
+                            mem_out <= take <31,16> (vecData[1]()); break;
                     }
                     if (stage() == 3) {
                         status  <= IDLE;
@@ -239,7 +239,7 @@ void memctrl::work() {
                         case 6:
                             mem_out <= take <23,16> (vecData[1]()); break;
                         case 7:
-                            mem_out <= take <31,24> (vecData[1]());
+                            mem_out <= take <31,24> (vecData[1]()); break;
                     }
                     if (stage() == 7) {
                         status  <= IDLE;
