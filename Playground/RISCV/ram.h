@@ -35,21 +35,22 @@ struct ram {
      * It will output the value of cycle #x + 1.
      * @return Requested byte of last cycle.
      */
-    const wire mem_in = {
-        [this] () -> int {
-            if (last_addr() >> 16 == 0x3) {
-                uint8_t __byte; /* Read one byte from memory. */
-                in >> __byte;
-                return __byte;
-            } else {
-                return data[last_addr()];
-            }
+    const wire mem_in = [this] () -> int {
+        if (last_addr() >> 16 == 0x3) {
+            NotImplemented(); return 0;
+        } else {
+            using byte = bits <8>;
+            int __addr = last_addr();
+            return bits {
+                byte (data[__addr + 3]), byte (data[__addr + 2]),
+                byte (data[__addr + 1]), byte (data[__addr]),
+            };
         }
     };
     /**
      * @return Always 0 (RAM is never full), currently.
      */
-    const wire io_buffer_full = { [this] () -> int { return 0; } };
+    const wire io_buffer_full = [this] () -> int { return 0; };
 
   private: // This part should be private.
     reg last_addr; // Address of last cycle.
@@ -81,10 +82,18 @@ void ram::read(std::istream &in) {
 void ram::work()  {
     unsigned __addr = mem_addr(); // Speed up by caching.
     assert(__addr < (1 << width), "Memory address out of range");
-    if (mem_wr()) {
-        data[__addr] = mem_out();
-        // Output if writing to given high address.
+    if (auto __len = mem_wr()) {
         if (__addr >> 16 == 0x3) out << (char)mem_out();
+        else { // Write to memory.
+            auto __mem_out = mem_out();
+            switch (__len) {
+                default: assert(false, "Invalid memory write length"); break;
+                case 4: data[__addr + 3] = take <31, 24> (__mem_out); [[fallthrough]];
+                case 3: data[__addr + 2] = take <23, 16> (__mem_out); [[fallthrough]];
+                case 2: data[__addr + 1] = take <15,  8> (__mem_out); [[fallthrough]];
+                case 1: data[__addr + 0] = take < 7,  0> (__mem_out);
+            }
+        } // Output if writing to given high address.
     } else last_addr <= __addr;
 }
 

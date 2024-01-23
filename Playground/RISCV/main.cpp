@@ -46,7 +46,6 @@ void run_simulator() {
         mem->work();
         synchronize(*cpu);
         synchronize(*mem);
-        dark::details(' ');
         if (dark::clock > 100000000) throw std::runtime_error("Too many cycles!");
     } while(!dark::stall);
 

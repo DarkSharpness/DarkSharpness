@@ -10,52 +10,51 @@ struct scalar_input {
     wire rs2;       // Index of the register to read.
     wire rd;        // Index of the register to write.
 
-    // Query data after issue.
-    wire rs1ALU;    // Data of rs1.
-    wire rs2ALU;    // Data of rs2.
-
-    // Set busy after issue.
-    wire issue;     // Whether to issue.
     wire issueRd;   // Whether to issue and write back to rd.   
-
     wire wbDone;    // Whether write back is done.
     wire wbData;    // Data to write back.
 };
 
+struct scalar_output {
+    reg rs1Data;    // Data of rs1. (For ALU).
+    reg rs2Data;    // Data of rs2. (For ALU).
+};
+
 
 struct scalar_private {
-    std::array <reg, 32> regs;
     reg busy; /* Whether busy. (Busy[0] is always false) */
+    std::array <reg, 32> regs;
 };
 
 /**
  * @brief Register file for scalar registers.
  */
-struct scalar_file : public scalar_input , private scalar_private {
-    using sync = sync_tag <scalar_private>;
+struct scalar_file : public scalar_input, scalar_output , private scalar_private {
+    using sync = sync_tag <scalar_output, scalar_private>;
     friend class caster <scalar_file>;
 
-    const wire rs1Data = { [this]() -> int { return regs[rs1ALU()](); } };
-    const wire rs2Data = { [this]() -> int { return regs[rs2ALU()](); } };
-
-    const wire rs1Busy = { [this]() -> int { return test_busy(rs1()); }};
-    const wire rs2Busy = { [this]() -> int { return test_busy(rs2()); }};
-    const wire rdBusy  = { [this]() -> int { return test_busy(rd ()); }};
+    const wire rs1Busy = [this]() -> int { return test_busy(rs1()); };
+    const wire rs2Busy = [this]() -> int { return test_busy(rs2()); };
+    const wire rdBusy  = [this]() -> int { return test_busy(rd ()); };
 
     void work() {
         if (reset) {
-            for (auto &reg : regs) reg <= 0;
             busy <= 0; // Not busy.
+            for (auto &reg : regs) reg <= 0;
         } else if (!ready) {
             // Do nothing.
         } else { // Normal work.
-            assert(!(issue() && wbDone() && issueRd() == wbDone()));
             assert(issueRd() < 32 && wbDone() < 32 , "??");
 
-            if (issue() && issueRd()) {
+            rs1Data <= get_value(rs1());
+            rs2Data <= get_value(rs2());
+
+            if (issueRd()) {
                 busy.set_bit(issueRd(), true);
             }
 
+            // Write back will not overwrite newly-issued.
+            // If so, the dependency must have gone wrong.
             if (wbDone()) {
                 busy.set_bit(wbDone(), false);
                 regs[wbDone()] <= wbData();
@@ -84,10 +83,11 @@ struct scalar_file : public scalar_input , private scalar_private {
     bool test_busy(int x) const {
         return
             (busy[x]   && x != wbDone())    // Old busy.
-        || (new_busy() && x == issueRd());  // New busy.
+        ||  (issueRd() && x == issueRd());  // New busy.
     }
-    // A new_made busy register.
-    bool new_busy() const { return issue() && issueRd(); }
+    int get_value(int x) const {
+        return (wbDone() && wbDone() == x) ? wbData() : regs[x]();
+    }
 };
 
 

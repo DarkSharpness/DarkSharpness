@@ -8,7 +8,8 @@
 namespace dark {
 
 inline void assert(bool cond, std::string_view msg = "") {
-    if (!cond) throw std::runtime_error(std::string(msg));
+    if (!cond)
+        throw std::runtime_error(std::string(msg));
 }
 
 // Vector extension part.
@@ -16,7 +17,7 @@ inline void assert(bool cond, std::string_view msg = "") {
 inline constexpr int ELEN {32}; // 32 bits at one time.
 inline constexpr int VLEN {64}; // 64 bits in one vector.
 inline constexpr int IMUL {8};  // At most 8 vectors as one big vector.
-inline constexpr int VIDX {VLEN / ELEN * IMUL} ; // 2 registers.
+inline constexpr int VIDX {VLEN / ELEN} ; // 2 registers.
 
 /* The largest data passing of a vector. */
 struct vwire : public std::array <wire, VIDX> {
@@ -56,6 +57,21 @@ struct ALU_op {
     };
 };
 
+// Vector ALU type code and opcode.
+
+struct VAU_OP {
+    enum {
+        ADD,
+        SUB,
+        WADD,
+        WSUB,
+        MACC,
+        NMSAC,
+        MADD,
+    };
+};
+
+
 /**
  * Bit 0: use rs1 (true) / pc (false)
  * Bit 1: use rs2 (true) / imm (false)
@@ -73,16 +89,20 @@ struct ALU_op {
 struct ALU_type {
     enum {
         scalar  = 0b0000011,        // rs1 <op> rs2 -> rd
-        jalr    = 0b0000111,        // pc + 4 -> rd, rs1 + imm -> pc
+        jalr    = 0b0000101,        // pc + 4 -> rd, rs1 + imm -> pc
         branch  = 0b0001011,        // rs1 <comp> rs2
         load    = 0b0010001,        // M[rs1 + imm] -> rd
         store   = 0b0100001,        // rs2 -> M[rs1 + imm]
-        vector  = 0b1000011,        // vs1 <op> vs2 -> vd
-
         pcImm       = 0b0000000,    // pc  <op> imm -> rd
         immediate   = 0b0000001,    // rs1 <op> imm -> rd
+
+        // Vector instructions.
+        vload   = 0b1010001,        // M[rs1 + imm] -> rd
+        vstore  = 0b1100001,        // rs2 -> M[rs1 + imm]
+    
     };
-    inline static constexpr int width = 7;
+    inline static constexpr int width    = 7;
+    inline static constexpr int widthMem = 10;
 
     static bool isVector(int type) { return take <6> (type);    }
     static bool isScalar(int type) { return !isVector(type);    }
@@ -92,12 +112,15 @@ struct ALU_type {
     static bool useRs1(int type)   { return take <0> (type);    }
     static bool useRs2(int type)   { return take <1> (type);    }
     static bool useRd (int type)   { return !take <6,3> (type); }
-    static bool isLoad (int type)  { return take <5> (type);    }
-    static bool isStore(int type)  { return take <4> (type);    }
+    static bool isLoad (int type)  { return take <4> (type);    }
+    static bool isStore(int type)  { return take <5> (type);    }
 
     static auto funct3  (int type) { return take <width + 2, width> (type); }
     static bool funct3_1(int type) { return take <width + 2>        (type); }
     static int  funct3_2(int type) { return take <width + 1, width> (type); }
+
+    static int  memOp(int type) { return take <widthMem + 1, widthMem> (type); }
+
 };
 
 

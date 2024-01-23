@@ -22,13 +22,12 @@ struct decoder_input {
 
 struct decoder_output {
     reg  issue;     // Whether to issue.
-    reg  iType;     // Instruction type for ALU.
     reg  ALUPc;     // Pc for ALU.
-    reg  rs1Index;  // Index for rs1.
-    reg  rs2Index;  // Index for rs2.
+
     reg  rdIndex;   // Index in register file.
     reg  immediate; // Immediate value.
-    reg  opType;    // Operation type for ALU.
+    reg  iType;     // Instruction cfg for ALU. (imm or reg?)
+    reg  opType;    // Operation types for ALU. (add or sub?)
 
     reg  dbgCmd;    // Debug command.
 };
@@ -56,16 +55,16 @@ struct decoder : public decoder_input, decoder_output, private ins_queue {
     friend class caster <decoder>;
     void work();
 
-    const wire rs1Head = { [this] () -> int { return rs1(queue.at(head()).ins()); } };
-    const wire rs2Head = { [this] () -> int { return rs2(queue.at(head()).ins()); } };
-    const wire rdHead  = { [this] () -> int { return rd (queue.at(head()).ins()); } };
-    const wire notFull = { [this] () -> int { return avail(); } };
+    const wire rs1Head = [this] () -> int { return rs1(queue.at(head()).ins()); };
+    const wire rs2Head = [this] () -> int { return rs2(queue.at(head()).ins()); };
+    const wire rdHead  = [this] () -> int { return rd (queue.at(head()).ins()); };
+    const wire notFull = [this] () -> int { return avail(); };
 
   private:
 
-    static int rd(int ins)  { return take <11,7> (ins);  }
-    static int rs1(int ins) { return take <19,15> (ins); }
-    static int rs2(int ins) { return take <24,20> (ins); }
+    static int rd(int ins)      { return take <11,7> (ins);  }
+    static int rs1(int ins)     { return take <19,15> (ins); }
+    static int rs2(int ins)     { return take <24,20> (ins); }
     static int jalrImm(int ins) { return sign_extend(take <31,20> (ins)); }
     static int funct3(int ins)  { return take <14,12> (ins); }
     static int loadImm(int ins) { return sign_extend(take <31,20> (ins)); }
@@ -78,22 +77,25 @@ struct decoder : public decoder_input, decoder_output, private ins_queue {
         });
     }
 
-    void issue_fail() { issue <= 0; }
+    void issue_fail() {
+        issue   <= 0;
+        rdIndex <= 0;
+    }
     void issue_success() {
         issue   <= 1;
         head    <= round(head() + 1);
         dbgCmd  <= queue.at(head()).ins();
     }
 
+    // Commands part.
+
     void work_lui(int __ins) {
         if (rdBusy()) return issue_fail();
         issue_success();
-        rs1Index    <= 0;       // Zero register.
-        rs2Index    <= 0;       // Zero register.
+
         rdIndex     <= rd(__ins);
         immediate   <= bits {take <31,12> (__ins), bits <12> (0)};
-
-        iType       <= ALU_type::immediate;
+        iType       <= ALU_type::pcImm;
         opType      <= ALU_op::ADD;
     }
 
@@ -101,11 +103,8 @@ struct decoder : public decoder_input, decoder_output, private ins_queue {
         if (rdBusy()) return issue_fail();
         issue_success();
 
-        rs1Index    <= 0;       // Zero register.
-        rs2Index    <= 0;       // Zero register.
         rdIndex     <= rd(__ins);
-        immediate   <= take <31,12> (__ins);
-
+        immediate   <= bits {take <31,12> (__ins), bits <12> (0)};
         iType       <= ALU_type::pcImm;
         opType      <= ALU_op::ADD;
     }
@@ -114,11 +113,8 @@ struct decoder : public decoder_input, decoder_output, private ins_queue {
         if (rdBusy()) return issue_fail();
         issue_success();
 
-        rs1Index    <= 0;       // Zero register.
-        rs2Index    <= 0;       // Zero register.
         rdIndex     <= rd(__ins);
         immediate   <= 4;
-
         iType       <= ALU_type::pcImm;
         opType      <= ALU_op::ADD;
     }
@@ -127,11 +123,8 @@ struct decoder : public decoder_input, decoder_output, private ins_queue {
         if (rdBusy() || rs1Busy()) return issue_fail();
         issue_success();
 
-        rs1Index    <= rs1(__ins);
-        rs2Index    <= 0;       // Zero register.
         rdIndex     <= rd(__ins);
         immediate   <= jalrImm(__ins);
-
         iType       <= ALU_type::jalr;
         opType      <= ALU_op::ADD;
     }
@@ -140,11 +133,8 @@ struct decoder : public decoder_input, decoder_output, private ins_queue {
         if (rs1Busy() || rs2Busy()) return issue_fail();
         issue_success();
 
-        rs1Index    <= rs1(__ins);
-        rs2Index    <= rs2(__ins); 
-        rdIndex     <= 0;       // Zero register.
+        rdIndex     <= 0;
         immediate   <= brImm(__ins);
-
         iType       <= ALU_type::branch;
         switch (funct3(__ins)) {
             default: assert(false); break;
@@ -173,14 +163,9 @@ struct decoder : public decoder_input, decoder_output, private ins_queue {
         if (rdBusy() || rs1Busy()) return issue_fail();
         issue_success();
 
-        rs1Index    <= rs1(__ins);
-        rs2Index    <= 0;       // Zero register.
         rdIndex     <= rd(__ins);
         immediate   <= loadImm(__ins);
-
-        constexpr auto __wid = ALU_type::width;
-
-        iType       <= (funct3(__ins) << __wid | ALU_type::load);
+        iType       <= (funct3(__ins) << ALU_type::width | ALU_type::load);
         opType      <= ALU_op::ADD;
     }
 
@@ -188,14 +173,9 @@ struct decoder : public decoder_input, decoder_output, private ins_queue {
         if (rs1Busy() || rs2Busy()) return issue_fail();
         issue_success();
 
-        rs1Index    <= rs1(__ins);
-        rs2Index    <= rs2(__ins);
-        rdIndex     <= 0;       // Zero register.
+        rdIndex     <= 0;
         immediate   <= storeImm(__ins);
-
-        constexpr auto __wid = ALU_type::width;
-
-        iType       <= (funct3(__ins) << __wid | ALU_type::store);
+        iType       <= (funct3(__ins) << ALU_type::width | ALU_type::store);
         opType      <= ALU_op::ADD;
     }
 
@@ -203,11 +183,8 @@ struct decoder : public decoder_input, decoder_output, private ins_queue {
         if (rdBusy() || rs1Busy()) return issue_fail();
         issue_success();
 
-        rs1Index    <= rs1(__ins);
-        rs2Index    <= 0;       // Zero register.
         rdIndex     <= rd(__ins);
         immediate   <= sign_extend(take <31,20> (__ins));
-
         iType       <= ALU_type::immediate;
         switch (funct3(__ins)) {
             default: assert(false); break;
@@ -234,11 +211,8 @@ struct decoder : public decoder_input, decoder_output, private ins_queue {
         if (rdBusy() || rs1Busy() || rs2Busy()) return issue_fail();
         issue_success();
 
-        rs1Index    <= rs1(__ins);
-        rs2Index    <= rs2(__ins);
         rdIndex     <= rd(__ins);
         immediate   <= immediate(); // Immediate is not used.
-
         iType       <= ALU_type::scalar;
         switch (funct3(__ins)) {
             default: assert(false); break;
@@ -260,6 +234,15 @@ struct decoder : public decoder_input, decoder_output, private ins_queue {
                 opType <= ALU_op::AND; break;
         }
     }
+
+    void work_vload(int) {
+        NotImplemented();
+    }
+
+    void work_vstore(int) {
+        NotImplemented();
+    }
+
 };
 
 
@@ -270,16 +253,16 @@ namespace dark {
 void decoder::work() {
     // Decoder part.
     if (reset) {
-        issue <= 0;
+        issue_fail();
     } else if (!ready) {
         // Do nothing.
     } else if (empty() || nextBubble()) {
-        issue <= 0;
-        iType <= 0;
-    } else { // Non-empty and no bubble!
+        issue_fail();   // Of course, fail.
+        iType <= 0;     // Prevent bubbling forever.
+    } else { // Non-empty and no bubbling!
         int __ins = queue.at(head()).ins();
         int __pc  = queue.at(head()).pc();
-        ALUPc <= __pc;
+        ALUPc <= (take <6,0> (__ins) == 0b0110111 ? 0 : __pc);
 
         switch (take <6,0> (__ins)) {
             case 0b0110111: // lui
@@ -300,7 +283,14 @@ void decoder::work() {
                 work_immediate(__ins); break;
             case 0b0110011: // register
                 work_register(__ins); break;
+
             // Vector part:
+
+            case 0b0000111: // vload
+                work_vload(__ins); break;
+            case 0b0100111: // vstore
+                work_vstore(__ins); break;
+
             default: assert(false, "Not implemented!"); break;
         }
     }

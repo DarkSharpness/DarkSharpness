@@ -61,7 +61,6 @@ void ifetch::work() {
     } else if(hit() && insAvail() && !stall() && !pause()) {
         // Special judge.
         int __instData = instData();
-        details("Instruction fetched: ", int_to_hex(__instData) , " at ", int_to_hex(pc()));
         if (__instData == 0x0ff00513) {
             pause   <= 1;
             insDone <= 1;

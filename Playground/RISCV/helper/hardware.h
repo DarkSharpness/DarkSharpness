@@ -9,7 +9,6 @@ namespace dark {
 
 struct wire;
 
-
 namespace detail {
 
 template <typename _Func>
@@ -60,9 +59,8 @@ struct wire {
 
     template <detail::wire_lambda _Func>
     wire(_Func &&__func) {
-        using _Real = std::decay_t <_Func>;
-        manage = new detail::wire_implement <_Real>
-            (std::forward <_Func> (__func));
+        using _Real = std::decay_t <_Func>; // Real type of lambda.
+        manage = new detail::wire_implement <_Real> (std::forward <_Func> (__func));
     }
 
     wire &operator = (const wire &rhs) {
@@ -73,7 +71,8 @@ struct wire {
     }
 
     int operator() (void) const {
-        if (!manage) throw std::runtime_error("Uninitialized wire.");
+        if (!manage)
+            throw std::runtime_error("Uninitialized wire.");
         return manage->call();
     }
 
@@ -102,6 +101,11 @@ struct reg {
     void operator <= (reg rhs)  { bak = rhs.value; } 
     void sync()                 { value = bak; }
 
+    // Set given half word to given short.
+    void set_half(int l, short val) {
+        bak &= ~(0xffff << (l * 16));
+        bak |= unsigned(val) << (l * 16);
+    }
     // Set given byte to given char.
     void set_byte(int l, char val) {
         bak &= ~(0xff << (l * 8));

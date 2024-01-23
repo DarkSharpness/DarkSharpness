@@ -15,21 +15,15 @@ struct icache {
     /**
      * @return Whether the instruction is ready. (Cache hit)
      */
-    const wire hit = {
-        [this]()-> int { return writeEnable() || tag[index()]() == tagIn(); }
-    };
+    const wire hit = [this]()-> int { return writeEnable() || tag[index()]() == tagIn(); };
     /**
      * @return The instruction fetched from icache.
      */
-    const wire dataOut = {
-        [this]()-> int { return writeEnable() ? dataIn() : cmd[index()](); }
-    };
+    const wire dataOut = [this]()-> int { return writeEnable() ? dataIn() : cmd[index()](); };
     /**
      * @return a.k.a not hit. 
      */
-    const wire iFetch = {
-        [this]()-> int { return !(writeEnable() || tag[index()]() == tagIn()); }
-    };
+    const wire iFetch = [this]()-> int { return !(writeEnable() || tag[index()]() == tagIn()); };
 
   private: // Private properties.
 
