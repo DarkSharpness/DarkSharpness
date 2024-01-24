@@ -1,0 +1,38 @@
+{
+    "SupportedFiles": [ "utility.h" ],
+    "Groups": [
+        { "GroupID": 1, "GroupName": "基础测试","GroupScore": 10, "TestPoints": [1,2] },
+        { "GroupID": 2, "GroupName": "单目运算符","GroupScore": 10, "TestPoints": [3,4] },
+        { "GroupID": 3, "GroupName": "加减法","GroupScore": 15, "TestPoints": [5,6,7,8] },
+        { "GroupID": 4, "GroupName": "乘除法","GroupScore": 15, "TestPoints": [9,10,11,12] },
+        { "GroupID": 5, "GroupName": "类型转换","GroupScore": 10, "TestPoints": [13,14] },
+        { "GroupID": 6, "GroupName": "比较运算","GroupScore": 10, "TestPoints": [15,16] },
+        { "GroupID": 7, "GroupName": "四则运算综合测试(含异常处理)","GroupScore": 15, "TestPoints": [17,18] },
+        { "GroupID": 8, "GroupName": "综合压力测试(含异常处理)","GroupScore": 15, "TestPoints": [19,20] }
+    ],
+    "Details": [
+        { "ID": 1, "Dependency": 0, "TimeLimit": 1000, "MemoryLimit": 268435456, "DiskLimit": 0, "ValgrindTestOn": false },
+        { "ID": 2, "Dependency": 0, "TimeLimit": 1000, "MemoryLimit": 268435456, "DiskLimit": 0, "ValgrindTestOn": false },
+        { "ID": 3, "Dependency": 0, "TimeLimit": 1000, "MemoryLimit": 268435456, "DiskLimit": 0, "ValgrindTestOn": false },
+        { "ID": 4, "Dependency": 0, "TimeLimit": 1000, "MemoryLimit": 268435456, "DiskLimit": 0, "ValgrindTestOn": false },
+        { "ID": 5, "Dependency": 0, "TimeLimit": 1000, "MemoryLimit": 268435456, "DiskLimit": 0, "ValgrindTestOn": false },
+        { "ID": 6, "Dependency": 0, "TimeLimit": 1000, "MemoryLimit": 268435456, "DiskLimit": 0, "ValgrindTestOn": false },
+        { "ID": 7, "Dependency": 0, "TimeLimit": 1000, "MemoryLimit": 268435456, "DiskLimit": 0, "ValgrindTestOn": false },
+        { "ID": 8, "Dependency": 0, "TimeLimit": 1000, "MemoryLimit": 268435456, "DiskLimit": 0, "ValgrindTestOn": false },
+        { "ID": 9, "Dependency": 0, "TimeLimit": 1000, "MemoryLimit": 268435456, "DiskLimit": 0, "ValgrindTestOn": false },
+        { "ID": 10, "Dependency": 0, "TimeLimit": 1000, "MemoryLimit": 268435456, "DiskLimit": 0, "ValgrindTestOn": false },
+        { "ID": 11, "Dependency": 0, "TimeLimit": 1000, "MemoryLimit": 268435456, "DiskLimit": 0, "ValgrindTestOn": false },
+        { "ID": 12, "Dependency": 0, "TimeLimit": 1000, "MemoryLimit": 268435456, "DiskLimit": 0, "ValgrindTestOn": false },
+        { "ID": 13, "Dependency": 0, "TimeLimit": 1000, "MemoryLimit": 268435456, "DiskLimit": 0, "ValgrindTestOn": false },
+        { "ID": 14, "Dependency": 0, "TimeLimit": 1000, "MemoryLimit": 268435456, "DiskLimit": 0, "ValgrindTestOn": false },
+        { "ID": 15, "Dependency": 0, "TimeLimit": 1000, "MemoryLimit": 268435456, "DiskLimit": 0, "ValgrindTestOn": false },
+        { "ID": 16, "Dependency": 0, "TimeLimit": 1000, "MemoryLimit": 268435456, "DiskLimit": 0, "ValgrindTestOn": false },
+        { "ID": 17, "Dependency": 0, "TimeLimit": 10000, "MemoryLimit": 268435456, "DiskLimit": 0, "ValgrindTestOn": true },
+        { "ID": 18, "Dependency": 0, "TimeLimit": 10000, "MemoryLimit": 268435456, "DiskLimit": 0, "ValgrindTestOn": true },
+        { "ID": 19, "Dependency": 0, "TimeLimit": 10000, "MemoryLimit": 268435456, "DiskLimit": 0, "ValgrindTestOn": true },
+        { "ID": 20, "Dependency": 0, "TimeLimit": 10000, "MemoryLimit": 268435456, "DiskLimit": 0, "ValgrindTestOn": true }
+    ],
+    "CompileTimeLimit": 10000,
+    "SPJ": 3,
+    "Scorer": 0
+}
