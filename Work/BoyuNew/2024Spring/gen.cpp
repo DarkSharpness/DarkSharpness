@@ -5,20 +5,24 @@
 #include <filesystem>
 
 struct checker {
+public:
     std::string msg;        // Error message.
     const bool kill = true; // Whether to kill on failure.
     int fails = 0;          // Count of failures.
 
-    checker &operator()(auto &&cond) {
-        if (cond) return *this;
+    void panic() {
         ++fails;
         if (kill) {
             std::cerr << std::format("\033[31m[Error]: {}\033[0m\n", msg);
             std::exit(1);
         } else {
             std::cerr << std::format("\033[33m[Warning]: {}\033[0m\n", msg);
-            return *this;
         }
+    }
+
+    checker &operator()(auto &&cond) {
+        if (!cond) panic();
+        return *this;
     }
 
     checker &on_success(std::string_view msg) {
@@ -31,7 +35,7 @@ struct checker {
         return *this;
     }
 
-    checker & reset() { fails = 0; return *this; }
+    checker &reset() { fails = 0; return *this; }
 };
 
 std::string path; // Relative path to the folder
