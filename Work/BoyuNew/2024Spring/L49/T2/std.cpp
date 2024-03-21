@@ -9,27 +9,26 @@ signed main() {
     int n, m;
     cin >> n >> m;
 
-    if (m == 1) {
-        for (int i = 1; i <= n; i++) cout << i << ' ';
-        cout << '\n';
-        return 0;
-    }
-
-    for (int i = 1; i < n; i++) nxt[i] = i + 1;
+    for (int i = 0; i < n; i++) nxt[i] = i + 1;
     nxt[n] = 1;
-    int x = 1;
-    int y = nxt[x]; // 前进 1 步
+
+    int x = 0;
+    int y = 1;
+
+    // 初始 y 是第一个开始报数的人
     while (y != x) {
-        // 再前进 m - 2 步
-        for (int i = 0 ; i < m - 2; i++) {
+        // 前进 m - 1 步
+        for (int i = 0 ; i < m - 1 ; i++) {
             x = y;
             y = nxt[y];
         }
+
+        // y 出列
         cout << y << ' ';
         nxt[x] = nxt[y];
-        y = nxt[y]; // 前进 1 步
-    }
 
-    cout << y << '\n';
+        x = y;
+        y = nxt[x];
+    }
     return 0;
 }
