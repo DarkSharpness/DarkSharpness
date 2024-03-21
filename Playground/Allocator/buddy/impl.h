@@ -56,8 +56,6 @@ inline void global_allocator::debug() {
         std::cerr << std::format("Free list {}:\n", i);
         list.debug(i);
     }
-
-    std::cerr << "\n\nMemory allocated:\n";
 }
 
 
