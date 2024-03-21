@@ -50,24 +50,26 @@ private:
         __ptr->next->prev = __ptr->prev;
     }
 
+    /* Find the first non-empty list's rank. */
+    rank_t find_first_suit(rank_t __rk) {
+        while (true) {
+            if (__rk >= kBit) throw std::bad_alloc();
+            if (!free_list[__rk].empty()) return __rk;
+            ++__rk;
+        }
+        __builtin_unreachable();
+    }
+
     /* Recursively find a suitable block. */
     void *try_alloc(rank_t __rk) {
-        if (!free_list[__rk].empty()) {
-            auto *__ptr = free_list[__rk].pop_front();
-            set_busy(get_index(__ptr, __rk));
-            return __ptr;
-        }
-
-        /* Find the first non-empty list.  */
-        rank_t __m = __rk;
-        while (free_list[++__m].empty())
-            if (__m == kBit - 1) throw std::bad_alloc();
+        /* Find the first non-empty list's rank.  */
+        auto __m = find_first_suit(__rk);
 
         void *__raw = free_list[__m].pop_front();
         auto  __num = get_index(__raw, __m);
         set_busy(__num);
 
-        while (--__m >= __rk) {
+        while (__rk < __m--) {
             /* Split into 2 blocks, and recycle the latter one */
             auto *__ptr = static_cast <std::byte *> (__raw) + (1ull << __m);
             auto *__new = cast_node((void *)__ptr);
@@ -84,8 +86,7 @@ private:
         if (reset_and_test(__n, __rk))
             return try_dealloc(__n >> 1, __rk + 1);
 
-        auto *__raw = set_index(__n, __rk);
-        auto *__new = cast_node(__raw);
+        auto *__new = cast_node(set_index(__n, __rk));
         free_list[__rk].push_front(__new);
     }
 
