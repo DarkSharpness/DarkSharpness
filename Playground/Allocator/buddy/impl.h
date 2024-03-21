@@ -58,32 +58,6 @@ inline void global_allocator::debug() {
     }
 
     std::cerr << "\n\nMemory allocated:\n";
-
-    // Array to store whether in an free block.
-
-    bool *arr = new bool[1 << (kBit - kAlign)] {};
-
-    for (std::size_t i = 1 ; i < (1 << (kBit - kAlign)) ; ++i)
-        arr[i] = test(i);
-    for (std::size_t i = 1 ; i < (1 << (kBit - kAlign)) ; ++i)
-        arr[i] |= arr[i >> 1];
-    for (std::size_t i = (1 << (kBit - kAlign)) - 1 ; i > 0 ; --i)
-        arr[i >> 1] |= arr[i];
-
-    for (std::size_t i = 0 ; i < kBit - kAlign ; ++i) {
-        rank_t __rk = kBit - 1 - i;
-        std::size_t __beg = 1 << i;
-        std::size_t __end = 1 << (i + 1);
-        std::cerr << std::format("  Rank {}:\n", __rk);
-        for (auto j = __beg ; j != __end ; ++j) {
-            if (arr[j] || !arr[j >> 1]) continue;
-            auto l = (j - __beg) << __rk;
-            auto r = l + (1 << __rk);
-            std::cerr << std::format("    [{}, {})\n", l, r);
-        }
-    }
-
-    delete [] arr;
 }
 
 
