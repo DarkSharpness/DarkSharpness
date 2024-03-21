@@ -21,7 +21,7 @@ signed main() {
     tmp[n].data = n;
     tmp[n].next = tmp + 1;
 
-    node *pre = nullptr;
+    node *pre = tmp + 0;
     node *nxt = tmp + 1; 
 
     while (pre != nxt) {
