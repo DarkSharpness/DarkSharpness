@@ -33,7 +33,7 @@ inline static void *set_bias(offset_t __n) {
 inline void *set_index(number_t __n, rank_t __rk) {
     if (__rk >= kBit) throw std::bad_alloc();
     const auto __m = kBit - 1 - __rk;
-    return set_bias((__n >> __m) << __m);
+    return set_bias((__n >> __m) << __rk);
 }
 
 inline number_t get_index(void *__ptr, rank_t __rk) {

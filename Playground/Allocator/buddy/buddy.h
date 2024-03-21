@@ -19,8 +19,8 @@ private:
         auto  __off = __n % kCnt;   // This offset.
         auto  __bud = __off ^ 1;    // The buddy's offset
 
-        if ((__val >> __bud) & 0b1) {
-            __val ^= 1ull << __off;
+        if ((__val >> __bud) & 1) {
+            __val ^= 1ull << __bud;
             remove_buddy(__n, __rk);
             return true;
         } else { /* Buddy not available case. */
