@@ -5,47 +5,43 @@
 
 namespace dark {
 
+using rank_t   = std::size_t;
+using number_t = std::size_t;
+using offset_t = std::size_t;
+
 inline static constexpr std::size_t kBit    = 13;   // Bits in total
-inline static constexpr std::size_t kAlign  = 4;    // Page bits
+inline static constexpr std::size_t kAlign  = 5;    // Page bits
 inline static constexpr std::size_t kLen    = 8192; // Page length
 
-static_assert((1 << kBit) == kLen);
-
 struct node {
-    void *addr; // Pointer to the memory block
     node *next; // Pointer to the next node
+    node *prev; // Pointer to the previous node
 };
 
-struct forward_list {
-    node *head {};
+static_assert((1 << kBit) == kLen);
+static_assert(sizeof(node) <= (1 << kAlign));
+
+struct forward_list : node {
+    /* Default constructor. */
+    forward_list() : node({this, this}) {};
+    /* Return whether the list is empty. */
+    bool empty() const { return next == this; }
 
     /* Push a new node to the front. */
     auto push_front(node *) -> void;
-    /* Pop and return the first element. */
+    /* Pop the first node from the front. */
     auto pop_front()        -> node *;
-    /**
-     * @brief Pop and recycle the first element.
-     * @return void * Address of the memory block.
-     */
-    auto pop_remove()       -> void *;
-    /* Return whether the list is empty. */
-    bool empty() const { return head == nullptr; }
+
     /* Debug the list, print out its inner info. */
-    void debug();
+    void debug(rank_t);
 };
 
-/**
- * @return Create a node with given data.
- */
-inline auto create_node(void *) -> node *;
+/* Cast any address to a node. */
+inline node *cast_node(void *ptr) { return static_cast <node *> (ptr); }
 
 } // namespace dark
 
 namespace dark {
-
-using rank_t   = std::size_t;
-using number_t = std::size_t;
-using offset_t = std::size_t;
 
 /**
  * @return void * Start address of the block.

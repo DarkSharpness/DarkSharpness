@@ -2,7 +2,9 @@
 #include "impl.h"
 
 signed main() {
-    dark::free(dark::malloc(1), 1);
+    dark::alloc.first_init();
+    void *p1 = dark::malloc(1);
+
     dark::debug();
     return 0;
 }
