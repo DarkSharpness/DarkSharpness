@@ -1,0 +1,32 @@
+{
+    "Groups": [
+        {"GroupID": 1,"GroupName": "Extra corner tests","GroupScore": 30,"TestPoints": [1,2,3]},
+        {"GroupID": 2,"GroupName": "Benchmark: Insert", "GroupScore": 10,"TestPoints": [4]},
+        {"GroupID": 3,"GroupName": "Benchmark: Erase",  "GroupScore": 10,"TestPoints": [5]},
+        {"GroupID": 4,"GroupName": "Benchmark: Travel", "GroupScore": 10,"TestPoints": [6]},
+        {"GroupID": 5,"GroupName": "Benchmark: Find", "GroupScore": 10,"TestPoints": [7]},
+        {"GroupID": 6,"GroupName": "Benchmark: Min & Max", "GroupScore": 10,"TestPoints": [8]},
+        {"GroupID": 6,"GroupName": "Benchmark: Operator []", "GroupScore": 10,"TestPoints": [9]},
+        {"GroupID": 6,"GroupName": "Benchmark: Copy & Clear", "GroupScore": 10,"TestPoints": [10]}
+    ],
+    "Details": [
+        { "ID": 1,  "Dependency": 0, "TimeLimit": 10000, "MemoryLimit": 536870912, "DiskLimit": 0, "ValgrindTestOn": false },
+        { "ID": 2,  "Dependency": 0, "TimeLimit": 10000, "MemoryLimit": 536870912, "DiskLimit": 0, "ValgrindTestOn": false },
+        { "ID": 3,  "Dependency": 0, "TimeLimit": 10000, "MemoryLimit": 536870912, "DiskLimit": 0, "ValgrindTestOn": false },
+        { "ID": 4,  "Dependency": 1, "TimeLimit": 20000, "MemoryLimit": 536870912, "DiskLimit": 0, "ValgrindTestOn": false },
+        { "ID": 5,  "Dependency": 1, "TimeLimit": 20000, "MemoryLimit": 536870912, "DiskLimit": 0, "ValgrindTestOn": false },
+        { "ID": 6,  "Dependency": 1, "TimeLimit": 20000, "MemoryLimit": 536870912, "DiskLimit": 0, "ValgrindTestOn": false },
+        { "ID": 7,  "Dependency": 1, "TimeLimit": 20000, "MemoryLimit": 536870912, "DiskLimit": 0, "ValgrindTestOn": false },
+        { "ID": 8,  "Dependency": 1, "TimeLimit": 20000, "MemoryLimit": 536870912, "DiskLimit": 0, "ValgrindTestOn": false },
+        { "ID": 9,  "Dependency": 1, "TimeLimit": 20000, "MemoryLimit": 536870912, "DiskLimit": 0, "ValgrindTestOn": false },
+        { "ID": 10, "Dependency": 1, "TimeLimit": 30000, "MemoryLimit": 536870912, "DiskLimit": 0, "ValgrindTestOn": false }
+    ],
+    "CompileTimeLimit": 10000,
+    "SPJ": 4,
+    "Scorer": 0,
+    "SupportedFiles": [
+        "utility.hpp",
+        "exceptions.hpp",
+        "helper.h"
+    ]
+}
